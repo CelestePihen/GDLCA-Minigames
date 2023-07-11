@@ -1,0 +1,13 @@
+name: Hub
+version: '${project.version}'
+main: fr.cel.hub.Hub
+api-version: 1.19
+author: Cel
+description: To make the NPCs, I used code from the FancyNpcs plugin.
+commands:
+  hub:
+    description: Besoin d'expliquer ? Bon. Permet d'aller au hub
+  event:
+    description: Permet d'effectuer des événements
+  npc:
+    description: Permet de faire apparaître un PNJ

@@ -1,0 +1,65 @@
+name: Essentials
+version: 1.0
+main: fr.cel.essentials.Essentials
+author: Cel
+api-version: 1.19
+commands:
+  heal:
+    description: Permet de se soigner les joueurs
+  feed:
+    description: Permet de se rassasier les joueurs
+  craft:
+    description: Permet d'ouvrir un établi
+    aliases: [workbench]
+  gm:
+    description: Permet de changer le mode de jeu des joueurs
+  top:
+    description: Permet de se téléporter à la surface
+  nv:
+    description: Permet de se donner l'effet Vision Nocturne
+    aliases: [nightvision]
+  bc:
+    description: Permet d'envoyer un message que tous les joueurs verront
+    aliases: [broadcast]
+  speed:
+    description: Permet de changer la vitesse des joueurs
+  ec:
+    description: Permet d'ouvrir le coffre de l'end des joueurs
+    aliases: [enderchest]
+  anvil:
+    description: Permet d'ouvrir une enclume
+  hat:
+    description: Permet de mettre l'objet qu'il a dans sa main sur sa tête
+  near:
+    description: Permet de savoir quels sont les joueurs autour du joueur
+  god:
+    description: Permet de mettre le mode invulnérable sur les joueurs
+  discord:
+    description: Donne le lien discord aux joueurs
+permissions:
+  skyessentials.heal:
+    description: Permission pour soigner les joueurs
+  skyessentials.feed:
+    description: Permission pour rassasier les joueurs
+  skyessentials.craft:
+    description: Permission pour ouvrir un établi
+  skyessentials.gm:
+    description: Permission pour changer le mode de jeu des joueurs
+  skyessentials.top:
+    description: Permission pour se téléporter à la surface
+  skyessentials.nv:
+    description: Permission pour se donner l'effet Vision Nocturne
+  skyessentials.bc:
+    description: Permission pour envoyer un message que tous les joueurs verront
+  skyessentials.speed:
+    description: Permission de changer la vitesse des joueurs
+  skyessentials.anvil:
+    description: Permission d'ouvrir une enclume
+  skyessentials.hat:
+    description: Permission de mettre l'objet qu'il a dans sa main sur sa tête
+  skyessentials.near:
+    description: Permission de savoir quels sont les joueurs autour du joueur
+  skyessentials.god:
+    description: Permission de mettre le mode invulnérable sur les joueurs
+  skyessentials.discord:
+    description: Permission d'envoyer le lien discord

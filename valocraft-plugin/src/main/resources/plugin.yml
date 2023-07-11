@@ -1,0 +1,8 @@
+name: ValoCraft
+version: '${project.version}'
+main: fr.cel.valocraft.ValoCraft
+api-version: 1.19
+authors: [ Cel ]
+depend: [Hub]
+commands:
+  valocraft:

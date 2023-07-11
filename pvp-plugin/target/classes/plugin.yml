@@ -1,0 +1,8 @@
+name: PVP
+version: 1.0.1
+main: fr.cel.pvp.PVP
+api-version: 1.19
+author: Cel
+depend: [Hub]
+commands:
+  pvp:

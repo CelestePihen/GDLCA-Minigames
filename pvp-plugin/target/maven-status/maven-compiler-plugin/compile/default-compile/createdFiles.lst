@@ -1,0 +1,9 @@
+fr\cel\pvp\listener\BlockListener.class
+fr\cel\pvp\utils\Config.class
+fr\cel\pvp\PVP.class
+fr\cel\pvp\utils\ItemBuilder.class
+fr\cel\pvp\commands\PVPCommands.class
+fr\cel\pvp\manager\GameManager.class
+fr\cel\pvp\manager\arena\ArenaManager.class
+fr\cel\pvp\manager\arena\Arena.class
+fr\cel\pvp\commands\PVPCompleter.class

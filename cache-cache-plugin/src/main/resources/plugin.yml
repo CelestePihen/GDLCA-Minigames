@@ -1,0 +1,9 @@
+name: Cache-Cache
+version: '${project.version}'
+main: fr.cel.cachecache.CacheCache
+api-version: 1.19
+authors: [ Cel, Deadsky666, GlaskyYTB, Compote_Fraise, Agix0 ]
+depend: [Hub]
+commands:
+  cachecache:
+    description: La commande principale du plugin
