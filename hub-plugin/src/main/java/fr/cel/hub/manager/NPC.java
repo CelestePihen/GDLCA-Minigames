@@ -35,9 +35,7 @@ public class NPC {
 
     public NPC(String name, Location location, String texture, String signature) {
         this.location = location;
-
         this.name = name;
-
         this.texture = texture;
         this.signature = signature;
     }

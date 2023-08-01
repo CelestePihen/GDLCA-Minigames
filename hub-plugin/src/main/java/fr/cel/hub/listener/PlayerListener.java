@@ -2,6 +2,7 @@ package fr.cel.hub.listener;
 
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.NPC;
+import fr.cel.hub.manager.NPCManager;
 import fr.cel.hub.utils.ChatUtility;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -31,14 +32,14 @@ public class PlayerListener extends HubListener {
 	  if (!player.hasPlayedBefore()) {
           event.joinMessage(Component.text(main.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !"));
       } else {
-          event.joinMessage(Component.text(ChatUtility.format("[&a+&f] ") + player.getName()));
+          event.joinMessage(Component.text("[§a+§r] " + player.getName()));
       }
 
       player.sendPlayerListHeader(Component.text(ChatUtility.format("Bienvenue sur &9GDLCA Minigames&f !")));
 
       main.getPlayerManager().sendPlayerToHub(player);
 
-      for (NPC npc : main.getNpcManager().getNpcs()) {
+      for (NPC npc : NPCManager.getNpcs()) {
           npc.spawn(player);
       }
 
@@ -47,7 +48,7 @@ public class PlayerListener extends HubListener {
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        event.quitMessage(Component.text(ChatUtility.format("[&c-&f] ") + player.getName()));
+        event.quitMessage(Component.text("[§c-§f] " + player.getName()));
 
         main.getPlayerManager().removePlayerInHub(player);
     }

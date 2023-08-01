@@ -21,7 +21,7 @@ public class EventCommands extends AbstractCommand {
     public void onExecute(Player player, String[] args) {
         
         if (args.length == 0) {
-            this.sendMessageWithPrefix(player, "La commande est :/event <music/musique>");
+            this.sendMessageWithPrefix(player, "La commande est : /event <hub>");
             return;
         }
 

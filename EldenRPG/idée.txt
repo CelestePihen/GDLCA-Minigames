@@ -1,0 +1,28 @@
+EldenRPG :
+
+- village du début
+- ruines (petites, moyennes, grandes)
+- grand château
+- grandes catacombes
+ - grande cité warden (tout au fond)
+ - rapports d'expédition
+- raccourcis
+- easter egg hub GDLCA ✅
+
+- Zones : 
+ - neige (grande montagne)
+ - plaine (village)
+ - warden
+ - désert
+ - pourri (arbres morts, cimetière)
+
+- armes / armures custom
+- textures customs
+- astuces
+- PNJ avec quêtes
+- achievements custom
+- menus custom
+- musiques custom pour boss
+- Vous êtes mort (en plein milieu de l'écran avec le son)
+
+Spawn Block sans collision : /summon block_display x.0 ~0 z.0 {Tags:["tag"],block_state:{Name:"minecraft:block"}}

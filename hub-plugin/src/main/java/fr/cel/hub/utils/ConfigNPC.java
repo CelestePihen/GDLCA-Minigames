@@ -3,6 +3,7 @@ package fr.cel.hub.utils;
 import java.io.File;
 import java.io.IOException;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

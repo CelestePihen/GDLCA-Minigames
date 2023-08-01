@@ -43,6 +43,7 @@ public class PlayerManager {
         playersInHub.remove(player.getUniqueId());
     }
 
+    // Détecte si le joueur est dans le Hub
     public boolean containsPlayerInHub(Player player) {
         return playersInHub.contains(player.getUniqueId());
     }
@@ -100,7 +101,7 @@ public class PlayerManager {
         player.setHealth(20);
         player.setLevel(0);
         player.getInventory().clear();
-        player.getActivePotionEffects().forEach(potionEffect -> { player.removePotionEffect(potionEffect.getType()); });
+        player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
     }
 
 }

@@ -3,7 +3,6 @@ package fr.cel.hub.listener;
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.NPC;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -16,7 +15,6 @@ public class NPCListener extends HubListener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
         Location loc = event.getTo();
 
         for (NPC npc : main.getNpcManager().getNpcs()) {
@@ -26,7 +24,7 @@ public class NPCListener extends HubListener {
 
             Location newLoc = loc.clone();
             newLoc.setDirection(newLoc.subtract(npc.getNpc().getBukkitEntity().getLocation()).toVector());
-            npc.lookAt(player, newLoc);
+            npc.lookAt(event.getPlayer(), newLoc);
         }
     }
 

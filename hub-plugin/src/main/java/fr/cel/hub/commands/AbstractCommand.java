@@ -2,6 +2,7 @@ package fr.cel.hub.commands;
 
 import fr.cel.hub.Hub;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,15 +16,15 @@ import java.util.List;
 public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
     
     protected final Hub main;
-    private final String permission;
+    private final String commandName;
     protected List<String> arguments;
 
-    public AbstractCommand(Hub main, String permission) {
+    public AbstractCommand(Hub main, String commandName) {
         this.main = main;
-        this.permission = permission;
+        this.commandName = commandName;
         this.arguments = new ArrayList<>();
 
-        main.getCommand(permission).setTabCompleter(this);
+        main.getCommand(commandName).setTabCompleter(this);
     }
 
     @Override
@@ -34,13 +35,14 @@ public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (player.hasPermission("hub." + permission)) {
+        if (player.hasPermission("hub." + commandName)) {
             onExecute((Player) sender, args);
+            return true;
         } else {
             sendMessageWithPrefix(player, "Vous n'avez pas la permission d'utiliser cette commande.");
+            return false;
         }
 
-        return false;
     }
 
     @Override

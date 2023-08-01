@@ -3,8 +3,10 @@ package fr.cel.hub.listener;
 import fr.cel.hub.Hub;
 import fr.cel.hub.tasks.FireworkMusicEvent;
 import fr.cel.hub.utils.ItemBuilder;
+import fr.cel.hub.utils.RPUtils;
 import fr.cel.hub.utils.RPUtils.CustomMusic;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -53,9 +55,10 @@ public class EventListener extends HubListener {
                     if (putMusic == null) putMusic = createMusicInventory();
                     player.openInventory(putMusic);
                 }
+
                 case FIREWORK_ROCKET -> {
                     if (fireworkMusicEvent == null) {
-                        fireworkMusicEvent = new FireworkMusicEvent();
+                        fireworkMusicEvent = new FireworkMusicEvent(main);
                     }
                     if (!eventActivated) {
                         eventActivated = true;
@@ -66,10 +69,12 @@ public class EventListener extends HubListener {
                     }
                     player.closeInventory();
                 }
+
                 case PLAYER_HEAD -> {
                     player.closeInventory();
                     sendMessageWithPrefix(player, "Bientôt disponible...");
                 }
+
                 default -> {}
             }
 
@@ -81,12 +86,9 @@ public class EventListener extends HubListener {
 
             if (itemMaterial == Material.BARRIER) {
                 if (this.currentSound != null) {
-                    for (UUID uuid : main.getPlayerManager().getPlayersInHub()) {
-                        Player pl = Bukkit.getPlayer(uuid);
-                        if (pl == null) continue;
-                        pl.stopSound(this.currentSound, SoundCategory.RECORDS);
-                        sendMessageWithPrefix(player, "Vous avez arrêté la musique en cours.");
-                    }
+                    Bukkit.getOnlinePlayers().forEach(pl -> pl.stopSound(this.currentSound, SoundCategory.RECORDS));
+                    sendMessageWithPrefix(player, "Vous avez arrêté la musique en cours.");
+                    player.closeInventory();
                 } else {
                     sendMessageWithPrefix(player, "Il n'y a pas de musique actuellement.");
                 }
@@ -101,13 +103,8 @@ public class EventListener extends HubListener {
             Sound sound = customMusic.getSound();
 
             if (this.currentSound != null) {
-                for (UUID uuid : main.getPlayerManager().getPlayersInHub()) {
-                    Player pl = Bukkit.getPlayer(uuid);
-                    if (pl == null) continue;
-                    pl.stopSound(this.currentSound, SoundCategory.RECORDS);
-                    sendMessageWithPrefix(player, "Vous avez arrêté la musique en cours.");
-                    player.closeInventory();
-                }
+                Bukkit.getOnlinePlayers().forEach(pl -> pl.stopSound(this.currentSound, SoundCategory.RECORDS));
+                player.closeInventory();
             }
 
             this.currentSound = sound;
@@ -127,11 +124,11 @@ public class EventListener extends HubListener {
             itemBuilder.setDisplayName(customMusic.getMusicName().decoration(TextDecoration.ITALIC, false));
 
             if (customMusic.getAuthor() != null) {
-                itemBuilder.addLoreLine(customMusic.getAuthor());
+                itemBuilder.addLoreLineC(customMusic.getAuthor());
             }
 
             if (customMusic.getDescription() != null) {
-                itemBuilder.addLoreLine(customMusic.getDescription());
+                itemBuilder.addLoreLineC(customMusic.getDescription());
             }
             
             inv.addItem(itemBuilder.toItemStack());
@@ -141,5 +138,5 @@ public class EventListener extends HubListener {
 
         return inv;
     }
-    
+
 }

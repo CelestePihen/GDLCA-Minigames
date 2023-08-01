@@ -22,7 +22,7 @@ public class ChatListener extends HubListener {
             if (cel == null) return;
 
             if (main.getPlayerManager().containsPlayerInInstitution(cel)) {
-                event.getPlayer().sendMessage(Component.text(main.getPrefix() + "Vous ne pouvez pas vous téléporter à Cel___ pour le moment 😏."));
+                player.sendMessage(Component.text(main.getPrefix() + "Vous ne pouvez pas vous téléporter à Cel___ pour le moment 😏."));
                 event.setCancelled(true);
             }
 

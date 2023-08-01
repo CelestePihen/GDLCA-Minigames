@@ -40,8 +40,8 @@ public class Arena {
     private Config config;
 
     // Names
-    @Getter private String nameArena;
-    @Getter private String displayName;
+    @Getter private final String nameArena;
+    @Getter private final String displayName;
 
     // ArenaState / Timer
     @Getter private ArenaState arenaState;
@@ -55,18 +55,18 @@ public class Arena {
     @Getter private HunterMode hunterMode;
 
     // GroundItems
-    @Getter private List<GroundItem> availableGroundItems;
-    @Getter private List<String> locationGroundItems;
-    @Getter private List<Item> spawnedGroundItems;
+    @Getter private final List<GroundItem> availableGroundItems;
+    @Getter private final List<String> locationGroundItems;
+    @Getter private final List<Item> spawnedGroundItems;
 
     // Locations
-    @Getter private Location spawnLoc;
-    @Getter private Location waitingLoc;
+    @Getter private final Location spawnLoc;
+    @Getter private final Location waitingLoc;
 
     // Team Lists
-    @Getter private List<UUID> players;
-    @Getter private List<UUID> hiders;
-    @Getter private List<UUID> seekers;
+    @Getter private final List<UUID> players;
+    @Getter private final List<UUID> hiders;
+    @Getter private final List<UUID> seekers;
 
     // Scoreboard
     private JGlobalMethodBasedScoreboard scoreboard;
@@ -207,21 +207,18 @@ public class Arena {
 
             if (arenaState instanceof PreGameArenaState) return;
 
-            else if (arenaState instanceof StartingArenaState) {
-                StartingArenaState startingArenaState = (StartingArenaState) arenaState;
+            else if (arenaState instanceof StartingArenaState startingArenaState) {
                 startingArenaState.getArenaStartingTask().cancel();
                 sendMessage("Démarrage annulé... Vous avez besoin d'au moins 2 joueurs.");
                 setArenaState(new PreGameArenaState(this));
             }
             
-            else if (arenaState instanceof WaitingArenaState) {
-                WaitingArenaState waitingArenaState = (WaitingArenaState) arenaState;
+            else if (arenaState instanceof WaitingArenaState waitingArenaState) {
                 waitingArenaState.getWaitingArenaTask().cancel();
                 sendMessage("Partie annulé... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.");
             }
             
-            else if (arenaState instanceof PlayingArenaState) {
-                PlayingArenaState playingArenaState = (PlayingArenaState) arenaState;
+            else if (arenaState instanceof PlayingArenaState playingArenaState) {
                 playingArenaState.getPlayingArenaTask().cancel();
                 playingArenaState.getGroundItemsArenaTask().cancel();
                 sendMessage("Partie annulé... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.");
@@ -316,11 +313,11 @@ public class Arena {
             players.forEach(pls -> {
                 Player player = Bukkit.getPlayer(pls);
                 player.setGlowing(false);
+                player.performCommand("hub");
                 teamHiders.removePlayer(player);
                 teamSeekers.removePlayer(player);
                 this.scoreboard.removePlayer(player);
             });
-            sendPlayersToHub();
             players.clear();
             for (Item item : getSpawnedGroundItems()) {
                 item.remove();
@@ -335,16 +332,6 @@ public class Arena {
     private void sendWinnerMessage() {
         if (seekers.isEmpty()) sendMessage("&bL'équipe des cacheurs &r&fremporte la partie !");
         else sendMessage("&cL'équipe des chercheurs &r&fremporte la partie !");
-    }
-
-    /**
-     * Envoie les joueurs au Hub
-     */
-    private void sendPlayersToHub() {
-        for (UUID pls : this.getPlayers()) {
-            Player player = Bukkit.getPlayer(pls);
-            if (player != null) gameManager.getPlayerManager().sendPlayerToHub(player);
-        }
     }
 
     /**
@@ -435,7 +422,7 @@ public class Arena {
         TwoHuntersAtStart("Mode Deux Tueurs")
         ;
 
-        @Getter private String name;
+        @Getter private final String name;
 
         HunterMode(String name) {
             this.name = name;

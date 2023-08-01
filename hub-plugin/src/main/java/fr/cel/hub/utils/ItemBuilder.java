@@ -99,6 +99,18 @@ public class ItemBuilder {
      * Set the displayname of the item.
      * @param text The name to change it to.
      */
+    @Deprecated
+    public ItemBuilder setDisplayName(String text){
+        ItemMeta im = is.getItemMeta();
+        im.setDisplayName(text);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Set the displayname of the item.
+     * @param text The name to change it to.
+     */
     public ItemBuilder setDisplayName(Component text){
         ItemMeta im = is.getItemMeta();
         im.displayName(text);
@@ -143,7 +155,7 @@ public class ItemBuilder {
      * @param enchantment The enchantment to add
      * @param level The level
      */
-    public ItemBuilder addEnchantment(Enchantment enchantment, int level){
+    public ItemBuilder addEnchant(Enchantment enchantment, int level){
         ItemMeta im = is.getItemMeta();
         im.addEnchant(enchantment, level, true);
         is.setItemMeta(im);
@@ -154,7 +166,7 @@ public class ItemBuilder {
      * Add multiple enchants at once.
      * @param enchantments The enchants to add.
      */
-    public ItemBuilder addEnchantments(Map<Enchantment, Integer> enchantments){
+    public ItemBuilder addEnchants(Map<Enchantment, Integer> enchantments){
         is.addEnchantments(enchantments);
         return this;
     }
@@ -163,7 +175,31 @@ public class ItemBuilder {
      * Re-sets the lore.
      * @param lore The lore to set it to.
      */
+    @Deprecated
     public ItemBuilder setLore(String... lore){
+        ItemMeta im = is.getItemMeta();
+        im.setLore(Arrays.asList(lore));
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Re-sets the lore.
+     * @param lore The lore to set it to.
+     */
+    @Deprecated
+    public ItemBuilder setLore(List<String> lore) {
+        ItemMeta im = is.getItemMeta();
+        im.setLore(lore);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Re-sets the lore.
+     * @param lore The lore to set it to.
+     */
+    public ItemBuilder lore(String... lore){
         ItemMeta im = is.getItemMeta();
         im.lore(Arrays.stream(lore).map(Component::text).collect(Collectors.toList()));
         is.setItemMeta(im);
@@ -174,19 +210,50 @@ public class ItemBuilder {
      * Re-sets the lore.
      * @param lore The lore to set it to.
      */
-    public ItemBuilder setLore(List<String> lore) {
+    public ItemBuilder lore(List<String> lore) {
         ItemMeta im = is.getItemMeta();
         im.lore(lore.stream().map(Component::text).collect(Collectors.toList()));
         is.setItemMeta(im);
         return this;
     }
 
+    /**
+     * Remove a lore line.
+     * @param line The line to remove.
+     */
+    @Deprecated
+    public ItemBuilder removeLoreLine(String line) {
+        ItemMeta im = is.getItemMeta();
+        List<String> lore = new ArrayList<>(im.getLore());
+        if(!lore.contains(line))return this;
+        lore.remove(line);
+        im.setLore(lore);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Remove a lore line.
+     * @param index The index of the lore line to remove.
+     */
+    @Deprecated
+    public ItemBuilder removeLoreLine(int index) {
+        ItemMeta im = is.getItemMeta();
+        List<String> lore = new ArrayList<>(im.getLore());
+
+        if(index<0||index>lore.size()) return this;
+
+        lore.remove(index);
+        im.setLore(lore);
+        is.setItemMeta(im);
+        return this;
+    }
     
     /** 
-     * @param line
+     * @param line The line to remove
      * @return ItemBuilder
      */
-    public ItemBuilder removeLoreLine(String line){
+    public ItemBuilder removeloreLine(String line) {
         ItemMeta im = is.getItemMeta();
         List<Component> lore = new ArrayList<>(im.lore());
         lore.removeIf(component -> component instanceof TextComponent && ((TextComponent) component).content().equals(line));
@@ -199,7 +266,7 @@ public class ItemBuilder {
      * Remove a lore line.
      * @param index The index of the lore line to remove.
      */
-    public ItemBuilder removeLoreLine(int index){
+    public ItemBuilder removeloreLine(int index) {
         ItemMeta im = is.getItemMeta();
         List<Component> lore = new ArrayList<>(im.lore());
         if (index >= 0 && index < lore.size()) {
@@ -214,7 +281,37 @@ public class ItemBuilder {
      * Add a lore line.
      * @param line The lore line to add.
      */
+    @Deprecated
     public ItemBuilder addLoreLine(String line){
+        ItemMeta im = is.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        if(im.hasLore())lore = new ArrayList<>(im.getLore());
+        lore.add(line);
+        im.setLore(lore);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Add a lore line.
+     * @param line The lore line to add.
+     * @param pos The index of where to put it.
+     */
+    @Deprecated
+    public ItemBuilder addLoreLine(String line, int pos){
+        ItemMeta im = is.getItemMeta();
+        List<String> lore = new ArrayList<>(im.getLore());
+        lore.set(pos, line);
+        im.setLore(lore);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Add a lore line.
+     * @param line The lore line to add.
+     */
+    public ItemBuilder addLoreLineC(String line){
         ItemMeta im = is.getItemMeta();
 
         List<Component> lore = new ArrayList<>();
@@ -233,7 +330,7 @@ public class ItemBuilder {
      * @param line The lore line to add.
      * @param pos The index of where to put it.
      */
-    public ItemBuilder addLoreLine(String line, int pos){
+    public ItemBuilder addLoreLineC(String line, int pos){
         ItemMeta im = is.getItemMeta();
         List<Component> lore = new ArrayList<>(im.lore());
         lore.set(pos, Component.text(line));
@@ -269,8 +366,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setLeatherArmorColor(Color color) {
         ItemMeta im = is.getItemMeta();
-        if (im instanceof  LeatherArmorMeta) {
-            LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
+        if (im instanceof LeatherArmorMeta lam) {
             lam.setColor(color);
             is.setItemMeta(im);
         }

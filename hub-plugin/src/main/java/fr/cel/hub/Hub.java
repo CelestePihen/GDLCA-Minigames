@@ -1,7 +1,5 @@
 package fr.cel.hub;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,14 +13,13 @@ import fr.cel.hub.listener.NPCListener;
 import fr.cel.hub.listener.PlayerListener;
 import fr.cel.hub.manager.NPCManager;
 import fr.cel.hub.manager.PlayerManager;
-import fr.cel.hub.utils.ChatUtility;
 import fr.cel.hub.utils.RPUtils;
 import lombok.Getter;
 
-public class Hub extends JavaPlugin {
+public final class Hub extends JavaPlugin {
 
     @Getter private PlayerManager playerManager;
-    @Getter private final Component prefix = Component.text("[GDLCA Minigames]").color(NamedTextColor.GOLD).append(Component.text(" ")).color(NamedTextColor.WHITE);
+    @Getter private final String prefix = "§6[GDLCA Minigames]§r ";
     @Getter private NPCManager npcManager;
     @Getter private static Hub hub;
     @Getter private RPUtils rPUtils;
@@ -50,7 +47,7 @@ public class Hub extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        npcManager.removeToAll();
+        NPCManager.removeToAll();
     }
 
     /**

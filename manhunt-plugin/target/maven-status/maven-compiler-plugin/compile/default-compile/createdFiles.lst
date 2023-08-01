@@ -1,0 +1,7 @@
+fr\cel\manhunt\listener\ManHuntListener.class
+fr\cel\manhunt\ManHunt.class
+fr\cel\manhunt\commands\HuntCommand.class
+fr\cel\manhunt\utils\ItemBuilder.class
+fr\cel\manhunt\commands\AbstractCommand.class
+fr\cel\manhunt\tasks\CompassTask.class
+fr\cel\manhunt\utils\Colorize.class

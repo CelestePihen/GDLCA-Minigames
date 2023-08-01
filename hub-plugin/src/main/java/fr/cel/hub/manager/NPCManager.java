@@ -13,7 +13,7 @@ import java.util.List;
 
 public class NPCManager {
     
-    @Getter private final List<NPC> npcs;
+    @Getter private static List<NPC> npcs;
     private final Hub main;
 
     public NPCManager(Hub main) {
@@ -41,17 +41,17 @@ public class NPCManager {
                     Bukkit.getConsoleSender().sendMessage(Component.text("[Hub] ", NamedTextColor.GOLD)
                             .append(Component.text("Chargement du NPC-hub " + name, NamedTextColor.WHITE)));
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(Component.text("BUG - CHARGEMENT NPC | ESSAYE DE CHARGER DANS UN AUTRE MONDE", NamedTextColor.RED));
+                    Bukkit.getConsoleSender().sendMessage(Component.text("BUG - CHARGEMENT NPC | ESSAYE DE CHARGER DANS UN AUTRE MONDE ?", NamedTextColor.RED));
                 }
 
                 npc.create();
-                this.npcs.add(npc);
+                npcs.add(npc);
                 npc.showToAll();
             }
         }
     }
 
-    public void removeToAll() {
+    public static void removeToAll() {
         for (NPC npc : npcs) {
             npc.removeToAll();
         }

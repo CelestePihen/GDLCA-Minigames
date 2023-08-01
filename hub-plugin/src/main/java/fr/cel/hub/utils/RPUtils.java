@@ -3,7 +3,10 @@ package fr.cel.hub.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Sound;
 
 import lombok.Getter;
@@ -72,7 +75,7 @@ public class RPUtils {
         }
 
         CustomMusic(String musicName, String author, String description, Sound sound) {
-            this.musicName = net.kyori.adventure.text.Component.text(musicName);
+            this.musicName = Component.text(musicName).decoration(TextDecoration.ITALIC, false);
             this.displayName = musicName;
             this.author = author;
             this.description = description;
