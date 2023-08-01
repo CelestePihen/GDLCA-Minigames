@@ -1,4 +1,4 @@
-package fr.cel.valocraft.listener.state;
+package fr.cel.valocraft.manager.arena.state.provider;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -10,14 +10,14 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import lombok.Getter;
 
 public abstract class StateListenerProvider implements Listener {
 
-    @Getter private Arena arena;
+    @Getter private ValoArena arena;
 
-    public StateListenerProvider(Arena arena) {
+    public StateListenerProvider(ValoArena arena) {
         this.arena = arena;
     }
 

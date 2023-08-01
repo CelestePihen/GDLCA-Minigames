@@ -6,15 +6,19 @@ import fr.cel.hub.utils.ChatUtility;
 import fr.cel.valocraft.ValoCraft;
 import lombok.Getter;
 
-public class GameManager {
-    
-    @Getter private final ValoCraft main;
-    @Getter private ArenaManager arenaManager;
-    @Getter private PlayerManager playerManager;
-    @Getter private String prefix = ChatUtility.format("&6[Valocraft] &f");
+public class ValoGameManager {
 
-    public GameManager(ValoCraft main) {
+    @Getter private static ValoGameManager gameManager;
+
+    @Getter private final ValoCraft main;
+    @Getter private final PlayerManager playerManager;
+    @Getter private final String prefix = ChatUtility.format("&6[Valocraft]&r ");
+
+    @Getter private ArenaManager arenaManager;
+
+    public ValoGameManager(ValoCraft main) {
         this.main = main;
+        gameManager = this;
         this.arenaManager = new ArenaManager(main, this);
         this.playerManager = Hub.getHub().getPlayerManager();
     }

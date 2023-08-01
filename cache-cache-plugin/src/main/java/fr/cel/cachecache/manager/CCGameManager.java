@@ -15,19 +15,19 @@ import fr.cel.hub.manager.PlayerManager;
 import fr.cel.hub.utils.ChatUtility;
 import lombok.Getter;
 
-public class GameManager {
+public class CCGameManager {
     
     @Getter private final CacheCache main;
-    @Getter private ArenaManager arenaManager;
     @Getter private final PlayerManager playerManager;
-
-    @Getter private static GameManager gameManager;
-
-    @Getter private static final String prefix = ChatUtility.format("&6[Cache-Cache] &f");
-
     @Getter private static final List<GroundItem> groundItems = new ArrayList<>();
 
-    public GameManager(CacheCache main) {
+    @Getter private ArenaManager arenaManager;
+
+    @Getter private static CCGameManager gameManager;
+
+    @Getter private final String prefix = ChatUtility.format("&6[Cache-Cache] &f");
+
+    public CCGameManager(CacheCache main) {
         addGroundItems();
         gameManager = this;
         this.main = main;
@@ -48,9 +48,9 @@ public class GameManager {
     private void addGroundItems() {
         groundItems.add(new SpeedItem());
         groundItems.add(new BlindnessItem());
+        groundItems.add(new ChangePositionItem());
         groundItems.add(new SoundCatItem());
         groundItems.add(new CursedHornItem());
-        groundItems.add(new ChangePositionItem());
     }
 
 }

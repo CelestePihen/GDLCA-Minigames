@@ -9,7 +9,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.cel.pvp.PVP;
-import fr.cel.pvp.manager.arena.Arena;
+import fr.cel.pvp.manager.arena.PVPArena;
 
 public class Config {
     
@@ -25,13 +25,13 @@ public class Config {
         this.load();
     }
 
-    public Arena getArena() {
+    public PVPArena getArena() {
         String displayName = this.config.getString("displayName");
 
         String locSpawn = this.config.getString("locationSpawn");
         Location locationSpawn = parseStringToLoc(locSpawn);
 
-        Arena arena = new Arena(arenaName, displayName, locationSpawn);
+        PVPArena arena = new PVPArena(arenaName, displayName, locationSpawn);
         return arena;
     }
 

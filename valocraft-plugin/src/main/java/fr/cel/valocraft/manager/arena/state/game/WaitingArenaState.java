@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.listener.state.game.WaitingListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.state.provider.game.WaitingListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 import fr.cel.valocraft.manager.arena.timer.game.WaitingArenaTask;
 import fr.cel.hub.utils.ItemBuilder;
@@ -23,7 +23,7 @@ public class WaitingArenaState extends ArenaState {
     @Getter private WaitingArenaTask waitingArenaTask;
     private int timer;
 
-    public WaitingArenaState(Arena arena) {
+    public WaitingArenaState(ValoArena arena) {
         super(arena);
     }
 

@@ -10,14 +10,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.cel.pvp.manager.GameManager;
-import fr.cel.pvp.manager.arena.Arena;
+import fr.cel.pvp.manager.PVPGameManager;
+import fr.cel.pvp.manager.arena.PVPArena;
 
 public class PVPCommands implements CommandExecutor {
 
-    private final GameManager gameManager;
+    private final PVPGameManager gameManager;
 
-    public PVPCommands(GameManager gameManager) {
+    public PVPCommands(PVPGameManager gameManager) {
         this.gameManager = gameManager;
     }
 
@@ -52,7 +52,7 @@ public class PVPCommands implements CommandExecutor {
                 return false;
             }
 
-            Arena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            PVPArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
             List<String> playersName = new ArrayList<>();
             for (UUID pls : arena.getPlayers()) {
                 Player player1 = Bukkit.getPlayer(pls);

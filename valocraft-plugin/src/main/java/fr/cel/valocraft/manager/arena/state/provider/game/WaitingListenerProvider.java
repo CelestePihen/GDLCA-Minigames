@@ -1,4 +1,4 @@
-package fr.cel.valocraft.listener.state.game;
+package fr.cel.valocraft.manager.arena.state.provider.game;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -12,12 +12,12 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 
 public class WaitingListenerProvider extends StateListenerProvider {
 
-    public WaitingListenerProvider(Arena arena) {
+    public WaitingListenerProvider(ValoArena arena) {
         super(arena);
     }
 

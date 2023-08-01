@@ -1,30 +1,29 @@
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\state\StateListenerProvider.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\WaitingArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\state\game\SpikeListenerProvider.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\pregame\StartingArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\ArenaManager.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\ValoTeam.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\BlockListener.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\SpikeArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\ArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\pregame\StartingArenaTask.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\commands\ValoCommands.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\PlayingArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\Role.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\state\game\TimeOverListenerProvider.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\GameManager.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\utils\Config.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\pregame\InitArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\commands\ValoCompleter.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\Arena.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\TimeOverArenaTask.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\PlayingAreraTask.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\state\game\WaitingListenerProvider.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\WaitingArenaTask.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\TimeOverArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\ValoCraft.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\SpikeArenaTask.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\state\pregame\StartingListenerProvider.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\state\game\PlayingListenerProvider.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\pregame\PreGameArenaState.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\valocraft-plugin\src\main\java\fr\cel\valocraft\listener\state\pregame\PreGameListenerProvider.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\pregame\PreGameListenerProvider.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\utils\Config.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\TimeOverArenaTask.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\commands\ValoCompleter.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\Role.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\pregame\InitArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\PlayingAreraTask.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\ArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\TimeOverArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\pregame\PreGameArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\SpikeArenaTask.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\PlayingArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\SpikeArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\game\TimeOverListenerProvider.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\game\WaitingArenaTask.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\ValoCraft.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\ValoTeam.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\ValoArena.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\ArenaManager.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\commands\ValoCommands.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\game\WaitingListenerProvider.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\game\WaitingArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\pregame\StartingListenerProvider.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\game\SpikeListenerProvider.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\ValoGameManager.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\game\PlayingListenerProvider.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\pregame\StartingArenaState.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\pregame\StartingArenaTask.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\StateListenerProvider.java

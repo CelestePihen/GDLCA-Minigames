@@ -21,7 +21,7 @@ public class CursedHornItem extends GroundItem {
     private static List<String> lores = Arrays.asList("Cet objet permet de faire un bruit de corne de chèvre.");
 
     public CursedHornItem() {
-        super("cursedHornItem", Material.DRIED_KELP, "Corne de chèvres", lores);
+        super("cursedHornItem", Material.DRIED_KELP, "Corne de chèvres", lores, 1);
     }
 
     @Override

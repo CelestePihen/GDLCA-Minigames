@@ -13,10 +13,10 @@ import lombok.Setter;
 
 public class ValoTeam {
     
-    @Getter private String name;
-    @Getter private String displayName;
+    @Getter private final String name;
+    @Getter private final String displayName;
 
-    @Getter private List<UUID> players;
+    @Getter private final List<UUID> players;
 
     @Getter @Setter private int roundWin;
     

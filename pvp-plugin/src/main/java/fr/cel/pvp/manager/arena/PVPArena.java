@@ -17,28 +17,29 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.cel.hub.Hub;
 import fr.cel.hub.utils.ChatUtility;
-import fr.cel.pvp.manager.GameManager;
-import fr.cel.pvp.utils.ItemBuilder;
+import fr.cel.pvp.manager.PVPGameManager;
+import fr.cel.hub.utils.ItemBuilder;
 import lombok.Getter;
 
-public class Arena implements Listener {
+public class PVPArena implements Listener {
     
-    public GameManager gameManager = GameManager.getGameManager();
+    public PVPGameManager gameManager = PVPGameManager.getGameManager();
 
     @Getter private final String nameArena;
     @Getter private final String displayName;
 
     @Getter private final Location spawnLoc;
 
-    @Getter private List<UUID> players;
+    @Getter private final List<UUID> players;
 
-    public Arena(String nameArena, String displayName, Location spawnLoc) {
+    public PVPArena(String nameArena, String displayName, Location spawnLoc) {
         this.nameArena = nameArena;
         this.displayName = displayName;
 
         this.spawnLoc = spawnLoc;
 
         this.players = new ArrayList<>();
+
         gameManager.getMain().getServer().getPluginManager().registerEvents(this, gameManager.getMain());
     }
 

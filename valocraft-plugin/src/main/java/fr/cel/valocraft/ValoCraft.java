@@ -5,21 +5,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.cel.valocraft.commands.ValoCommands;
 import fr.cel.valocraft.commands.ValoCompleter;
-import fr.cel.valocraft.listener.BlockListener;
-import fr.cel.valocraft.manager.GameManager;
+import fr.cel.valocraft.manager.ValoGameManager;
 
 public class ValoCraft extends JavaPlugin {
 
-    private GameManager gameManager;
+    private ValoGameManager gameManager;
 
     @Override
     public void onEnable() {
-        super.onEnable();
-        
-        this.gameManager = new GameManager(this);
-
-        PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new BlockListener(gameManager), this);
+        this.gameManager = new ValoGameManager(this);
 
         this.getCommand("valocraft").setExecutor(new ValoCommands(gameManager));
         this.getCommand("valocraft").setTabCompleter(new ValoCompleter());

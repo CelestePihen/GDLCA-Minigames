@@ -7,16 +7,16 @@ import fr.cel.pvp.PVP;
 import fr.cel.pvp.manager.arena.ArenaManager;
 import lombok.Getter;
 
-public class GameManager {
+public class PVPGameManager {
     
     @Getter private final PVP main;
     @Getter private ArenaManager arenaManager;
-    @Getter private PlayerManager playerManager;
-    @Getter private String prefix = ChatUtility.format("&6[PVP] &f");
+    @Getter private final PlayerManager playerManager;
+    @Getter private final String prefix = ChatUtility.format("&6[PVP] &f");
 
-    @Getter private static GameManager gameManager;
+    @Getter private static PVPGameManager gameManager;
 
-    public GameManager(PVP main) {
+    public PVPGameManager(PVP main) {
         gameManager = this;
         this.main = main;
         this.arenaManager = new ArenaManager(main);

@@ -1,9 +1,9 @@
 package fr.cel.valocraft.manager.arena.state.game;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.listener.state.game.TimeOverListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.state.provider.game.TimeOverListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 import fr.cel.valocraft.manager.arena.timer.game.TimeOverArenaTask;
 import lombok.Getter;
@@ -13,7 +13,7 @@ public class TimeOverArenaState extends ArenaState {
     @Getter private TimeOverArenaTask timeOverArenaTask;
     private int timer = 10;
 
-    public TimeOverArenaState(Arena arena) {
+    public TimeOverArenaState(ValoArena arena) {
         super(arena);
     }
 

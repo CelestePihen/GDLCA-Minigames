@@ -3,10 +3,8 @@ package fr.cel.hub.listener;
 import fr.cel.hub.Hub;
 import fr.cel.hub.tasks.FireworkMusicEvent;
 import fr.cel.hub.utils.ItemBuilder;
-import fr.cel.hub.utils.RPUtils;
 import fr.cel.hub.utils.RPUtils.CustomMusic;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -15,9 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
-
-public class EventListener extends HubListener {
+public class EventListener extends HListener {
 
     private Inventory putMusic;
     private Sound currentSound;
@@ -96,10 +92,10 @@ public class EventListener extends HubListener {
             }
 
             Component nameItem = item.getItemMeta().displayName();
+            CustomMusic customMusic = main.getRpUtils().getMusics().get(nameItem);
 
-            if (main.getRPUtils().getMusics().get(nameItem) == null) return;
+            if (customMusic == null) return;
 
-            CustomMusic customMusic = main.getRPUtils().getMusics().get(nameItem);
             Sound sound = customMusic.getSound();
 
             if (this.currentSound != null) {
@@ -118,7 +114,7 @@ public class EventListener extends HubListener {
     private Inventory createMusicInventory() {
         Inventory inv = Bukkit.createInventory(null, 18, Component.text("Mettre de la Musique"));
 
-        for (CustomMusic customMusic : CustomMusic.values()) {
+        main.getRpUtils().getMusics().forEach((component, customMusic) -> {
             ItemBuilder itemBuilder = new ItemBuilder(Material.JUKEBOX);
 
             itemBuilder.setDisplayName(customMusic.getMusicName().decoration(TextDecoration.ITALIC, false));
@@ -130,9 +126,9 @@ public class EventListener extends HubListener {
             if (customMusic.getDescription() != null) {
                 itemBuilder.addLoreLineC(customMusic.getDescription());
             }
-            
+
             inv.addItem(itemBuilder.toItemStack());
-        }
+        });
 
         inv.setItem(17, new ItemBuilder(Material.BARRIER).setDisplayName(Component.text("Enlever la musique").decoration(TextDecoration.ITALIC, false)).toItemStack());
 

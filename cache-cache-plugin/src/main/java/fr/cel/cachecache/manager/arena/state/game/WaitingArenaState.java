@@ -1,6 +1,8 @@
 package fr.cel.cachecache.manager.arena.state.game;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -31,6 +33,12 @@ public class WaitingArenaState extends ArenaState {
         UUID randomUUID = getArena().getPlayers().get(0);
         Player player = Bukkit.getPlayer(randomUUID);
 
+        if (player.getName().equals(getArena().getLastHunter())) {
+            randomUUID = getArena().getPlayers().get(1);
+            player = Bukkit.getPlayer(randomUUID);
+        }
+
+        getArena().setLastHunter(player.getName());
         getArena().becomeSeeker(player);
         player.teleport(getArena().getWaitingLoc());
 
@@ -63,7 +71,6 @@ public class WaitingArenaState extends ArenaState {
     @Override
     public void onDisable() {
         super.onDisable();
-
         if (waitingArenaTask != null) waitingArenaTask.cancel();
     }
 

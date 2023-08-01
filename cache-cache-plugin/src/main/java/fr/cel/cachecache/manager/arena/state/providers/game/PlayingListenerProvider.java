@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.CCArena;
-import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.manager.CCGameManager;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 
 public class PlayingListenerProvider extends StateListenerProvider {
@@ -41,22 +41,9 @@ public class PlayingListenerProvider extends StateListenerProvider {
         Player victim = event.getEntity();
         if (!getArena().isPlayerInArena(victim)) return;
 
-        if (event.getEntity().getKiller() instanceof Player && victim.getGameMode() == GameMode.ADVENTURE) {
-            Player killer = event.getEntity().getKiller();
-            if (!getArena().isPlayerInArena(killer)) return;
-            if (getArena().getSeekers().contains(victim.getUniqueId())) return;
-
-            getArena().eliminate(victim);
-            
-            event.setDeathMessage("");
-            getArena().sendMessage(killer.getName() + " a tué " + victim.getName());
-            return;
-        }
-        
-        else if (getArena().getTimer() < 30) {
+        if (getArena().getTimer() < 30) {
             event.setDeathMessage("");
             getArena().sendMessage("Le joueur " + victim.getName() + " est mort avant les 30 secondes d'attente. Il est donc ressucité.");
-            return;
         }
 
         else {
@@ -76,7 +63,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         if (getArena().getSpawnedGroundItems().contains(item)) {
             getArena().getSpawnedGroundItems().remove(item);
-            player.sendMessage(GameManager.getPrefix() + "Vous avez récupéré " + item.getItemStack().getItemMeta().getDisplayName());
+            player.sendMessage(getArena().getGameManager().getPrefix() + "Vous avez récupéré " + item.getItemStack().getItemMeta().getDisplayName());
         }
 
     }
@@ -86,10 +73,16 @@ public class PlayingListenerProvider extends StateListenerProvider {
         Entity entity = event.getEntity();
         Entity damager = event.getDamager();
 
-        if (damager instanceof Player && (!(entity instanceof Player) || entity instanceof ArmorStand)) {
+        if (damager instanceof Player && entity instanceof Player p) {
+            event.setCancelled(true);
+            getArena().eliminate(p);
+        }
+
+        if (damager instanceof Player && !(entity instanceof Player) || entity instanceof ArmorStand) {
             if (!getArena().isPlayerInArena((Player) damager)) return;
             event.setCancelled(true);
         }
+
     }
 
     @EventHandler
@@ -111,11 +104,9 @@ public class PlayingListenerProvider extends StateListenerProvider {
                     ItemStack itemInHand = player.getInventory().getItemInMainHand();
                     if (itemInHand.getAmount() == 1) player.getInventory().setItemInMainHand(null);
                     else itemInHand.setAmount(itemInHand.getAmount() - 1);
-                    return;
                 } else {
-                    player.sendMessage(GameManager.getPrefix() + "Ce joueur n'est pas disponible. Merci de réouvrir le menu.");
+                    player.sendMessage(getArena().getGameManager().getPrefix() + "Ce joueur n'est pas disponible. Merci de réouvrir le menu.");
                     player.closeInventory();
-                    return;
                 }
             }
         }

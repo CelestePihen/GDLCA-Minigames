@@ -24,7 +24,7 @@ import lombok.Getter;
 
 public abstract class StateListenerProvider implements Listener {
 
-    @Getter private CCArena arena;
+    @Getter private final CCArena arena;
 
     public StateListenerProvider(CCArena arena) {
         this.arena = arena;
@@ -69,11 +69,15 @@ public abstract class StateListenerProvider implements Listener {
         Block block = event.getClickedBlock();
         ItemStack itemStack = event.getItem();
         Player player = event.getPlayer();
+        Action action = event.getAction();
         
         if (!getArena().isPlayerInArena(event.getPlayer())) return;
+
         if (block == null) return;
 
-        if (event.getAction() == Action.PHYSICAL && (event.getClickedBlock().getType() == Material.FARMLAND)) event.setCancelled(true);
+        Material type = block.getType();
+
+        if (event.getAction() == Action.PHYSICAL && type == Material.FARMLAND) event.setCancelled(true);
 
         if (block.getType() == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") ||
         (block.getType() == Material.CAVE_VINES || block.getType() == Material.CAVE_VINES_PLANT) ||
@@ -82,7 +86,10 @@ public abstract class StateListenerProvider implements Listener {
         block.getType() == Material.BLAST_FURNACE || block.getType() == Material.SMOKER) event.setCancelled(true);
 
         for (GroundItem groundItem : arena.getAvailableGroundItems()) {
-            if (itemStack != null && itemStack.getItemMeta() != null && itemStack.getItemMeta().getDisplayName() != null
+            if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
+                    && itemStack != null
+                    && itemStack.getItemMeta() != null
+                    && itemStack.getItemMeta().getDisplayName() != null
                     && itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(groundItem.getDisplayName())) {
                 groundItem.onInteract(player, arena);
             }

@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 public class PlayerManager {
 
-    @Getter private List<UUID> playersInHub;
-    @Getter private List<UUID> playersInInstitution;
+    private final List<UUID> playersInHub;
+    private final List<UUID> playersInInstitution;
     
-    @Getter private final Location spawnLocation;
-    @Getter private final Location institutionLocation;
+    private final Location spawnLocation;
+    private final Location institutionLocation;
 
     public PlayerManager() {
         playersInHub = new ArrayList<>();

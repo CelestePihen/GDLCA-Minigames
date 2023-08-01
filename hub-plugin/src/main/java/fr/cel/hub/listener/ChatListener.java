@@ -1,13 +1,12 @@
 package fr.cel.hub.listener;
 
 import fr.cel.hub.Hub;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-public class ChatListener extends HubListener {
+public class ChatListener extends HListener {
 
     public ChatListener(Hub main) {
         super(main);
@@ -22,7 +21,7 @@ public class ChatListener extends HubListener {
             if (cel == null) return;
 
             if (main.getPlayerManager().containsPlayerInInstitution(cel)) {
-                player.sendMessage(Component.text(main.getPrefix() + "Vous ne pouvez pas vous téléporter à Cel___ pour le moment 😏."));
+                sendMessageWithPrefix(player, "Vous ne pouvez pas vous téléporter à Cel___ pour le moment 😏.");
                 event.setCancelled(true);
             }
 

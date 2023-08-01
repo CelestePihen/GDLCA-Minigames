@@ -1,4 +1,4 @@
-package fr.cel.valocraft.listener.state.game;
+package fr.cel.valocraft.manager.arena.state.provider.game;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -16,12 +16,12 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 
 public class TimeOverListenerProvider extends StateListenerProvider {
 
-    public TimeOverListenerProvider(Arena arena) {
+    public TimeOverListenerProvider(ValoArena arena) {
         super(arena);
     }
 

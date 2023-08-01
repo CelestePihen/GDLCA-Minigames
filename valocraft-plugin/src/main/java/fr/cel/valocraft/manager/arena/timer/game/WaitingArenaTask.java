@@ -3,15 +3,15 @@ package fr.cel.valocraft.manager.arena.timer.game;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.game.PlayingArenaState;
 
 public class WaitingArenaTask extends BukkitRunnable {
 
-    private final Arena arena;
+    private final ValoArena arena;
     private int timer;
 
-    public WaitingArenaTask(Arena arena, int timer) {
+    public WaitingArenaTask(ValoArena arena, int timer) {
         this.arena = arena;
         this.timer = timer;
     }

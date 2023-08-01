@@ -1,4 +1,4 @@
-package fr.cel.valocraft.listener.state.pregame;
+package fr.cel.valocraft.manager.arena.state.provider.pregame;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,14 +18,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.hub.utils.ChatUtility;
 import fr.cel.hub.utils.ItemBuilder;
 
 public class PreGameListenerProvider extends StateListenerProvider {
 
-    public PreGameListenerProvider(Arena arena) {
+    public PreGameListenerProvider(ValoArena arena) {
         super(arena);
     }
 

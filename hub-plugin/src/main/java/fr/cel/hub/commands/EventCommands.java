@@ -14,7 +14,7 @@ public class EventCommands extends AbstractCommand {
     private Inventory inventory;
 
     public EventCommands(Hub main) {
-        super(main, "event");
+        super(main, "event", true);
     }
 
     @Override

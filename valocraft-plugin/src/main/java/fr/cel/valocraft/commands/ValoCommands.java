@@ -9,16 +9,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.cel.valocraft.manager.GameManager;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.ValoGameManager;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.pregame.PreGameArenaState;
 import fr.cel.valocraft.manager.arena.state.pregame.StartingArenaState;
 
 public class ValoCommands implements CommandExecutor {
 
-    private final GameManager gameManager;
+    private final ValoGameManager gameManager;
 
-    public ValoCommands(GameManager gameManager) {
+    public ValoCommands(ValoGameManager gameManager) {
         this.gameManager = gameManager;
     }
 
@@ -49,7 +49,7 @@ public class ValoCommands implements CommandExecutor {
                 return false;
             }
 
-            Arena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
             if (arena.getPlayers().size() >= 2 && arena.getArenaState() instanceof PreGameArenaState) {
                 arena.setArenaState(new StartingArenaState(arena));
                 return false;
@@ -60,7 +60,7 @@ public class ValoCommands implements CommandExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("list")) {
-            if (gameManager.getArenaManager().getArenas().size() == 0) {
+            if (gameManager.getArenaManager().getArenas().isEmpty()) {
                 player.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
                 return false;
             }
@@ -75,7 +75,7 @@ public class ValoCommands implements CommandExecutor {
                 return false;
             }
 
-            Arena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
 
             List<String> players = new ArrayList<>();
             List<String> blueTeam = new ArrayList<>();
@@ -101,7 +101,7 @@ public class ValoCommands implements CommandExecutor {
                 return false;
             }
 
-            Arena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
 
             if (args[1].equalsIgnoreCase("blue")) {
                 arena.getBlueTeam().setRoundWin(Integer.parseInt(args[2]));

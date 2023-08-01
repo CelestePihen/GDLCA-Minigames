@@ -19,13 +19,14 @@ public class BlindnessItem extends GroundItem {
     private static List<String> lores = Arrays.asList("Cet objet vous permet de rendre aveugle tous les joueurs de la partie sauf vous pendant 5 secondes.");
 
     public BlindnessItem() {
-        super("blindnessItem", Material.FERMENTED_SPIDER_EYE, "Aveuglement", lores);
+        super("blindnessItem", Material.FERMENTED_SPIDER_EYE, "Aveuglement", lores, 1);
     }
 
     @Override
     public void onInteract(Player player, CCArena arena) {
         arena.getPlayers().forEach(uuid -> {
             Player pl = Bukkit.getPlayer(uuid);
+            if (pl == null) return;
             if (pl == player || pl.getGameMode() == GameMode.SPECTATOR) return;
             pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1, false, false, true));
             

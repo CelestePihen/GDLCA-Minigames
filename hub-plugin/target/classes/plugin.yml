@@ -11,3 +11,11 @@ commands:
     description: Permet d'effectuer des événements
   npc:
     description: Permet de faire apparaître un PNJ
+
+permissions:
+  hub.tphub:
+    description: Permet de tp les joueurs au hub
+  hub.event:
+    description: Permet d'accéder au menu d'event
+  hub.npc:
+    description: Permet de recharger les fichiers des NPCs

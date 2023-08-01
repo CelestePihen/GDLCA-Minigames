@@ -1,9 +1,7 @@
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\PVP.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\utils\Config.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\manager\arena\Arena.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\utils\ItemBuilder.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\commands\PVPCompleter.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\listener\BlockListener.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\manager\arena\ArenaManager.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\commands\PVPCommands.java
-d:\Windows\Bureau\Jeux\Minecraft\GDLC MiniGames\Plugins\pvp-plugin\src\main\java\fr\cel\pvp\manager\GameManager.java
+E:\GitHub\GDLCA-Minigames\pvp-plugin\src\main\java\fr\cel\pvp\manager\arena\ArenaManager.java
+E:\GitHub\GDLCA-Minigames\pvp-plugin\src\main\java\fr\cel\pvp\utils\Config.java
+E:\GitHub\GDLCA-Minigames\pvp-plugin\src\main\java\fr\cel\pvp\commands\PVPCompleter.java
+E:\GitHub\GDLCA-Minigames\pvp-plugin\src\main\java\fr\cel\pvp\PVP.java
+E:\GitHub\GDLCA-Minigames\pvp-plugin\src\main\java\fr\cel\pvp\manager\PVPGameManager.java
+E:\GitHub\GDLCA-Minigames\pvp-plugin\src\main\java\fr\cel\pvp\commands\PVPCommands.java
+E:\GitHub\GDLCA-Minigames\pvp-plugin\src\main\java\fr\cel\pvp\manager\arena\PVPArena.java

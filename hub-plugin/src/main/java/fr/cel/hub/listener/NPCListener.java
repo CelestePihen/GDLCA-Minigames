@@ -2,12 +2,13 @@ package fr.cel.hub.listener;
 
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.NPC;
+import fr.cel.hub.manager.NPCManager;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class NPCListener extends HubListener {
+public class NPCListener extends HListener {
 
     public NPCListener(Hub main) {
         super(main);
@@ -17,7 +18,7 @@ public class NPCListener extends HubListener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Location loc = event.getTo();
 
-        for (NPC npc : main.getNpcManager().getNpcs()) {
+        for (NPC npc : NPCManager.getNpcs()) {
             if (loc.getWorld() != npc.getLocation().getWorld()) {
                 continue;
             }
@@ -30,7 +31,7 @@ public class NPCListener extends HubListener {
 
     @EventHandler
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
-        for (NPC npc : main.getNpcManager().getNpcs()) {
+        for (NPC npc : NPCManager.getNpcs()) {
             npc.spawn(event.getPlayer());
         }
     }

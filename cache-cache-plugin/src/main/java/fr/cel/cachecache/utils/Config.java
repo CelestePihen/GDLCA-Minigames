@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.CCArena;
-import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.manager.CCGameManager;
 import fr.cel.cachecache.manager.GroundItem;
 
 public class Config {
@@ -36,7 +36,8 @@ public class Config {
             parseStringToLoc(config.getString("locationSpawn")), 
             parseStringToLoc(config.getString("locationWaiting")), 
             config.getInt("bestTime"), 
-            config.getString("bestPlayer"), 
+            config.getString("bestPlayer"),
+            config.getString("lastHunter"),
             CCArena.HunterMode.valueOf(config.getString("hunterMode")),
             getAvailableGroundItems("availableGroundItems"),
             config.getStringList("locationGroundItems")
@@ -76,7 +77,7 @@ public class Config {
     }
 
     private GroundItem getItemByName(String itemName) {
-        for (GroundItem item : GameManager.getGroundItems()) {
+        for (GroundItem item : CCGameManager.getGroundItems()) {
             if (item.getName().equalsIgnoreCase(itemName)) {
                 return item;
             }

@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 
 import dev.jcsoftware.jscoreboards.JGlobalMethodBasedScoreboard;
 import fr.cel.hub.Hub;
-import fr.cel.valocraft.manager.GameManager;
+import fr.cel.valocraft.manager.ValoGameManager;
 import fr.cel.valocraft.manager.Role;
 import fr.cel.valocraft.manager.ValoTeam;
 import fr.cel.valocraft.manager.arena.state.pregame.InitArenaState;
@@ -37,10 +37,10 @@ import lombok.Setter;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class Arena {
+public class ValoArena {
     
     // GameManager
-    @Getter private GameManager gameManager;
+    @Getter private final ValoGameManager gameManager;
 
     // Names
     @Getter private final String nameArena;
@@ -55,13 +55,13 @@ public class Arena {
     @Getter private final Location defendersSpawn;
 
     // Roles
-    @Getter private Role attackers;
-    @Getter private Role defenders;
+    @Getter private final Role attackers;
+    @Getter private final Role defenders;
 
     // Team Lists
-    @Getter private List<UUID> players;
-    @Getter private ValoTeam redTeam;
-    @Getter private ValoTeam blueTeam;
+    @Getter private final List<UUID> players;
+    @Getter private final ValoTeam redTeam;
+    @Getter private final ValoTeam blueTeam;
 
     // Rounds
     @Getter private int globalRound;
@@ -75,7 +75,7 @@ public class Arena {
     @Getter private BossBar bossBar;
 
     // Constructor
-    public Arena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, GameManager gameManager) {
+    public ValoArena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, ValoGameManager gameManager) {
         // Names
         this.nameArena = nameArena;
         this.displayName = displayName;
@@ -116,11 +116,6 @@ public class Arena {
     public int getRoundWinRed() {
         return getRedTeam().getRoundWin();
     }
-
-    public void addGlobalRound(int globalRound) {
-        this.globalRound += globalRound;
-    }
-
 
     public void setArenaState(ArenaState arenaState) {
         if (this.arenaState != null) this.arenaState.onDisable();
@@ -167,33 +162,28 @@ public class Arena {
 
             if (arenaState instanceof PreGameArenaState) return;
 
-            else if (arenaState instanceof StartingArenaState) {
-                StartingArenaState startingArenaState = (StartingArenaState) arenaState;
+            else if (arenaState instanceof StartingArenaState startingArenaState) {
                 startingArenaState.getArenaStartingTask().cancel();
                 sendMessage("Démarrage annulé... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour lancer.");
                 setArenaState(new PreGameArenaState(this));
             }
             
-            else if (arenaState instanceof WaitingArenaState) {
-                WaitingArenaState waitingArenaState = (WaitingArenaState) arenaState;
+            else if (arenaState instanceof WaitingArenaState waitingArenaState) {
                 waitingArenaState.getWaitingArenaTask().cancel();
                 sendMessage(gameCancelled);
             }
             
-            else if (arenaState instanceof PlayingArenaState) {
-                PlayingArenaState playingArenaState = (PlayingArenaState) arenaState;
+            else if (arenaState instanceof PlayingArenaState playingArenaState) {
                 playingArenaState.getPlayingArenaTask().cancel();
                 sendMessage(gameCancelled);
             }
             
-            else if (arenaState instanceof TimeOverArenaState) {
-                TimeOverArenaState timeOverArenaState = (TimeOverArenaState) arenaState;
+            else if (arenaState instanceof TimeOverArenaState timeOverArenaState) {
                 timeOverArenaState.getTimeOverArenaTask().cancel();
                 sendMessage(gameCancelled);
             }
             
-            else if (arenaState instanceof SpikeArenaState) {
-                SpikeArenaState spikeArenaState = (SpikeArenaState) arenaState;
+            else if (arenaState instanceof SpikeArenaState spikeArenaState) {
                 spikeArenaState.getSpikeArenaTask().cancel();
                 sendMessage(gameCancelled);
             }
@@ -374,6 +364,7 @@ public class Arena {
     private void removePlayersToBossBar() {
         for (UUID uuid : getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
+            if (player == null) return;
             getBossBar().removePlayer(player);
         }
     }

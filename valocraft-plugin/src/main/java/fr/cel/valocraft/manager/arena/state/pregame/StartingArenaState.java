@@ -7,9 +7,9 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.listener.state.pregame.StartingListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.state.provider.pregame.StartingListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 import fr.cel.valocraft.manager.arena.timer.pregame.StartingArenaTask;
 
@@ -18,7 +18,7 @@ public class StartingArenaState extends ArenaState {
     private StartingArenaTask arenaStartingTask;
     private int timer = 10;
 
-    public StartingArenaState(Arena arena) {
+    public StartingArenaState(ValoArena arena) {
         super(arena);
     }
 

@@ -2,10 +2,7 @@ package fr.cel.hub.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Sound;
 
@@ -13,7 +10,7 @@ import lombok.Getter;
 
 public class RPUtils {
 
-    @Getter private Map<Component, CustomMusic> musics = new HashMap<>();
+    @Getter private final Map<Component, CustomMusic> musics = new HashMap<>();
 
     public RPUtils() {
         for (CustomMusic customMusic : CustomMusic.values()) {
@@ -21,7 +18,7 @@ public class RPUtils {
         }
     }
 
-    public enum Unicode {
+    @Getter public enum Unicode {
         
         LOGO("Logo du serveur", "\uE000"),
         GREGOIRE("Image de Compote_Fraise", "\uE001"),
@@ -31,8 +28,8 @@ public class RPUtils {
         NOE("Image de Glasky", "\uE006"),
         ;
 
-        @Getter private final String displayName;
-        @Getter private final String character;
+        private final String displayName;
+        private final String character;
 
         Unicode(String displayName, String character) {
             this.displayName = displayName;
@@ -41,7 +38,7 @@ public class RPUtils {
 
     }
 
-    public enum CustomMusic {
+    @Getter public enum CustomMusic {
 
         // Custom Music
         MASTERMIND_CHASE("The Mastermind Chase", "Dead by Daylight", Sound.MUSIC_DISC_11),
@@ -64,11 +61,11 @@ public class RPUtils {
         RELIC("Relic", "Aaron Cherof", Sound.MUSIC_DISC_RELIC)
         ;
 
-        @Getter private final Component musicName;
-        @Getter private String displayName;
-        @Getter private final String author;
-        @Getter private final String description;
-        @Getter private final Sound sound;
+        private final Component musicName;
+        private final String displayName;
+        private final String author;
+        private final String description;
+        private final Sound sound;
 
         CustomMusic(String musicName, String author, Sound sound) {
             this(musicName, author, null, sound);

@@ -17,7 +17,7 @@ public class SpeedItem extends GroundItem {
     private static List<String> lores = Arrays.asList("Cet objet vous permet d'avoir vitesse II pendant 5 secondes.");
 
     public SpeedItem() {
-        super("speedItem", Material.SUGAR, "Vitesse", lores);
+        super("speedItem", Material.SUGAR, "Vitesse", lores, 1);
     }
 
     @Override

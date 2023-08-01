@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 public class HubCommands extends AbstractCommand {
 
     public HubCommands(Hub main) {
-        super(main, "hub");
+        super(main, "hub", false);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class HubCommands extends AbstractCommand {
             return;
         }
 
-        if (args.length == 1) {
+        if (player.hasPermission("hub.tphub") && args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
                 sendMessageWithPrefix(player, "Ce joueur n'est pas en ligne ou n'existe pas." );

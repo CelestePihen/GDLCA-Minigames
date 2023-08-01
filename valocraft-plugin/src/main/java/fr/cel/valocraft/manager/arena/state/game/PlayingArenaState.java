@@ -1,9 +1,9 @@
 package fr.cel.valocraft.manager.arena.state.game;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.listener.state.game.PlayingListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.state.provider.game.PlayingListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 import fr.cel.valocraft.manager.arena.timer.game.PlayingAreraTask;
 
@@ -11,7 +11,7 @@ public class PlayingArenaState extends ArenaState {
 
     private PlayingAreraTask playingAreraTask;
 
-    public PlayingArenaState(Arena arena) {
+    public PlayingArenaState(ValoArena arena) {
         super(arena);
     }
 

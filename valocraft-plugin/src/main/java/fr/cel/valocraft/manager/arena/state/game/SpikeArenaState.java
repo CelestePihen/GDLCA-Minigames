@@ -1,9 +1,9 @@
 package fr.cel.valocraft.manager.arena.state.game;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.listener.state.game.SpikeListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.state.provider.game.SpikeListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 import fr.cel.valocraft.manager.arena.timer.game.SpikeArenaTask;
 
@@ -11,7 +11,7 @@ public class SpikeArenaState extends ArenaState {
 
     private SpikeArenaTask spikeArenaTask;
 
-    public SpikeArenaState(Arena arena) {
+    public SpikeArenaState(ValoArena arena) {
         super(arena);
     }
 

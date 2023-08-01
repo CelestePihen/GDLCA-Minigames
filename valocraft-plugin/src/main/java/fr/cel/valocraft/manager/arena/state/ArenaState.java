@@ -2,18 +2,19 @@ package fr.cel.valocraft.manager.arena.state;
 
 import javax.annotation.Nullable;
 
+import lombok.Getter;
 import org.bukkit.event.Listener;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 
 public abstract class ArenaState implements Listener {
 
-    private Arena arena;
+    @Getter private final ValoArena arena;
     private StateListenerProvider listenerProvider;
 
-    public ArenaState(Arena arena) {
+    public ArenaState(ValoArena arena) {
         this.arena = arena;
     }
 
@@ -30,13 +31,8 @@ public abstract class ArenaState implements Listener {
 
     /**
      * Return a new instance of StateListenerProvider (or null)
-     * @return
      */
     @Nullable
     public abstract StateListenerProvider getListenerProvider();
 
-    public Arena getArena() {
-        return arena;
-    }
-    
 }

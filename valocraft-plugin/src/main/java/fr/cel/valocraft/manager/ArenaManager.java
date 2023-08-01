@@ -8,39 +8,39 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.hub.utils.ChatUtility;
 import fr.cel.valocraft.utils.Config;
 import lombok.Getter;
 
 public class ArenaManager {
     
-    @Getter private List<Arena> arenas = new ArrayList<>();
+    @Getter private List<ValoArena> arenas = new ArrayList<>();
     private final ValoCraft main;
-    private final GameManager gameManager;
+    private final ValoGameManager gameManager;
 
-    public ArenaManager(ValoCraft main, GameManager gameManager) {
+    public ArenaManager(ValoCraft main, ValoGameManager gameManager) {
         this.main = main;
         this.gameManager = gameManager;
         this.loadArenas();
     }
 
-    public Arena getArenaByDisplayName(String name) {
-        for (Arena arena : arenas) {
+    public ValoArena getArenaByDisplayName(String name) {
+        for (ValoArena arena : arenas) {
             if (arena.getDisplayName().equalsIgnoreCase(name)) return arena;
         }
         return null;
     }
 
-    public Arena getArenaByPlayer(Player player) {
-        for (Arena arena : arenas) {
+    public ValoArena getArenaByPlayer(Player player) {
+        for (ValoArena arena : arenas) {
             if (arena.getPlayers().contains(player.getUniqueId())) return arena;
         }
         return null;
     }
 
     public boolean isPlayerInArena(Player player) {
-        for (Arena arena : arenas) {
+        for (ValoArena arena : arenas) {
             if (arena.getPlayers().contains(player.getUniqueId())) return true;
         }
         return false;

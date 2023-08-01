@@ -1,15 +1,15 @@
 package fr.cel.valocraft.manager.arena.state.pregame;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.listener.state.StateListenerProvider;
-import fr.cel.valocraft.listener.state.pregame.PreGameListenerProvider;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.manager.arena.state.provider.pregame.PreGameListenerProvider;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 
 
 public class PreGameArenaState extends ArenaState {
 
-    public PreGameArenaState(Arena arena) {
+    public PreGameArenaState(ValoArena arena) {
         super(arena);
     }
 

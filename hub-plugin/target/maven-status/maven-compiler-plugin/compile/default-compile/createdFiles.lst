@@ -5,8 +5,10 @@ fr\cel\hub\manager\PlayerManager.class
 fr\cel\hub\utils\ChatUtility.class
 fr\cel\hub\utils\ItemBuilder.class
 fr\cel\hub\listener\ChatListener.class
+fr\cel\hub\utils\Replacement.class
 fr\cel\hub\manager\NPC.class
 fr\cel\hub\commands\AbstractCommand.class
+fr\cel\hub\listener\HListener.class
 fr\cel\hub\listener\EventListener$1.class
 fr\cel\hub\commands\HubCommands.class
 fr\cel\hub\listener\PlayerListener.class
@@ -15,7 +17,7 @@ fr\cel\hub\manager\NPCManager.class
 fr\cel\hub\utils\ConfigNPC.class
 fr\cel\hub\utils\RPUtils$Unicode.class
 fr\cel\hub\commands\NPCCommand.class
-fr\cel\hub\listener\HubListener.class
 fr\cel\hub\tasks\FireworkMusicEvent.class
+fr\cel\hub\listener\MiniGameListener.class
 fr\cel\hub\listener\NPCListener.class
 fr\cel\hub\listener\EventListener.class

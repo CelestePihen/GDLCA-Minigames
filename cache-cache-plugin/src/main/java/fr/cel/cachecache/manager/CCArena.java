@@ -36,7 +36,7 @@ import lombok.Setter;
 public class CCArena {
     
     // GameManager / Config
-    @Getter private final GameManager gameManager = GameManager.getGameManager();
+    @Getter private final CCGameManager gameManager = CCGameManager.getGameManager();
     private final Config config;
 
     // Names
@@ -50,6 +50,9 @@ public class CCArena {
     // Best
     @Getter private int bestTimer;
     @Getter private String bestPlayer;
+
+    // Last hunter
+    @Getter private String lastHunter;
 
     // Hunter Mode
     @Getter private HunterMode hunterMode;
@@ -76,7 +79,7 @@ public class CCArena {
     @Getter private JScoreboardTeam teamSeekers;
 
     // Constructor
-    public CCArena(String nameArena, String displayName, Location spawnLoc, Location waitingLoc, int bestTimer, String bestPlayer, HunterMode hunterMode, List<GroundItem> availableGroundItems, List<String> locationGroundItems) {
+    public CCArena(String nameArena, String displayName, Location spawnLoc, Location waitingLoc, int bestTimer, String bestPlayer, String lastHunter, HunterMode hunterMode, List<GroundItem> availableGroundItems, List<String> locationGroundItems) {
         this.config = new Config(gameManager.getMain(), nameArena);
         
         // Names
@@ -99,6 +102,9 @@ public class CCArena {
         // Timer
         this.bestTimer = bestTimer;
         this.bestPlayer = bestPlayer;
+
+        // Last hunter
+        this.lastHunter = lastHunter;
 
         // Hunter Mode
         this.hunterMode = hunterMode;
@@ -150,6 +156,14 @@ public class CCArena {
     }
 
     /**
+     * Peremet de changer le dernier chercheur de l'arène
+     */
+    public void setLastHunter(String playerName) {
+        this.lastHunter = playerName;
+        config.setValue("lastHunter", playerName);
+    }
+
+    /**
      * Permet de détecter si le joueur est dans l'arène
      * @param player Le joueur à détecter
      */
@@ -165,7 +179,7 @@ public class CCArena {
         if (players.contains(player.getUniqueId())) return;
 
         if (arenaState instanceof StartingArenaState || arenaState instanceof PlayingArenaState || arenaState instanceof WaitingArenaState) {
-            player.sendMessage(GameManager.getPrefix() + "Merci d'attendre la fin de la partie pour aller sur " + this.getDisplayName() + ".");
+            player.sendMessage(gameManager.getPrefix() + "Merci d'attendre la fin de la partie pour aller sur " + this.getDisplayName() + ".");
             return;
         } else {
             setArenaState(new PreGameArenaState(this));
@@ -234,11 +248,11 @@ public class CCArena {
     public void eliminate(Player victim) {
 
         if (this.hunterMode == HunterMode.OneHunter) {
-            victim.sendMessage(GameManager.getPrefix() + "Vous êtes mort. Vous devenez spectateur !");
+            victim.sendMessage(gameManager.getPrefix() + "Vous êtes mort. Vous devenez spectateur !");
             victim.sendTitle("Vous êtes mort !", "Vous êtes spectateur.", 10, 70, 20);
             becomeSpectator(victim);
         } else {
-            victim.sendMessage(GameManager.getPrefix() + "Vous êtes mort. Vous passez du côté des chercheurs !");
+            victim.sendMessage(gameManager.getPrefix() + "Vous êtes mort. Vous passez du côté des chercheurs !");
             victim.sendTitle("Vous êtes mort !", "Vous êtes devenu chercheur.", 10, 70, 20);
             becomeSeeker(victim);
         }
@@ -268,7 +282,6 @@ public class CCArena {
             deadPlayer.setGlowing(true);
         }
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(gameManager.getMain(), () -> deadPlayer.spigot().respawn(), 10);
         deadPlayer.getInventory().clear();
         
         ItemStack stick = new ItemBuilder(Material.STICK).setDisplayName("L'enculeur de cacheurs").addEnchant(Enchantment.DAMAGE_ALL, 100).addLoreLine("Cet épée a déjà tué de nombreuses personnes.").addItemFlags(ItemFlag.HIDE_ENCHANTS).toItemStack();
@@ -295,7 +308,6 @@ public class CCArena {
     
         deadPlayer.getInventory().clear();
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(gameManager.getMain(), () -> deadPlayer.spigot().respawn(), 10);
         deadPlayer.setGameMode(GameMode.SPECTATOR);
     }
 
@@ -312,7 +324,7 @@ public class CCArena {
             players.forEach(pls -> {
                 Player player = Bukkit.getPlayer(pls);
                 player.setGlowing(false);
-                player.performCommand("hub");
+                gameManager.getPlayerManager().sendPlayerToHub(player);
                 teamHiders.removePlayer(player);
                 teamSeekers.removePlayer(player);
                 this.scoreboard.removePlayer(player);
@@ -338,7 +350,7 @@ public class CCArena {
      * @param message Le message à envoyer
      */
     public void sendMessage(String message) {
-        message = ChatUtility.format(GameManager.getPrefix() + message);
+        message = ChatUtility.format(gameManager.getPrefix() + message);
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
             if (player != null) player.sendMessage(message);

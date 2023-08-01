@@ -1,10 +1,11 @@
 package fr.cel.hub.listener;
 
 import fr.cel.hub.Hub;
-import fr.cel.hub.manager.NPC;
 import fr.cel.hub.manager.NPCManager;
 import fr.cel.hub.utils.ChatUtility;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -19,7 +20,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerListener extends HubListener {
+public class PlayerListener extends HListener {
 
     public PlayerListener(Hub main) {
         super(main);
@@ -32,23 +33,30 @@ public class PlayerListener extends HubListener {
 	  if (!player.hasPlayedBefore()) {
           event.joinMessage(Component.text(main.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !"));
       } else {
-          event.joinMessage(Component.text("[§a+§r] " + player.getName()));
+          TextComponent component = Component.text("[")
+                  .append(Component.text("+", NamedTextColor.GREEN)
+                  .append(Component.text("] ", NamedTextColor.WHITE)));
+
+          event.joinMessage(component.append(Component.text(player.getName())));
       }
 
       player.sendPlayerListHeader(Component.text(ChatUtility.format("Bienvenue sur &9GDLCA Minigames&f !")));
 
       main.getPlayerManager().sendPlayerToHub(player);
 
-      for (NPC npc : NPCManager.getNpcs()) {
-          npc.spawn(player);
-      }
+      NPCManager.getNpcs().forEach(npc -> npc.spawn(player));
 
     }
 
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        event.quitMessage(Component.text("[§c-§f] " + player.getName()));
+
+        TextComponent component = Component.text("[")
+                .append(Component.text("-", NamedTextColor.RED)
+                .append(Component.text("] ", NamedTextColor.WHITE)));
+
+        event.quitMessage(component.append(Component.text(player.getName())));
 
         main.getPlayerManager().removePlayerInHub(player);
     }
@@ -65,6 +73,14 @@ public class PlayerListener extends HubListener {
     public void playerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (!main.getPlayerManager().containsPlayerInHub(event.getPlayer())) return;
         if (event.getPlayer().isOp()) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void damageEntity(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+
         event.setCancelled(true);
     }
 
@@ -90,14 +106,6 @@ public class PlayerListener extends HubListener {
         if (block == null) return;
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) event.setCancelled(true);
         if (block.getType() == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || block.getType() == Material.CAVE_VINES || block.getType() == Material.CAVE_VINES_PLANT) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void damageEntity(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
-
-        event.setCancelled(true);
     }
 
     @EventHandler

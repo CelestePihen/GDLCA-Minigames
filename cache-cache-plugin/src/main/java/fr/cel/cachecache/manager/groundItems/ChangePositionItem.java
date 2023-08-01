@@ -18,7 +18,7 @@ public class ChangePositionItem extends GroundItem {
     private static List<String> lores = Arrays.asList("Cet objet vous permet de changer de position avec le joueur de votre choix.");
 
     public ChangePositionItem() {
-        super("changePositionItem", Material.FEATHER, "Changer de position", lores);
+        super("changePositionItem", Material.FEATHER, "Changer de position", lores, 1);
     }
 
     @Override
@@ -27,6 +27,7 @@ public class ChangePositionItem extends GroundItem {
             Inventory inventory = Bukkit.createInventory(null, 9, "Joueurs");
             arena.getPlayers().forEach(uuid -> {
                 Player pl = Bukkit.getPlayer(uuid);
+                if (pl == null) return;
                 if (pl == player || pl.getGameMode() == GameMode.SPECTATOR) return;
                 inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName(pl.getDisplayName()).setSkullOwner(pl).toItemStack());
             });

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 public class NPCCommand extends AbstractCommand {
 
     public NPCCommand(Hub main) {
-        super(main, "npc");
+        super(main, "npc", true);
     }
 
     @Override

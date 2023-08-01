@@ -14,7 +14,7 @@ import lombok.Getter;
 
 public class ArenaManager {
     
-    @Getter private List<Arena> arenas = new ArrayList<>();
+    @Getter private List<PVPArena> arenas = new ArrayList<>();
     private final PVP main;
 
     public ArenaManager(PVP main) {
@@ -22,22 +22,22 @@ public class ArenaManager {
         this.loadArenas();
     }
 
-    public Arena getArenaByDisplayName(String name) {
-        for (Arena arena : arenas) {
+    public PVPArena getArenaByDisplayName(String name) {
+        for (PVPArena arena : arenas) {
             if (arena.getDisplayName().equalsIgnoreCase(name)) return arena;
         }
         return null;
     }
 
-    public Arena getArenaByPlayer(Player player) {
-        for (Arena arena : arenas) {
+    public PVPArena getArenaByPlayer(Player player) {
+        for (PVPArena arena : arenas) {
             if (arena.getPlayers().contains(player.getUniqueId())) return arena;
         }
         return null;
     }
 
     public boolean isPlayerInArena(Player player) {
-        for (Arena arena : arenas) {
+        for (PVPArena arena : arenas) {
             if (arena.getPlayers().contains(player.getUniqueId())) return true;
         }
         return false;

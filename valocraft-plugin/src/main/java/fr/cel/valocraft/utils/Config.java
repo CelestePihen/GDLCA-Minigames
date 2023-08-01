@@ -9,18 +9,18 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.manager.GameManager;
-import fr.cel.valocraft.manager.arena.Arena;
+import fr.cel.valocraft.manager.ValoGameManager;
+import fr.cel.valocraft.manager.arena.ValoArena;
 
 public class Config {
     
-    private GameManager gameManager;
+    private ValoGameManager gameManager;
     private YamlConfiguration config;
     private File file;
 
     private String arenaName;
 
-    public Config(ValoCraft main, GameManager gameManager, String arenaName) {
+    public Config(ValoCraft main, ValoGameManager gameManager, String arenaName) {
         this.gameManager = gameManager;
         this.file = new File(main.getDataFolder() + File.separator + "arenas", arenaName + ".yml");
         this.config = YamlConfiguration.loadConfiguration(this.file);
@@ -28,7 +28,7 @@ public class Config {
         this.load();
     }
 
-    public Arena getArena() {
+    public ValoArena getArena() {
         String displayName = this.config.getString("displayName");
 
         String locSpawn = this.config.getString("locationSpawn");
@@ -40,7 +40,7 @@ public class Config {
         String locRed = this.config.getString("locationRed");
         Location locationRed = parseStringToLoc(locRed);
 
-        Arena arena = new Arena(arenaName, displayName, locationSpawn, locationBlue, locationRed, gameManager);
+        ValoArena arena = new ValoArena(arenaName, displayName, locationSpawn, locationBlue, locationRed, gameManager);
         return arena;
     }
 

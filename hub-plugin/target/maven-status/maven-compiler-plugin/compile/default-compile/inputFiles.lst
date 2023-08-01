@@ -1,18 +1,20 @@
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\utils\ChatUtility.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\Hub.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\manager\PlayerManager.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\commands\EventCommands.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\listener\NPCListener.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\commands\HubCommands.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\manager\NPCManager.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\commands\NPCCommand.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\utils\ConfigNPC.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\listener\EventListener.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\listener\ChatListener.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\manager\NPC.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\utils\ItemBuilder.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\tasks\FireworkMusicEvent.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\commands\AbstractCommand.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\listener\PlayerListener.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\utils\RPUtils.java
-D:\Windows\Bureau\Jeux\Minecraft\GDLCA MiniGames\Plugins\hub-plugin\src\main\java\fr\cel\hub\listener\HubListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\HListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\ChatUtility.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\Replacement.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\NPCListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\manager\PlayerManager.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\ItemBuilder.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\PlayerListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\commands\NPCCommand.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\MiniGameListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\ChatListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\Hub.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\RPUtils.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\tasks\FireworkMusicEvent.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\manager\NPC.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\ConfigNPC.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\EventListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\manager\NPCManager.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\commands\AbstractCommand.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\commands\EventCommands.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\commands\HubCommands.java
