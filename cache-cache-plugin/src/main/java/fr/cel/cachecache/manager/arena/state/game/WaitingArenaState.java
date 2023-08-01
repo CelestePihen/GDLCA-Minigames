@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
-import fr.cel.cachecache.manager.Arena.HunterMode;
+import fr.cel.cachecache.manager.CCArena;
+import fr.cel.cachecache.manager.CCArena.HunterMode;
 import fr.cel.cachecache.manager.arena.state.ArenaState;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 import fr.cel.cachecache.manager.arena.state.providers.game.WaitingListenerProvider;
@@ -19,7 +19,7 @@ public class WaitingArenaState extends ArenaState {
 
     @Getter private WaitingArenaTask waitingArenaTask;
 
-    public WaitingArenaState(Arena arena) {
+    public WaitingArenaState(CCArena arena) {
         super(arena);
     }
 

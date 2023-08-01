@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.utils.Config;
 import fr.cel.hub.utils.ChatUtility;
 import lombok.Getter;
@@ -16,36 +16,36 @@ import lombok.Getter;
 public class ArenaManager {
     
     private final CacheCache main;
-    @Getter private List<Arena> arenas = new ArrayList<>();
+    @Getter private List<CCArena> arenas = new ArrayList<>();
 
     public ArenaManager(CacheCache main) {
         this.main = main;
         this.loadArenas();
     }
 
-    public Arena getArenaByDisplayName(String name) {
-        for (Arena arena : arenas) {
+    public CCArena getArenaByDisplayName(String name) {
+        for (CCArena arena : arenas) {
             if (arena.getDisplayName().equalsIgnoreCase(name)) return arena;
         }
         return null;
     }
 
-    public Arena getArenaByName(String name) {
-        for (Arena arena : arenas) {
+    public CCArena getArenaByName(String name) {
+        for (CCArena arena : arenas) {
             if (arena.getNameArena().equalsIgnoreCase(name)) return arena;
         }
         return null;
     }
 
-    public Arena getArenaByPlayer(Player player) {
-        for (Arena arena : arenas) {
+    public CCArena getArenaByPlayer(Player player) {
+        for (CCArena arena : arenas) {
             if (arena.getPlayers().contains(player.getUniqueId())) return arena;
         }
         return null;
     }
 
     public boolean isPlayerInArena(Player player) {
-        for (Arena arena : arenas) {
+        for (CCArena arena : arenas) {
             if (arena.getPlayers().contains(player.getUniqueId())) return true;
         }
         return false;

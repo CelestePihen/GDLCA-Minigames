@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.hub.utils.ItemBuilder;
 
@@ -22,7 +22,7 @@ public class ChangePositionItem extends GroundItem {
     }
 
     @Override
-    public void onInteract(Player player, Arena arena) {
+    public void onInteract(Player player, CCArena arena) {
         if (arena.getTimer() >= 31) {
             Inventory inventory = Bukkit.createInventory(null, 9, "Joueurs");
             arena.getPlayers().forEach(uuid -> {

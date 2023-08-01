@@ -11,7 +11,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.GroundItem;
 
@@ -29,15 +29,15 @@ public class Config {
         this.load();
     }
 
-    public Arena getArena() {
-        return new Arena(
+    public CCArena getArena() {
+        return new CCArena(
             arenaName, 
             config.getString("displayName"), 
             parseStringToLoc(config.getString("locationSpawn")), 
             parseStringToLoc(config.getString("locationWaiting")), 
             config.getInt("bestTime"), 
             config.getString("bestPlayer"), 
-            Arena.HunterMode.valueOf(config.getString("hunterMode")),
+            CCArena.HunterMode.valueOf(config.getString("hunterMode")),
             getAvailableGroundItems("availableGroundItems"),
             config.getStringList("locationGroundItems")
             );

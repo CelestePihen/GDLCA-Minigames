@@ -12,7 +12,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 
 public class CursedHornItem extends GroundItem {
@@ -25,7 +25,7 @@ public class CursedHornItem extends GroundItem {
     }
 
     @Override
-    public void onInteract(Player player, Arena arena) {
+    public void onInteract(Player player, CCArena arena) {
         Sound sound = goatHornSounds.get(new Random().nextInt(goatHornSounds.size()));
         arena.getPlayers().forEach(uuid -> {
             Player pl = Bukkit.getPlayer(uuid);

@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.manager.arena.state.pregame.StartingArenaState;
@@ -44,7 +44,7 @@ public class CCCommands implements CommandExecutor {
                 return false;
             }
 
-            Arena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            CCArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
             if (arena.getPlayers().size() >= 2 && arena.getArenaState() instanceof PreGameArenaState) {
                 arena.setArenaState(new StartingArenaState(arena));
                 return false;
@@ -58,7 +58,7 @@ public class CCCommands implements CommandExecutor {
                 player.sendMessage(GameManager.getPrefix() + "Aucune arène a été installée.");
                 return false;
             }
-            for (Arena arena : gameManager.getArenaManager().getArenas()) {
+            for (CCArena arena : gameManager.getArenaManager().getArenas()) {
                 player.sendMessage(GameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState());
             }
             return false;
@@ -71,7 +71,7 @@ public class CCCommands implements CommandExecutor {
                 return false;
             }
 
-            Arena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            CCArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
             List<String> playersName = new ArrayList<>();
             arena.getPlayers().forEach(pls -> {
                 Player pl = Bukkit.getPlayer(pls);

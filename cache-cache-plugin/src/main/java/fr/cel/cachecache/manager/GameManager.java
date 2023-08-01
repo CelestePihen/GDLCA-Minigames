@@ -19,13 +19,13 @@ public class GameManager {
     
     @Getter private final CacheCache main;
     @Getter private ArenaManager arenaManager;
-    @Getter private PlayerManager playerManager;
+    @Getter private final PlayerManager playerManager;
 
     @Getter private static GameManager gameManager;
 
-    @Getter private static String prefix = ChatUtility.format("&6[Cache-Cache] &f");
+    @Getter private static final String prefix = ChatUtility.format("&6[Cache-Cache] &f");
 
-    @Getter private static List<GroundItem> groundItems = new ArrayList<>();
+    @Getter private static final List<GroundItem> groundItems = new ArrayList<>();
 
     public GameManager(CacheCache main) {
         addGroundItems();
@@ -36,13 +36,15 @@ public class GameManager {
     }
 
     /**
-     * Permet de recharger les fichiers du plugin pour pouvoir mettre de nouvelles arènes
+     * Permet de recharger/mettre à jour les fichiers du plugin
      */
     public void reloadArenaManager() {
         this.arenaManager = new ArenaManager(main);
     }
 
-    // Permet d'ajouter les items qui tombent au sol
+    /**
+     * Permet d'ajouter les items qui tomberont au sol
+     */
     private void addGroundItems() {
         groundItems.add(new SpeedItem());
         groundItems.add(new BlindnessItem());

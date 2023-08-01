@@ -33,11 +33,11 @@ import fr.cel.hub.utils.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Arena {
+public class CCArena {
     
     // GameManager / Config
-    @Getter private GameManager gameManager = GameManager.getGameManager();
-    private Config config;
+    @Getter private final GameManager gameManager = GameManager.getGameManager();
+    private final Config config;
 
     // Names
     @Getter private final String nameArena;
@@ -76,7 +76,7 @@ public class Arena {
     @Getter private JScoreboardTeam teamSeekers;
 
     // Constructor
-    public Arena(String nameArena, String displayName, Location spawnLoc, Location waitingLoc, int bestTimer, String bestPlayer, HunterMode hunterMode, List<GroundItem> availableGroundItems, List<String> locationGroundItems) {
+    public CCArena(String nameArena, String displayName, Location spawnLoc, Location waitingLoc, int bestTimer, String bestPlayer, HunterMode hunterMode, List<GroundItem> availableGroundItems, List<String> locationGroundItems) {
         this.config = new Config(gameManager.getMain(), nameArena);
         
         // Names
@@ -120,15 +120,6 @@ public class Arena {
 
         this.teamHiders.toBukkitTeam(scoreboard.toBukkitScoreboard()).setAllowFriendlyFire(false);
         this.teamSeekers.toBukkitTeam(scoreboard.toBukkitScoreboard()).setAllowFriendlyFire(false);
-        
-    }
-
-    /**
-     * Détecte si le joueur est dans l'arène
-     * @param player Le joueur
-     */
-    public boolean isPlayerInArena(Player player) {
-        return players.contains(player.getUniqueId());
     }
 
     /**
@@ -159,8 +150,16 @@ public class Arena {
     }
 
     /**
+     * Permet de détecter si le joueur est dans l'arène
+     * @param player Le joueur à détecter
+     */
+    public boolean isPlayerInArena(Player player) {
+        return players.contains(player.getUniqueId());
+    }
+
+    /**
      * Permet d'ajouter le joueur dans l'arène
-     * @param player Le joueur
+     * @param player Le joueur à ajouter
      */
     public void addPlayer(Player player) {
         if (players.contains(player.getUniqueId())) return;

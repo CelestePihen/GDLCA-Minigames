@@ -1,7 +1,7 @@
 package fr.cel.cachecache.manager.arena.state.game;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.arena.state.ArenaState;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 import fr.cel.cachecache.manager.arena.state.providers.game.PlayingListenerProvider;
@@ -14,7 +14,7 @@ public class PlayingArenaState extends ArenaState {
     @Getter private PlayingArenaTask playingArenaTask;
     @Getter private GroundItemsArenaTask groundItemsArenaTask;
 
-    public PlayingArenaState(Arena arena) {
+    public PlayingArenaState(CCArena arena) {
         super(arena);
     }
 

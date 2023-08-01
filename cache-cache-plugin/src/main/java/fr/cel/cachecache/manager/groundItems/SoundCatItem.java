@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.GroundItem;
 
@@ -20,7 +20,7 @@ public class SoundCatItem extends GroundItem {
     }
 
     @Override
-    public void onInteract(Player player, Arena arena) {
+    public void onInteract(Player player, CCArena arena) {
         SoundCatTimer soundCatTimer = new SoundCatTimer(arena);
         soundCatTimer.runTaskTimer(GameManager.getGameManager().getMain(), 0, 20);
 

@@ -3,7 +3,7 @@ package fr.cel.cachecache.manager.arena.state.pregame;
 import org.bukkit.GameMode;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.arena.state.ArenaState;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 import fr.cel.cachecache.manager.arena.state.providers.pregame.StartingListenerProvider;
@@ -15,7 +15,7 @@ public class StartingArenaState extends ArenaState {
     @Getter private StartingArenaTask arenaStartingTask;
     private int timer = 11;
 
-    public StartingArenaState(Arena arena) {
+    public StartingArenaState(CCArena arena) {
         super(arena);
     }
 

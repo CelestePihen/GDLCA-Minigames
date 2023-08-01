@@ -18,15 +18,15 @@ import org.bukkit.inventory.ItemStack;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 import lombok.Getter;
 
 public abstract class StateListenerProvider implements Listener {
 
-    @Getter private Arena arena;
+    @Getter private CCArena arena;
 
-    public StateListenerProvider(Arena arena) {
+    public StateListenerProvider(CCArena arena) {
         this.arena = arena;
     }
 

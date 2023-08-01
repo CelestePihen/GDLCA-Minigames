@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 
 public class SpeedItem extends GroundItem {
@@ -21,7 +21,7 @@ public class SpeedItem extends GroundItem {
     }
 
     @Override
-    public void onInteract(Player player, Arena arena) {
+    public void onInteract(Player player, CCArena arena) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1, false, false, true));
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();

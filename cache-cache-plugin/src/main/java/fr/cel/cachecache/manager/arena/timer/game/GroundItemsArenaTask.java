@@ -8,14 +8,14 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 
 public class GroundItemsArenaTask extends BukkitRunnable {
 
-    private final Arena arena;
+    private final CCArena arena;
 
-    public GroundItemsArenaTask(Arena arena) {
+    public GroundItemsArenaTask(CCArena arena) {
         this.arena = arena;
     }
 

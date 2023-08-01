@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 
 public class BlindnessItem extends GroundItem {
@@ -23,7 +23,7 @@ public class BlindnessItem extends GroundItem {
     }
 
     @Override
-    public void onInteract(Player player, Arena arena) {
+    public void onInteract(Player player, CCArena arena) {
         arena.getPlayers().forEach(uuid -> {
             Player pl = Bukkit.getPlayer(uuid);
             if (pl == player || pl.getGameMode() == GameMode.SPECTATOR) return;

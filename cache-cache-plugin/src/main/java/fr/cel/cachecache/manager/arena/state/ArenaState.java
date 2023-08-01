@@ -5,16 +5,16 @@ import javax.annotation.Nullable;
 import org.bukkit.event.Listener;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 import lombok.Getter;
 
 public abstract class ArenaState implements Listener {
 
-    @Getter private Arena arena;
+    @Getter private CCArena arena;
     private StateListenerProvider listenerProvider;
 
-    public ArenaState(Arena arena) {
+    public ArenaState(CCArena arena) {
         this.arena = arena;
     }
 

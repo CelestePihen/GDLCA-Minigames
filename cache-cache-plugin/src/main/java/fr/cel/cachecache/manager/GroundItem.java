@@ -27,7 +27,11 @@ public abstract class GroundItem {
         return new ItemBuilder(material).setDisplayName(displayName).setLore(lores).toItemStack();
     }
 
-    // L'action à effectuer
-    public abstract void onInteract(Player player, Arena arena);
+    /**
+     * L'action à effectuer
+      * @param player Le joueur
+     * @param arena L'arène où je joueur est
+     */
+    public abstract void onInteract(Player player, CCArena arena);
 
 }

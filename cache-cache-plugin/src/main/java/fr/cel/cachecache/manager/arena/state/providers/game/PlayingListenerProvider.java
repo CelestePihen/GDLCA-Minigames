@@ -15,13 +15,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 
 public class PlayingListenerProvider extends StateListenerProvider {
 
-    public PlayingListenerProvider(Arena arena) {
+    public PlayingListenerProvider(CCArena arena) {
         super(arena);
     }
 

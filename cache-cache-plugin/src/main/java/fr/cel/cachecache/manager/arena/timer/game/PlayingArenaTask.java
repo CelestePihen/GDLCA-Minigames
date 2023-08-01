@@ -7,16 +7,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.cel.cachecache.manager.Arena;
+import fr.cel.cachecache.manager.CCArena;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class PlayingArenaTask extends BukkitRunnable {
 
-    private final Arena arena;
+    private final CCArena arena;
     private String timerString;
 
-    public PlayingArenaTask(Arena arena) {
+    public PlayingArenaTask(CCArena arena) {
         this.arena = arena;
     }
 
