@@ -40,7 +40,7 @@ public class PlayerListener extends HListener {
           event.joinMessage(component.append(Component.text(player.getName())));
       }
 
-      player.sendPlayerListHeader(Component.text(ChatUtility.format("Bienvenue sur &9GDLCA Minigames&f !")));
+      player.sendPlayerListHeader(Component.text("Bienvenue sur §9GDLCA Minigames§f !"));
 
       main.getPlayerManager().sendPlayerToHub(player);
 

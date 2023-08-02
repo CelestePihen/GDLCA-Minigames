@@ -350,6 +350,15 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder addAllItemFlags() {
+        ItemMeta im = is.getItemMeta();
+        for (ItemFlag itemFlag : ItemFlag.values()) {
+            im.addItemFlags(itemFlag);
+        }
+        is.setItemMeta(im);
+        return this;
+    }
+
     /**
      * @param data The item data to set
      */

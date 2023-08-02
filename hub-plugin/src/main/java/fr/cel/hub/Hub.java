@@ -1,6 +1,7 @@
 package fr.cel.hub;
 
 import fr.cel.hub.listener.*;
+import fr.cel.hub.manager.InventoryManager;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,8 +16,10 @@ import lombok.Getter;
 @Getter
 public final class Hub extends JavaPlugin {
 
-    private PlayerManager playerManager;
     private final String prefix = "§6[GDLCA Minigames]§r ";
+
+    private PlayerManager playerManager;
+    private InventoryManager inventoryManager;
     private NPCManager npcManager;
     private RPUtils rpUtils;
 
@@ -33,6 +36,8 @@ public final class Hub extends JavaPlugin {
         worldCreator.createWorld();
 
         playerManager = new PlayerManager();
+        inventoryManager = new InventoryManager(this);
+        inventoryManager.loadInventories();
         npcManager = new NPCManager(this);
         rpUtils = new RPUtils();
 

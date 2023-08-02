@@ -36,11 +36,8 @@ public class EventListener extends HListener {
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
 
         Component nameInventory = event.getView().title();
-        
         ItemStack item = event.getCurrentItem();
-
         if (item == null) return;
-
         Material itemMaterial = item.getType();
 
         if (nameInventory.equals(Component.text("Événements"))) {

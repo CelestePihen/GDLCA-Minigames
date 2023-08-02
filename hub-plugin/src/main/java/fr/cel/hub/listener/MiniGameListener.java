@@ -1,21 +1,16 @@
 package fr.cel.hub.listener;
 
-import fr.cel.cachecache.manager.CCArena;
-import fr.cel.cachecache.manager.CCGameManager;
 import fr.cel.hub.Hub;
-import fr.cel.hub.utils.ChatUtility;
-import fr.cel.pvp.manager.PVPGameManager;
-import fr.cel.pvp.manager.arena.PVPArena;
-import fr.cel.valocraft.manager.ValoGameManager;
-import fr.cel.valocraft.manager.arena.ValoArena;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
-import org.bukkit.block.sign.Side;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 public class MiniGameListener extends HListener {
 
@@ -24,41 +19,35 @@ public class MiniGameListener extends HListener {
     }
 
     @EventHandler
-    public void interactSign(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        Block block = e.getClickedBlock();
+    public void interact(final PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        Action action = event.getAction();
+        ItemStack itemStack = event.getItem();
 
-        if (block != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            BlockState blockState = block.getState();
+        if (itemStack == null) return;
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (itemStack.getItemMeta() == null || !itemStack.hasItemMeta()) return;
+        if (!itemStack.getItemMeta().hasDisplayName()) return;
 
-            if (blockState instanceof Sign sign) {
-                switch (ChatUtility.stripColor(sign.getSide(Side.FRONT).getLine(1))) {
-                    // on regarde si le texte de la 2ème ligne est égal à "Cache-Cache"
-                    case "Cache-Cache" -> {
-                        // on regarde si la 3ème ligne a un nom d'arène
-                        CCArena arena = CCGameManager.getGameManager().getArenaManager().getArenaByDisplayName(ChatUtility.stripColor(sign.getSide(Side.FRONT).getLine(2)));
-                        // si l'arène n'est pas null alors on peut ajouter le joueur dans l'arène associé
-                        if (arena != null) arena.addPlayer(player);
-                        // sinon on dit au joueur que l'arène n'existe pas et d'avertir les admins s'il y a un bug
-                        else player.sendMessage(CCGameManager.getGameManager().getPrefix() + "Cette carte Cache-Cache n'existe pas. Merci de contacter un admin si vous pensez que cela est un bug.");
-                    }
-
-                    // pareil qu'au dessus mais là on regarde pour "Valocraft"
-                    case "Valocraft" -> {
-                        ValoArena arena = ValoGameManager.getGameManager().getArenaManager().getArenaByDisplayName(ChatUtility.stripColor(sign.getSide(Side.FRONT).getLine(2)));
-                        if (arena != null) arena.addPlayer(player);
-                        else player.sendMessage(ValoGameManager.getGameManager().getPrefix() + "Cette carte Valocraft n'existe pas. Merci de contacter un admin si vous pensez que cela est un bug.");
-                    }
-
-                    // pareil mais là on regarde pour "PVP"
-                    case "PVP" -> {
-                        PVPArena arena = PVPGameManager.getGameManager().getArenaManager().getArenaByDisplayName(ChatUtility.stripColor(sign.getSide(Side.FRONT).getLine(2)));
-                        if (arena != null) arena.addPlayer(player);
-                        else player.sendMessage(PVPGameManager.getGameManager().getPrefix() + "Cette arène PVP n'existe pas. Merci de contacter un admin si vous pensez que cela est un bug.");
-                    }
-
-                }
+        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+            if (itemStack.getItemMeta().displayName().equals(Component.text("Sélectionneur de mini-jeux").decoration(TextDecoration.ITALIC, false))) {
+                player.openInventory(main.getInventoryManager().getInventories().get("minigames").getInv());
             }
+        }
+    }
+
+    @EventHandler
+    public void interactInv(final InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        if (player.isOp()) return;
+
+        ItemStack item = event.getCurrentItem();
+        if (item == null) return;
+        if (item.getItemMeta() == null) return;
+        if (item.getItemMeta().displayName().equals(Component.text("Sélectionneur de mini-jeux").decoration(TextDecoration.ITALIC, false))) {
+            event.setCancelled(true);
         }
     }
 
