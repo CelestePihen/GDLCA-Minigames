@@ -53,15 +53,14 @@ public class EventListener extends HListener {
                 }
 
                 case FIREWORK_ROCKET -> {
-                    if (fireworkMusicEvent == null) {
-                        fireworkMusicEvent = new FireworkMusicEvent(main);
-                    }
                     if (!eventActivated) {
                         eventActivated = true;
+                        fireworkMusicEvent = new FireworkMusicEvent(main);
                         fireworkMusicEvent.runTaskTimer(main, 0, 20);
                     } else {
                         eventActivated = false;
                         fireworkMusicEvent.cancel();
+                        fireworkMusicEvent = null;
                     }
                     player.closeInventory();
                 }

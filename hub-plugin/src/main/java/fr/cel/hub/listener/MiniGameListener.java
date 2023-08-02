@@ -40,7 +40,7 @@ public class MiniGameListener extends HListener {
                         // si l'arène n'est pas null alors on peut ajouter le joueur dans l'arène associé
                         if (arena != null) arena.addPlayer(player);
                         // sinon on dit au joueur que l'arène n'existe pas et d'avertir les admins s'il y a un bug
-                        else player.sendMessage(CCGameManager.getPrefix() + "Cette carte Cache-Cache n'existe pas. Merci de contacter un admin si vous pensez que cela est un bug.");
+                        else player.sendMessage(CCGameManager.getGameManager().getPrefix() + "Cette carte Cache-Cache n'existe pas. Merci de contacter un admin si vous pensez que cela est un bug.");
                     }
 
                     // pareil qu'au dessus mais là on regarde pour "Valocraft"

@@ -3,7 +3,6 @@ package fr.cel.hub.utils;
 import java.io.File;
 import java.io.IOException;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,43 +11,39 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.NPC;
-import lombok.Getter;
 
 public class ConfigNPC {
 
-    private YamlConfiguration config;
-    private File file;
+    private final Hub main;
+    private final String name;
 
-    private String name;
-    
     public ConfigNPC(Hub main, String name) {
+        this.main = main;
         this.name = name;
-        this.file = new File(main.getDataFolder() + File.separator + "npcs", name + ".yml");
-        this.config = YamlConfiguration.loadConfiguration(this.file);
-        this.load();
     }
 
     public NPC getNPC() {
+        File file = new File(main.getDataFolder() + File.separator + "npcs", name + ".yml");
+        if (file.exists()) {
+            YamlConfiguration config = new YamlConfiguration();
+            try {
+                config.load(file);
+                return new NPC(config.getString("displayName"), loadLocation(config), config.getString("skin.texture"), config.getString("skin.signature"));
+            } catch (IOException | InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    private Location loadLocation(YamlConfiguration config) {
+        String world = config.getString("location.world");
         double x = config.getDouble("location.x");
         double y = config.getDouble("location.y");
         double z = config.getDouble("location.z");
-        World world = Bukkit.getWorld(config.getString("location.world"));
 
-        Location location = new Location(world, x, y, z);
-
-        return new NPC(
-                config.getString("displayName"),
-                location,
-                config.getString("skin.texture"),
-                config.getString("skin.signature"));
-    }
-
-    private void load() {
-        try {
-            this.config.load(this.file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+        return new Location(Bukkit.getWorld(world), x, y, z);
     }
     
 }

@@ -1,34 +1,75 @@
 package fr.cel.hub.tasks;
 
 import fr.cel.hub.Hub;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Firework;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class FireworkMusicEvent extends BukkitRunnable {
 
     private final Hub main;
-    private Location location;
-    private World world;
+    private final World world;
+    private final List<Location> locations;
 
     public FireworkMusicEvent(Hub main) {
         this.main = main;
         this.world = Bukkit.getWorld("world");
-        this.location = new Location(world, 280.920, 65, 62.415);
+        this.locations = loadFireworkLocation();
     }
 
     @Override
     public void run() {
-        main.getPlayerManager().getPlayersInHub().forEach(uuid -> {
-            Player pl = Bukkit.getPlayer(uuid);
-            if (pl == null) return;
-            pl.sendMessage(Component.text("Imaginez qu'il y a des feux d'artifices partout dans le hub."));
-            world.spawnEntity(location, EntityType.FIREWORK);
-        });
+        for (Location location : locations) {
+            final Firework firework = (Firework) world.spawnEntity(location, EntityType.FIREWORK);
+            final FireworkMeta fireworkMeta = firework.getFireworkMeta();
+
+            final FireworkEffect fireworkEffect = FireworkEffect.builder().trail(true).withColor(Color.BLUE, Color.WHITE, Color.RED).with(FireworkEffect.Type.STAR).build();
+
+            fireworkMeta.setPower(1);
+
+            fireworkMeta.addEffects(fireworkEffect);
+            firework.setFireworkMeta(fireworkMeta);
+        }
+    }
+
+    private List<Location> loadFireworkLocation() {
+        File file = new File(main.getDataFolder(), "locationFireworks.yml");
+        List<Location> locations1 = new ArrayList<>();
+        if (file.exists()) {
+            YamlConfiguration config = new YamlConfiguration();
+            try {
+                config.load(file);
+
+                for (String str : config.getStringList("location")) {
+                    locations1.add(parseStringToLoc(str));
+                }
+                return locations1;
+            } catch (IOException | InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private Location parseStringToLoc(String string) {
+        String[] parsedLoc = string.split(",");
+
+        double x = Double.parseDouble(parsedLoc[0]);
+        double y = Double.parseDouble(parsedLoc[1]);
+        double z = Double.parseDouble(parsedLoc[2]);
+
+        return new Location(world, x, y, z);
     }
     
 }
