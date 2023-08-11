@@ -2,6 +2,7 @@ package fr.cel.cachecache.manager;
 
 import java.util.List;
 
+import fr.cel.cachecache.manager.arena.CCArena;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

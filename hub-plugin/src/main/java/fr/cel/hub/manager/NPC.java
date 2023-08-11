@@ -2,9 +2,11 @@ package fr.cel.hub.manager;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import fr.cel.hub.utils.Reflection;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.Getter;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +20,8 @@ import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -78,7 +82,14 @@ public class NPC {
     public void lookAt(Player player, Location location) {
        ServerGamePacketListenerImpl ps = ((CraftPlayer) player).getHandle().connection;
 
-       npc.setRot(location.getYaw(), location.getPitch());
+       try {
+           // a est le nom de setRot() avec les remaps
+           Method setRotMethod = net.minecraft.world.entity.Entity.class.getDeclaredMethod("a", float.class, float.class);
+           setRotMethod.setAccessible(true);
+           setRotMethod.invoke(npc, location.getYaw(), location.getPitch());
+       } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+           e.printStackTrace();
+       }
        npc.setYHeadRot(location.getYaw());
        npc.setXRot(location.getPitch());
        npc.setYRot(location.getYaw());
@@ -104,35 +115,28 @@ public class NPC {
     }
 
     private void update(Player player) {
-        npc.getEntityData().set(net.minecraft.world.entity.player.Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) (0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40));
-        refreshEntityData(player);
+        try {
+            // bL est le nom de DATA_PLAYER_MODE_CUSTOMISATION avec les remaps
+            Field field = Reflection.getField(net.minecraft.world.entity.player.Player.class, "bL");
+            field.setAccessible(true);
+            npc.getEntityData().set((EntityDataAccessor<Byte>) field.get(null), (byte) (0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40));
+            refreshEntityData(player);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void refreshEntityData(Player player) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        Int2ObjectMap<SynchedEntityData.DataItem<?>> itemsById = (Int2ObjectMap<SynchedEntityData.DataItem<?>>) getValue(npc.getEntityData(), "e"); // itemsById
+        Int2ObjectMap<SynchedEntityData.DataItem<?>> itemsById = (Int2ObjectMap<SynchedEntityData.DataItem<?>>) Reflection.getField(npc.getEntityData(), "e"); // itemsById
         List<SynchedEntityData.DataValue<?>> entityData = new ArrayList<>();
         for (SynchedEntityData.DataItem<?> dataItem : itemsById.values()) {
             entityData.add(dataItem.value());
         }
         ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(npc.getId(), entityData);
         serverPlayer.connection.send(setEntityDataPacket);
-    }
-
-    private Object getValue(Object instance, String name) {
-        Object result = null;
-
-        try {
-            Field field = instance.getClass().getDeclaredField(name);
-            field.setAccessible(true);
-            result = field.get(instance);
-            field.setAccessible(false);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        return result;
     }
 
 }

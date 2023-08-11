@@ -127,7 +127,7 @@ public class NPC extends Replacement {
     }
 
     protected void sendMessageWithName(Player player, String message) {
-        sendMessage(player, "§6[" + getDisplayName() + "] §r" + message);
+        sendMessage(player, "§6[NPC] §r" + getDisplayName() + ":" + message);
     }
 
     private void update(Player player) {

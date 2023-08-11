@@ -3,7 +3,7 @@ package fr.cel.cachecache.manager.arena.timer.pregame;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.cel.cachecache.manager.CCArena;
+import fr.cel.cachecache.manager.arena.CCArena;
 import fr.cel.cachecache.manager.arena.state.game.WaitingArenaState;
 
 public class StartingArenaTask extends BukkitRunnable {

@@ -27,16 +27,6 @@ public class HubCommands extends AbstractCommand {
 
             main.getPlayerManager().sendPlayerToHub(target);
         }
-        
-        // if (args[0].equalsIgnoreCase("listplayer")) {
-        //     main.getPlayerManager().getPlayersInHub().forEach(uuid -> {
-        //         Player pl = Bukkit.getPlayer(uuid);
-        //         if (pl == null) return;
-        //         player.sendMessage(pl.getName());
-        //     });
-        //     return;
-        // }
-        
     }
 
     @Override

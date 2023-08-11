@@ -3,9 +3,6 @@ package fr.cel.hub.listener;
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.NPCManager;
 import fr.cel.hub.utils.ChatUtility;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -31,32 +28,23 @@ public class PlayerListener extends HListener {
       final Player player = event.getPlayer();
         
 	  if (!player.hasPlayedBefore()) {
-          event.joinMessage(Component.text(main.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !"));
+          event.setJoinMessage(main.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !");
       } else {
-          TextComponent component = Component.text("[")
-                  .append(Component.text("+", NamedTextColor.GREEN)
-                  .append(Component.text("] ", NamedTextColor.WHITE)));
-
-          event.joinMessage(component.append(Component.text(player.getName())));
+          event.setJoinMessage(ChatUtility.format("[&a+&r] ") + player.getName());
       }
 
-      player.sendPlayerListHeader(Component.text("Bienvenue sur §9GDLCA Minigames§f !"));
+      player.setPlayerListHeader(ChatUtility.format("Bienvenue sur &9GDLCA Minigames&f !"));
 
       main.getPlayerManager().sendPlayerToHub(player);
 
       NPCManager.getNpcs().forEach(npc -> npc.spawn(player));
-
     }
 
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
-        TextComponent component = Component.text("[")
-                .append(Component.text("-", NamedTextColor.RED)
-                .append(Component.text("] ", NamedTextColor.WHITE)));
-
-        event.quitMessage(component.append(Component.text(player.getName())));
+        event.setQuitMessage(ChatUtility.format("[&c-&r] ") + player.getName());
 
         main.getPlayerManager().removePlayerInHub(player);
     }
@@ -99,13 +87,16 @@ public class PlayerListener extends HListener {
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        Block block = event.getClickedBlock();
+        final Block block = event.getClickedBlock();
+        Material type = null;
 
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
         if (player.isOp()) return;
         if (block == null) return;
+        type = block.getType();
+        if (type == Material.LECTERN) return;
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) event.setCancelled(true);
-        if (block.getType() == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || block.getType() == Material.CAVE_VINES || block.getType() == Material.CAVE_VINES_PLANT) event.setCancelled(true);
+        if (type == Material.FLOWER_POT || type.name().startsWith("POTTED_") || type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) event.setCancelled(true);
     }
 
     @EventHandler

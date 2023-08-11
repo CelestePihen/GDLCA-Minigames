@@ -2,16 +2,16 @@ package fr.cel.cachecache.manager.arena.state;
 
 import javax.annotation.Nullable;
 
+import fr.cel.cachecache.manager.arena.CCArena;
 import org.bukkit.event.Listener;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 import lombok.Getter;
 
 public abstract class ArenaState implements Listener {
 
-    @Getter private CCArena arena;
+    @Getter private final CCArena arena;
     private StateListenerProvider listenerProvider;
 
     public ArenaState(CCArena arena) {
@@ -31,7 +31,6 @@ public abstract class ArenaState implements Listener {
 
     /**
      * Return a new instance of StateListenerProvider (or null)
-     * @return
      */
     @Nullable
     public abstract StateListenerProvider getListenerProvider();

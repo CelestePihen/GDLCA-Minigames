@@ -70,9 +70,9 @@ public class ValoArena {
     @Getter @Setter private Block spike;
 
     // Scoreboard
-    @Getter private JGlobalMethodBasedScoreboard scoreboard;
+    @Getter private final JGlobalMethodBasedScoreboard scoreboard;
 
-    @Getter private BossBar bossBar;
+    @Getter private final BossBar bossBar;
 
     // Constructor
     public ValoArena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, ValoGameManager gameManager) {
@@ -96,7 +96,7 @@ public class ValoArena {
         this.redTeam = new ValoTeam("redTeam", "Équipe Rouge", this.attackers);
         this.blueTeam = new ValoTeam("blueTeam", "Équipe Bleue", this.defenders);
 
-        this.bossBar = Bukkit.createBossBar(ChatUtility.format("&1" + getRoundWinBlue() + "&r&f | " + getGlobalRound() + "&r&f | &c" + getRoundWinRed()), BarColor.PURPLE, BarStyle.SOLID);
+        this.bossBar = Bukkit.createBossBar(ChatUtility.format("&10 " + "&r&f| 1 " + "&r&f| &c 0"), BarColor.PURPLE, BarStyle.SOLID);
 
         // ArenaState / Global Round
         this.arenaState = new InitArenaState(this);
@@ -128,21 +128,33 @@ public class ValoArena {
 
         if (arenaState instanceof StartingArenaState || arenaState instanceof WaitingArenaState || arenaState instanceof PlayingArenaState || arenaState instanceof SpikeArenaState || arenaState instanceof TimeOverArenaState) {
             player.sendMessage(gameManager.getPrefix() + "Merci d'attendre la fin de la partie pour aller sur " + this.getDisplayName() + ".");
-            return;
-        } else {
-            setArenaState(new PreGameArenaState(this));
+            join(player, GameMode.SPECTATOR, false);
         }
 
+        else if (arenaState instanceof PreGameArenaState) {
+            join(player, GameMode.ADVENTURE, true);
+        }
+
+        else {
+            setArenaState(new PreGameArenaState(this));
+            join(player, GameMode.ADVENTURE, true);
+        }
+    }
+
+    private void join(Player player, GameMode gameMode, boolean joinMessage) {
         gameManager.getPlayerManager().removePlayerInHub(player);
         players.add(player.getUniqueId());
         this.scoreboard.addPlayer(player);
 
-        sendMessage(player.getDisplayName() + " a rejoint la partie !");
-        player.sendTitle(ChatUtility.format("&6ValoCraft"), getDisplayName(), 10, 70, 20);
+        if (joinMessage) {
+            sendMessage(player.getDisplayName() + " a rejoint la partie !");
+        }
 
-        player.teleport(this.getSpawnLoc()); 
+        player.teleport(this.getSpawnLoc());
+
+        player.sendTitle(ChatUtility.format("&6ValoCraft"), getDisplayName(), 10, 70, 20);
         player.getInventory().clear();
-        player.setGameMode(GameMode.ADVENTURE);
+        player.setGameMode(gameMode);
         player.getInventory().setItem(4, new ItemBuilder(Material.WHITE_WOOL).setDisplayName("Sélecteur d'équipes").addLoreLine("&aSélectionner votre équipe.").toItemStack());
     }
 
@@ -153,10 +165,10 @@ public class ValoArena {
         getBlueTeam().removePlayer(player);
         getRedTeam().removePlayer(player);
 
-        this.scoreboard.removePlayer(player);
+        scoreboard.removePlayer(player);
         bossBar.removePlayer(player);
 
-        if (getPlayers().size() < 2 || (getBlueTeam().getPlayers().size() <= 0 || getRedTeam().getPlayers().size() <= 0)) {
+        if (getPlayers().size() < 2 || (getBlueTeam().getPlayers().isEmpty() || getRedTeam().getPlayers().isEmpty())) {
 
             String gameCancelled = "Partie annulé... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.";
 
@@ -297,7 +309,6 @@ public class ValoArena {
         showTeamRound();
         globalRound += 1;
         checkWin();
-        return;
     }
 
     private void checkWin() {
@@ -315,12 +326,10 @@ public class ValoArena {
             removePlayersToBossBar();
             sendPlayersToHub();
             players.clear();
-            return;
         }
         
         else if (arenaState instanceof SpikeArenaState) {
             ((SpikeArenaState) arenaState).getSpikeArenaTask().cancel();
-            return;
         }
 
         else {
@@ -341,7 +350,6 @@ public class ValoArena {
             if (player != null) {
                 TextComponent str = new TextComponent(ChatUtility.format("&1" + getRoundWinBlue() + "&r&f | " + "&c" + getRoundWinRed()));
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, str);
-
                 bossBar.setTitle(ChatUtility.format("&1" + getRoundWinBlue() + "&r&f | " + getGlobalRound() + "&r&f | &c" + getRoundWinRed()));
             }
         }

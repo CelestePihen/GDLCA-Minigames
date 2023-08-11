@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.cel.cachecache.manager.CCArena;
+import fr.cel.cachecache.manager.arena.CCArena;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -33,7 +33,11 @@ public class PlayingArenaTask extends BukkitRunnable {
             Bukkit.getPlayer(pls).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerString));
         });
 
-        if (getTimer() == 30) {
+        if (arena.getHunterMode() == CCArena.HunterMode.LoupToucheTouche && getTimer() == 10) {
+            Player player = Bukkit.getPlayer(arena.getSeekers().get(0));
+            player.teleport(arena.getSpawnLoc());
+            arena.sendMessage("&cLe chercheur " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !");
+        } else if (arena.getHunterMode() != CCArena.HunterMode.LoupToucheTouche && getTimer() == 30) {
             List<String> names = new ArrayList<>();
             arena.getSeekers().forEach(uuid -> {
                 Player player = Bukkit.getPlayer(uuid);
@@ -45,11 +49,10 @@ public class PlayingArenaTask extends BukkitRunnable {
             } else {
                 arena.sendMessage("&cLes chercheurs " + names + " sont libérés... Cachez-vous !");
             }
-            
         }
 
         if (getTimer() == 600) {
-            arena.getSeekers().forEach(pls -> { Bukkit.getPlayer(pls).setGlowing(false); });
+            arena.getSeekers().forEach(pls -> Bukkit.getPlayer(pls).setGlowing(false));
             arena.sendMessage("&cLes chercheurs n'ont plus de surbrillance.");
         }
 

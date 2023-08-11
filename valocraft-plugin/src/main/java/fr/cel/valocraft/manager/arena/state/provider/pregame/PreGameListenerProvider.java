@@ -66,43 +66,6 @@ public class PreGameListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void rightClickItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack itemStack = event.getItem();
-        Action action = event.getAction();
-        
-        if (!getArena().isPlayerInArena(player)) return;
-        if (!event.hasItem()) return;
-        if (!itemStack.hasItemMeta()) return;
-        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;
-
-        if (itemStack.getItemMeta().getDisplayName().equalsIgnoreCase("Sélecteur d'équipes")) {
-
-            Inventory menu = null;
-
-            switch (itemStack.getType()) {
-                case WHITE_WOOL:
-                case RED_WOOL:
-                case BLUE_WOOL:
-
-                    if (menu == null) {
-                        menu = Bukkit.createInventory(null, 9, "Sélecteur d'équipes");
-                        menu.setItem(3, new ItemBuilder(Material.BLUE_WOOL).setDisplayName("&1Équipe Bleue").toItemStack());
-                        menu.setItem(4, new ItemBuilder(Material.WHITE_WOOL).setDisplayName("Pas d'équipe").toItemStack());
-                        menu.setItem(5, new ItemBuilder(Material.RED_WOOL).setDisplayName("&cÉquipe Rouge").toItemStack());
-                    }
-
-                    player.openInventory(menu);
-                    break;
-    
-                default: break;
-            }
-
-        }
-
-    }
-
-    @EventHandler
     public void clickInventory(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 

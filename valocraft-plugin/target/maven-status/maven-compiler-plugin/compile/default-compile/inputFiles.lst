@@ -23,6 +23,7 @@ E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manage
 E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\pregame\StartingListenerProvider.java
 E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\game\SpikeListenerProvider.java
 E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\ValoGameManager.java
+E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\inventory\SelectTeam.java
 E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\provider\game\PlayingListenerProvider.java
 E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\state\pregame\StartingArenaState.java
 E:\GitHub\GDLCA-Minigames\valocraft-plugin\src\main\java\fr\cel\valocraft\manager\arena\timer\pregame\StartingArenaTask.java

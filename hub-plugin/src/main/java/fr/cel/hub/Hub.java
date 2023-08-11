@@ -35,11 +35,11 @@ public final class Hub extends JavaPlugin {
         WorldCreator worldCreator = new WorldCreator("institution");
         worldCreator.createWorld();
 
+        rpUtils = new RPUtils();
         playerManager = new PlayerManager();
         inventoryManager = new InventoryManager(this);
         inventoryManager.loadInventories();
         npcManager = new NPCManager(this);
-        rpUtils = new RPUtils();
 
         registerListeners();
         registerCommands();
@@ -54,18 +54,17 @@ public final class Hub extends JavaPlugin {
     }
 
     /**
-     * Méthode qui permet d'enregistrer les listeners
+     * Fonction qui permet d'enregistrer les listeners
      */
     private void registerListeners() {
         new PlayerListener(this);
         new NPCListener(this);
-        new EventListener(this);
         new ChatListener(this);
         new MiniGameListener(this);
     }
 
     /**
-     * Méthode qui permet d'enregistrer les commandes
+     * Fonction qui permet d'enregistrer les commandes
      */
     private void registerCommands() {
         new EventCommands(this);

@@ -1,16 +1,14 @@
 package fr.cel.cachecache.manager.arena.state.game;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.CCArena;
-import fr.cel.cachecache.manager.CCArena.HunterMode;
+import fr.cel.cachecache.manager.arena.CCArena;
+import fr.cel.cachecache.manager.arena.CCArena.HunterMode;
 import fr.cel.cachecache.manager.arena.state.ArenaState;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 import fr.cel.cachecache.manager.arena.state.providers.game.WaitingListenerProvider;
@@ -30,31 +28,67 @@ public class WaitingArenaState extends ArenaState {
         super.onEnable(main);
 
         Collections.shuffle(getArena().getPlayers());
-        UUID randomUUID = getArena().getPlayers().get(0);
-        Player player = Bukkit.getPlayer(randomUUID);
 
-        if (player.getName().equals(getArena().getLastHunter())) {
-            randomUUID = getArena().getPlayers().get(1);
-            player = Bukkit.getPlayer(randomUUID);
-        }
+        switch (getArena().getHunterMode()) {
 
-        getArena().setLastHunter(player.getName());
-        getArena().becomeSeeker(player);
-        player.teleport(getArena().getWaitingLoc());
+            case TwoHuntersAtStart -> {
+                UUID randomUUID2 = getArena().getPlayers().get(1);
+                Player player2 = Bukkit.getPlayer(randomUUID2);
+                getArena().becomeSeeker(player2);
+                player2.teleport(getArena().getWaitingLoc());
+            }
 
-        if (getArena().getHunterMode() == HunterMode.TwoHuntersAtStart) {
-            UUID randomUUID2 = getArena().getPlayers().get(1);
-            Player player2 = Bukkit.getPlayer(randomUUID2);
-            getArena().becomeSeeker(player2);
-            player2.teleport(getArena().getWaitingLoc());
+            case TousContreUn -> {
+                for (int i = 0; i < getArena().getPlayers().size() - 1; i++) {
+                    UUID uuid = getArena().getPlayers().get(i);
+                    Player player = Bukkit.getPlayer(uuid);
+
+                    getArena().becomeSeeker(player);
+                    player.teleport(getArena().getWaitingLoc());
+                }
+            }
+
+            case LoupToucheTouche -> {
+                UUID randomUUID = getArena().getPlayers().get(0);
+                Player player = Bukkit.getPlayer(randomUUID);
+
+                if (player.getName().equals(getArena().getLastHunter())) {
+                    randomUUID = getArena().getPlayers().get(1);
+                    player = Bukkit.getPlayer(randomUUID);
+                }
+
+                getArena().setLastHunter(player);
+                getArena().getSeekers().add(player.getUniqueId());
+                getArena().getTeamSeekers().addPlayer(player);
+
+                player.getInventory().clear();
+                getArena().giveWeapon(player);
+                player.teleport(getArena().getWaitingLoc());
+            }
+
+            default -> {
+                UUID randomUUID = getArena().getPlayers().get(0);
+                Player player = Bukkit.getPlayer(randomUUID);
+
+                if (player.getName().equals(getArena().getLastHunter())) {
+                    randomUUID = getArena().getPlayers().get(1);
+                    player = Bukkit.getPlayer(randomUUID);
+                }
+
+                getArena().setLastHunter(player);
+                getArena().becomeSeeker(player);
+                player.teleport(getArena().getWaitingLoc());
+            }
         }
 
         for (UUID pls : getArena().getPlayers()) {
             if (!getArena().getSeekers().contains(pls)) {
                 getArena().getHiders().add(pls);
-                getArena().getTeamHiders().addPlayer(Bukkit.getPlayer(pls));
-                Bukkit.getPlayer(pls).teleport(getArena().getSpawnLoc());
-            } 
+
+                Player player = Bukkit.getPlayer(pls);
+                getArena().getTeamHiders().addPlayer(player);
+                player.teleport(getArena().getSpawnLoc());
+            }
         }
 
         int hours = getArena().getBestTimer() / 3600;

@@ -1,10 +1,9 @@
 package fr.cel.hub.manager;
 
 import fr.cel.hub.Hub;
+import fr.cel.hub.utils.ChatUtility;
 import fr.cel.hub.utils.ConfigNPC;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -35,13 +34,11 @@ public class NPCManager {
                 NPC npc = config.getNPC();
                 
                 if (npc.getLocation().getWorld() == Bukkit.getWorld("institution")) {
-                    Bukkit.getConsoleSender().sendMessage(Component.text("[Hub] ", NamedTextColor.GOLD)
-                            .append(Component.text("Chargement du NPC-institution " + name, NamedTextColor.WHITE)));
+                    Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[Hub] &rChargement du NPC-institution " + name));
                 } else if (npc.getLocation().getWorld() == Bukkit.getWorld("world")) {
-                    Bukkit.getConsoleSender().sendMessage(Component.text("[Hub] ", NamedTextColor.GOLD)
-                            .append(Component.text("Chargement du NPC-hub " + name, NamedTextColor.WHITE)));
+                    Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[Hub] &rChargement du NPC-hub " + name));
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(Component.text("BUG - CHARGEMENT NPC | ESSAYE DE CHARGER DANS UN AUTRE MONDE ?", NamedTextColor.RED));
+                    Bukkit.getConsoleSender().sendMessage("&cBUG - CHARGEMENT NPC | ESSAYE DE CHARGER DANS UN AUTRE MONDE ?");
                 }
 
                 npc.create();

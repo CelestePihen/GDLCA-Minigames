@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import fr.cel.cachecache.manager.CCArena;
+import fr.cel.cachecache.manager.arena.CCArena;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 
 public class WaitingListenerProvider extends StateListenerProvider {

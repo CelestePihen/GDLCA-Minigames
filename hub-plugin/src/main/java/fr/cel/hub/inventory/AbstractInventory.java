@@ -5,8 +5,6 @@ import fr.cel.hub.listener.HListener;
 import fr.cel.hub.manager.InventoryManager;
 import fr.cel.hub.utils.ItemBuilder;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,21 +17,23 @@ public abstract class AbstractInventory extends HListener {
 
     protected InventoryManager inventoryManager = Hub.getHub().getInventoryManager();
 
-    @Getter private final Component inventoryName;
-    private final int size;
-    @Getter private Inventory inv;
+    @Getter private final String inventoryName;
+    @Getter private final int size;
+    @Getter public Inventory inv;
 
     public AbstractInventory(String inventoryName, int size, Hub main) {
         super(main);
-        this.inventoryName = Component.text(inventoryName);
+        this.inventoryName = inventoryName;
         this.size = size;
     }
 
     public void createInventory() {
         inv = Bukkit.createInventory(null, size, inventoryName);
 
-        for (int i = 0; i < inv.getSize(); i++) {
-            inv.setItem(i, new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(Component.text(" ")).addAllItemFlags().toItemStack());
+        if (makeGlassPane()) {
+            for (int i = 0; i < inv.getSize(); i++) {
+                inv.setItem(i, new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(" ").addAllItemFlags().toItemStack());
+            }
         }
 
         addItems(inv);
@@ -44,18 +44,22 @@ public abstract class AbstractInventory extends HListener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
 
-        Component nameInventory = event.getView().title();
+        String nameInventory = event.getView().getTitle();
         ItemStack item = event.getCurrentItem();
         if (item == null) return;
-        Material type = item.getType();
+        if (item.getItemMeta() == null) return;
 
         if (nameInventory.equals(inventoryName)) {
             event.setCancelled(true);
-            interact(player, item.getItemMeta().displayName(), type, main);
+            interact(player, item.getItemMeta().getDisplayName(), item, main);
         }
     }
 
+    protected boolean makeGlassPane() {
+        return true;
+    }
+
     protected abstract void addItems(Inventory inv);
-    protected abstract void interact(Player player, Component itemName, Material type, Hub main);
+    protected abstract void interact(Player player, String itemName, ItemStack item, Hub main);
 
 }

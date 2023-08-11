@@ -8,10 +8,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,7 +29,7 @@ import lombok.Getter;
 
 public class PVPArena implements Listener {
     
-    public PVPGameManager gameManager = PVPGameManager.getGameManager();
+    private final PVPGameManager gameManager = PVPGameManager.getGameManager();
 
     @Getter private final String nameArena;
     @Getter private final String displayName;
@@ -35,9 +41,7 @@ public class PVPArena implements Listener {
     public PVPArena(String nameArena, String displayName, Location spawnLoc) {
         this.nameArena = nameArena;
         this.displayName = displayName;
-
         this.spawnLoc = spawnLoc;
-
         this.players = new ArrayList<>();
 
         gameManager.getMain().getServer().getPluginManager().registerEvents(this, gameManager.getMain());
@@ -68,7 +72,7 @@ public class PVPArena implements Listener {
         return players.contains(player.getUniqueId());
     }
 
-    public void sendMessage(String message) {
+    private void sendMessage(String message) {
         message = ChatUtility.format(gameManager.getPrefix() + message);
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
@@ -78,14 +82,19 @@ public class PVPArena implements Listener {
 
     public void giveWeapons(Player player) {
         ItemStack diamond_sword = new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("La Lame Sacrée de Ludwig").toItemStack();
-        ItemStack bow = new ItemBuilder(Material.BOW).setDisplayName("Arc Long").addEnchant(Enchantment.ARROW_INFINITE, 1).toItemStack();
+        ItemStack bow = new ItemBuilder(Material.BOW).setDisplayName("Arc Long").addEnchant(Enchantment.ARROW_INFINITE, 1).setUnbreakable().toItemStack();
         ItemStack arrow = new ItemBuilder(Material.ARROW).toItemStack();
         ItemStack golden_carrot = new ItemBuilder(Material.GOLDEN_CARROT, 64).toItemStack();
-        player.getInventory().addItem(diamond_sword, bow, arrow, golden_carrot);
-        player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
-        player.getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
-        player.getInventory().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
-        player.getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
+
+        player.getInventory().setItem(17, arrow);
+        player.getInventory().addItem(diamond_sword, bow, golden_carrot);
+
+        player.getInventory().setHelmet(new ItemBuilder(Material.DIAMOND_HELMET).setUnbreakable().toItemStack());
+        player.getInventory().setChestplate(new ItemBuilder(Material.DIAMOND_CHESTPLATE).setUnbreakable().toItemStack());
+        player.getInventory().setLeggings(new ItemBuilder(Material.DIAMOND_LEGGINGS).setUnbreakable().toItemStack());
+        player.getInventory().setBoots(new ItemBuilder(Material.DIAMOND_BOOTS).setUnbreakable().toItemStack());
+        player.getInventory().setItemInOffHand(new ItemBuilder(Material.SHIELD).setUnbreakable().toItemStack());
+
     }
 
     @EventHandler
@@ -95,6 +104,21 @@ public class PVPArena implements Listener {
             if (!this.isPlayerInArena(player)) return;
             this.removePlayer(player);
         }
+    }
+
+    @EventHandler
+    public void entityDamageByEntity(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        Player damager = player.getKiller();
+
+        if (damager == null) return;
+
+        if (!isPlayerInArena(player)) return;
+        if (!isPlayerInArena(damager)) return;
+
+        damager.setHealth(damager.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        damager.setFoodLevel(20);
+
     }
 
 }

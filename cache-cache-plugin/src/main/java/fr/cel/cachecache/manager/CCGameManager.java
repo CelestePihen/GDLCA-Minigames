@@ -4,35 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.arena.ArenaManager;
 import fr.cel.cachecache.manager.groundItems.BlindnessItem;
 import fr.cel.cachecache.manager.groundItems.ChangePositionItem;
 import fr.cel.cachecache.manager.groundItems.CursedHornItem;
 import fr.cel.cachecache.manager.groundItems.SoundCatItem;
 import fr.cel.cachecache.manager.groundItems.SpeedItem;
+import fr.cel.cachecache.utils.TempHubConfig;
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.PlayerManager;
 import fr.cel.hub.utils.ChatUtility;
 import lombok.Getter;
 
+@Getter
 public class CCGameManager {
-    
-    @Getter private final CacheCache main;
-    @Getter private final PlayerManager playerManager;
-    @Getter private static final List<GroundItem> groundItems = new ArrayList<>();
 
-    @Getter private ArenaManager arenaManager;
+    private final String prefix = ChatUtility.format("&6[Cache-Cache] &r");
+    private final CacheCache main;
+    private final PlayerManager playerManager;
+
+    @Getter private static final List<GroundItem> groundItems = new ArrayList<>();
 
     @Getter private static CCGameManager gameManager;
 
-    @Getter private final String prefix = ChatUtility.format("&6[Cache-Cache] &f");
+    private ArenaManager arenaManager;
 
     public CCGameManager(CacheCache main) {
         addGroundItems();
         gameManager = this;
         this.main = main;
-        this.arenaManager = new ArenaManager(main);
         this.playerManager = Hub.getHub().getPlayerManager();
+
+        reloadArenaManager();
     }
 
     /**
@@ -40,6 +42,7 @@ public class CCGameManager {
      */
     public void reloadArenaManager() {
         this.arenaManager = new ArenaManager(main);
+        arenaManager.setTemporaryHub(new TempHubConfig(main).getTemporaryHub());
     }
 
     /**

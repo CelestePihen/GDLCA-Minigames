@@ -19,6 +19,8 @@ public class CCCompleter implements TabCompleter {
 
         if (args.length == 1) {
             arguments.add("start");
+            arguments.add("tempHub");
+            arguments.add("enableTemporary");
             arguments.add("list");
             arguments.add("listplayer");
             arguments.add("reload");

@@ -2,15 +2,13 @@ package fr.cel.hub.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Sound;
 
 import lombok.Getter;
 
 public class RPUtils {
 
-    @Getter private final Map<Component, CustomMusic> musics = new HashMap<>();
+    @Getter private final Map<String, CustomMusic> musics = new HashMap<>();
 
     public RPUtils() {
         for (CustomMusic customMusic : CustomMusic.values()) {
@@ -61,8 +59,7 @@ public class RPUtils {
         RELIC("Relic", "Aaron Cherof", Sound.MUSIC_DISC_RELIC)
         ;
 
-        private final Component musicName;
-        private final String displayName;
+        private final String musicName;
         private final String author;
         private final String description;
         private final Sound sound;
@@ -72,8 +69,7 @@ public class RPUtils {
         }
 
         CustomMusic(String musicName, String author, String description, Sound sound) {
-            this.musicName = Component.text(musicName).decoration(TextDecoration.ITALIC, false);
-            this.displayName = musicName;
+            this.musicName = musicName;
             this.author = author;
             this.description = description;
             this.sound = sound;

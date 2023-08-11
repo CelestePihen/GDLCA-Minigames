@@ -1,5 +1,6 @@
 package fr.cel.cachecache.manager.arena.state.providers;
 
+import fr.cel.cachecache.manager.arena.CCArena;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.AbstractHorse;
@@ -18,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 import lombok.Getter;
 
@@ -42,15 +42,14 @@ public abstract class StateListenerProvider implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player leaver = event.getPlayer();
-        if (!getArena().isPlayerInArena(leaver)) return;
+        if (!arena.isPlayerInArena(leaver)) return;
         getArena().removePlayer(leaver);
     }
 
     @EventHandler
     public void foodChange(FoodLevelChangeEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            if (!getArena().isPlayerInArena((Player) entity)) return;
+        if (event.getEntity() instanceof Player player) {
+            if (!arena.isPlayerInArena(player)) return;
             event.setFoodLevel(20);
         }
     }
@@ -58,8 +57,9 @@ public abstract class StateListenerProvider implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (event.getMessage().equals("/hub") || event.getMessage().equals("/hub:hub")) {
-            if (!getArena().isPlayerInArena(player)) return;
+        String message = event.getMessage();
+        if (!arena.isPlayerInArena(player)) return;
+        if (message.equalsIgnoreCase("/hub") || message.equalsIgnoreCase("/hub:hub") || message.equalsIgnoreCase("/hub " + player.getName()) || message.equalsIgnoreCase("/hub:hub " + player.getName())) {
             arena.removePlayer(player);
         }
     }
@@ -71,7 +71,7 @@ public abstract class StateListenerProvider implements Listener {
         Player player = event.getPlayer();
         Action action = event.getAction();
         
-        if (!getArena().isPlayerInArena(event.getPlayer())) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         if (block == null) return;
 
@@ -79,17 +79,14 @@ public abstract class StateListenerProvider implements Listener {
 
         if (event.getAction() == Action.PHYSICAL && type == Material.FARMLAND) event.setCancelled(true);
 
-        if (block.getType() == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") ||
-        (block.getType() == Material.CAVE_VINES || block.getType() == Material.CAVE_VINES_PLANT) ||
-        block.getType() == Material.SWEET_BERRY_BUSH || block.getType() == Material.CHEST || 
-        block.getType() == Material.HOPPER || block.getType() == Material.FURNACE || 
-        block.getType() == Material.BLAST_FURNACE || block.getType() == Material.SMOKER) event.setCancelled(true);
+        if (type == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || (type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) ||
+                type == Material.SWEET_BERRY_BUSH || type == Material.CHEST ||  type == Material.HOPPER || type == Material.FURNACE ||
+                type == Material.BLAST_FURNACE || type == Material.SMOKER) event.setCancelled(true);
 
         for (GroundItem groundItem : arena.getAvailableGroundItems()) {
             if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
                     && itemStack != null
                     && itemStack.getItemMeta() != null
-                    && itemStack.getItemMeta().getDisplayName() != null
                     && itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(groundItem.getDisplayName())) {
                 groundItem.onInteract(player, arena);
             }
@@ -99,16 +96,16 @@ public abstract class StateListenerProvider implements Listener {
 
     @EventHandler
     public void playerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (!getArena().isPlayerInArena(event.getPlayer())) return;
-        if (event.getPlayer().isOp()) return;
+        Player player = event.getPlayer();
+        if (!arena.isPlayerInArena(player)) return;
+        if (player.isOp()) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void mountEntity(EntityMountEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            if (!getArena().isPlayerInArena((Player) entity)) return;
+        if (event.getEntity() instanceof Player player) {
+            if (!getArena().isPlayerInArena(player)) return;
             if (event.getMount() instanceof AbstractHorse) event.setCancelled(true);
         }
     }

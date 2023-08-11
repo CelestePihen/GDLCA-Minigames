@@ -6,7 +6,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.cel.cachecache.manager.CCArena;
+import fr.cel.cachecache.manager.arena.CCArena;
 
 public class SoundCatTimer extends BukkitRunnable {
     

@@ -1,5 +1,6 @@
 package fr.cel.valocraft;
 
+import lombok.Getter;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -9,11 +10,12 @@ import fr.cel.valocraft.manager.ValoGameManager;
 
 public class ValoCraft extends JavaPlugin {
 
-    private ValoGameManager gameManager;
+    @Getter private static ValoGameManager gameManager;
 
     @Override
     public void onEnable() {
-        this.gameManager = new ValoGameManager(this);
+        gameManager = new ValoGameManager(this);
+        gameManager.loadInventories();
 
         this.getCommand("valocraft").setExecutor(new ValoCommands(gameManager));
         this.getCommand("valocraft").setTabCompleter(new ValoCompleter());

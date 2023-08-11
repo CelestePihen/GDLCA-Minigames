@@ -1,19 +1,16 @@
 package fr.cel.hub.commands;
 
 import fr.cel.hub.Hub;
-import fr.cel.hub.utils.Replacement;
-import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractCommand extends Replacement implements CommandExecutor, TabCompleter {
+public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
     
     protected final Hub main;
     private final String commandName;
@@ -31,10 +28,10 @@ public abstract class AbstractCommand extends Replacement implements CommandExec
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("Vous devez etre un joueur pour faire cette commande."));
+            sender.sendMessage("Vous devez etre un joueur pour faire cette commande.");
             return false;
         }
 
@@ -52,7 +49,7 @@ public abstract class AbstractCommand extends Replacement implements CommandExec
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) return arguments;
 
         onTabComplete((Player) sender, label, args);
@@ -69,6 +66,15 @@ public abstract class AbstractCommand extends Replacement implements CommandExec
         List<String> variantsList = new ArrayList<>(variants);
         for (String variant : variantsList) if (!variant.startsWith(last)) variants.remove(variant);
         return variants;
+    }
+
+    /**
+     * Permet d'envoyer un message avec le prefix (avec l'API Adventure)
+     * @param player Le joueur
+     * @param message Le message
+     */
+    protected void sendMessageWithPrefix(Player player, String message) {
+        player.sendMessage(Hub.getHub().getPrefix() + message);
     }
     
 }

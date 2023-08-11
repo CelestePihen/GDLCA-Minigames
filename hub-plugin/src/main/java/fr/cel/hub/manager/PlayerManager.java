@@ -2,8 +2,6 @@ package fr.cel.hub.manager;
 
 import fr.cel.hub.utils.ItemBuilder;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -67,7 +65,7 @@ public class PlayerManager {
         player.setHealth(20);
         player.setLevel(0);
         player.getInventory().clear();
-        player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setDisplayName(Component.text("Sélectionneur de mini-jeux").decoration(TextDecoration.ITALIC, false)).toItemStack());
+        player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setDisplayName("&rSélectionneur de mini-jeux").toItemStack());
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
     }
 

@@ -3,13 +3,13 @@ package fr.cel.cachecache.manager.groundItems;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.cel.cachecache.manager.arena.CCArena;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import fr.cel.cachecache.manager.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.hub.utils.ItemBuilder;
 
