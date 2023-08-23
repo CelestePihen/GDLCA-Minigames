@@ -58,9 +58,7 @@ public class NPC {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         ServerGamePacketListenerImpl ps = serverPlayer.connection;
 
-        if (!location.getWorld().getName().equalsIgnoreCase(serverPlayer.level().getWorld().getName())) {
-            return;
-        }
+        if (!location.getWorld().getName().equalsIgnoreCase(serverPlayer.level().getWorld().getName())) return;
 
         // PlayerInfoUpdatePacket
         ps.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, npc));
@@ -87,6 +85,7 @@ public class NPC {
            Method setRotMethod = net.minecraft.world.entity.Entity.class.getDeclaredMethod("a", float.class, float.class);
            setRotMethod.setAccessible(true);
            setRotMethod.invoke(npc, location.getYaw(), location.getPitch());
+           setRotMethod.setAccessible(false);
        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
            e.printStackTrace();
        }
@@ -103,15 +102,11 @@ public class NPC {
     }
 
     public void showToAll() {
-        for (Player pls : Bukkit.getOnlinePlayers()) {
-            spawn(pls);
-        }
+        Bukkit.getOnlinePlayers().forEach(this::spawn);
     }
 
     public void removeToAll() {
-        for (Player pls : Bukkit.getOnlinePlayers()) {
-            hide(pls);
-        }
+        Bukkit.getOnlinePlayers().forEach(this::hide);
     }
 
     private void update(Player player) {

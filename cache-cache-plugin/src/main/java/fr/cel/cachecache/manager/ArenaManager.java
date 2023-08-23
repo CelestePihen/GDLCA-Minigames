@@ -50,12 +50,9 @@ public class ArenaManager {
         if (folder.isDirectory()) {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
-                arenas.put(name, new Config(main, name).getArena());
-                if (name.startsWith("T")) {
-                    Bukkit.getConsoleSender().sendMessage(CCGameManager.getGameManager().getPrefix() + ChatUtility.format("Chargement de la map temporaire Cache-Cache " + name));
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(CCGameManager.getGameManager().getPrefix() + ChatUtility.format("Chargement de la map Cache-Cache "+ name));
-                }
+                Config config = new Config(main, name);
+                arenas.put(config.getArena().getDisplayName(), config.getArena());
+                Bukkit.getConsoleSender().sendMessage(CCGameManager.getGameManager().getPrefix() + ChatUtility.format("Chargement de la map Cache-Cache "+ name));
             }
         }
     }

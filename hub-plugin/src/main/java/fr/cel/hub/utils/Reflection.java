@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 public class Reflection {
 
-    public static Field getField(Class clazz, String fieldName) throws NoSuchFieldException {
+    public static Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
         try {
             return clazz.getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {

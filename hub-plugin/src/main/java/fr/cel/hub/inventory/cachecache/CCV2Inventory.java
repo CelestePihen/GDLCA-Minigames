@@ -19,8 +19,8 @@ public class CCV2Inventory extends AbstractInventory {
 
     public CCV2Inventory(String mapName, Material type, Hub main) {
         super("Cache-Cache - " + mapName, 27, main);
-        this.nameV1 = mapName;
-        this.nameV2 = mapName + "2";
+        this.nameV1 = mapName + " V1";
+        this.nameV2 = mapName + " V2";
         this.type = type;
     }
 

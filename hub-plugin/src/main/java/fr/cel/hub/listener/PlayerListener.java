@@ -88,12 +88,11 @@ public class PlayerListener extends HListener {
     public void playerInteract(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
         final Block block = event.getClickedBlock();
-        Material type = null;
 
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
         if (player.isOp()) return;
         if (block == null) return;
-        type = block.getType();
+        final Material type = block.getType();
         if (type == Material.LECTERN) return;
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) event.setCancelled(true);
         if (type == Material.FLOWER_POT || type.name().startsWith("POTTED_") || type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) event.setCancelled(true);
