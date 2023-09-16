@@ -1,5 +1,6 @@
 package fr.cel.essentials;
 
+import fr.cel.essentials.commands.other.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -8,11 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import fr.cel.essentials.commands.inventory.AnvilCommand;
 import fr.cel.essentials.commands.inventory.CraftCommand;
 import fr.cel.essentials.commands.inventory.EnderChestCommand;
-import fr.cel.essentials.commands.other.FeedCommand;
-import fr.cel.essentials.commands.other.GMCommand;
-import fr.cel.essentials.commands.other.GodCommand;
-import fr.cel.essentials.commands.other.HealCommand;
-import fr.cel.essentials.commands.other.SpeedCommand;
 import fr.cel.essentials.commands.utils.*;
 import fr.cel.essentials.listener.EntityListener;
 import fr.cel.hub.utils.ChatUtility;
@@ -24,8 +20,8 @@ import java.util.UUID;
 
 public class Essentials extends JavaPlugin {
 
-    @Getter private List<UUID> playersInGod = new ArrayList<>();
-    @Getter private String prefix = ChatUtility.format("&6[GDLCA Minigames] &f");
+    @Getter private final List<UUID> playersInGod = new ArrayList<>();
+    @Getter private final String prefix = ChatUtility.format("&6[GDLCA Minigames] &f");
 
     @Override
     public void onEnable() {
@@ -48,6 +44,7 @@ public class Essentials extends JavaPlugin {
         getCommand("near").setExecutor(new NearCommand(this));
         getCommand("god").setExecutor(new GodCommand(this));
         getCommand("discord").setExecutor(new DiscordCommand(this));
+        getCommand("fly").setExecutor(new FlyCommand(this));
     }
 
     @Override

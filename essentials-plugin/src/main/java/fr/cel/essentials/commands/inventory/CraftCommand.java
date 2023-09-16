@@ -15,5 +15,8 @@ public class CraftCommand extends AbstractCommand {
     protected void onExecute(Player player, String[] args) {
         player.openWorkbench(player.getLocation(), true);
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

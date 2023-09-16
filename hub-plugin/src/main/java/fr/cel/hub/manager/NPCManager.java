@@ -49,13 +49,12 @@ public class NPCManager {
     }
 
     public static void removeToAll() {
-        for (NPC npc : npcs) {
-            npc.removeToAll();
-        }
+        for (NPC npc : npcs) npc.hideToAll();
     }
 
     public void reloadNPCs() {
         removeToAll();
         loadNPCs();
     }
+
 }

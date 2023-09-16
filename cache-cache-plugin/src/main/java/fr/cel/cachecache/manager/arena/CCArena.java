@@ -395,6 +395,12 @@ public class CCArena {
             Bukkit.broadcastMessage("[Cache-Cache] Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
         }
 
+        else if (arenaState instanceof PlayingArenaState playingArenaState) {
+            if (playingArenaState.getPlayingArenaTask() != null) playingArenaState.getPlayingArenaTask().cancel();
+            if (playingArenaState.getPlayingWolfArenaTask() != null) playingArenaState.getPlayingWolfArenaTask().cancel();
+            if (playingArenaState.getPlayingBecomeWolfArenaTask() != null) playingArenaState.getPlayingBecomeWolfArenaTask().cancel();
+        }
+
         if (time < bestTimer) {
             bestTimer = time;
             config.setValue("bestTime", bestTimer);

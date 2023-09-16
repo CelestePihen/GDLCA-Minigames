@@ -190,7 +190,7 @@ public class ItemBuilder {
         ItemMeta im = is.getItemMeta();
         List<String> lore = new ArrayList<>(im.getLore());
 
-        if(index<0||index>lore.size()) return this;
+        if(index < 0 || index > lore.size()) return this;
 
         lore.remove(index);
         im.setLore(lore);
@@ -204,9 +204,12 @@ public class ItemBuilder {
      */
     public ItemBuilder addLoreLine(String line){
         ItemMeta im = is.getItemMeta();
+
         List<String> lore = new ArrayList<>();
-        if(im.hasLore())lore = new ArrayList<>(im.getLore());
-        lore.add(line);
+
+        if(im.hasLore()) lore = new ArrayList<>(im.getLore());
+        lore.add(ChatUtility.format(line));
+
         im.setLore(lore);
         is.setItemMeta(im);
         return this;
@@ -220,7 +223,7 @@ public class ItemBuilder {
     public ItemBuilder addLoreLine(String line, int pos){
         ItemMeta im = is.getItemMeta();
         List<String> lore = new ArrayList<>(im.getLore());
-        lore.set(pos, line);
+        lore.set(pos, ChatUtility.format(line));
         im.setLore(lore);
         is.setItemMeta(im);
         return this;

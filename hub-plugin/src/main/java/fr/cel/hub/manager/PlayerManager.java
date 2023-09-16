@@ -33,25 +33,39 @@ public class PlayerManager {
      * Monde Normal
     */
 
-    // Ajoute le joueur dans la liste des joueurs dans le Monde Normal
+
+    /**
+     * Ajoute le joueur dans la liste des joueurs dans le Hub
+     * @param player Le joueur à ajouter
+     */
     private void addPlayerInHub(Player player) {
         if (containsPlayerInHub(player)) return;
         playersInHub.add(player.getUniqueId());
     }
 
-    // Retire le joueur dans la liste des joueurs dans le Monde Normal
+    /**
+     * Retire le joueur dans la liste des joueurs dans le Monde Normal
+     * @param player Le joueur à retirer
+     */
     public void removePlayerInHub(Player player) {
         if (!containsPlayerInHub(player)) return;
         
         playersInHub.remove(player.getUniqueId());
     }
 
-    // Détecte si le joueur est dans le Hub
+    /**
+     * Détecte si le joueur est dans le Hub
+     * @param player Le joueur à détecter
+     * @return Renvoie si le joueur est dans le Hub ou pas
+     */
     public boolean containsPlayerInHub(Player player) {
         return playersInHub.contains(player.getUniqueId());
     }
 
-    // Détecte si le joueur est dans le Monde Normal
+    /**
+     * Permet d'envoyer le joueur dans le Hub
+     * @param player Le joueur à envoyer
+     */
     public void sendPlayerToHub(Player player) {
         removePlayerInInstitution(player);
         addPlayerInHub(player);
@@ -73,25 +87,38 @@ public class PlayerManager {
      * Monde Institution
     */
 
-    // Ajoute le joueur dans la liste des joueurs dans l'Institution
+    /**
+     * Ajoute le joueur dans la liste des joueurs dans l'Institution
+     * @param player Le joueur à ajouter
+     */
     private void addPlayerInInstitution(Player player) {
         if (containsPlayerInInstitution(player)) return;
         playersInInstitution.add(player.getUniqueId());
     }
 
-    // Retire le joueur dans la liste des joueurs dans l'Institution
+    /**
+     * // Retire le joueur dans la liste des joueurs dans l'Institution
+     * @param player Le joueur à retirer
+     */
     public void removePlayerInInstitution(Player player) {
         if (!containsPlayerInInstitution(player)) return;
 
         playersInInstitution.remove(player.getUniqueId());
     }
 
-    // Détecte si le joueur est dans l'Institution
+    /**
+     * Détecte si le joueur est dans l'Institution
+     * @param player Le joueur à détecter
+     * @return Renvoie si le joueur est dans l'Institution ou pas
+     */
     public boolean containsPlayerInInstitution(Player player) {
         return playersInInstitution.contains(player.getUniqueId());
     }
 
-    // Permet d'envoyer le joueur dans l'Institution
+    /**
+     * Permet d'envoyer le joueur dans l'Institution
+     * @param player Le joueur à envoyer
+     */
     public void sendPlayerToInstitution(Player player) {
         removePlayerInHub(player);
         addPlayerInInstitution(player);

@@ -17,5 +17,8 @@ public class AnvilCommand extends AbstractCommand {
     protected void onExecute(Player player, String[] args) {
         player.openInventory(Bukkit.createInventory(null, InventoryType.ANVIL));
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

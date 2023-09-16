@@ -15,14 +15,12 @@ import lombok.Getter;
 
 public class ArenaManager {
     
-    @Getter private List<ValoArena> arenas = new ArrayList<>();
+    @Getter private final List<ValoArena> arenas = new ArrayList<>();
     private final ValoCraft main;
-    private final ValoGameManager gameManager;
 
     public ArenaManager(ValoCraft main, ValoGameManager gameManager) {
         this.main = main;
-        this.gameManager = gameManager;
-        this.loadArenas();
+        this.loadArenas(gameManager);
     }
 
     public ValoArena getArenaByDisplayName(String name) {
@@ -46,14 +44,14 @@ public class ArenaManager {
         return false;
     }
 
-    public void loadArenas() {
+    public void loadArenas(ValoGameManager gameManager) {
         arenas.clear();
         File folder = new File(main.getDataFolder(), "arenas");
         if (!folder.exists()) folder.mkdirs();
         if (folder.isDirectory()) {
             for (File file : folder.listFiles()) {
-                Config config = new Config(main, gameManager, file.getName().replace(".yml", ""));
-                arenas.add(config.getArena());
+                Config config = new Config(main, file.getName().replace(".yml", ""));
+                arenas.add(config.getArena(gameManager));
                 Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[Valocraft] &fChargement de l'arène ValoCraft ") + file.getName().replace(".yml", ""));
             }
         }

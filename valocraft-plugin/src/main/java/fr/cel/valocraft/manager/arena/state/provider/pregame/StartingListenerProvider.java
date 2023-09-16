@@ -37,9 +37,7 @@ public class StartingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
-
+        if (event.getEntity() instanceof Player player) {
             if (!getArena().isPlayerInArena(player)) return;
             event.setCancelled(true);
         }
@@ -48,16 +46,16 @@ public class StartingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-
         if (!getArena().isPlayerInArena(player)) return;
+
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-
         if (!getArena().isPlayerInArena(player)) return;
+
         event.setCancelled(true);
     }
 
@@ -81,17 +79,12 @@ public class StartingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void clickInventory(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-
         if (getArena().isPlayerInArena(player)) return;
 
         if (event.getView().getTitle().equalsIgnoreCase("Sélecteur d'équipes")) {
-
             if (event.getCurrentItem() == null) return;
-            if (event.getCurrentItem().getType() == null) return;
-
             player.sendMessage(getArena().getGameManager().getPrefix() + "Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.");
             player.closeInventory();
-            return;
         }
     }
 
@@ -109,9 +102,7 @@ public class StartingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
         Entity entity = event.getEntity();
-        if (!(entity instanceof Player)) return;
-
-        Player player = (Player) entity;
+        if (!(entity instanceof Player player)) return;
         if (!getArena().isPlayerInArena(player)) return;
 
         Item item = event.getItem();

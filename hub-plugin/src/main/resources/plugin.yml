@@ -9,8 +9,10 @@ commands:
     description: Besoin d'expliquer ? Bon. Permet d'aller au hub
   event:
     description: Permet d'effectuer des événements
+    permission: hub.event
   npc:
     description: Permet de faire apparaître un PNJ
+    permission: hub.npc
 
 permissions:
   hub.tphub:

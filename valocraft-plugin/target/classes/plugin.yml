@@ -6,3 +6,5 @@ authors: [ Cel ]
 depend: [Hub]
 commands:
   valocraft:
+    description: La commande principale
+    permission: valocraft.valocommand

@@ -21,7 +21,6 @@ import lombok.Getter;
 public class WaitingArenaState extends ArenaState {
 
     @Getter private WaitingArenaTask waitingArenaTask;
-    private int timer;
 
     public WaitingArenaState(ValoArena arena) {
         super(arena);
@@ -42,8 +41,8 @@ public class WaitingArenaState extends ArenaState {
         giveWeapons();
         showGlobalRound();
         removeSpike();
-        
-        timer = (getArena().getGlobalRound() == 1 || getArena().getGlobalRound() == 13 || (getArena().getRoundWinBlue() == 12 && getArena().getRoundWinRed() == 12)) ? 45 : 30;
+
+        int timer = (getArena().getGlobalRound() == 1 || getArena().getGlobalRound() == 13 || (getArena().getRoundWinBlue() == 12 && getArena().getRoundWinRed() == 12)) ? 45 : 30;
         waitingArenaTask = new WaitingArenaTask(getArena(), timer);
         waitingArenaTask.runTaskTimer(main, 0, 20);
     }

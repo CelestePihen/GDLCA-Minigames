@@ -5,9 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.cel.essentials</groupId>
-    <artifactId>Essentials</artifactId>
+    <artifactId>essentials</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
+
+    <name>Essentials</name>
 
     <properties>
         <java.version>17</java.version>
@@ -41,14 +43,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.2</version>
-                <configuration>
-                    <outputDirectory>D:\Windows\Bureau\GDLC MiniGames\server\plugins</outputDirectory>
-                </configuration>
-            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -57,13 +51,6 @@
             </resource>
         </resources>
     </build>
-
-    <repositories>
-        <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -79,11 +66,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-		    <groupId>org.projectlombok</groupId>
-		    <artifactId>lombok</artifactId>
-		    <version>1.18.28</version>
-		    <scope>provided</scope>
-	    </dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-    
+
 </project>

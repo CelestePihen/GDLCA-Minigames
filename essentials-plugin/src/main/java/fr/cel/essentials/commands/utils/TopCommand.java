@@ -14,11 +14,14 @@ public class TopCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(Player player, String[] args) {
-        double x = player.getLocation().getX();
-        double z = player.getLocation().getZ();
+        int x = (int) player.getLocation().getX();
+        int z = (int) player.getLocation().getZ();
 
-        player.teleport(new Location(player.getWorld(), x, player.getLocation().getWorld().getHighestBlockYAt((int) x, (int) z), z));
-        player.sendMessage(main.getPrefix() + "Vous avez été téléporté(e) à la surface.");
+        player.teleport(new Location(player.getWorld(), x, player.getLocation().getWorld().getHighestBlockYAt(x, z), z));
+        sendMessageWithPrefix(player, "Vous avez été téléporté(e) à la surface.");
     }
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
     
 }

@@ -20,28 +20,25 @@ public class NearCommand extends AbstractCommand {
     protected void onExecute(Player player, String[] args) {
         
         if (args.length == 0 || args.length > 3) {
-            player.sendMessage(main.getPrefix() + "La commande est : /near <radius> ou /near <radius> <joueur>");
+            sendMessageWithPrefix(player, "La commande est : /near <radius> ou /near <radius> <joueur>");
             return;
         }
 
         if (args.length == 1) {
             searchPlayers(player, player, args);
             return;
-
         }
 
         if (args.length == 2) {
             Player target = Bukkit.getPlayer(args[1]);
 
             if (target == null) {
-                player.sendMessage(main.getPrefix() + "Ce joueur n'existe pas ou n'est pas connecté(e).");
+                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté(e).");
                 return;
             }
 
             searchPlayers(player, target, args);
-            return;
         }
-
     }
 
     private void searchPlayers(Player player, Player target, String[] args) {
@@ -49,7 +46,7 @@ public class NearCommand extends AbstractCommand {
         try {
             radius = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            player.sendMessage(main.getPrefix() + "Merci de mettre un nombre valide. La commande est : /near <radius> ou /near <radius> <joueur>");
+            sendMessageWithPrefix(player, "Merci de mettre un nombre valide. La commande est : /near <radius> ou /near <radius> <joueur>");
             return;
         }
 
@@ -59,8 +56,11 @@ public class NearCommand extends AbstractCommand {
                 playersName.add(pl.getName());
             }
         }
-            
-        player.sendMessage(main.getPrefix() + "Les joueurs proches de vous sont : " + playersName);
+
+        sendMessageWithPrefix(player, "Les joueurs proches de vous sont : " + playersName);
     }
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
     
 }

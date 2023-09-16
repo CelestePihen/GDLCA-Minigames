@@ -18,13 +18,12 @@ public class GodCommand extends AbstractCommand {
         if (args.length == 0) {
             if (main.containsPlayersInGod(player)) {
                 main.getPlayersInGod().remove(player.getUniqueId());
-                player.sendMessage(main.getPrefix() + "Vous n'êtes plus en mode invulnérable.");
-                return;
+                sendMessageWithPrefix(player, "Vous n'êtes plus en mode invulnérable.");
             } else {
                 main.getPlayersInGod().add(player.getUniqueId());
-                player.sendMessage(main.getPrefix() + "Vous êtes en mode invulnérable.");
-                return;
+                sendMessageWithPrefix(player, "Vous êtes en mode invulnérable.");
             }
+            return;
         }
 
         if (args.length == 1) {
@@ -33,22 +32,22 @@ public class GodCommand extends AbstractCommand {
             if (target != null) {
                 if (main.containsPlayersInGod(target)) {
                     main.getPlayersInGod().remove(target.getUniqueId());
-                    target.sendMessage(main.getPrefix() + "Vous n'êtes plus en mode invulnérable.");
-                    player.sendMessage(main.getPrefix() + "Vous avez enlevé le mode invulnérable de " + target.getName() + ".");
-                    return;
+                    sendMessageWithPrefix(target, "Vous n'êtes plus en mode invulnérable.");
+                    sendMessageWithPrefix(player, "Vous avez enlevé le mode invulnérable de " + target.getName() + ".");
                 } else {
                     main.getPlayersInGod().add(player.getUniqueId());
-                    target.sendMessage(main.getPrefix() + "Vous avez été mis(e) en mode invulnérable.");
-                    player.sendMessage(main.getPrefix() + "Vous avez mis en mode invulnérable " + target.getName() + ".");
-                    return;
+                    sendMessageWithPrefix(target, "Vous avez été mis(e) en mode invulnérable.");
+                    sendMessageWithPrefix(player, "Vous avez mis en mode invulnérable " + target.getName() + ".");
                 }
             } else {
-                player.sendMessage(main.getPrefix() + "Ce joueur n'existe pas ou n'est pas connecté.");
-                return;
+                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
 
         }
 
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

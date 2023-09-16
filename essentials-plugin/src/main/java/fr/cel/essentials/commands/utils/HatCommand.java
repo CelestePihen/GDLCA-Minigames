@@ -19,10 +19,13 @@ public class HatCommand extends AbstractCommand {
             ItemStack it = player.getInventory().getItemInMainHand();
             it.setAmount(1);
             player.getInventory().setHelmet(it);
-            player.sendMessage(main.getPrefix() + "Tu as mis sur ta tête : " + it.getType().name());
+            sendMessageWithPrefix(player, "Tu as mis sur ta tête : " + it.getType().name());
         }
         
 
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

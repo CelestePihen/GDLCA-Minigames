@@ -19,8 +19,6 @@ public abstract class ArenaState implements Listener {
     }
 
     public void onEnable(ValoCraft main) {
-        main = arena.getGameManager().getMain();
-
         listenerProvider = getListenerProvider();
         if (listenerProvider != null) listenerProvider.onEnable(main);
     }

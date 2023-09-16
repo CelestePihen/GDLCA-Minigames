@@ -21,14 +21,14 @@ public class MinigamesInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(9, new ItemBuilder(Material.SPYGLASS).setDisplayName(ChatUtility.format("&aCache-Cache")).toItemStack());
-        inv.setItem(11, new ItemBuilder(Material.BOW).setDisplayName(ChatUtility.format("&aValocraft")).toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.NETHERITE_SWORD).setDisplayName(ChatUtility.format("&aPVP")).toItemStack());
-        inv.setItem(15, new ItemBuilder(Material.IRON_BOOTS).setDisplayName(ChatUtility.format("&aParkour")).toItemStack());
-        inv.setItem(17, new ItemBuilder(Material.BRUSH).setDisplayName(ChatUtility.format("&aMusée")).toItemStack());
+        inv.setItem(9, new ItemBuilder(Material.SPYGLASS).setDisplayName("&aCache-Cache").toItemStack());
+        inv.setItem(11, new ItemBuilder(Material.BOW).setDisplayName("&aValocraft").toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.NETHERITE_SWORD).setDisplayName("&aPVP").toItemStack());
+        inv.setItem(15, new ItemBuilder(Material.IRON_BOOTS).setDisplayName("&aParkour").toItemStack());
+        inv.setItem(17, new ItemBuilder(Material.BRUSH).setDisplayName("&aMusée").toItemStack());
 
         for (int slot = 27; slot <= 35; slot += 2) {
-            inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName(ChatUtility.format("&eIndisponible")).toItemStack());
+            inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName("&eIndisponible").toItemStack());
         }
 
         inv.setItem(49, new ItemBuilder(Material.BARRIER).setDisplayName("Quitter").toItemStack());
@@ -43,12 +43,9 @@ public class MinigamesInventory extends AbstractInventory {
 
             case NETHERITE_SWORD -> player.openInventory(inventoryManager.getInventories().get("pvp").getInv());
 
-            case IRON_BOOTS -> player.sendMessage("Parkour pas encore fait");
+            case IRON_BOOTS -> sendMessageWithPrefix(player, "Parkour pas encore fait");
 
-            case BRUSH -> {
-                player.teleport(locationMusee);
-                player.closeInventory();
-            }
+            case BRUSH -> player.teleport(locationMusee);
 
             case COMMAND_BLOCK -> {
                 sendMessageWithPrefix(player, "Indisponible pour le moment.");

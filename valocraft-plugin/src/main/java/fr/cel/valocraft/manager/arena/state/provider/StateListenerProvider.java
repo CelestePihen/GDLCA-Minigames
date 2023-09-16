@@ -13,9 +13,9 @@ import fr.cel.valocraft.ValoCraft;
 import fr.cel.valocraft.manager.arena.ValoArena;
 import lombok.Getter;
 
-public abstract class StateListenerProvider implements Listener {
+public class StateListenerProvider implements Listener {
 
-    @Getter private ValoArena arena;
+    @Getter private final ValoArena arena;
 
     public StateListenerProvider(ValoArena arena) {
         this.arena = arena;
@@ -49,8 +49,8 @@ public abstract class StateListenerProvider implements Listener {
     @EventHandler
     public void foodChange(FoodLevelChangeEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            if (!getArena().isPlayerInArena((Player) entity)) return;
+        if (entity instanceof Player player) {
+            if (!getArena().isPlayerInArena(player)) return;
             event.setFoodLevel(20);
         }
     }

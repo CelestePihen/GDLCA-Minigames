@@ -105,7 +105,7 @@ public class NPC {
         Bukkit.getOnlinePlayers().forEach(this::spawn);
     }
 
-    public void removeToAll() {
+    public void hideToAll() {
         Bukkit.getOnlinePlayers().forEach(this::hide);
     }
 

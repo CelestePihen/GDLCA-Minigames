@@ -13,7 +13,10 @@ public class DiscordCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(Player player, String[] args) {
-        player.sendMessage(main.getPrefix() + "Le lien Discord est : https://discord.gg/vFjPYC4Mj8");
+        sendMessageWithPrefix(player, "Le lien Discord est : https://discord.gg/vFjPYC4Mj8");
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

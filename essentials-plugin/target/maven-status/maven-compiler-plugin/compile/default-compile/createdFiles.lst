@@ -1,5 +1,6 @@
 fr\cel\essentials\commands\other\FeedCommand.class
 fr\cel\essentials\listener\EntityListener.class
+fr\cel\essentials\commands\other\GMCommand$1.class
 fr\cel\essentials\commands\other\HealCommand.class
 fr\cel\essentials\commands\utils\HatCommand.class
 fr\cel\essentials\commands\utils\NearCommand.class

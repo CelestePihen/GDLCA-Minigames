@@ -7,3 +7,4 @@ depend: [Hub]
 commands:
   cachecache:
     description: La commande principale du plugin
+    permission: cachecache.cachecommand

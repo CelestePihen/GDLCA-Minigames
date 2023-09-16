@@ -1,22 +1,25 @@
 package fr.cel.hub.listener;
 
 import fr.cel.hub.Hub;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-public class MiniGameListener extends HListener {
+public class MinigameListener extends HListener {
 
-    public MiniGameListener(Hub main) {
+    public MinigameListener(Hub main) {
         super(main);
     }
 
     @EventHandler
-    public void interact(final PlayerInteractEvent event) {
+    public void onInteract(final PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
         Action action = event.getAction();
@@ -35,7 +38,7 @@ public class MiniGameListener extends HListener {
     }
 
     @EventHandler
-    public void interactInv(final InventoryClickEvent event) {
+    public void onInteractInventory(final InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
         if (player.isOp()) return;
@@ -44,6 +47,18 @@ public class MiniGameListener extends HListener {
         if (item == null) return;
         if (item.getItemMeta() == null) return;
         if (item.getItemMeta().getDisplayName().equals("Sélectionneur de mini-jeux")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onDropItem(final PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        if (player.isOp()) return;
+
+        ItemStack item = event.getItemDrop().getItemStack();
+        if (item.getType() == Material.COMPASS) {
             event.setCancelled(true);
         }
     }

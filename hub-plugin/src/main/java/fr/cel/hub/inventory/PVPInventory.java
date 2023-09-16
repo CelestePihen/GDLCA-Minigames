@@ -17,8 +17,8 @@ public class PVPInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(12, new ItemBuilder(Material.AMETHYST_BLOCK).setDisplayName(ChatUtility.format("&dAlpha")).toItemStack());
-        inv.setItem(14, new ItemBuilder(Material.STONE_BRICKS).setDisplayName(ChatUtility.format("&dBeta")).toItemStack());
+        inv.setItem(12, new ItemBuilder(Material.AMETHYST_BLOCK).setDisplayName("&dAlpha").toItemStack());
+        inv.setItem(14, new ItemBuilder(Material.STONE_BRICKS).setDisplayName("&dBeta").toItemStack());
 
         inv.setItem(22, new ItemBuilder(Material.BARRIER).setDisplayName("Retour").toItemStack());
     }

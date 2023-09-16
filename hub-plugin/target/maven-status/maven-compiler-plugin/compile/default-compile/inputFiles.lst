@@ -2,7 +2,7 @@ E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\ChatUtility.
 E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\ItemBuilder.java
 E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\manager\InventoryManager.java
 E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\inventory\event\MusicInventory.java
-E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\MiniGameListener.java
+E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\listener\MinigameListener.java
 E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\utils\Reflection.java
 E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\tasks\FireworkMusicEvent.java
 E:\GitHub\GDLCA-Minigames\hub-plugin\src\main\java\fr\cel\hub\inventory\AbstractInventory.java

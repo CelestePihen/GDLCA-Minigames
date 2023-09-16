@@ -16,9 +16,9 @@ public class HealCommand extends AbstractCommand {
     @Override
     protected void onExecute(Player player, String[] args) {
 
-        if (args.length <= 0) {
+        if (args.length == 0) {
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-            player.sendMessage(main.getPrefix() + "Vous vous êtes soigné(e).");
+            sendMessageWithPrefix(player, "Vous vous êtes soigné(e).");
             return;
         }
 
@@ -27,20 +27,22 @@ public class HealCommand extends AbstractCommand {
 
             if (target != null) {
                 target.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-                target.sendMessage(main.getPrefix() + "Vous avez été soigné(e).");
-                player.sendMessage(main.getPrefix() + "Vous avez soigné " + target.getName());
+                sendMessageWithPrefix(target, "Vous avez été soigné(e).");
+                sendMessageWithPrefix(player, "Vous avez soigné " + target.getName());
                 return;
             } else {
-                player.sendMessage(main.getPrefix() + "Ce joueur n'existe pas ou n'est pas connecté.");
+                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
                 return;
             }
         }
         
         if (args.length > 2) {
-            player.sendMessage(main.getPrefix() + "La commande est : /heal ou /heal <joueur>");
-            return;
+            sendMessageWithPrefix(player, "La commande est : /heal ou /heal <joueur>");
         }
 
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

@@ -16,7 +16,6 @@ import fr.cel.valocraft.manager.arena.timer.pregame.StartingArenaTask;
 public class StartingArenaState extends ArenaState {
 
     private StartingArenaTask arenaStartingTask;
-    private int timer = 10;
 
     public StartingArenaState(ValoArena arena) {
         super(arena);
@@ -29,9 +28,9 @@ public class StartingArenaState extends ArenaState {
         getArena().setGameModePlayers(GameMode.SURVIVAL);
         setSpawnPoint();
 
+        int timer = 10;
         arenaStartingTask = new StartingArenaTask(getArena(), timer);
         arenaStartingTask.runTaskTimer(main, 0, 20);
-
     }
 
     @Override

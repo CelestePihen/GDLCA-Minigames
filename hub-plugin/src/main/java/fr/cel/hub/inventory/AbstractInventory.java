@@ -40,7 +40,7 @@ public abstract class AbstractInventory extends HListener {
     }
 
     @EventHandler
-    public void interactInventory(final InventoryClickEvent event) {
+    public void interactInventory(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
 
@@ -49,7 +49,7 @@ public abstract class AbstractInventory extends HListener {
         if (item == null) return;
         if (item.getItemMeta() == null) return;
 
-        if (nameInventory.equals(inventoryName)) {
+        if (nameInventory.equalsIgnoreCase(inventoryName)) {
             event.setCancelled(true);
             interact(player, item.getItemMeta().getDisplayName(), item, main);
         }

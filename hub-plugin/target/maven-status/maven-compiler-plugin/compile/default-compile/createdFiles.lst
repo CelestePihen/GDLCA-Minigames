@@ -17,6 +17,8 @@ fr\cel\hub\commands\NPCCommand.class
 fr\cel\hub\inventory\event\MusicInventory.class
 fr\cel\hub\inventory\cachecache\CacheCacheInventory$1.class
 fr\cel\hub\inventory\PVPInventory.class
+fr\cel\hub\listener\MinigameListener.class
+fr\cel\hub\listener\ChatListener$MessageData.class
 fr\cel\hub\utils\RPUtils.class
 fr\cel\hub\utils\ChatUtility.class
 fr\cel\hub\utils\ItemBuilder.class
@@ -31,6 +33,5 @@ fr\cel\hub\utils\ConfigNPC.class
 fr\cel\hub\utils\RPUtils$Unicode.class
 fr\cel\hub\tasks\FireworkMusicEvent.class
 fr\cel\hub\inventory\ValocraftInventory.class
-fr\cel\hub\listener\MiniGameListener.class
 fr\cel\hub\manager\InventoryManager.class
 fr\cel\hub\listener\NPCListener.class

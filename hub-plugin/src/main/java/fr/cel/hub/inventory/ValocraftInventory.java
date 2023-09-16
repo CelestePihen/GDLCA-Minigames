@@ -17,9 +17,9 @@ public class ValocraftInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(11, new ItemBuilder(Material.SAND).setDisplayName(ChatUtility.format("&dDésert")).toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.SNOW_BLOCK).setDisplayName(ChatUtility.format("&dNeige")).toItemStack());
-        inv.setItem(15, new ItemBuilder(Material.CHERRY_LEAVES).setDisplayName(ChatUtility.format("&dTemple")).toItemStack());
+        inv.setItem(11, new ItemBuilder(Material.SAND).setDisplayName("&dDésert").toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.SNOW_BLOCK).setDisplayName("&dNeige").toItemStack());
+        inv.setItem(15, new ItemBuilder(Material.CHERRY_LEAVES).setDisplayName("&dTemple").toItemStack());
 
         inv.setItem(22, new ItemBuilder(Material.BARRIER).setDisplayName("Retour").toItemStack());
     }

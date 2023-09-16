@@ -32,23 +32,28 @@ public class SelectTeam extends AbstractInventory {
                 arena.getBlueTeam().removePlayer(player);
                 arena.getRedTeam().removePlayer(player);
                 arena.sendMessage(player.getDisplayName() + " est maintenant dans aucune équipe.");
+
                 player.sendTitle(ChatUtility.format("Vous êtes maintenant dans aucune équipe."), "", 10, 70, 20);
                 player.getInventory().getItemInMainHand().setType(Material.WHITE_WOOL);
                 player.closeInventory();
             }
+
             case RED_WOOL -> {
                 arena.getBlueTeam().removePlayer(player);
                 arena.getRedTeam().addPlayer(player);
-                arena.sendMessage(player.getDisplayName() + " a rejoint l'&céquipe rouge&f.");
-                player.sendTitle(ChatUtility.format("Vous avez rejoint l'&céquipe rouge&f."), "", 10, 70, 20);
+                arena.sendMessage(player.getDisplayName() + " a rejoint l'&céquipe rouge&r.");
+
+                player.sendTitle(ChatUtility.format("Vous avez rejoint l'&céquipe rouge&r."), "", 10, 70, 20);
                 player.getInventory().getItemInMainHand().setType(Material.RED_WOOL);
                 player.closeInventory();
             }
+
             case BLUE_WOOL -> {
                 arena.getRedTeam().removePlayer(player);
                 arena.getBlueTeam().addPlayer(player);
-                arena.sendMessage(player.getDisplayName() + " a rejoint l'&1équipe bleue&f.");
-                player.sendTitle(ChatUtility.format("Vous avez rejoint l'&1équipe bleue&f."), "", 10, 70, 20);
+                arena.sendMessage(player.getDisplayName() + " a rejoint l'&1équipe bleue&r.");
+
+                player.sendTitle(ChatUtility.format("Vous avez rejoint l'&1équipe bleue&r."), "", 10, 70, 20);
                 player.getInventory().getItemInMainHand().setType(Material.BLUE_WOOL);
                 player.closeInventory();
             }

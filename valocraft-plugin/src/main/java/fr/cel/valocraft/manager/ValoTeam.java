@@ -11,24 +11,22 @@ import org.bukkit.entity.Player;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class ValoTeam {
     
-    @Getter private final String name;
-    @Getter private final String displayName;
+    private final String name;
+    private final String displayName;
+    private final List<UUID> players;
+    @Setter private int roundWin;
 
-    @Getter private final List<UUID> players;
-
-    @Getter @Setter private int roundWin;
-    
-    @Getter private Role role;
+    private Role role;
 
     public ValoTeam(String name, String displayName, Role role) {
         this.name = name;
         this.displayName = displayName;
-        
         this.players = new ArrayList<>();
-        
         this.roundWin = 0;
+
         this.role = role;
     }
 
@@ -47,8 +45,8 @@ public class ValoTeam {
     }
 
     public void clearPlayers() {
+        players.forEach(t -> role.getTeam().removeEntity(t));
         players.clear();
-        players.forEach(t -> { role.getTeam().removeEntity(t); });
     }
 
     public boolean containsPlayer(Player player) {
@@ -56,17 +54,15 @@ public class ValoTeam {
     }
 
     public void setRole(Role role) {
-        players.forEach(uuid -> { this.role.getTeam().removeEntity(uuid); });
-
+        players.forEach(uuid -> this.role.getTeam().removeEntity(uuid));
         this.role = role;
-
-        players.forEach(uuid -> { this.role.getTeam().addEntity(uuid); });
-
+        players.forEach(uuid -> this.role.getTeam().addEntity(uuid));
     }
 
     public boolean isTeamInSpec() {
         for (UUID uuid : players) {
-            if (Bukkit.getPlayer(uuid).getGameMode() != GameMode.SPECTATOR) return false;
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) if (player.getGameMode() != GameMode.SPECTATOR) return false;
         }
         return true;
     }

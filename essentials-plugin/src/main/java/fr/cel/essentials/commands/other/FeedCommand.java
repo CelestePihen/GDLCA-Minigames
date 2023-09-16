@@ -14,10 +14,9 @@ public class FeedCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(Player player, String[] args) {
-        
-        if (args.length <= 0) {
+        if (args.length == 0) {
             player.setFoodLevel(20);
-            player.sendMessage(main.getPrefix() + "Vous vous êtes rassasié(e).");
+            sendMessageWithPrefix(player, "Vous vous êtes rassasié(e).");
             return;
         }
 
@@ -26,20 +25,19 @@ public class FeedCommand extends AbstractCommand {
 
             if (target != null) {
                 target.setFoodLevel(20);
-                target.sendMessage(main.getPrefix() + "Vous avez été rassasié(e).");
-                player.sendMessage(main.getPrefix() + "Vous avez rassasié " + target.getName());
-                return;
+                sendMessageWithPrefix(target, "Vous avez été rassasié(e).");
+                sendMessageWithPrefix(player, "Vous avez rassasié " + target.getName());
             } else {
-                player.sendMessage(main.getPrefix() + "Ce joueur n'existe pas ou n'est pas connecté.");
-                return;
+                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
         }
         
         if (args.length > 2) {
-            player.sendMessage(main.getPrefix() + "La commande est : /feed ou /feed <joueur>");
-            return;
+            sendMessageWithPrefix(player, "La commande est : /feed ou /feed <joueur>");
         }
-
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

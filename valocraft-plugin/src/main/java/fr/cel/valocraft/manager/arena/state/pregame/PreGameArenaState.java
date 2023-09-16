@@ -6,7 +6,6 @@ import fr.cel.valocraft.manager.arena.state.provider.pregame.PreGameListenerProv
 import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 
-
 public class PreGameArenaState extends ArenaState {
 
     public PreGameArenaState(ValoArena arena) {

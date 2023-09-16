@@ -15,9 +15,9 @@ public class EnderChestCommand extends AbstractCommand {
     @Override
     protected void onExecute(Player player, String[] args) {
         
-        if (args.length <= 0) {
+        if (args.length == 0) {
             player.openInventory(player.getEnderChest());
-            player.sendMessage(main.getPrefix() + "Vous avez ouvert votre coffre de l'end.");
+            sendMessageWithPrefix(player, "Vous avez ouvert votre coffre de l'ender.");
             return;
         }
 
@@ -25,14 +25,15 @@ public class EnderChestCommand extends AbstractCommand {
             Player target = Bukkit.getPlayer(args[0]);
             if (target != null) {
                 player.openInventory(target.getEnderChest());
-                player.sendMessage(main.getPrefix() + "Vous avez ouvert le coffre de l'end de " + target.getName() + ".");
-                return;
+                sendMessageWithPrefix(player, "Vous avez ouvert le coffre de l'ender de " + target.getName() + ".");
             } else {
-                player.sendMessage(main.getPrefix() + "Ce joueur n'existe pas ou n'est pas connecté.");
-                return;
+                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
         }
         
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

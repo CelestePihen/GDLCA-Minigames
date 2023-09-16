@@ -36,6 +36,13 @@ public class ArenaManager {
         return null;
     }
 
+    public CCArena getArenaByDisplayName(String displayName) {
+        for (CCArena arena : arenas.values()) {
+            if (arena.getDisplayName().equals(displayName)) return arena;
+        }
+        return null;
+    }
+
     public boolean isPlayerInArena(Player player) {
         for (CCArena arena : arenas.values()) {
             if (arena.isPlayerInArena(player)) return true;
@@ -51,7 +58,7 @@ public class ArenaManager {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
                 Config config = new Config(main, name);
-                arenas.put(config.getArena().getDisplayName(), config.getArena());
+                arenas.put(name, config.getArena());
                 Bukkit.getConsoleSender().sendMessage(CCGameManager.getGameManager().getPrefix() + ChatUtility.format("Chargement de la map Cache-Cache "+ name));
             }
         }

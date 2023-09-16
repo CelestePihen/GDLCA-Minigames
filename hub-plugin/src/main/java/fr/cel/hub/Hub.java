@@ -60,7 +60,7 @@ public final class Hub extends JavaPlugin {
         new PlayerListener(this);
         new NPCListener(this);
         new ChatListener(this);
-        new MiniGameListener(this);
+        new MinigameListener(this);
     }
 
     /**

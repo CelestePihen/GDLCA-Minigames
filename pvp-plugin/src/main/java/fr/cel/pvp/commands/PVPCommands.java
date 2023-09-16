@@ -24,12 +24,10 @@ public class PVPCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("Vous devez etre un joueur pour faire cette commande.");
             return false;
         }
-
-        Player player = (Player) sender;
 
         if (!player.hasPermission("pvp.pvp")) {
             player.sendMessage(gameManager.getPrefix() + "Tu n'as pas la permission de faire cette commande.");
@@ -37,7 +35,7 @@ public class PVPCommands implements CommandExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("list")) {
-            if (gameManager.getArenaManager().getArenas().size() == 0) {
+            if (gameManager.getArenaManager().getArenas().isEmpty()) {
                 player.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
                 return false;
             }
@@ -56,7 +54,7 @@ public class PVPCommands implements CommandExecutor {
             List<String> playersName = new ArrayList<>();
             for (UUID pls : arena.getPlayers()) {
                 Player player1 = Bukkit.getPlayer(pls);
-                playersName.add(player1.getName());
+                if (player1 != null) playersName.add(player1.getName());
             }
             player.sendMessage(gameManager.getPrefix() + playersName);
             return false;

@@ -16,19 +16,17 @@ public class BroadcastCommand extends AbstractCommand {
     @Override
     protected void onExecute(Player player, String[] args) {
         if (args.length >= 1) {
+            final StringBuilder bc = new StringBuilder();
 
-            StringBuilder bc = new StringBuilder();
+            for (String part : args) bc.append(part).append(" ");
 
-            for (String part : args) {
-                bc.append(part).append(" ");
-            }
-
-            Bukkit.broadcastMessage(ChatUtility.format("&c[Broadcast]&r&d " + bc.toString()));
-
-            return;
+            Bukkit.broadcastMessage(ChatUtility.format("&c[Broadcast]&r&d " + bc));
         } else {
-            player.sendMessage(main.getPrefix() + "La commande est : /broadcast <message>");
+            sendMessageWithPrefix(player, "La commande est : /broadcast <message>");
         }
     }
-    
+
+    @Override
+    protected void onTabComplete(Player player, String label, String[] args) {}
+
 }

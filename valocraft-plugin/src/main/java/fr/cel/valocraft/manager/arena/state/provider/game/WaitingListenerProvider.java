@@ -78,7 +78,6 @@ public class WaitingListenerProvider extends StateListenerProvider {
 
         if (event.getTo().getBlock().getType() == Material.STRUCTURE_VOID) {
             player.teleport(getArena().getRoleByPlayer(player).getSpawn());
-            return;
         }
     }
 

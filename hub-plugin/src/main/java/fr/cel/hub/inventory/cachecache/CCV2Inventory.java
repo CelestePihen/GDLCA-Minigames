@@ -41,9 +41,9 @@ public class CCV2Inventory extends AbstractInventory {
         }
 
         if (ChatUtility.stripColor(itemName).equals(nameV1)) {
-            CCGameManager.getGameManager().getArenaManager().getArenas().get(nameV1).addPlayer(player, false);
+            CCGameManager.getGameManager().getArenaManager().getArenaByDisplayName(nameV1).addPlayer(player, false);
         } else if (ChatUtility.stripColor(itemName).equals(nameV2)) {
-            CCGameManager.getGameManager().getArenaManager().getArenas().get(nameV2).addPlayer(player, false);
+            CCGameManager.getGameManager().getArenaManager().getArenaByDisplayName(nameV2).addPlayer(player, false);
         }
     }
 

@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class ValoGameManager {
 
-    @Getter private static ValoGameManager gameManager;
+    @Getter
+    private static ValoGameManager gameManager;
 
     @Getter private final ValoCraft main;
     @Getter private final PlayerManager playerManager;
@@ -24,10 +25,10 @@ public class ValoGameManager {
     @Getter private ArenaManager arenaManager;
 
     public ValoGameManager(ValoCraft main) {
-        this.main = main;
         gameManager = this;
-        this.arenaManager = new ArenaManager(main, this);
+        this.main = main;
         this.playerManager = Hub.getHub().getPlayerManager();
+        this.arenaManager = new ArenaManager(main, this);
     }
 
     public void reloadArenaManager() {

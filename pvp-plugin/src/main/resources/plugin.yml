@@ -6,3 +6,5 @@ author: Cel
 depend: [Hub]
 commands:
   pvp:
+    description: La commande principale
+    permission: pvp.pvp
