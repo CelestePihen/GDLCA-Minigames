@@ -1,6 +1,5 @@
 package fr.cel.valocraft.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,8 +13,6 @@ import org.bukkit.entity.Player;
 
 import fr.cel.valocraft.manager.ValoGameManager;
 import fr.cel.valocraft.manager.arena.ValoArena;
-import fr.cel.valocraft.manager.arena.state.pregame.PreGameArenaState;
-import fr.cel.valocraft.manager.arena.state.pregame.StartingArenaState;
 
 public class ValoCommands implements CommandExecutor {
 
@@ -44,7 +41,7 @@ public class ValoCommands implements CommandExecutor {
                 sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
                 return false;
             }
-            gameManager.getArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState()));
+            gameManager.getArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName()));
             return false;
         }
 
@@ -53,35 +50,29 @@ public class ValoCommands implements CommandExecutor {
             return false;
         }
 
-        if (!player.hasPermission("valocraft.valocommand")) {
-            player.sendMessage(gameManager.getPrefix() + "Tu n'as pas la permission de faire cette commande.");
-            return false;
-        }
-
         if (args[0].equalsIgnoreCase("start")) {
+            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
 
-            if (!gameManager.getArenaManager().isPlayerInArena(player)) {
+            if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
                 return false;
             }
 
-            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
-            if (arena.getPlayers().size() >= 2 && arena.getArenaState() instanceof PreGameArenaState) {
-                arena.setArenaState(new StartingArenaState(arena));
+            if (arena.startGame()) {
+                player.sendMessage(gameManager.getPrefix() + "La partie a été lancée !");
             } else {
-                player.sendMessage(gameManager.getPrefix() + "La partie est déjà lancée.");
+                player.sendMessage(gameManager.getPrefix() + "La partie ne peut pas être lancée.");
             }
             return false;
         }
 
         else if (args[0].equalsIgnoreCase("listplayer")) {
+            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
 
-            if (!gameManager.getArenaManager().isPlayerInArena(player)) {
+            if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
                 return false;
             }
-
-            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
 
             List<String> players = getPlayerNames(arena.getPlayers());
             List<String> blueTeam = getPlayerNames(arena.getBlueTeam().getPlayers());
@@ -92,20 +83,26 @@ public class ValoCommands implements CommandExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("setround")) {
-            if (!gameManager.getArenaManager().isPlayerInArena(player)) {
+            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+
+            if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
                 return false;
             }
 
-            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
-
-            if (args[1].equalsIgnoreCase("blue")) {
-                arena.getBlueTeam().setRoundWin(Integer.parseInt(args[2]));
-            } else if (args[1].equalsIgnoreCase("red")) {
-                arena.getRedTeam().setRoundWin(Integer.parseInt(args[2]));
+            if (args.length == 3) {
+                if (args[1].equalsIgnoreCase("blue")) {
+                    arena.getBlueTeam().setRoundWin(Integer.parseInt(args[2]));
+                } else if (args[1].equalsIgnoreCase("red")) {
+                    arena.getRedTeam().setRoundWin(Integer.parseInt(args[2]));
+                } else {
+                    player.sendMessage(gameManager.getPrefix() + "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
+                }
+            } else {
+                player.sendMessage(gameManager.getPrefix() + "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
+                return false;
             }
 
-            return false;
         }
 
         return false;
@@ -113,7 +110,7 @@ public class ValoCommands implements CommandExecutor {
 
     private List<String> getPlayerNames(List<UUID> playerUUIDs) {
         return playerUUIDs.stream()
-                .map(uuid -> Bukkit.getPlayer(uuid))
+                .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
                 .map(Player::getName)
                 .collect(Collectors.toList());

@@ -37,13 +37,6 @@ public class ArenaManager {
         return null;
     }
 
-    public boolean isPlayerInArena(Player player) {
-        for (ValoArena arena : arenas) {
-            if (arena.getPlayers().contains(player.getUniqueId())) return true;
-        }
-        return false;
-    }
-
     public void loadArenas(ValoGameManager gameManager) {
         arenas.clear();
         File folder = new File(main.getDataFolder(), "arenas");

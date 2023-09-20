@@ -1,11 +1,10 @@
 package fr.cel.valocraft.manager.arena.state.provider.game;
 
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -13,6 +12,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 import fr.cel.valocraft.ValoCraft;
@@ -78,6 +78,22 @@ public class TimeOverListenerProvider extends StateListenerProvider {
             victim.sendMessage(getArena().getGameManager().getPrefix() + "Vous êtes mort(e).");
         }
 
+    }
+
+    @EventHandler
+    public void onPotionSplash(PotionSplashEvent event) {
+        Block block = event.getHitBlock();
+        if (block == null) return;
+
+        Location location = block.getLocation();
+        for (int i = 0; i < 10; i++) {
+            double offsetX = Math.random() * 4 - 2;
+            double offsetY = Math.random() * 4 - 2;
+            double offsetZ = Math.random() * 4 - 2;
+            location.add(offsetX, offsetY, offsetZ);
+            location.getWorld().spawnParticle(Particle.SMOKE_LARGE, location, 1);
+            location.subtract(offsetX, offsetY, offsetZ);
+        }
     }
 
     @EventHandler

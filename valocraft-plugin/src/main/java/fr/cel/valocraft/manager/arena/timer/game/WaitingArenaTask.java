@@ -18,7 +18,6 @@ public class WaitingArenaTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        
         if (timer <= 0) {
             cancel();
             arena.setArenaState(new PlayingArenaState(arena));

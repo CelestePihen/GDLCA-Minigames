@@ -95,7 +95,7 @@ public class WaitingArenaState extends ArenaState {
     private void addPlayersToBossBar() {
         for (UUID uuid : getArena().getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            getArena().getBossBar().addPlayer(player);
+            if (player != null) getArena().getBossBar().addPlayer(player);
         }
     }
 

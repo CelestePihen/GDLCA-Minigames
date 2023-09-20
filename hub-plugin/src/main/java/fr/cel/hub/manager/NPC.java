@@ -38,8 +38,8 @@ public class NPC {
     private final String signature;
 
     public NPC(String name, Location location, String texture, String signature) {
-        this.location = location;
         this.name = name;
+	this.location = location;
         this.texture = texture;
         this.signature = signature;
     }
@@ -125,7 +125,7 @@ public class NPC {
     private void refreshEntityData(Player player) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        Int2ObjectMap<SynchedEntityData.DataItem<?>> itemsById = (Int2ObjectMap<SynchedEntityData.DataItem<?>>) Reflection.getField(npc.getEntityData(), "e"); // itemsById
+        Int2ObjectMap<SynchedEntityData.DataItem<?>> itemsById = (Int2ObjectMap<SynchedEntityData.DataItem<?>>) Reflection.getField(npc.getEntityData(), "e");
         List<SynchedEntityData.DataValue<?>> entityData = new ArrayList<>();
         for (SynchedEntityData.DataItem<?> dataItem : itemsById.values()) {
             entityData.add(dataItem.value());

@@ -1,4 +1,3 @@
-fr\cel\hub\utils\ChatUtility$Color.class
 fr\cel\hub\utils\RPUtils$CustomMusic.class
 fr\cel\hub\Hub.class
 fr\cel\hub\manager\PlayerManager.class
@@ -35,3 +34,4 @@ fr\cel\hub\tasks\FireworkMusicEvent.class
 fr\cel\hub\inventory\ValocraftInventory.class
 fr\cel\hub\manager\InventoryManager.class
 fr\cel\hub\listener\NPCListener.class
+fr\cel\hub\utils\ChatUtility$UtilityColor.class

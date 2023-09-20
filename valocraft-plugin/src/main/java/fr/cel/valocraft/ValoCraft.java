@@ -1,5 +1,6 @@
 package fr.cel.valocraft;
 
+import fr.cel.valocraft.manager.arena.ValoArena;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +23,10 @@ public class ValoCraft extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        for (ValoArena arena : gameManager.getArenaManager().getArenas()) {
+            arena.removePlayersToBossBar();
+        }
+    }
 
 }

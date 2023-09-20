@@ -1,17 +1,19 @@
 package fr.cel.valocraft.manager.arena.state.provider.game;
 
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,10 +39,9 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent event) {
+    public void onEntityDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (!getArena().isPlayerInArena(player)) return;
             
             if (event.getCause() == DamageCause.PROJECTILE) {
@@ -57,25 +58,22 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         if (event.getBlockAgainst().getType() != Material.GREEN_WOOL) {
             event.setCancelled(true);
-            return;
         } else {
+            getArena().sendTitle("Spike posé !", "");
             getArena().setSpike(event.getBlock());
             getArena().setArenaState(new SpikeArenaState(getArena()));
-            return;
         }
-        
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (!getArena().isPlayerInArena(player)) return;
-
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) {
         Player victim =  event.getEntity();
         if (!getArena().isPlayerInArena(victim)) return;
 
@@ -86,7 +84,22 @@ public class PlayingListenerProvider extends StateListenerProvider {
                 victim.getWorld().dropItem(victim.getLocation(), new ItemStack(Material.BREWING_STAND));
             }
             getArena().eliminate(victim);
-            return;
+        }
+    }
+
+    @EventHandler
+    public void onPotionSplash(PotionSplashEvent event) {
+        Block block = event.getHitBlock();
+        if (block == null) return;
+
+        Location location = block.getLocation();
+        for (int i = 0; i < 10; i++) {
+            double offsetX = Math.random() * 4 - 2;
+            double offsetY = Math.random() * 4 - 2;
+            double offsetZ = Math.random() * 4 - 2;
+            location.add(offsetX, offsetY, offsetZ);
+            location.getWorld().spawnParticle(Particle.SMOKE_LARGE, location, 1);
+            location.subtract(offsetX, offsetY, offsetZ);
         }
     }
 
@@ -94,23 +107,17 @@ public class PlayingListenerProvider extends StateListenerProvider {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if (!getArena().isPlayerInArena(player)) return;
-
-        Item item = event.getItemDrop();
-        if (!(getArena().getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
-        if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true); return;
+        if (event.getItemDrop().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
         Entity entity = event.getEntity();
-        if (!(entity instanceof Player)) return;
-
-        Player player = (Player) entity;
+        if (!(entity instanceof Player player)) return;
         if (!getArena().isPlayerInArena(player)) return;
-
-        Item item = event.getItem();
-        if (!(getArena().getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
-        if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
+        if (getArena().getDefenders().getTeam().isOnTeam(player.getUniqueId()) && event.getItem().getItemStack().getType() == Material.BREWING_STAND) {
+            event.setCancelled(true);
+        }
     }
     
 }

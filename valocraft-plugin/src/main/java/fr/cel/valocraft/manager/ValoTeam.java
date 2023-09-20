@@ -17,24 +17,22 @@ public class ValoTeam {
     private final String name;
     private final String displayName;
     private final List<UUID> players;
-    @Setter private int roundWin;
-
     private Role role;
+    @Setter private int roundWin;
 
     public ValoTeam(String name, String displayName, Role role) {
         this.name = name;
         this.displayName = displayName;
         this.players = new ArrayList<>();
-        this.roundWin = 0;
-
         this.role = role;
+        this.roundWin = 0;
     }
 
     public void addPlayer(Player player) {
-        if (containsPlayer(player)) return;
-
-        role.getTeam().addPlayer(player);
-        players.add(player.getUniqueId());
+        if (!containsPlayer(player)) {
+            role.getTeam().addPlayer(player);
+            players.add(player.getUniqueId());
+        }
     }
 
     public void removePlayer(Player player) {
@@ -45,7 +43,7 @@ public class ValoTeam {
     }
 
     public void clearPlayers() {
-        players.forEach(t -> role.getTeam().removeEntity(t));
+        players.forEach(uuid -> role.getTeam().removeEntity(uuid));
         players.clear();
     }
 

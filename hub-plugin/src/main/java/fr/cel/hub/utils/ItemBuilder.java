@@ -190,7 +190,7 @@ public class ItemBuilder {
         ItemMeta im = is.getItemMeta();
         List<String> lore = new ArrayList<>(im.getLore());
 
-        if(index < 0 || index > lore.size()) return this;
+        if (index < 0 || index > lore.size()) return this;
 
         lore.remove(index);
         im.setLore(lore);
@@ -207,10 +207,10 @@ public class ItemBuilder {
 
         List<String> lore = new ArrayList<>();
 
-        if(im.hasLore()) lore = new ArrayList<>(im.getLore());
-        lore.add(ChatUtility.format(line));
-
+        if(im.hasLore() && im.getLore() != null) lore = new ArrayList<>(im.getLore());
+        lore.add(line);
         im.setLore(lore);
+
         is.setItemMeta(im);
         return this;
     }

@@ -1,9 +1,6 @@
 package fr.cel.hub.utils;
 
-import lombok.Getter;
 import org.bukkit.ChatColor;
-
-import java.util.List;
 
 public class ChatUtility {
 
@@ -23,7 +20,7 @@ public class ChatUtility {
         return ChatColor.stripColor(str);
     }
 
-    @Getter public enum Color {
+    public enum UtilityColor {
         BLACK("&0"),
         DARK_BLUE("&1"),
         DARK_GREEN("&2"),
@@ -49,8 +46,11 @@ public class ChatUtility {
         ;
 
         private final String character;
-        Color(String character) {
+        UtilityColor(String character) {
             this.character = character;
+        }
+        public String getChar() {
+            return character;
         }
     }
 

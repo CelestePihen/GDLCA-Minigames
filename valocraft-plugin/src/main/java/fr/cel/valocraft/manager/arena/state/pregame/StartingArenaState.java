@@ -2,6 +2,7 @@ package fr.cel.valocraft.manager.arena.state.pregame;
 
 import java.util.UUID;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -15,7 +16,7 @@ import fr.cel.valocraft.manager.arena.timer.pregame.StartingArenaTask;
 
 public class StartingArenaState extends ArenaState {
 
-    private StartingArenaTask arenaStartingTask;
+    @Getter private StartingArenaTask arenaStartingTask;
 
     public StartingArenaState(ValoArena arena) {
         super(arena);
@@ -36,12 +37,7 @@ public class StartingArenaState extends ArenaState {
     @Override
     public void onDisable() {
         super.onDisable();
-
         if (arenaStartingTask != null) arenaStartingTask.cancel();
-    }
-
-    public StartingArenaTask getArenaStartingTask() {
-        return arenaStartingTask;
     }
 
     @Override
@@ -52,7 +48,7 @@ public class StartingArenaState extends ArenaState {
     private void setSpawnPoint() {
         for (UUID uuid : getArena().getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            player.setBedSpawnLocation(getArena().getSpawnLoc(), true);
+            if (player != null) player.setBedSpawnLocation(getArena().getSpawnLoc(), true);
         }
     }
 
