@@ -16,7 +16,7 @@ public class GMCommand extends AbstractCommand {
     @Override
     protected void onExecute(Player player, String[] args) {
         
-        if (args.length == 0 || args.length >= 3) {
+        if (args.length == 0 || args.length >= 2) {
             sendMessageWithPrefix(player, "La commande est : /gm <mode> ou /gm <mode> <joueur>");
             return;
         }
@@ -27,11 +27,9 @@ public class GMCommand extends AbstractCommand {
                 sendMessageWithPrefix(player, "Merci de mettre un mode de jeu valide.");
                 return;
             }
-
-            String modeString = getModeName(mode);
             
             player.setGameMode(mode);
-            sendMessageWithPrefix(player, "Vous êtes en " + modeString + ".");
+            sendMessageWithPrefix(player, "Vous êtes en " + getModeName(mode) + ".");
             return;
         }
 
