@@ -1,5 +1,6 @@
 package fr.cel.hub.utils;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 
 public class ChatUtility {
@@ -45,12 +46,9 @@ public class ChatUtility {
         RESET("&r")
         ;
 
-        private final String character;
+        @Getter private final String character;
         UtilityColor(String character) {
             this.character = character;
-        }
-        public String getChar() {
-            return character;
         }
     }
 

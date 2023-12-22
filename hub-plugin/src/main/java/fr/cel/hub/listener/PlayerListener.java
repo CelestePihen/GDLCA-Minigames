@@ -25,19 +25,19 @@ public class PlayerListener extends HListener {
 
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
-      final Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         
-	  if (!player.hasPlayedBefore()) {
-          event.setJoinMessage(main.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !");
-      } else {
-          event.setJoinMessage(ChatUtility.format("[&a+&r] ") + player.getName());
-      }
+	    if (!player.hasPlayedBefore()) {
+            event.setJoinMessage(main.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !");
+        } else {
+            event.setJoinMessage(ChatUtility.format("[&a+&r] ") + player.getName());
+        }
 
-      player.setPlayerListHeader(ChatUtility.format("Bienvenue sur &9GDLCA Minigames&f !"));
+        player.setPlayerListHeader(ChatUtility.format("Bienvenue sur &9GDLCA Minigames&f !"));
 
-      main.getPlayerManager().sendPlayerToHub(player);
+        main.getPlayerManager().sendPlayerToHub(player);
 
-      NPCManager.getNpcs().forEach(npc -> npc.spawn(player));
+        NPCManager.getNpcs().forEach(npc -> npc.spawn(player));
     }
 
     @EventHandler
@@ -68,7 +68,6 @@ public class PlayerListener extends HListener {
     public void damageEntity(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!main.getPlayerManager().containsPlayerInHub(player)) return;
-
         event.setCancelled(true);
     }
 

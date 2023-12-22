@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemQuest extends Quest {
 
-    @Getter private ItemStack itemRequired;
+    @Getter private final ItemStack itemRequired;
 
     public ItemQuest(String id, String displayName, String description, ItemStack itemRequired) {
         super(id, displayName, description);

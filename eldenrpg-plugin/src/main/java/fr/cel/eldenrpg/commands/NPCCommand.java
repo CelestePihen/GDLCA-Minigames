@@ -12,7 +12,7 @@ public class NPCCommand extends AbstractCommand {
     @Override
     protected void onExecute(Player player, String[] args) {
         if (args.length == 0) {
-            sendMessageWithPrefix(player, "La commande est : /npc <reload>");
+            player.sendMessage("La commande est : /npc <reload>");
             return;
         }
 
@@ -23,7 +23,7 @@ public class NPCCommand extends AbstractCommand {
     }
 
     @Override
-    public void onTabComplete(Player player, String label, String[] args) {
+    public void onTabComplete(String label, String[] args) {
         if (args.length == 1) {
             arguments.add("reload");
         }

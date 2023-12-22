@@ -28,6 +28,11 @@ public class NPCManager {
         registerNPC(blacksmith, main.getQuestManager().getQuestById("slime"));
     }
 
+    /**
+     * Permet d'enregistrer un nouveau npc
+     * @param npc Le npc
+     * @param quest La quête
+     */
     private void registerNPC(NPC npc, Quest quest) {
         npc.setQuest(quest);
         npc.create();
@@ -47,20 +52,17 @@ public class NPCManager {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
                 ConfigNPC config = new ConfigNPC(main, name);
-                try {
-                    NPC npc = config.getNPC();
-                    npc.create();
-                    npc.showToAll();
-                    npcs.put(npc.getName(), npc);
-                } catch (NPCConfigurationException e) {
-                    e.printStackTrace();
-                }
+
+                NPC npc = config.getNPC();
+                npc.create();
+                npcs.put(npc.getName(), npc);
+                npc.showToAll();
             }
         }
     }
 
     /**
-     * Permet de recharger les NPCs
+     * Permet de recharger les NPCs quand le serveur s'éteint
      */
     public void reloadNPCs() {
         removeToAll();
@@ -68,11 +70,11 @@ public class NPCManager {
     }
 
     /**
-     * Permet de cacher les NPCs des joueurs
+     * Permet de cacher tous les NPCs des joueurs
      */
     public static void removeToAll() {
         for (NPC npc : getNpcs().values()) {
-            npc.removeToAll();
+            npc.hideToAll();
         }
     }
 

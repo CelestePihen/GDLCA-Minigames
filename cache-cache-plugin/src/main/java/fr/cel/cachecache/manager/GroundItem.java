@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.cel.hub.utils.ItemBuilder;
 import lombok.Getter;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 @Getter
 public abstract class GroundItem {
@@ -28,6 +30,10 @@ public abstract class GroundItem {
      * @param player Le joueur
      * @param arena L'arène où le joueur est
      */
-    public abstract void onInteract(Player player, CCArena arena);
+    public void onInteract(Player player, CCArena arena) {
+        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        if (itemInHand.getAmount() == 1) player.getInventory().setItemInMainHand(null);
+        else itemInHand.setAmount(itemInHand.getAmount() - 1);
+    }
 
 }

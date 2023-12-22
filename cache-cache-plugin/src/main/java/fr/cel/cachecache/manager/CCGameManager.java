@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.groundItems.BlindnessItem;
-import fr.cel.cachecache.manager.groundItems.ChangePositionItem;
-import fr.cel.cachecache.manager.groundItems.CursedHornItem;
-import fr.cel.cachecache.manager.groundItems.SoundCatItem;
-import fr.cel.cachecache.manager.groundItems.SpeedItem;
+import fr.cel.cachecache.manager.items.*;
 import fr.cel.cachecache.utils.TempHubConfig;
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.PlayerManager;
@@ -52,8 +48,8 @@ public class CCGameManager {
         groundItems.add(new SpeedItem());
         groundItems.add(new BlindnessItem());
         groundItems.add(new ChangePositionItem());
-        groundItems.add(new SoundCatItem());
-        groundItems.add(new CursedHornItem());
+        groundItems.add(new SoundItem());
+        groundItems.add(new InvisibilityItem());
     }
 
 }

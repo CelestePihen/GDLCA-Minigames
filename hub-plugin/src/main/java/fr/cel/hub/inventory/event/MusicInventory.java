@@ -24,7 +24,7 @@ public class MusicInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        main.getRpUtils().getMusics().forEach((component, customMusic) -> {
+        main.getRpUtils().getMusics().forEach((name, customMusic) -> {
             ItemBuilder itemBuilder = new ItemBuilder(Material.JUKEBOX);
 
             itemBuilder.setDisplayName(customMusic.getMusicName());
@@ -44,7 +44,7 @@ public class MusicInventory extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item, Hub main) {
+    protected void interact(Player player, String itemName, ItemStack item) {
         if (item.getType() == Material.BARRIER) {
             if (this.currentSound != null) {
                 Bukkit.getOnlinePlayers().forEach(pl -> pl.stopSound(this.currentSound, SoundCategory.RECORDS));

@@ -33,10 +33,10 @@ public class CCV2Inventory extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item, Hub main) {
+    protected void interact(Player player, String itemName, ItemStack item) {
 
         if (item.getType() == Material.BARRIER) {
-            player.openInventory(inventoryManager.getInventories().get("cachecache").getInv());
+            player.openInventory(inventoryManager.getInventory("cachecache"));
             return;
         }
 

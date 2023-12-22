@@ -17,7 +17,7 @@ public class KillQuest extends Quest {
         super(id, displayName, description);
         this.target = target;
         this.amount = amount;
-        this.progress = 1;
+        this.progress = 0;
     }
 
 }

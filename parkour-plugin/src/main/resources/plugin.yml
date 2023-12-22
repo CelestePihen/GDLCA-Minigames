@@ -1,0 +1,10 @@
+name: Parkour
+version: 1.0
+main: fr.cel.parkour.Parkour
+api-version: 1.20
+author: Cel
+depend: [Hub]
+commands:
+  parkour:
+    description: La commande principale
+    permission: parkour.parkour

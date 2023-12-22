@@ -4,7 +4,7 @@ main: fr.cel.eldenrpg.EldenRPG
 authors: [Cel, Deadsky]
 api-version: '1.20'
 description: To make the NPCs, I used code from the FancyNpcs plugin.
-depend: [WorldGuard]
+depend: [WorldGuard, ProtocolLib]
 commands:
   npc:
     description: Permet de faire apparaître un PNJ

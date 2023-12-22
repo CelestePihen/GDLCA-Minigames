@@ -7,14 +7,15 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+@Getter
 public class ERPlayer {
 
-    @Getter private final Player player;
-    @Getter private final UUID playerUUID;
+    private final Player player;
+    private final UUID playerUUID;
 
-    @Getter @Setter private Set<Quest> activeQuests;
-    @Getter @Setter private Set<Quest> finishedQuests;
-    @Getter @Setter private Set<Quest> completedQuests;
+    @Setter private Set<Quest> activeQuests;
+    @Setter private Set<Quest> finishedQuests;
+    @Setter private Set<Quest> completedQuests;
 
     public ERPlayer(Player player) {
         this.player = player;
@@ -82,7 +83,7 @@ public class ERPlayer {
     }
 
     /**
-     * Permet de retirer une quête complétée. Est-ce que cela servira à quelque chose ? Je pense pas
+     * Permet de retirer une quête complétée. Est-ce que cela servira à quelque chose ? Je pense pas. Mais on sait jamais...
      * @param quest La quête complétée à retirer
      */
     public void removeCompletedQuest(Quest quest) {
@@ -132,7 +133,7 @@ public class ERPlayer {
     }
 
     // Astuces / Hints
-    @Getter @Setter private boolean hFirstFirecampActivated = false;
-    @Getter @Setter private boolean hPassThroughBlockActivated = false;
+    @Setter private boolean hFirstFirecampActivated = false;
+    @Setter private boolean hPassThroughBlockActivated = false;
 
 }

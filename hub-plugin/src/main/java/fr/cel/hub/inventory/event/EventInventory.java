@@ -26,7 +26,7 @@ public class EventInventory extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item, Hub main) {
+    protected void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
             case JUKEBOX -> player.openInventory(main.getInventoryManager().getInventory("music"));
 

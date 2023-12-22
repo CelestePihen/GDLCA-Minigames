@@ -38,7 +38,7 @@ public class InventoryManager {
 
         inventories.put("valocraft", new ValocraftInventory(main));
         inventories.put("pvp", new PVPInventory(main));
-//        inventories.put("parkour", ...);
+        inventories.put("parkour", new ParkourInventory(main));
 
         inventories.put("event", new EventInventory(main));
         inventories.put("music", new MusicInventory(main));

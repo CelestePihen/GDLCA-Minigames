@@ -102,7 +102,6 @@ public class PlayerManager {
      */
     public void removePlayerInInstitution(Player player) {
         if (!containsPlayerInInstitution(player)) return;
-
         playersInInstitution.remove(player.getUniqueId());
     }
 

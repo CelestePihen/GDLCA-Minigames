@@ -1,7 +1,6 @@
 package fr.cel.hub.inventory;
 
 import fr.cel.hub.Hub;
-import fr.cel.hub.utils.ChatUtility;
 import fr.cel.hub.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -35,15 +34,15 @@ public class MinigamesInventory extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item, Hub main) {
+    protected void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case SPYGLASS -> player.openInventory(inventoryManager.getInventories().get("cachecache").getInv());
+            case SPYGLASS -> player.openInventory(inventoryManager.getInventory("cachecache"));
 
-            case BOW -> player.openInventory(inventoryManager.getInventories().get("valocraft").getInv());
+            case BOW -> player.openInventory(inventoryManager.getInventory("valocraft"));
 
-            case NETHERITE_SWORD -> player.openInventory(inventoryManager.getInventories().get("pvp").getInv());
+            case NETHERITE_SWORD -> player.openInventory(inventoryManager.getInventory("pvp"));
 
-            case IRON_BOOTS -> sendMessageWithPrefix(player, "Parkour pas encore fait");
+            case IRON_BOOTS -> player.openInventory(inventoryManager.getInventory("parkour"));
 
             case BRUSH -> player.teleport(locationMusee);
 

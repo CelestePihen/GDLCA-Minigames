@@ -4,6 +4,7 @@ import fr.cel.eldenrpg.EldenRPG;
 import fr.cel.eldenrpg.manager.player.ERPlayer;
 import fr.cel.eldenrpg.manager.quest.Quest;
 import fr.cel.eldenrpg.manager.quest.QuestManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class QuestCommand extends AbstractCommand {
@@ -18,14 +19,14 @@ public class QuestCommand extends AbstractCommand {
     @Override
     protected void onExecute(Player player, String[] args) {
         if (args.length <= 1) {
-            sendMessageWithPrefix(player, "La commande est : /quest <grand/remove> <quest_id>");
+            player.sendMessage("La commande est : /quest <grand/remove> <quest_id>");
             return;
         }
 
         ERPlayer erPlayer = main.getPlayerManager().getPlayerData(player.getUniqueId());
 
         if (erPlayer == null) {
-            sendMessageWithPrefix(player, "ERREUR | DITES LE A UN ADMIN SI VOUS VOYEZ CE MESSAGE");
+            player.sendMessage("Erreur avec votre profil ! Merci de contacter un administrateur.");
             return;
         }
 
@@ -33,25 +34,29 @@ public class QuestCommand extends AbstractCommand {
             Quest quest = main.getQuestManager().getQuests().get(args[1]);
             if (args[0].equalsIgnoreCase("grant")) {
                 erPlayer.addActiveQuest(quest);
-                sendMessageWithPrefix(player, "La quête " + quest.getDisplayName() + " vous a été donnée.");
+                player.sendMessage("La quête " + quest.getDisplayName() + " vous a été donnée.");
             }
 
             if (args[0].equalsIgnoreCase("revoke")) {
                 erPlayer.removeActiveQuest(quest);
-                sendMessageWithPrefix(player, "La quête " + quest.getDisplayName() + " vous a été enlevée.");
+                player.sendMessage("La quête " + quest.getDisplayName() + " vous a été enlevée.");
             }
         }
     }
 
     @Override
-    protected void onTabComplete(Player player, String label, String[] args) {
+    protected void onTabComplete(String label, String[] args) {
         if (args.length == 1) {
             arguments.add("grant");
             arguments.add("revoke");
         }
 
         if (args.length == 2) {
-
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (main.getPlayerManager().getPlayerData(player.getUniqueId()) != null) {
+                    arguments.add(player.getName());
+                }
+            }
         }
     }
 }

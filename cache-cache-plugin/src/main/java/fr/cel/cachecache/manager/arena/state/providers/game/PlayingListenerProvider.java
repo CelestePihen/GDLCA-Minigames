@@ -1,8 +1,9 @@
 package fr.cel.cachecache.manager.arena.state.providers.game;
 
+import fr.cel.cachecache.manager.CCGameManager;
+import fr.cel.cachecache.manager.items.SoundCatTimer;
+import org.bukkit.*;
 import org.bukkit.event.EventHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -17,7 +18,15 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.arena.CCArena;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 public class PlayingListenerProvider extends StateListenerProvider {
+
+    private SoundCatTimer soundCatTimer;
+
+    private List<Sound> goatHornSounds = Arrays.asList(Sound.ITEM_GOAT_HORN_SOUND_4, Sound.ITEM_GOAT_HORN_SOUND_7);
 
     public PlayingListenerProvider(CCArena arena) {
         super(arena);
@@ -94,27 +103,60 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (event.getWhoClicked() instanceof Player player) {
             if (!getArena().isPlayerInArena(player)) return;
 
+            ItemStack itemStack = event.getCurrentItem();
+            if (itemStack == null) return;
+            if (itemStack.getItemMeta() == null) return;
+            String name = itemStack.getItemMeta().getDisplayName();
+
             if (event.getView().getTitle().equalsIgnoreCase("Joueurs")) {
-                ItemStack itemStack = event.getCurrentItem();
-                if (itemStack == null) return;
-                if (itemStack.getItemMeta() == null) return;
-                String name = itemStack.getItemMeta().getDisplayName();
-                if (getArena().getPlayers().contains(Bukkit.getPlayer(name).getUniqueId())) {
-                    Player target = Bukkit.getPlayer(name);
+                Player target = Bukkit.getPlayer(name);
+                if (getArena().getPlayers().contains(target.getUniqueId())) {
                     Location tempLocation = player.getLocation();
 
                     player.teleport(target.getLocation());
                     target.teleport(tempLocation);
 
-                    ItemStack itemInHand = player.getInventory().getItemInMainHand();
-                    if (itemInHand.getAmount() == 1) player.getInventory().setItemInMainHand(null);
-                    else itemInHand.setAmount(itemInHand.getAmount() - 1);
+                    removeItem(player);
                 } else {
                     player.sendMessage(getArena().getGameManager().getPrefix() + "Ce joueur n'est pas disponible. Merci de réouvrir le menu.");
-                    player.closeInventory();
                 }
+                player.closeInventory();
             }
+
+            if (event.getView().getTitle().equalsIgnoreCase("Sons")) {
+                switch (itemStack.getType()) {
+                    case STRING -> {
+                        soundCatTimer = new SoundCatTimer(getArena());
+                        soundCatTimer.runTaskTimer(CCGameManager.getGameManager().getMain(), 0, 20);
+
+                        player.closeInventory();
+                        removeItem(player);
+                    }
+
+                    case GOAT_HORN -> {
+                        Sound sound = goatHornSounds.get(new Random().nextInt(goatHornSounds.size()));
+                        getArena().getPlayers().forEach(uuid -> {
+                            Player pl = Bukkit.getPlayer(uuid);
+                            if (pl.getGameMode() == GameMode.SPECTATOR) return;
+                            pl.playSound(pl, sound, SoundCategory.AMBIENT, 2.0f, 1.0f);
+
+                            player.closeInventory();
+                            removeItem(player);
+                        });
+                    }
+
+                    default -> { }
+                }
+
+            }
+
         }
+    }
+
+    private void removeItem(Player player) {
+        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        if (itemInHand.getAmount() == 1) player.getInventory().setItemInMainHand(null);
+        else itemInHand.setAmount(itemInHand.getAmount() - 1);
     }
     
 }

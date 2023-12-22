@@ -2,8 +2,6 @@ package fr.cel.eldenrpg.config;
 
 import fr.cel.eldenrpg.EldenRPG;
 import fr.cel.eldenrpg.manager.npc.NPC;
-import fr.cel.eldenrpg.manager.npc.NPCConfigurationException;
-import fr.cel.eldenrpg.manager.quest.Quest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -36,9 +34,9 @@ public class ConfigNPC {
 
                 Location location = loadLocation(config);
 
-                return new NPC(name, displayName, location, skinTexture, skinSignature, main);
+                return new NPC(name, displayName, location, skinTexture, skinSignature, false, main);
             } catch (IOException | InvalidConfigurationException e) {
-                throw new NPCConfigurationException("Erreur lors du chargement du NPC " + name, e);
+                e.printStackTrace();
             }
         }
 

@@ -7,12 +7,15 @@ import fr.cel.eldenrpg.manager.quest.Quest;
 import fr.cel.eldenrpg.manager.quest.quests.KillQuest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-public class QuestListener extends ERListener {
+public class QuestListener implements Listener {
+
+    private final EldenRPG main;
 
     public QuestListener(EldenRPG main) {
-        super(main);
+        this.main = main;
     }
 
     @EventHandler
@@ -25,16 +28,14 @@ public class QuestListener extends ERListener {
             for (Quest activeQuest : erPlayer.getActiveQuests()) {
                 if (activeQuest instanceof KillQuest killQuest) {
                     if (killQuest.getTarget().equals(event.getEntity().getType())) {
-                        int killedMobs = killQuest.getProgress();
+                        killQuest.setProgress(killQuest.getProgress() + 1);
 
-                        sendMessageWithPrefix(player, "Tu as tué " + killedMobs + " " + getMobs(killedMobs, killQuest) + " sur " + killQuest.getAmount());
+                        player.sendMessage("Tu as tué " + killQuest.getProgress() + " " + getMobs(killQuest.getProgress(), killQuest) + " sur " + killQuest.getAmount());
 
-                        killQuest.setProgress(killedMobs + 1);
-
-                        if (killedMobs >= killQuest.getAmount()) {
+                        if (killQuest.getProgress() >= killQuest.getAmount()) {
                             erPlayer.activeToFinished(killQuest);
                             killQuest.setProgress(5);
-                            sendMessageWithPrefix(player, "Vous pouvez aller récupérer votre récompense !");
+                            player.sendMessage("Vous pouvez aller récupérer votre récompense !");
                             return;
                         }
                     }

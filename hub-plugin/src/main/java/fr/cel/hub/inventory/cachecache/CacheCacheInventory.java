@@ -36,7 +36,7 @@ public class CacheCacheInventory extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item, Hub main) {
+    protected void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
             case SCULK_CATALYST -> CCGameManager.getGameManager().getArenaManager().getArenas().get("warden").addPlayer(player, false);
             case MINECART -> CCGameManager.getGameManager().getArenaManager().getArenas().get("mine").addPlayer(player, false);
