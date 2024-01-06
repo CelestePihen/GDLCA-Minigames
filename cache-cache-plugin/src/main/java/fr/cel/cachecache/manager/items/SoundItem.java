@@ -5,12 +5,10 @@ import fr.cel.cachecache.manager.arena.CCArena;
 import fr.cel.hub.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class SoundItem extends GroundItem {
@@ -18,7 +16,6 @@ public class SoundItem extends GroundItem {
     private static final List<String> lores = List.of("Cet objet vous permet de vous mettre des sons aux autres joueurs.");
 
     private final Inventory inventory;
-    private List<Sound> goatHornSounds = Arrays.asList(Sound.ITEM_GOAT_HORN_SOUND_4, Sound.ITEM_GOAT_HORN_SOUND_7);
 
     public SoundItem() {
         super("soundItem", Material.NOTE_BLOCK, "Sons", lores, 1);

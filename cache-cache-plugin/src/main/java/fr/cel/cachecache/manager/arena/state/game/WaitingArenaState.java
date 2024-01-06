@@ -32,16 +32,18 @@ public class WaitingArenaState extends ArenaState {
         switch (getArena().getHunterMode()) {
 
             case TwoHuntersAtStart -> {
-                UUID randomUUID2 = getArena().getPlayers().get(1);
-                Player player2 = Bukkit.getPlayer(randomUUID2);
+                Player player = Bukkit.getPlayer(getArena().getPlayers().get(0));
+                getArena().becomeSeeker(player);
+                player.teleport(getArena().getWaitingLoc());
+
+                Player player2 = Bukkit.getPlayer(getArena().getPlayers().get(1));
                 getArena().becomeSeeker(player2);
                 player2.teleport(getArena().getWaitingLoc());
             }
 
             case TousContreUn -> {
                 for (int i = 0; i < getArena().getPlayers().size() - 1; i++) {
-                    UUID uuid = getArena().getPlayers().get(i);
-                    Player player = Bukkit.getPlayer(uuid);
+                    Player player = Bukkit.getPlayer(getArena().getPlayers().get(i));
 
                     getArena().becomeSeeker(player);
                     player.teleport(getArena().getWaitingLoc());
@@ -79,6 +81,7 @@ public class WaitingArenaState extends ArenaState {
                 getArena().becomeSeeker(player);
                 player.teleport(getArena().getWaitingLoc());
             }
+
         }
 
         for (UUID pls : getArena().getPlayers()) {

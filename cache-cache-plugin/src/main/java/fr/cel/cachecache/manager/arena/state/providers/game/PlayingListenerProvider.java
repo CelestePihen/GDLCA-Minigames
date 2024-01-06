@@ -26,7 +26,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
     private SoundCatTimer soundCatTimer;
 
-    private List<Sound> goatHornSounds = Arrays.asList(Sound.ITEM_GOAT_HORN_SOUND_4, Sound.ITEM_GOAT_HORN_SOUND_7);
+    private final List<Sound> goatHornSounds = Arrays.asList(Sound.ITEM_GOAT_HORN_SOUND_4, Sound.ITEM_GOAT_HORN_SOUND_7);
 
     public PlayingListenerProvider(CCArena arena) {
         super(arena);

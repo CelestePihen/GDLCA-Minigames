@@ -80,47 +80,36 @@ public class CCArena {
     private final JScoreboardTeam teamHiders;
     private final JScoreboardTeam teamSeekers;
 
-    // Constructor
     public CCArena(String nameArena, String displayName, HunterMode hunterMode, Location spawnLoc, Location waitingLoc, int bestTimer, String bestPlayer, String lastHunter, List<GroundItem> availableGroundItems, List<String> locationGroundItems, Config config) {
         this.config = config;
 
-        // Names
         this.nameArena = nameArena;
         this.displayName = displayName;
 
-        // Locations
         this.spawnLoc = spawnLoc;
         this.waitingLoc = waitingLoc;
 
-        // Team List
         this.players = new ArrayList<>();
         this.hiders = new ArrayList<>();
         this.seekers = new ArrayList<>();
 
-        // ArenaState / Timer
         this.arenaState = new InitArenaState(this);
         this.timer = 0;
         this.wolfTimer = new HashMap<>();
 
-        // Timer
         this.bestTimer = bestTimer;
         this.bestPlayer = bestPlayer;
 
-        // Last Hunter
         this.lastHunter = lastHunter;
 
-        // Hunter Mode
         this.hunterMode = hunterMode;
 
-        // Ground Items
         this.availableGroundItems = availableGroundItems;
         this.locationGroundItems = locationGroundItems;
         this.spawnedGroundItems = new ArrayList<>();
 
-        // Scoreboard
         this.scoreboard = new JGlobalMethodBasedScoreboard();
 
-        // Team API
         this.teamHiders = scoreboard.createTeam("h" + this.getNameArena(), "", ChatColor.GREEN);
         this.teamSeekers = scoreboard.createTeam("s" + this.getNameArena(), "", ChatColor.DARK_RED);
 

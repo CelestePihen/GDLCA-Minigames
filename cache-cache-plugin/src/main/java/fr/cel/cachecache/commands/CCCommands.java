@@ -74,7 +74,7 @@ public class CCCommands implements CommandExecutor {
                 }
 
                 else {
-                    if (arena.getPlayers().size() <= 2) {
+                    if (arena.getPlayers().size() < 2) {
                         player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 2 joueurs) !");
                         return false;
                     } else {
