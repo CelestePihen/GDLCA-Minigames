@@ -2,7 +2,6 @@ package fr.cel.eldenrpg;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.sk89q.worldguard.WorldGuard;
 import fr.cel.eldenrpg.commands.NPCCommand;
 import fr.cel.eldenrpg.commands.QuestCommand;
 import fr.cel.eldenrpg.listeners.NPCListener;
@@ -32,7 +31,7 @@ public final class EldenRPG extends JavaPlugin {
         eldenRPG = this;
 
         playerSerializationManager = new PlayerSerializationManager();
-        questManager = new QuestManager(this);
+        questManager = new QuestManager();
         playerManager = new PlayerManager(this);
         npcManager = new NPCManager(this);
 

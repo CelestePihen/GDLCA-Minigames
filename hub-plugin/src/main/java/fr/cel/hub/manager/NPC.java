@@ -2,7 +2,7 @@ package fr.cel.hub.manager;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import fr.cel.hub.utils.Reflection;
+import fr.cel.gameapi.utils.Reflection;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.Getter;
 import net.minecraft.network.protocol.game.*;

@@ -1,8 +1,9 @@
 package fr.cel.hub.listener;
 
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.hub.Hub;
 import fr.cel.hub.manager.NPCManager;
-import fr.cel.hub.utils.ChatUtility;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -25,41 +26,20 @@ public class PlayerListener extends HListener {
 
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
-        
-	    if (!player.hasPlayedBefore()) {
-            event.setJoinMessage(main.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !");
-        } else {
-            event.setJoinMessage(ChatUtility.format("[&a+&r] ") + player.getName());
-        }
-
-        player.setPlayerListHeader(ChatUtility.format("Bienvenue sur &9GDLCA Minigames&f !"));
-
-        main.getPlayerManager().sendPlayerToHub(player);
-
-        NPCManager.getNpcs().forEach(npc -> npc.spawn(player));
-    }
-
-    @EventHandler
-    public void playerQuit(PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
-
-        event.setQuitMessage(ChatUtility.format("[&c-&r] ") + player.getName());
-
-        main.getPlayerManager().removePlayerInHub(player);
+        NPCManager.getNpcs().forEach(npc -> npc.spawn(event.getPlayer()));
     }
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+            if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void playerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (!main.getPlayerManager().containsPlayerInHub(event.getPlayer())) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(event.getPlayer())) return;
         if (event.getPlayer().isOp()) return;
         event.setCancelled(true);
     }
@@ -67,7 +47,7 @@ public class PlayerListener extends HListener {
     @EventHandler
     public void damageEntity(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
         event.setCancelled(true);
     }
 
@@ -77,7 +57,7 @@ public class PlayerListener extends HListener {
         Entity entity = event.getEntity();
 
         if (damager instanceof Player && !(entity instanceof Player)) {
-            if (!main.getPlayerManager().containsPlayerInHub((Player) damager)) return;
+            if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub((Player) damager)) return;
             if (damager.isOp()) return;
             event.setCancelled(true);
         }
@@ -88,7 +68,7 @@ public class PlayerListener extends HListener {
         final Player player = event.getPlayer();
         final Block block = event.getClickedBlock();
 
-        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
         if (player.isOp()) return;
         if (block == null) return;
         final Material type = block.getType();
@@ -100,7 +80,7 @@ public class PlayerListener extends HListener {
     @EventHandler
     public void foodChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+            if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
             event.setCancelled(true);
         }
     }

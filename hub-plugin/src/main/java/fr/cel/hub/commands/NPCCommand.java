@@ -1,27 +1,31 @@
 package fr.cel.hub.commands;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.hub.Hub;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class NPCCommand extends AbstractCommand {
 
     public NPCCommand(Hub main) {
-        super(main, "npc", true);
+        super("hub:npc", true, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
         if (args.length == 0) {
+            sendMessageWithPrefix(player, "La commande est désactivé pour le moment.");
             sendMessageWithPrefix(player, "La commande est : /npc <reload>");
             return;
         }
 
-        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            main.getNpcManager().reloadNPCs();
+        // TODO désactiver pour le moment
+        /* if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            ((Hub)main).getNpcManager().reloadNPCs();
         }
 
-        /**
-         * À voir pour faire apparaître avec une commande
+        TODO À voir pour faire apparaître avec une commande
         if (args.length == 2) {
             if (args[0].length() >= 16) {
                 sendMessageWithPrefix(player, "Le nom doit être inférieur à 16 caractères.");
@@ -45,16 +49,8 @@ public class NPCCommand extends AbstractCommand {
 
             main.getNpcManager().getNpcs().add(npc);
             sendMessageWithPrefix(player, "Tu as fait apparaître un nouveau PNJ " + args[0]);
-        }
-         */
+        } */
 
-    }
-
-    @Override
-    public void onTabComplete(Player player, String label, String[] args) {
-        if (args.length == 1) {
-            arguments.add("reload");
-        }
     }
 
 }

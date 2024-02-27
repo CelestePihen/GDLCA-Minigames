@@ -1,27 +1,27 @@
 package fr.cel.essentials.commands.other;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
 
 public class GMCommand extends AbstractCommand {
 
-    public GMCommand(Essentials main) {
-        super(main, "gm");
+    public GMCommand() {
+        super("essentials:gm", true, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
-        
-        if (args.length == 0 || args.length >= 2) {
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
+
+        if (args.length == 0 || args.length > 2) {
             sendMessageWithPrefix(player, "La commande est : /gm <mode> ou /gm <mode> <joueur>");
             return;
         }
 
-        if (args.length == 1) {
+        if (args.length == 1 && isPlayer(sender)) {
             GameMode mode = getGamemode(args[0]);
             if (mode == null) {
                 sendMessageWithPrefix(player, "Merci de mettre un mode de jeu valide.");
@@ -36,7 +36,7 @@ public class GMCommand extends AbstractCommand {
         if (args.length == 2) {
             GameMode mode = getGamemode(args[0]);
             if (mode == null) {
-                sendMessageWithPrefix(player, "Merci de mettre un mode de jeu valide.");
+                sendMessageWithPrefix(sender, "Merci de mettre un mode de jeu valide.");
                 return;
             }
 
@@ -46,23 +46,20 @@ public class GMCommand extends AbstractCommand {
             if (target != null) {
                 target.setGameMode(mode);
                 sendMessageWithPrefix(target, "Vous avez été mis(e) en " + modeString);
-                sendMessageWithPrefix(player, "Vous avez mis " + target.getName() + " en " + modeString + ".");
+                sendMessageWithPrefix(sender, "Vous avez mis " + target.getName() + " en " + modeString + ".");
             } else {
-                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
+                sendMessageWithPrefix(sender, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
         }
 
     }
 
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
-
     private GameMode getGamemode(String mode) {
         return switch (mode) {
-            case "0", "survival", "survie" -> GameMode.SURVIVAL;
-            case "1", "creative", "creatif" -> GameMode.CREATIVE;
-            case "2", "adventure", "aventure" -> GameMode.ADVENTURE;
-            case "3", "spectator", "spectateur" -> GameMode.SPECTATOR;
+            case "0", "s", "survival", "survie" -> GameMode.SURVIVAL;
+            case "1", "c", "creative", "creatif" -> GameMode.CREATIVE;
+            case "2", "a", "adventure", "aventure" -> GameMode.ADVENTURE;
+            case "3", "sp", "spectator", "spectateur" -> GameMode.SPECTATOR;
             default -> null;
         };
     }

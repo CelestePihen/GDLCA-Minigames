@@ -6,14 +6,13 @@ import java.util.Map;
 
 import fr.cel.cachecache.manager.arena.CCArena;
 import fr.cel.cachecache.manager.arena.TemporaryHub;
-import fr.cel.cachecache.utils.TempHubConfig;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.utils.Config;
-import fr.cel.hub.utils.ChatUtility;
+import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
 
 public class ArenaManager {
@@ -59,7 +58,7 @@ public class ArenaManager {
                 String name = file.getName().replace(".yml", "");
                 Config config = new Config(main, name);
                 arenas.put(name, config.getArena());
-                Bukkit.getConsoleSender().sendMessage(CCGameManager.getGameManager().getPrefix() + ChatUtility.format("Chargement de la map Cache-Cache "+ name));
+                Bukkit.getConsoleSender().sendMessage(CCGameManager.getGameManager().getPrefix() + ChatUtility.format("Chargement de la map Cache-Cache " + name, ChatUtility.UtilityColor.WHITE));
             }
         }
     }

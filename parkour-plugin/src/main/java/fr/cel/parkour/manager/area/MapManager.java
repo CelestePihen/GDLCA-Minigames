@@ -4,17 +4,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import fr.cel.hub.utils.ChatUtility;
 import fr.cel.parkour.Parkour;
 import fr.cel.parkour.utils.Config;
 import lombok.Getter;
 
 public class MapManager {
     
-    @Getter private List<ParkourMap> arenas = new ArrayList<>();
+    @Getter private final List<ParkourMap> arenas = new ArrayList<>();
     private final Parkour main;
 
     public MapManager(Parkour main) {

@@ -3,8 +3,9 @@ version: '1.1'
 main: fr.cel.cachecache.CacheCache
 api-version: '1.20'
 authors: [ Cel, Deadsky666 ]
-depend: [Hub]
+depend: [GameAPI]
 commands:
   cachecache:
-    description: La commande principale du plugin
-    permission: cachecache.cachecommand
+    description: Commande principale pour le plugin Cache-Cache
+    permission: cachecache.cachecache
+    aliases: [cc]

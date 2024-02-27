@@ -27,30 +27,6 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <outputDirectory>/my/path</outputDirectory>
-                </configuration>
-            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -68,15 +44,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>fr.cel.hub</groupId>
-            <artifactId>Hub</artifactId>
-            <version>1.0.2</version>
+            <groupId>fr.cel</groupId>
+            <artifactId>api-plugin</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.28</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

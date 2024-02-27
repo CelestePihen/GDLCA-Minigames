@@ -1,6 +1,8 @@
 package fr.cel.essentials;
 
 import fr.cel.essentials.commands.other.*;
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.CommandsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -11,7 +13,7 @@ import fr.cel.essentials.commands.inventory.CraftCommand;
 import fr.cel.essentials.commands.inventory.EnderChestCommand;
 import fr.cel.essentials.commands.utils.*;
 import fr.cel.essentials.listener.EntityListener;
-import fr.cel.hub.utils.ChatUtility;
+import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -21,7 +23,6 @@ import java.util.UUID;
 public class Essentials extends JavaPlugin {
 
     @Getter private final List<UUID> playersInGod = new ArrayList<>();
-    @Getter private final String prefix = ChatUtility.format("&6[GDLCA Minigames] &f");
 
     @Override
     public void onEnable() {
@@ -30,21 +31,22 @@ public class Essentials extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new EntityListener(this), this);
 
-        getCommand("heal").setExecutor(new HealCommand(this));
-        getCommand("feed").setExecutor(new FeedCommand(this));
-        getCommand("craft").setExecutor(new CraftCommand(this));
-        getCommand("gm").setExecutor(new GMCommand(this));
-        getCommand("top").setExecutor(new TopCommand(this));
-        getCommand("nv").setExecutor(new NightVisionCommand(this));
-        getCommand("bc").setExecutor(new BroadcastCommand(this));
-        getCommand("speed").setExecutor(new SpeedCommand(this));
-        getCommand("ec").setExecutor(new EnderChestCommand(this));
-        getCommand("anvil").setExecutor(new AnvilCommand(this));
-        getCommand("hat").setExecutor(new HatCommand(this));
-        getCommand("near").setExecutor(new NearCommand(this));
-        getCommand("god").setExecutor(new GodCommand(this));
-        getCommand("discord").setExecutor(new DiscordCommand(this));
-        getCommand("fly").setExecutor(new FlyCommand(this));
+        CommandsManager commandsManager = GameAPI.getInstance().getCommandsManager();
+        commandsManager.addCommand(getCommand("heal"), new HealCommand());
+        commandsManager.addCommand(getCommand("feed"), new FeedCommand());
+        commandsManager.addCommand(getCommand("craft"), new CraftCommand());
+        commandsManager.addCommand(getCommand("gm"), new GMCommand());
+        commandsManager.addCommand(getCommand("top"), new TopCommand());
+        commandsManager.addCommand(getCommand("nv"), new NightVisionCommand());
+        commandsManager.addCommand(getCommand("bc"), new BroadcastCommand());
+        commandsManager.addCommand(getCommand("speed"), new SpeedCommand());
+        commandsManager.addCommand(getCommand("ec"), new EnderChestCommand());
+        commandsManager.addCommand(getCommand("anvil"), new AnvilCommand());
+        commandsManager.addCommand(getCommand("hat"), new HatCommand());
+        commandsManager.addCommand(getCommand("near"), new NearCommand());
+        commandsManager.addCommand(getCommand("god"), new GodCommand(this));
+        commandsManager.addCommand(getCommand("discord"), new DiscordCommand());
+        commandsManager.addCommand(getCommand("fly"), new FlyCommand());
     }
 
     @Override

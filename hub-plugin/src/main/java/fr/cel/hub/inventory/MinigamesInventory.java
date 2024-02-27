@@ -1,7 +1,10 @@
 package fr.cel.hub.inventory;
 
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.inventory.AbstractInventory;
+import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.hub.Hub;
-import fr.cel.hub.utils.ItemBuilder;
+import fr.cel.hub.inventory.cachecache.CacheCacheInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,11 +14,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class MinigamesInventory extends AbstractInventory {
 
-    private final Location locationMusee;
+    private final Location locationMuseum;
 
-    public MinigamesInventory(Hub main) {
-        super("Sélectionneur de mini-jeux", 54, main);
-        locationMusee = new Location(Bukkit.getWorld("world"), 234.5, 95, 412.5, -90.0f, 0.0f);
+    public MinigamesInventory() {
+        super("Sélectionneur de mini-jeux", 54);
+        locationMuseum = new Location(Bukkit.getWorld("world"), 234.5, 95, 412.5, -90.0f, 0.0f);
     }
 
     @Override
@@ -34,20 +37,22 @@ public class MinigamesInventory extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item) {
+    public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case SPYGLASS -> player.openInventory(inventoryManager.getInventory("cachecache"));
+            case SPYGLASS -> GameAPI.getInstance().getInventoryManager().openInventory(new CacheCacheInventory(), player);
 
-            case BOW -> player.openInventory(inventoryManager.getInventory("valocraft"));
+            case BOW -> player.sendMessage(GameAPI.getInstance().getPrefix() + "Le Valocraft n'est pas disponible pour le moment !");
 
-            case NETHERITE_SWORD -> player.openInventory(inventoryManager.getInventory("pvp"));
+//            case BOW -> GameAPI.getInstance().getInventoryManager().openInventory(new ValocraftInventory(), player);
 
-            case IRON_BOOTS -> player.openInventory(inventoryManager.getInventory("parkour"));
+            case NETHERITE_SWORD -> GameAPI.getInstance().getInventoryManager().openInventory(new PVPInventory(), player);
 
-            case BRUSH -> player.teleport(locationMusee);
+            case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourInventory(), player);
+
+            case BRUSH -> player.teleport(locationMuseum);
 
             case COMMAND_BLOCK -> {
-                sendMessageWithPrefix(player, "Indisponible pour le moment.");
+                player.sendMessage(GameAPI.getInstance().getPrefix() + "Indisponible pour le moment.");
                 player.closeInventory();
             }
 

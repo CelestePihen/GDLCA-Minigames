@@ -7,7 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import fr.cel.hub.utils.ChatUtility;
+import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.pvp.PVP;
 import fr.cel.pvp.utils.Config;
 import lombok.Getter;

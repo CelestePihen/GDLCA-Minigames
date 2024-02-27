@@ -1,20 +1,18 @@
 package fr.cel.essentials.commands.utils;
 
+import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
-import fr.cel.hub.utils.ChatUtility;
+import org.bukkit.command.CommandSender;
 
 public class BroadcastCommand extends AbstractCommand {
 
-    public BroadcastCommand(Essentials main) {
-        super(main, "broadcast");
+    public BroadcastCommand() {
+        super("essentials:broadcast", false, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
+    public void onExecute(CommandSender sender, String[] args) {
         if (args.length >= 1) {
             final StringBuilder bc = new StringBuilder();
 
@@ -22,11 +20,8 @@ public class BroadcastCommand extends AbstractCommand {
 
             Bukkit.broadcastMessage(ChatUtility.format("&c[Broadcast]&r&d " + bc));
         } else {
-            sendMessageWithPrefix(player, "La commande est : /broadcast <message>");
+            sendMessageWithPrefix(sender, "La commande est : /broadcast <message>");
         }
     }
-
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
 
 }

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Player;
 
 import fr.cel.cachecache.CacheCache;
@@ -26,6 +29,18 @@ public class WaitingArenaState extends ArenaState {
     @Override
     public void onEnable(CacheCache main) {
         super.onEnable(main);
+
+        if (getArena().getNameArena().equalsIgnoreCase("bunker")) {
+            Block lever = Bukkit.getWorld("world").getBlockAt(getArena().getLeverLocation());
+            if (lever.getBlockData() instanceof Powerable powerable) {
+                powerable.setPowered(true);
+                lever.setBlockData(powerable);
+
+                Block redstoneWire = Bukkit.getWorld("world").getBlockAt(getArena().getRedstoneWireLocation());
+                redstoneWire.setType(Material.AIR);
+                redstoneWire.setType(Material.REDSTONE_WIRE);
+            }
+        }
 
         Collections.shuffle(getArena().getPlayers());
 
@@ -59,7 +74,7 @@ public class WaitingArenaState extends ArenaState {
                     player = Bukkit.getPlayer(randomUUID);
                 }
 
-                getArena().setLastHunter(player);
+                getArena().setLastHunter(player.getName());
                 getArena().getSeekers().add(player.getUniqueId());
                 getArena().getTeamSeekers().addPlayer(player);
 
@@ -77,7 +92,7 @@ public class WaitingArenaState extends ArenaState {
                     player = Bukkit.getPlayer(randomUUID);
                 }
 
-                getArena().setLastHunter(player);
+                getArena().setLastHunter(player.getName());
                 getArena().becomeSeeker(player);
                 player.teleport(getArena().getWaitingLoc());
             }

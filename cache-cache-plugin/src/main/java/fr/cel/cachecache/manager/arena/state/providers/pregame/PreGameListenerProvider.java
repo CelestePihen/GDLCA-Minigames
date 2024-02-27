@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.arena.state.providers.StateListenerProvider;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PreGameListenerProvider extends StateListenerProvider {
 
@@ -30,6 +31,13 @@ public class PreGameListenerProvider extends StateListenerProvider {
             if (!getArena().isPlayerInArena(player)) return;
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onEntityDamageEvent(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!getArena().isPlayerInArena(player)) return;
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
     }
     
 }

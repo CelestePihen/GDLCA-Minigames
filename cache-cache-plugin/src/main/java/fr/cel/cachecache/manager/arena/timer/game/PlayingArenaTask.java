@@ -33,7 +33,7 @@ public class PlayingArenaTask extends BukkitRunnable {
             Bukkit.getPlayer(pls).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerString));
         });
 
-        if (arena.getHunterMode() == CCArena.HunterMode.LoupToucheTouche && getTimer() == 10) {
+        if (arena.getHunterMode() == CCArena.HunterMode.LoupToucheTouche && getTimer() == 5) {
             Player player = Bukkit.getPlayer(arena.getSeekers().get(0));
             player.teleport(arena.getSpawnLoc());
             arena.sendMessage("&cLe chercheur " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !");
@@ -47,7 +47,7 @@ public class PlayingArenaTask extends BukkitRunnable {
             if (names.size() == 1) {
                 arena.sendMessage("&cLe chercheur " + names.get(0) + " est libéré... Cachez-vous !");
             } else {
-                arena.sendMessage("&cLes chercheurs " + names + " sont libérés... Cachez-vous !");
+                arena.sendMessage("&cLes chercheurs " + names.get(0) + " et " + names.get(1) + " sont libérés... Cachez-vous !");
             }
         }
 

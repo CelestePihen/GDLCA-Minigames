@@ -16,7 +16,7 @@ import fr.cel.cachecache.manager.GroundItem;
 
 public class BlindnessItem extends GroundItem {
 
-    private static List<String> lores = Arrays.asList("Cet objet vous permet de rendre aveugle tous les joueurs de la partie sauf vous pendant 5 secondes.");
+    private static final List<String> lores = List.of("Cet objet vous permet de rendre aveugle tous les joueurs de la partie sauf vous pendant 5 secondes.");
 
     public BlindnessItem() {
         super("blindnessItem", Material.FERMENTED_SPIDER_EYE, "Aveuglement", lores, 1);

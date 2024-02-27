@@ -89,6 +89,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onPotionSplash(PotionSplashEvent event) {
+        // TODO SMOKE - à refaire car marche pas
         Block block = event.getHitBlock();
         if (block == null) return;
 

@@ -10,7 +10,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -77,18 +76,6 @@ public class StartingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void clickInventory(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        if (getArena().isPlayerInArena(player)) return;
-
-        if (event.getView().getTitle().equalsIgnoreCase("Sélecteur d'équipes")) {
-            if (event.getCurrentItem() == null) return;
-            player.sendMessage(getArena().getGameManager().getPrefix() + "Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.");
-            player.closeInventory();
-        }
-    }
-
-    @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if (!getArena().isPlayerInArena(player)) return;
@@ -96,7 +83,8 @@ public class StartingListenerProvider extends StateListenerProvider {
         Item item = event.getItemDrop();
         if (item.getItemStack().getType() != Material.WHITE_WOOL
         || item.getItemStack().getType() != Material.RED_WOOL
-        || item.getItemStack().getType() != Material.BLUE_WOOL) event.setCancelled(true);
+        || item.getItemStack().getType() != Material.BLUE_WOOL
+        || item.getItemStack().getType() != Material.ORANGE_WOOL) event.setCancelled(true);
     }
 
     @EventHandler
@@ -108,7 +96,8 @@ public class StartingListenerProvider extends StateListenerProvider {
         Item item = event.getItem();
         if (item.getItemStack().getType() != Material.WHITE_WOOL
         || item.getItemStack().getType() != Material.RED_WOOL
-        || item.getItemStack().getType() != Material.BLUE_WOOL) event.setCancelled(true);
+        || item.getItemStack().getType() != Material.BLUE_WOOL
+        || item.getItemStack().getType() != Material.ORANGE_WOOL) event.setCancelled(true);
     }
     
 }

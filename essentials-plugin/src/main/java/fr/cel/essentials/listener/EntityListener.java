@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-
 import fr.cel.essentials.Essentials;
 
 public class EntityListener implements Listener {
@@ -18,7 +17,6 @@ public class EntityListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        
         Entity entity = event.getEntity();
 
         if (entity instanceof Player) {

@@ -1,7 +1,5 @@
 package fr.cel.valocraft.manager.arena.state.provider.game;
 
-import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -18,8 +16,6 @@ import fr.cel.valocraft.ValoCraft;
 import fr.cel.valocraft.manager.arena.state.provider.StateListenerProvider;
 import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.game.TimeOverArenaState;
-import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class SpikeListenerProvider extends StateListenerProvider {
 
@@ -89,30 +85,6 @@ public class SpikeListenerProvider extends StateListenerProvider {
 
         if (victim.getGameMode() == GameMode.SURVIVAL) {
             getArena().eliminate(victim);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerDropItem(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
-
-        if (event.getItemDrop().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onPotionSplash(PotionSplashEvent event) {
-        Block block = event.getHitBlock();
-        if (block == null) return;
-
-        Location location = block.getLocation();
-        for (int i = 0; i < 10; i++) {
-            double offsetX = Math.random() * 4 - 2;
-            double offsetY = Math.random() * 4 - 2;
-            double offsetZ = Math.random() * 4 - 2;
-            location.add(offsetX, offsetY, offsetZ);
-            location.getWorld().spawnParticle(Particle.SMOKE_LARGE, location, 1);
-            location.subtract(offsetX, offsetY, offsetZ);
         }
     }
     

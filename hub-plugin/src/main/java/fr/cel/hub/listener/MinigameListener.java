@@ -1,11 +1,12 @@
 package fr.cel.hub.listener;
 
+import fr.cel.gameapi.GameAPI;
 import fr.cel.hub.Hub;
+import fr.cel.hub.inventory.MinigamesInventory;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -21,7 +22,7 @@ public class MinigameListener extends HListener {
     @EventHandler
     public void onInteract(final PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
         Action action = event.getAction();
         ItemStack itemStack = event.getItem();
 
@@ -32,7 +33,7 @@ public class MinigameListener extends HListener {
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
             if (itemStack.getItemMeta().getDisplayName().equals("Sélectionneur de mini-jeux")) {
-                player.openInventory(main.getInventoryManager().getInventories().get("minigames").getInv());
+                GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
             }
         }
     }
@@ -40,7 +41,7 @@ public class MinigameListener extends HListener {
     @EventHandler
     public void onInteractInventory(final InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
         if (player.isOp()) return;
 
         ItemStack item = event.getCurrentItem();
@@ -54,7 +55,7 @@ public class MinigameListener extends HListener {
     @EventHandler
     public void onDropItem(final PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (!main.getPlayerManager().containsPlayerInHub(player)) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
         if (player.isOp()) return;
 
         ItemStack item = event.getItemDrop().getItemStack();

@@ -32,7 +32,6 @@ public abstract class ArenaState implements Listener {
     /**
      * Return a new instance of StateListenerProvider (or null)
      */
-    @Nullable
     public abstract StateListenerProvider getListenerProvider();
     
 }

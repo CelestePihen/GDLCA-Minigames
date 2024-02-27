@@ -1,9 +1,9 @@
 package fr.cel.parkour.manager.area;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -13,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import fr.cel.hub.Hub;
-import fr.cel.hub.utils.ChatUtility;
 import fr.cel.parkour.manager.ParkourGameManager;
 import lombok.Getter;
 
@@ -27,13 +25,13 @@ public class ParkourMap implements Listener {
 
     @Getter private final Location spawnLoc;
 
-    @Getter private final List<UUID> players;
+    @Getter private final Set<UUID> players;
 
     public ParkourMap(String nameArea, String displayName, Location spawnLoc) {
         this.nameArea = nameArea;
         this.displayName = displayName;
         this.spawnLoc = spawnLoc;
-        this.players = new ArrayList<>();
+        this.players = new HashSet<>();
 
         gameManager.getMain().getServer().getPluginManager().registerEvents(this, gameManager.getMain());
     }
@@ -41,7 +39,7 @@ public class ParkourMap implements Listener {
     public void addPlayer(Player player) {
         if (players.contains(player.getUniqueId())) return;
 
-        Hub.getHub().getPlayerManager().removePlayerInHub(player);
+        GameAPI.getInstance().getPlayerManager().removePlayerInHub(player);
         players.add(player.getUniqueId());
         sendMessage(player.getDisplayName() + " a rejoint le parkour !");
 
@@ -55,7 +53,7 @@ public class ParkourMap implements Listener {
     public void removePlayer(Player player) {
         if (!players.contains(player.getUniqueId())) return;
         this.getPlayers().remove(player.getUniqueId());
-        gameManager.getPlayerManager().sendPlayerToHub(player);
+        GameAPI.getInstance().getPlayerManager().sendPlayerToHub(player);
     }
 
     public boolean isPlayerInArena(Player player) {

@@ -3,5 +3,4 @@ fr\cel\pvp\PVP.class
 fr\cel\pvp\commands\PVPCommands.class
 fr\cel\pvp\manager\PVPGameManager.class
 fr\cel\pvp\manager\arena\ArenaManager.class
-fr\cel\pvp\commands\PVPCompleter.class
 fr\cel\pvp\manager\arena\PVPArena.class

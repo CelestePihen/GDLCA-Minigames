@@ -34,19 +34,23 @@ public class Config {
             config = new YamlConfiguration();
             try {
                 config.load(file);
-                return new CCArena(
+                CCArena arena = new CCArena(
                         arenaName,
                         config.getString("displayName"),
                         CCArena.HunterMode.valueOf(config.getString("hunterMode")),
                         parseStringToLoc(config.getString("locationSpawn")),
                         parseStringToLoc(config.getString("locationWaiting")),
-                        config.getInt("bestTime"),
-                        config.getString("bestPlayer"),
-                        config.getString("lastHunter"),
-                        getAvailableGroundItems(),
-                        config.getStringList("locationGroundItems"),
-                        this
+                        config.getBoolean("fallDamage")
                 );
+
+                arena.setConfig(this);
+                arena.setBestPlayer(config.getString("bestPlayer"));
+                arena.setBestTimer(config.getInt("bestTime"));
+                arena.setLastHunter(config.getString("lastHunter"));
+                arena.setAvailableGroundItems(getAvailableGroundItems());
+                arena.setLocationGroundItems(getLocationGroundItems());
+
+                return arena;
             } catch (IOException | InvalidConfigurationException e) {
                 e.printStackTrace();
             }
@@ -67,6 +71,15 @@ public class Config {
         }
     }
 
+    private GroundItem getItemByName(String itemName) {
+        for (GroundItem item : CCGameManager.getGroundItems()) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     private List<GroundItem> getAvailableGroundItems() {
         List<GroundItem> list = new ArrayList<>();
 
@@ -77,15 +90,6 @@ public class Config {
         return list;
     }
 
-    private GroundItem getItemByName(String itemName) {
-        for (GroundItem item : CCGameManager.getGroundItems()) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
     private Location parseStringToLoc(String string) {
         String[] parsedLoc = string.split(",");
 
@@ -94,6 +98,15 @@ public class Config {
         double z = Double.parseDouble(parsedLoc[2]);
 
         return new Location(Bukkit.getWorld("world"), x, y, z);
+    }
+
+    private List<Location> getLocationGroundItems() {
+        List<Location> locations = new ArrayList<>();
+
+        for (String str : config.getStringList("locationGroundItems")) {
+            locations.add(parseStringToLoc(str));
+        }
+        return locations;
     }
 
 }

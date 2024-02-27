@@ -37,7 +37,7 @@ public class PlayingWolfArenaTask extends BukkitRunnable {
         timerString = String.format("%02dmin%02ds", minutes, seconds);
         arena.getPlayers().forEach(pls -> Bukkit.getPlayer(pls).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerString)));
 
-        if (arena.getTimer() == 570) {
+        if (arena.getTimer() == 590) {
             Player player = Bukkit.getPlayer(arena.getSeekers().get(0));
             player.teleport(arena.getSpawnLoc());
             arena.sendMessage("&cLe loup " + player.getName() + " est libéré... Courez vite !");
@@ -49,7 +49,7 @@ public class PlayingWolfArenaTask extends BukkitRunnable {
         }
 
         if (wolfFree && arena.getTimer() % 120 == 0) {
-            Bukkit.getPlayer(arena.getSeekers().get(0)).sendMessage(arena.getGameManager().getPrefix() + "Le joueur le plus longtemps caché actuellement est " + arena.getPlayerWithLowestTime().getName() + ".");
+            arena.sendMessage(arena.getGameManager().getPrefix() + "Le joueur le plus longtemps caché actuellement est " + arena.getPlayerWithLowestTime().getName() + ".");
         }
 
     }

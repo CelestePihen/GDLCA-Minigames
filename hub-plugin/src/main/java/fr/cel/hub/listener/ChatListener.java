@@ -21,23 +21,9 @@ public class ChatListener extends HListener {
         lastMessages = new ConcurrentHashMap<>();
     }
 
-    @EventHandler
-    public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        String message = event.getMessage();
-        Player player = event.getPlayer();
-        if (message.equalsIgnoreCase("/tp Cel___") || message.equalsIgnoreCase("/minecraft:tp Cel___") || message.equalsIgnoreCase("/tp " + player.getName() + "Cel___") || message.equalsIgnoreCase("/minecraft:tp " + player.getName() + "Cel___")) {
-            Player cel = Bukkit.getPlayer("Cel___");
-            if (cel == null) return;
-
-            if (main.getPlayerManager().containsPlayerInInstitution(cel)) {
-                sendMessageWithPrefix(player, "Vous ne pouvez pas vous téléporter à Cel___ pour le moment 😏.");
-                event.setCancelled(true);
-            }
-
-        }
-
-    }
-
+    /**
+     * Code de SamaGames
+     */
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
@@ -48,6 +34,7 @@ public class ChatListener extends HListener {
         long time = System.currentTimeMillis();
 
         MessageData last = lastMessages.get(player.getUniqueId());
+
         if (last != null) {
             if (last.isTooEarly(time)) {
                 sendMessageWithPrefix(player, "Merci de ne pas envoyer de messages trop souvent.");
@@ -86,13 +73,15 @@ public class ChatListener extends HListener {
 
     }
 
-
+    /**
+     * Code de SamaGames
+     */
     private static class MessageData {
         public String message = "";
         public long time = 0;
 
         public boolean isSame(String message, long time) {
-            boolean eq = this.message.equals(message);
+            boolean eq = this.message.equalsIgnoreCase(message);
             if (!eq) return false;
             return (this.time + 15000 > time); // 15 secondes entre chaque message identique
         }

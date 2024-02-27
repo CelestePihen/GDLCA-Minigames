@@ -11,7 +11,6 @@ import lombok.Getter;
 public class TimeOverArenaState extends ArenaState {
 
     @Getter private TimeOverArenaTask timeOverArenaTask;
-    private int timer = 10;
 
     public TimeOverArenaState(ValoArena arena) {
         super(arena);
@@ -21,15 +20,14 @@ public class TimeOverArenaState extends ArenaState {
     public void onEnable(ValoCraft main) {
         super.onEnable(main);
 
+        int timer = 10;
         timeOverArenaTask = new TimeOverArenaTask(getArena(), timer);
         timeOverArenaTask.runTaskTimer(main, 0, 20);
-
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-
         if (timeOverArenaTask != null) timeOverArenaTask.cancel();
     }
 

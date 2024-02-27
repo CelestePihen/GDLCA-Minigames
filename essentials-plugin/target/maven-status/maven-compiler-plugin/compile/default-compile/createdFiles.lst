@@ -5,7 +5,6 @@ fr\cel\essentials\commands\other\HealCommand.class
 fr\cel\essentials\commands\utils\HatCommand.class
 fr\cel\essentials\commands\utils\NearCommand.class
 fr\cel\essentials\commands\utils\TopCommand.class
-fr\cel\essentials\commands\AbstractCommand.class
 fr\cel\essentials\commands\other\FlyCommand.class
 fr\cel\essentials\Essentials.class
 fr\cel\essentials\commands\other\GodCommand.class

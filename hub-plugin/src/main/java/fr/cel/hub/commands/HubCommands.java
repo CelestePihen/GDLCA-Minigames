@@ -1,35 +1,36 @@
 package fr.cel.hub.commands;
 
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.hub.Hub;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class HubCommands extends AbstractCommand {
 
-    public HubCommands(Hub main) {
-        super(main, "hub", false);
+    public HubCommands() {
+        super("hub:hub", false, false);
     }
 
     @Override
-    public void onExecute(Player player, String[] args) {
-        if (args.length == 0) {
+    public void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
+        if (args.length == 0 && isPlayer(sender)) {
             sendMessageWithPrefix(player, "Vous avez été téléporté(e) au Hub !");
-            main.getPlayerManager().sendPlayerToHub(player);
+            GameAPI.getInstance().getPlayerManager().sendPlayerToHub(player);
             return;
         }
 
-        if (player.hasPermission("hub.tphub") && args.length == 1) {
+        if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
                 sendMessageWithPrefix(player, "Ce joueur n'est pas en ligne ou n'existe pas." );
                 return;
             }
 
-            main.getPlayerManager().sendPlayerToHub(target);
+            GameAPI.getInstance().getPlayerManager().sendPlayerToHub(target);
         }
     }
-
-    @Override
-    public void onTabComplete(Player player, String label, String[] args) {}
 
 }

@@ -1,19 +1,23 @@
 package fr.cel.essentials.commands.other;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
+import fr.cel.gameapi.command.AbstractCommand;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class GodCommand extends AbstractCommand {
 
+    private final Essentials main;
+
     public GodCommand(Essentials main) {
-        super(main, "god");
+        super("essentials:god", true, true);
+        this.main = main;
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
         
         if (args.length == 0) {
             if (main.containsPlayersInGod(player)) {
@@ -46,8 +50,5 @@ public class GodCommand extends AbstractCommand {
         }
 
     }
-
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
 
 }

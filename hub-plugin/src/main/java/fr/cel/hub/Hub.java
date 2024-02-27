@@ -1,44 +1,28 @@
 package fr.cel.hub;
 
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.CommandsManager;
 import fr.cel.hub.listener.*;
-import fr.cel.hub.manager.InventoryManager;
-import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.cel.hub.commands.EventCommands;
 import fr.cel.hub.commands.HubCommands;
-import fr.cel.hub.commands.NPCCommand;
 import fr.cel.hub.manager.NPCManager;
-import fr.cel.hub.manager.PlayerManager;
-import fr.cel.hub.utils.RPUtils;
 import lombok.Getter;
 
-@Getter
 public final class Hub extends JavaPlugin {
 
-    private final String prefix = "§6[GDLCA Minigames]§r ";
+    @Getter private static Hub instance;
 
-    private PlayerManager playerManager;
-    private InventoryManager inventoryManager;
-    private NPCManager npcManager;
-    private RPUtils rpUtils;
-
-    @Getter private static Hub hub;
+    @Getter private NPCManager npcManager;
 
     /**
-     * Quand le plugin démarre
+     * Se déclenche quand le plugin démarre
      */
     @Override
     public void onEnable() {
-        hub = this;
+        instance = this;
 
-        WorldCreator worldCreator = new WorldCreator("institution");
-        worldCreator.createWorld();
-
-        rpUtils = new RPUtils();
-        playerManager = new PlayerManager();
-        inventoryManager = new InventoryManager(this);
-        inventoryManager.loadInventories();
         npcManager = new NPCManager(this);
 
         registerListeners();
@@ -46,11 +30,12 @@ public final class Hub extends JavaPlugin {
     }
 
     /**
-     * Quand le plugin s'éteint
+     * Se déclenche quand le plugin s'éteint
      */
     @Override
     public void onDisable() {
-        NPCManager.removeToAll();
+        // TODO désactiver pour le moment
+        // NPCManager.removeToAll();
     }
 
     /**
@@ -58,18 +43,23 @@ public final class Hub extends JavaPlugin {
      */
     private void registerListeners() {
         new PlayerListener(this);
-        new NPCListener(this);
         new ChatListener(this);
         new MinigameListener(this);
+
+        // TODO désactiver pour le moment
+        // new NPCListener(this);
     }
 
     /**
      * Fonction qui permet d'enregistrer les commandes
      */
     private void registerCommands() {
-        new EventCommands(this);
-        new HubCommands(this);
-        new NPCCommand(this);
+        CommandsManager commandsManager = GameAPI.getInstance().getCommandsManager();
+
+        commandsManager.addCommand(getCommand("event"), new EventCommands());
+        commandsManager.addCommand(getCommand("hub"), new HubCommands());
+        // TODO désactiver pour le moment
+        // commandsManager.addCommand(getCommand("npc"), new NPCCommand(this));
     }
 
 }

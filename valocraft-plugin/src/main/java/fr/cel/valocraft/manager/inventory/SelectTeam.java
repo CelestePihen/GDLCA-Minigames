@@ -1,11 +1,11 @@
 package fr.cel.valocraft.manager.inventory;
 
-import fr.cel.hub.Hub;
-import fr.cel.hub.inventory.AbstractInventory;
-import fr.cel.hub.utils.ChatUtility;
-import fr.cel.hub.utils.ItemBuilder;
+import fr.cel.gameapi.inventory.AbstractInventory;
+import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.valocraft.ValoCraft;
 import fr.cel.valocraft.manager.arena.ValoArena;
+import fr.cel.valocraft.manager.arena.state.pregame.StartingArenaState;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class SelectTeam extends AbstractInventory {
 
-    public SelectTeam(Hub main) {
-        super("Sélecteur d'équipes", 9, main);
+    public SelectTeam() {
+        super("Sélecteur d'équipes", 9);
     }
 
     @Override
@@ -25,8 +25,14 @@ public class SelectTeam extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item, Hub hub) {
+    public void interact(Player player, String itemName, ItemStack item) {
         ValoArena arena = ValoCraft.getGameManager().getArenaManager().getArenaByPlayer(player);
+
+        if (arena.getArenaState() instanceof StartingArenaState) {
+            player.sendMessage(arena.getGameManager().getPrefix() + "Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.");
+            player.closeInventory();
+        }
+
         switch (item.getType()) {
             case WHITE_WOOL -> {
                 arena.getBlueTeam().removePlayer(player);

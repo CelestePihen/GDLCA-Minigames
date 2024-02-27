@@ -1,22 +1,22 @@
 package fr.cel.essentials.commands.other;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
 
 public class HealCommand extends AbstractCommand {
 
-    public HealCommand(Essentials main) {
-        super(main, "heal");
+    public HealCommand() {
+        super("essentials:heal", false, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
 
-        if (args.length == 0) {
+        if (args.length == 0 && isPlayer(sender)) {
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             sendMessageWithPrefix(player, "Vous vous êtes soigné(e).");
             return;
@@ -28,21 +28,17 @@ public class HealCommand extends AbstractCommand {
             if (target != null) {
                 target.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
                 sendMessageWithPrefix(target, "Vous avez été soigné(e).");
-                sendMessageWithPrefix(player, "Vous avez soigné " + target.getName());
-                return;
+                sendMessageWithPrefix(sender, "Vous avez soigné " + target.getName());
             } else {
-                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
-                return;
+                sendMessageWithPrefix(sender, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
+            return;
         }
         
-        if (args.length > 2) {
+        else {
             sendMessageWithPrefix(player, "La commande est : /heal ou /heal <joueur>");
         }
 
     }
-
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
 
 }

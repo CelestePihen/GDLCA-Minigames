@@ -67,9 +67,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>fr.cel.hub</groupId>
-            <artifactId>Hub</artifactId>
-            <version>1.0.2</version>
+            <groupId>fr.cel</groupId>
+            <artifactId>api-plugin</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

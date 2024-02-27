@@ -1,6 +1,7 @@
-package fr.cel.cachecache.manager.items;
+package fr.cel.cachecache.manager.items.tasks;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ public class SoundCatTimer extends BukkitRunnable {
         if (secondes > 0) {
             arena.getPlayers().forEach(uuid -> {
                 Player pl = Bukkit.getPlayer(uuid);
+                if (pl.getGameMode() == GameMode.SPECTATOR) return;
                 pl.playSound(pl, Sound.ENTITY_CAT_AMBIENT, SoundCategory.AMBIENT, 3.0f, 1.0f);
             });
             secondes--;

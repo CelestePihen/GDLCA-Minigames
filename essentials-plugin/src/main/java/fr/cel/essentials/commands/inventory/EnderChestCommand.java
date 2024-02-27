@@ -1,20 +1,20 @@
 package fr.cel.essentials.commands.inventory;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
 
 public class EnderChestCommand extends AbstractCommand {
 
-    public EnderChestCommand(Essentials main) {
-        super(main, "ec");
+    public EnderChestCommand() {
+        super("essentials:ec", true, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
-        
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
+
         if (args.length == 0) {
             player.openInventory(player.getEnderChest());
             sendMessageWithPrefix(player, "Vous avez ouvert votre coffre de l'ender.");
@@ -32,8 +32,5 @@ public class EnderChestCommand extends AbstractCommand {
         }
         
     }
-
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
 
 }

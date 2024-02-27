@@ -154,6 +154,9 @@ public class PlayerListener implements Listener {
         if (deathLocation.getBlock().getType() == Material.TALL_GRASS) {
             deathLocation.subtract(0, 1, 0);
         }
+        if (deathLocation.getBlock().getType() == Material.DEAD_BUSH) {
+            deathLocation.subtract(0, 1, 0);
+        }
         deathLocation.setY(deathLocation.getY() + 1);
 
         NPC npcDead = new NPC("dead" + player.getName(), " ", deathLocation, texture, signature, true, main);

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import fr.cel.valocraft.ValoCraft;
 import fr.cel.valocraft.manager.arena.ValoArena;
-import fr.cel.hub.utils.ChatUtility;
+import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.valocraft.utils.Config;
 import lombok.Getter;
 

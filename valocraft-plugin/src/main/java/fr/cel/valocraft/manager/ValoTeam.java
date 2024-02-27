@@ -1,8 +1,6 @@
 package fr.cel.valocraft.manager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -16,14 +14,14 @@ public class ValoTeam {
     
     private final String name;
     private final String displayName;
-    private final List<UUID> players;
+    private final Set<UUID> players;
     private Role role;
     @Setter private int roundWin;
 
     public ValoTeam(String name, String displayName, Role role) {
         this.name = name;
         this.displayName = displayName;
-        this.players = new ArrayList<>();
+        this.players = new HashSet<>();
         this.role = role;
         this.roundWin = 0;
     }
@@ -47,7 +45,7 @@ public class ValoTeam {
         players.clear();
     }
 
-    public boolean containsPlayer(Player player) {
+    private boolean containsPlayer(Player player) {
         return players.contains(player.getUniqueId());
     }
 

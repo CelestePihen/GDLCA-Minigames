@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>fr.cel.parkour</groupId>
+    <groupId>fr.cel</groupId>
     <artifactId>Parkour</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
@@ -44,15 +44,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>fr.cel.hub</groupId>
-            <artifactId>Hub</artifactId>
-            <version>1.0.2</version>
+            <groupId>fr.cel</groupId>
+            <artifactId>api-plugin</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
 	    <groupId>org.projectlombok</groupId>
 	    <artifactId>lombok</artifactId>
-	    <version>1.18.28</version>
+	    <version>1.18.30</version>
 	    <scope>provided</scope>
 	</dependency>
     </dependencies>

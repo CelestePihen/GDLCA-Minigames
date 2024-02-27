@@ -77,12 +77,18 @@
             <classifier>remapped-mojang</classifier>
             <scope>provided</scope>
         </dependency>
-	<dependency>
-	    <groupId>org.projectlombok</groupId>
-	    <artifactId>lombok</artifactId>
-	    <version>1.18.28</version>
-	    <scope>provided</scope>
-	</dependency>
+        <dependency>
+            <groupId>fr.cel</groupId>
+            <artifactId>api-plugin</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+	    <dependency>
+	        <groupId>org.projectlombok</groupId>
+	        <artifactId>lombok</artifactId>
+	        <version>1.18.30</version>
+	        <scope>provided</scope>
+	    </dependency>
         <dependency>
             <groupId>fr.cel.cachecache</groupId>
             <artifactId>Cache-Cache</artifactId>

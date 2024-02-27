@@ -1,63 +1,76 @@
 package fr.cel.cachecache.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.cel.cachecache.manager.CCGameManager;
+import fr.cel.cachecache.manager.arena.CCArena;
 import fr.cel.cachecache.manager.arena.TemporaryHub;
+import fr.cel.cachecache.manager.arena.state.pregame.PreGameArenaState;
+import fr.cel.cachecache.manager.arena.state.pregame.StartingArenaState;
+import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.cel.cachecache.manager.arena.CCArena;
-import fr.cel.cachecache.manager.CCGameManager;
-import fr.cel.cachecache.manager.arena.state.pregame.PreGameArenaState;
-import fr.cel.cachecache.manager.arena.state.pregame.StartingArenaState;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CCCommands implements CommandExecutor {
+public class CCCommand extends AbstractCommand {
 
     private final CCGameManager gameManager;
 
-    public CCCommands(CCGameManager gameManager) {
+    public CCCommand(CCGameManager gameManager) {
+        super("cachecache:cachecache", false, true);
         this.gameManager = gameManager;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    protected void onExecute(CommandSender sender, String[] args) {
+        if (args.length == 0) {
+            sendHelp(sender);
+            return;
+        }
 
         if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps Cache-Cache ont été rechargés.");
             gameManager.reloadArenaManager();
-            return true;
+            return;
         }
 
         if (args[0].equalsIgnoreCase("list")) {
             if (gameManager.getArenaManager().getArenas().isEmpty()) {
                 sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installee.");
-                return false;
+                return;
             }
             for (CCArena arena : gameManager.getArenaManager().getArenas().values()) {
-                sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState());
+                sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName());
             }
-            return true;
+            return;
         }
 
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("Vous devez etre un joueur pour faire cette commande.");
-            return false;
+        if (args[0].equalsIgnoreCase("enableTemporary")) {
+            final TemporaryHub temporaryHub = gameManager.getArenaManager().getTemporaryHub();
+            temporaryHub.setActivated(!temporaryHub.isActivated());
+
+            if (temporaryHub.isActivated()) {
+                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est active !");
+            } else {
+                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est désactive !");
+            }
+            return;
         }
 
-        if (!player.hasPermission("cachecache.cachecommand")) {
-            player.sendMessage(gameManager.getPrefix() + "Tu n'as pas la permission de faire cette commande.");
-            return false;
+        if (!isPlayer(sender)) {
+            sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            return;
         }
+
+        Player player = (Player) sender;
 
         if (args[0].equalsIgnoreCase("start")) {
 
             if (!gameManager.getArenaManager().isPlayerInArena(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
-                return false;
+                return;
             }
 
             final CCArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
@@ -66,38 +79,23 @@ public class CCCommands implements CommandExecutor {
                 if (arena.getHunterMode() == CCArena.HunterMode.TwoHuntersAtStart) {
                     if (arena.getPlayers().size() <= 2) {
                         player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 3 joueurs) !");
-                        return false;
                     } else {
                         arena.setArenaState(new StartingArenaState(arena));
-                        return true;
                     }
                 }
 
                 else {
                     if (arena.getPlayers().size() < 2) {
                         player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 2 joueurs) !");
-                        return false;
                     } else {
                         arena.setArenaState(new StartingArenaState(arena));
-                        return true;
                     }
                 }
 
             } else {
                 player.sendMessage(gameManager.getPrefix() + "La partie est déjà lancée.");
-                return false;
             }
-        }
-
-        if (args[0].equalsIgnoreCase("enableTemporary")) {
-            final TemporaryHub temporaryHub = gameManager.getArenaManager().getTemporaryHub();
-            temporaryHub.setActivated(!temporaryHub.isActivated());
-
-            if (temporaryHub.isActivated()) {
-                player.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est activé !");
-            } else {
-                player.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est désactivé !");
-            }
+            return;
         }
 
         if (args[0].equalsIgnoreCase("tempHub")) {
@@ -105,28 +103,37 @@ public class CCCommands implements CommandExecutor {
 
             if (!temporaryHub.isPlayerInTempHub(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans le Hub Temporaire.");
-                return false;
+                return;
             }
 
             temporaryHub.chooseMapAndSendPlayers(player);
-            return true;
+            return;
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
 
             if (!gameManager.getArenaManager().isPlayerInArena(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
-                return false;
+                return;
             }
 
             CCArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
             List<String> playersName = new ArrayList<>();
             arena.getPlayers().forEach(pls -> playersName.add(Bukkit.getPlayer(pls).getName()));
             player.sendMessage(gameManager.getPrefix() + "Joueurs: " + playersName);
-            return true;
         }
 
-        return false;
+    }
+
+    private void sendHelp(CommandSender sender) {
+        sender.sendMessage(" ");
+        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du Cache-Cache]", ChatUtility.UtilityColor.GOLD));
+        sender.sendMessage("/cc start : Commence la partie dans laquelle vous êtes");
+        sender.sendMessage("/cc temphub : Commence la partie du mode temporaire");
+        sender.sendMessage("/cc enableTemporary : Active/Désactive le mode temporaire");
+        sender.sendMessage("/cc list : Envoie la liste des maps avec l'état du jeu actuel");
+        sender.sendMessage("/cc listplayer : Envoie la liste des joueurs dans la partie où vous êtes");
+        sender.sendMessage("/cc reload : Recharge la configuration (les maps)");
     }
 
 }

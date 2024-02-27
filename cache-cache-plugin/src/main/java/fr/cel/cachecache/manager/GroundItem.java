@@ -7,10 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import fr.cel.hub.utils.ItemBuilder;
+import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 @Getter
 public abstract class GroundItem {

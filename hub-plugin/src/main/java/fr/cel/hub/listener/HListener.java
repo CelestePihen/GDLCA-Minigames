@@ -1,5 +1,6 @@
 package fr.cel.hub.listener;
 
+import fr.cel.gameapi.GameAPI;
 import fr.cel.hub.Hub;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -14,12 +15,12 @@ public class HListener implements Listener {
     }
 
     /**
-     * Permet d'envoyer un message avec le prefix (avec l'API Adventure)
+     * Permet d'envoyer un message avec le prefix
      * @param player Le joueur
      * @param message Le message
      */
     protected void sendMessageWithPrefix(Player player, String message) {
-        player.sendMessage(Hub.getHub().getPrefix() + message);
+        player.sendMessage(GameAPI.getInstance().getPrefix() + message);
     }
 
 }

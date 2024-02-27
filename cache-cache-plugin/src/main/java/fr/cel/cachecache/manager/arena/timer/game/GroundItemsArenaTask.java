@@ -31,28 +31,17 @@ public class GroundItemsArenaTask extends BukkitRunnable {
 
     private Item spawnItem() {
         Random r = new Random();
-        String randomLocation = arena.getLocationGroundItems().get(r.nextInt(arena.getLocationGroundItems().size()));
+        Location randomLocation = arena.getLocationGroundItems().get(r.nextInt(arena.getLocationGroundItems().size()));
         GroundItem rGroundItem = arena.getAvailableGroundItems().get(r.nextInt(arena.getAvailableGroundItems().size()));
 
-        Location location = parseStringToLoc(randomLocation);
         ItemStack itemStack = rGroundItem.getItemStack();
 
-        Item droppedItem = location.getWorld().dropItem(location, itemStack);
+        Item droppedItem = randomLocation.getWorld().dropItem(randomLocation, itemStack);
         droppedItem.setUnlimitedLifetime(true);
         arena.getSpawnedGroundItems().add(droppedItem);
         arena.sendMessage("Un objet est apparu !");
 
         return droppedItem;
-    }
-
-    private Location parseStringToLoc(String string) {
-        String[] parsedLoc = string.split(",");
-
-        double x = Double.parseDouble(parsedLoc[0]);
-        double y = Double.parseDouble(parsedLoc[1]);
-        double z = Double.parseDouble(parsedLoc[2]);
-
-        return new Location(Bukkit.getWorld("world"), x, y, z);
     }
     
 }

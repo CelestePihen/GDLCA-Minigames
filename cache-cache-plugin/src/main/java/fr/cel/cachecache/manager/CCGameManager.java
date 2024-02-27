@@ -6,9 +6,9 @@ import java.util.List;
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.items.*;
 import fr.cel.cachecache.utils.TempHubConfig;
-import fr.cel.hub.Hub;
-import fr.cel.hub.manager.PlayerManager;
-import fr.cel.hub.utils.ChatUtility;
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.PlayerManager;
+import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
 
 @Getter
@@ -16,7 +16,7 @@ public class CCGameManager {
 
     private final String prefix = ChatUtility.format("&6[Cache-Cache] &r");
     private final CacheCache main;
-    private final PlayerManager playerManager;
+    private final PlayerManager playerManager = GameAPI.getInstance().getPlayerManager();
 
     @Getter private static final List<GroundItem> groundItems = new ArrayList<>();
 
@@ -25,11 +25,10 @@ public class CCGameManager {
     private ArenaManager arenaManager;
 
     public CCGameManager(CacheCache main) {
-        addGroundItems();
         gameManager = this;
         this.main = main;
-        this.playerManager = Hub.getHub().getPlayerManager();
 
+        addGroundItems();
         reloadArenaManager();
     }
 
@@ -47,7 +46,7 @@ public class CCGameManager {
     private void addGroundItems() {
         groundItems.add(new SpeedItem());
         groundItems.add(new BlindnessItem());
-        groundItems.add(new ChangePositionItem());
+        groundItems.add(new SeePlayerItem());
         groundItems.add(new SoundItem());
         groundItems.add(new InvisibilityItem());
     }

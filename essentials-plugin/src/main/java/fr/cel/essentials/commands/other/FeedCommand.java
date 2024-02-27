@@ -1,19 +1,20 @@
 package fr.cel.essentials.commands.other;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
 
 public class FeedCommand extends AbstractCommand {
 
-    public FeedCommand(Essentials main) {
-        super(main, "feed");
+    public FeedCommand() {
+        super("essentials:feed", true, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
+
         if (args.length == 0) {
             player.setFoodLevel(20);
             sendMessageWithPrefix(player, "Vous vous êtes rassasié(e).");
@@ -36,8 +37,5 @@ public class FeedCommand extends AbstractCommand {
             sendMessageWithPrefix(player, "La commande est : /feed ou /feed <joueur>");
         }
     }
-
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
 
 }

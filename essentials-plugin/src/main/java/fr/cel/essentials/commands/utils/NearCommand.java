@@ -1,30 +1,30 @@
 package fr.cel.essentials.commands.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NearCommand extends AbstractCommand {
 
-    public NearCommand(Essentials main) {
-        super(main, "near");
+    public NearCommand() {
+        super("essentials:near", false, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
-        
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
+
         if (args.length == 0 || args.length > 3) {
             sendMessageWithPrefix(player, "La commande est : /near <radius> ou /near <radius> <joueur>");
             return;
         }
 
-        if (args.length == 1) {
+        if (args.length == 1 && !isPlayer(sender)) {
             searchPlayers(player, player, args);
             return;
         }
@@ -59,8 +59,5 @@ public class NearCommand extends AbstractCommand {
 
         sendMessageWithPrefix(player, "Les joueurs proches de vous sont : " + playersName);
     }
-
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
     
 }

@@ -1,20 +1,20 @@
 package fr.cel.essentials.commands.other;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import fr.cel.essentials.Essentials;
-import fr.cel.essentials.commands.AbstractCommand;
 
 public class FlyCommand extends AbstractCommand {
 
-    public FlyCommand(Essentials main) {
-        super(main, "fly");
+    public FlyCommand() {
+        super("essentials:fly", true, true);
     }
 
     @Override
-    protected void onExecute(Player player, String[] args) {
+    protected void onExecute(CommandSender sender, String[] args) {
+        Player player = (Player) sender;
 
         if (args.length == 0) {
             if (player.getGameMode().equals(GameMode.SPECTATOR)) {
@@ -60,8 +60,5 @@ public class FlyCommand extends AbstractCommand {
         }
 
     }
-
-    @Override
-    protected void onTabComplete(Player player, String label, String[] args) {}
 
 }

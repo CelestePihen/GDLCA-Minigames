@@ -1,9 +1,9 @@
 package fr.cel.pvp;
 
+import fr.cel.gameapi.GameAPI;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.cel.pvp.commands.PVPCommands;
-import fr.cel.pvp.commands.PVPCompleter;
 import fr.cel.pvp.manager.PVPGameManager;
 
 public class PVP extends JavaPlugin {
@@ -13,11 +13,9 @@ public class PVP extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
-        
         this.gameManager = new PVPGameManager(this);
 
-        this.getCommand("pvp").setExecutor(new PVPCommands(gameManager));
-        this.getCommand("pvp").setTabCompleter(new PVPCompleter());
+        GameAPI.getInstance().getCommandsManager().addCommand(getCommand("pvp"), new PVPCommands(gameManager));
     }
 
     @Override

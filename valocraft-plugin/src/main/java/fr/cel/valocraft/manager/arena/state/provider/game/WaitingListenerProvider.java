@@ -26,8 +26,7 @@ public class WaitingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (getArena().isPlayerInArena(player)) {
                 event.setCancelled(true);
             }

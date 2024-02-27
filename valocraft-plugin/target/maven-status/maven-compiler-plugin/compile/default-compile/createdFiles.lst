@@ -1,10 +1,8 @@
 fr\cel\valocraft\manager\arena\state\ArenaState.class
 fr\cel\valocraft\manager\arena\state\game\PlayingArenaState.class
 fr\cel\valocraft\utils\Config.class
-fr\cel\valocraft\commands\ValoCompleter.class
 fr\cel\valocraft\manager\ValoTeam.class
 fr\cel\valocraft\manager\arena\state\game\SpikeArenaState.class
-fr\cel\valocraft\manager\arena\state\provider\pregame\PreGameListenerProvider$1.class
 fr\cel\valocraft\manager\arena\state\provider\game\PlayingListenerProvider.class
 fr\cel\valocraft\manager\arena\timer\game\PlayingAreraTask.class
 fr\cel\valocraft\ValoCraft.class

@@ -1,61 +1,60 @@
 package fr.cel.valocraft.commands;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.valocraft.manager.ValoGameManager;
+import fr.cel.valocraft.manager.arena.ValoArena;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.cel.valocraft.manager.ValoGameManager;
-import fr.cel.valocraft.manager.arena.ValoArena;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class ValoCommands implements CommandExecutor {
+public class ValoCommands extends AbstractCommand {
 
     private final ValoGameManager gameManager;
 
     public ValoCommands(ValoGameManager gameManager) {
-        this.gameManager = gameManager;
+        super("valocraft:valocraft", false, true);
+            this.gameManager = gameManager;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
+    protected void onExecute(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(gameManager.getPrefix() + "Vous devez mettre : /valocraft <start/list/listplayer/reload>");
-            return false;
+            sendHelp(sender);
+            return;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des arènes ValoCraft ont été rechargées.");
             gameManager.reloadArenaManager();
-            return false;
+            return;
         }
 
         if (args[0].equalsIgnoreCase("list")) {
             if (gameManager.getArenaManager().getArenas().isEmpty()) {
                 sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
-                return false;
+                return;
             }
             gameManager.getArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName()));
-            return false;
+            return;
         }
 
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("Vous devez etre un joueur pour faire cette commande.");
-            return false;
+        if (!isPlayer(sender)) {
+            sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            return;
         }
+
+        Player player = (Player) sender;
 
         if (args[0].equalsIgnoreCase("start")) {
             ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
 
             if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
-                return false;
+                return;
             }
 
             if (arena.startGame()) {
@@ -63,7 +62,6 @@ public class ValoCommands implements CommandExecutor {
             } else {
                 player.sendMessage(gameManager.getPrefix() + "La partie ne peut pas être lancée.");
             }
-            return false;
         }
 
         else if (args[0].equalsIgnoreCase("listplayer")) {
@@ -71,15 +69,15 @@ public class ValoCommands implements CommandExecutor {
 
             if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
-                return false;
+                return;
             }
 
             List<String> players = getPlayerNames(arena.getPlayers());
             List<String> blueTeam = getPlayerNames(arena.getBlueTeam().getPlayers());
             List<String> redTeam = getPlayerNames(arena.getRedTeam().getPlayers());
+            List<String> spectators = getPlayerNames(arena.getSpectators());
 
-            player.sendMessage(gameManager.getPrefix() + "Joueurs :" + players + "\nTeam Bleu : " + blueTeam + "\nTeam Rouge : " + redTeam);
-            return false;
+            player.sendMessage(gameManager.getPrefix() + "Joueurs :" + players + "\nTeam Bleu : " + blueTeam + "\nTeam Rouge : " + redTeam + " \nSpectateurs : " + spectators);
         }
 
         else if (args[0].equalsIgnoreCase("setround")) {
@@ -87,7 +85,7 @@ public class ValoCommands implements CommandExecutor {
 
             if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
-                return false;
+                return;
             }
 
             if (args.length == 3) {
@@ -100,20 +98,28 @@ public class ValoCommands implements CommandExecutor {
                 }
             } else {
                 player.sendMessage(gameManager.getPrefix() + "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
-                return false;
             }
 
         }
 
-        return false;
     }
 
-    private List<String> getPlayerNames(List<UUID> playerUUIDs) {
+    private List<String> getPlayerNames(Set<UUID> playerUUIDs) {
         return playerUUIDs.stream()
                 .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
                 .map(Player::getName)
                 .collect(Collectors.toList());
+    }
+
+    private void sendHelp(CommandSender sender) {
+        sender.sendMessage(" ");
+        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du Valocraft]", ChatUtility.UtilityColor.GOLD));
+        sender.sendMessage("/valo start : Commence la partie dans laquelle vous êtes");
+        sender.sendMessage("/valo list : Envoie la liste des maps avec l'état du jeu actuel");
+        sender.sendMessage("/valo listplayer : Envoie la liste des joueurs dans la partie où vous êtes");
+        sender.sendMessage("/valo reload : Recharge la configuration (les maps)");
+        sender.sendMessage("/valo setround <blue/red> <number> : Permet de changer le nombre de manches gagnées pour l'équipe choisie (sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
     }
 
 }

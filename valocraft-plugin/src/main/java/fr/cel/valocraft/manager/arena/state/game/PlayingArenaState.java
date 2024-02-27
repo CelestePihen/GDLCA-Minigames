@@ -26,7 +26,6 @@ public class PlayingArenaState extends ArenaState {
     @Override
     public void onDisable() {
         super.onDisable();
-
         if (playingAreraTask != null) playingAreraTask.cancel();
     }
 

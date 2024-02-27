@@ -11,6 +11,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -29,8 +31,8 @@ import fr.cel.cachecache.manager.arena.state.pregame.InitArenaState;
 import fr.cel.cachecache.manager.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.manager.arena.state.pregame.StartingArenaState;
 import fr.cel.cachecache.utils.Config;
-import fr.cel.hub.utils.ChatUtility;
-import fr.cel.hub.utils.ItemBuilder;
+import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 
 @Getter
@@ -38,7 +40,7 @@ public class CCArena {
 
     // GameManager / Config
     private final CCGameManager gameManager = CCGameManager.getGameManager();
-    private final Config config;
+    @Setter private Config config;
 
     // Names
     private final String nameArena;
@@ -50,7 +52,7 @@ public class CCArena {
     private final Map<UUID, Integer> wolfTimer;
 
     // Best Record
-    private int bestTimer;
+    @Setter private int bestTimer;
     private String bestPlayer;
 
     // Last Hunter
@@ -60,8 +62,8 @@ public class CCArena {
     private final HunterMode hunterMode;
 
     // GroundItems
-    private final List<GroundItem> availableGroundItems;
-    private final List<String> locationGroundItems;
+    @Setter private List<GroundItem> availableGroundItems;
+    @Setter private List<Location> locationGroundItems;
     private final List<Item> spawnedGroundItems;
 
     // Locations
@@ -80,9 +82,14 @@ public class CCArena {
     private final JScoreboardTeam teamHiders;
     private final JScoreboardTeam teamSeekers;
 
-    public CCArena(String nameArena, String displayName, HunterMode hunterMode, Location spawnLoc, Location waitingLoc, int bestTimer, String bestPlayer, String lastHunter, List<GroundItem> availableGroundItems, List<String> locationGroundItems, Config config) {
-        this.config = config;
+    // FallDamage
+    private final boolean fallDamage;
 
+    // Bunker
+    @Getter private final Location leverLocation = new Location(Bukkit.getWorld("world"), 54, 52, -217);
+    @Getter private final Location redstoneWireLocation = new Location(Bukkit.getWorld("world"), 56, 52, -217);
+
+    public CCArena(String nameArena, String displayName, HunterMode hunterMode, Location spawnLoc, Location waitingLoc, boolean fallDamage) {
         this.nameArena = nameArena;
         this.displayName = displayName;
 
@@ -97,15 +104,8 @@ public class CCArena {
         this.timer = 0;
         this.wolfTimer = new HashMap<>();
 
-        this.bestTimer = bestTimer;
-        this.bestPlayer = bestPlayer;
-
-        this.lastHunter = lastHunter;
-
         this.hunterMode = hunterMode;
 
-        this.availableGroundItems = availableGroundItems;
-        this.locationGroundItems = locationGroundItems;
         this.spawnedGroundItems = new ArrayList<>();
 
         this.scoreboard = new JGlobalMethodBasedScoreboard();
@@ -118,6 +118,8 @@ public class CCArena {
 
         this.teamHiders.toBukkitTeam(scoreboard.toBukkitScoreboard()).setAllowFriendlyFire(false);
         this.teamSeekers.toBukkitTeam(scoreboard.toBukkitScoreboard()).setAllowFriendlyFire(false);
+
+        this.fallDamage = fallDamage;
     }
 
     /**
@@ -141,8 +143,7 @@ public class CCArena {
     /**
      * Permet de changer le meilleur joueur de l'arène
      */
-    public void setBestPlayer(Player player) {
-        String playerName = player.getName();
+    public void setBestPlayer(String playerName) {
         this.bestPlayer = playerName;
         config.setValue("bestPlayer", playerName);
     }
@@ -150,8 +151,8 @@ public class CCArena {
     /**
      * Permet de changer le dernier chercheur de l'arène
      */
-    public void setLastHunter(Player player) {
-        this.lastHunter = player.getName();
+    public void setLastHunter(String playerName) {
+        this.lastHunter = playerName;
         config.setValue("lastHunter", lastHunter);
     }
 
@@ -192,6 +193,13 @@ public class CCArena {
 
         if (joinMessage) {
             sendMessage(player.getDisplayName() + " a rejoint la partie !");
+
+            int minutes = (bestTimer % 3600) / 60;
+            int seconds = bestTimer % 60;
+
+            String timerString = String.format("%02dmin%02ds", minutes, seconds);
+
+            player.sendMessage("Map " + displayName + "\nMeilleur cacheur : " + this.bestPlayer + " avec " + timerString);
         }
 
         if (teleportSpawn) {
@@ -214,8 +222,8 @@ public class CCArena {
      */
     public void removePlayer(Player player) {
         if (!isPlayerInArena(player)) return;
-        this.getPlayers().remove(player.getUniqueId());
         this.scoreboard.removePlayer(player);
+        wolfTimer.remove(player.getUniqueId());
 
         if (this.getSeekers().contains(player.getUniqueId())) {
             this.getSeekers().remove(player.getUniqueId());
@@ -250,6 +258,7 @@ public class CCArena {
                 getWolfTimer().remove(player.getUniqueId());
             }
 
+            this.getPlayers().remove(player.getUniqueId());
             checkWin();
         }
     }
@@ -293,7 +302,7 @@ public class CCArena {
         if (hunterMode != HunterMode.LoupToucheTouche && hiders.size() == 1) {
             if (timer > bestTimer) {
                 setBestTimer();
-                setBestPlayer(deadPlayer);
+                setBestPlayer(deadPlayer.getName());
             }
         }
 
@@ -316,6 +325,7 @@ public class CCArena {
         }
 
         deadPlayer.getInventory().clear();
+        deadPlayer.teleport(spawnLoc);
         giveWeapon(deadPlayer);
     }
 
@@ -344,13 +354,9 @@ public class CCArena {
         // Joueur touché
         becomeNonSeeker(hitPlayer);
 
-        Location loc = getSpawnLoc().clone();
-        loc.setPitch(hitPlayer.getLocation().getPitch());
-        loc.setYaw(hitPlayer.getLocation().getYaw());
-
         hitPlayer.getInventory().clear();
         hitPlayer.teleport(getWaitingLoc());
-        Bukkit.getScheduler().runTaskLater(gameManager.getMain(), () -> hitPlayer.teleport(loc), 20 * 3);
+        Bukkit.getScheduler().runTaskLater(gameManager.getMain(), () -> hitPlayer.teleport(getSpawnLoc()), 20 * 3);
         giveWeapon(hitPlayer);
     }
 
@@ -381,10 +387,10 @@ public class CCArena {
         int time = wolfTimer.get(getPlayerWithLowestTime().getUniqueId());
 
         if (getPlayerWithLowestTime() == null) {
-            Bukkit.broadcastMessage("[Cache-Cache] Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
+            sendMessage("Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
         }
 
-        else if (arenaState instanceof PlayingArenaState playingArenaState) {
+        if (arenaState instanceof PlayingArenaState playingArenaState) {
             if (playingArenaState.getPlayingArenaTask() != null) playingArenaState.getPlayingArenaTask().cancel();
             if (playingArenaState.getPlayingWolfArenaTask() != null) playingArenaState.getPlayingWolfArenaTask().cancel();
             if (playingArenaState.getPlayingBecomeWolfArenaTask() != null) playingArenaState.getPlayingBecomeWolfArenaTask().cancel();
@@ -398,10 +404,7 @@ public class CCArena {
             config.setValue("bestPlayer", bestPlayer);
         }
 
-        int minutes = (time % 3600) / 60;
-        int seconds = time % 60;
-
-        String bestTime = String.format("%02dmin%02ds", minutes, seconds);
+        String bestTime = String.format("%02dmin%02ds", (time % 3600) / 60, time % 60);
 
         sendMessage("Victoire de " + name + " qui a tenu " + bestTime + " en tant que coureur !");
         timer = 0;
@@ -428,8 +431,23 @@ public class CCArena {
             endWolf();
         } else {
             if (seekers.isEmpty() || hiders.isEmpty()) {
+                getSpawnedGroundItems().forEach(Entity::remove);
+                getSpawnedGroundItems().clear();
                 sendWinnerMessage();
                 timer = 0;
+
+                if (nameArena.equalsIgnoreCase("bunker")) {
+                    Block lever = Bukkit.getWorld("world").getBlockAt(leverLocation);
+                    if (lever.getBlockData() instanceof Powerable powerable) {
+                        powerable.setPowered(true);
+                        lever.setBlockData(powerable);
+                    }
+
+                    Block redstoneWire = Bukkit.getWorld("world").getBlockAt(redstoneWireLocation);
+                    redstoneWire.setType(Material.AIR);
+                    redstoneWire.setType(Material.REDSTONE_WIRE);
+                }
+
                 setArenaState(new InitArenaState(this));
                 players.forEach(pls -> {
                     Player player = Bukkit.getPlayer(pls);
@@ -443,8 +461,6 @@ public class CCArena {
                 hiders.clear();
                 seekers.clear();
                 players.clear();
-                getSpawnedGroundItems().forEach(Entity::remove);
-                getSpawnedGroundItems().clear();
             }
         }
     }

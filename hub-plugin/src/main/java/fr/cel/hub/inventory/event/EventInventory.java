@@ -1,9 +1,10 @@
 package fr.cel.hub.inventory.event;
 
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.inventory.AbstractInventory;
+import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.hub.Hub;
-import fr.cel.hub.inventory.AbstractInventory;
 import fr.cel.hub.tasks.FireworkMusicEvent;
-import fr.cel.hub.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,9 +14,11 @@ public class EventInventory extends AbstractInventory {
 
     private boolean eventActivated = false;
     private FireworkMusicEvent fireworkMusicEvent;
+    private final Hub main;
 
     public EventInventory(Hub main) {
-        super("Événements", 27, main);
+        super("Événements", 27);
+        this.main = main;
     }
 
     @Override
@@ -26,15 +29,16 @@ public class EventInventory extends AbstractInventory {
     }
 
     @Override
-    protected void interact(Player player, String itemName, ItemStack item) {
+    public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case JUKEBOX -> player.openInventory(main.getInventoryManager().getInventory("music"));
+            case JUKEBOX -> GameAPI.getInstance().getInventoryManager().openInventory(new MusicInventory(main), player);
+
 
             case FIREWORK_ROCKET -> {
                 if (!eventActivated) {
                     eventActivated = true;
                     fireworkMusicEvent = new FireworkMusicEvent(main);
-                    fireworkMusicEvent.runTaskTimer(main, 0, 20);
+                    fireworkMusicEvent.runTaskTimer(main, 0, 40);
                 } else {
                     eventActivated = false;
                     fireworkMusicEvent.cancel();
@@ -45,7 +49,7 @@ public class EventInventory extends AbstractInventory {
 
             case PLAYER_HEAD -> {
                 player.closeInventory();
-                sendMessageWithPrefix(player, "Bientôt disponible...");
+                player.sendMessage(GameAPI.getInstance().getPrefix() + "Bientôt disponible...");
             }
 
             default -> {}

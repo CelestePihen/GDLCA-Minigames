@@ -38,8 +38,7 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (!getArena().isPlayerInArena(player)) return;
             
             if (event.getCause() == DamageCause.PROJECTILE) {
@@ -109,9 +108,8 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
         Entity entity = event.getEntity();
-        if (!(entity instanceof Player)) return;
+        if (!(entity instanceof Player player)) return;
 
-        Player player = (Player) entity;
         if (!getArena().isPlayerInArena(player)) return;
 
         Item item = event.getItem();

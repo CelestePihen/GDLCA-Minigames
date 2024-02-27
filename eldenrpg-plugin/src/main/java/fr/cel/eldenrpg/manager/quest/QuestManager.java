@@ -10,10 +10,10 @@ import java.util.Map;
 
 public class QuestManager {
 
-    @Getter private Map<String, Quest> quests;
+    @Getter private final Map<String, Quest> quests;
 
-    public QuestManager(EldenRPG main) {
-        quests = new HashMap();
+    public QuestManager() {
+        quests = new HashMap<>();
         loadQuests();
     }
 

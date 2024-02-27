@@ -26,7 +26,6 @@ public class StartingArenaState extends ArenaState {
     public void onEnable(ValoCraft main) {
         super.onEnable(main);
 
-        getArena().setGameModePlayers(GameMode.SURVIVAL);
         setSpawnPoint();
 
         int timer = 10;
