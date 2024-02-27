@@ -1,0 +1,18 @@
+name: GameAPI
+version: '${project.version}'
+main: fr.cel.gameapi.GameAPI
+api-version: '1.20'
+commands:
+  friends:
+    description: Commande pour le système d'amis
+    aliases: [f, friend, ami, amis]
+  coins:
+    description: Commande pour le système de pièces
+    aliases: [coin, pieces, piece]
+    permission: gameapi.coins
+  register:
+    description: Commande pour s'enregistrer
+  login:
+    description: Commande pour se connecter
+  changepsw:
+    description: Commande pour se changer son mot de passe
