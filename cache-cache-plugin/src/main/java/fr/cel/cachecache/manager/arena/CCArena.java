@@ -189,17 +189,10 @@ public class CCArena {
     private void join(Player player, GameMode gameMode, boolean joinMessage, boolean teleportSpawn) {
         gameManager.getPlayerManager().removePlayerInHub(player);
         players.add(player.getUniqueId());
-        this.scoreboard.addPlayer(player);
+        scoreboard.addPlayer(player);
 
         if (joinMessage) {
             sendMessage(player.getDisplayName() + " a rejoint la partie !");
-
-            int minutes = (bestTimer % 3600) / 60;
-            int seconds = bestTimer % 60;
-
-            String timerString = String.format("%02dmin%02ds", minutes, seconds);
-
-            player.sendMessage("Map " + displayName + "\nMeilleur cacheur : " + this.bestPlayer + " avec " + timerString);
         }
 
         if (teleportSpawn) {

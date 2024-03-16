@@ -19,7 +19,7 @@ public class PlayingArenaState extends ArenaState {
     public void onEnable(ValoCraft main) {
         super.onEnable(main);
 
-        playingAreraTask = new PlayingAreraTask(getArena(), 100);
+        playingAreraTask = new PlayingAreraTask(arena, 100);
         playingAreraTask.runTaskTimer(main, 0, 20);
     }
 
@@ -35,7 +35,7 @@ public class PlayingArenaState extends ArenaState {
 
     @Override
     public StateListenerProvider getListenerProvider() {
-        return new PlayingListenerProvider(getArena());
+        return new PlayingListenerProvider(arena);
     }
     
 }

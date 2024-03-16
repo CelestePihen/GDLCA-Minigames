@@ -21,7 +21,7 @@ public class TimeOverArenaState extends ArenaState {
         super.onEnable(main);
 
         int timer = 10;
-        timeOverArenaTask = new TimeOverArenaTask(getArena(), timer);
+        timeOverArenaTask = new TimeOverArenaTask(arena, timer);
         timeOverArenaTask.runTaskTimer(main, 0, 20);
     }
 
@@ -33,7 +33,7 @@ public class TimeOverArenaState extends ArenaState {
 
     @Override
     public StateListenerProvider getListenerProvider() {
-        return new TimeOverListenerProvider(getArena());
+        return new TimeOverListenerProvider(arena);
     }
 
 }

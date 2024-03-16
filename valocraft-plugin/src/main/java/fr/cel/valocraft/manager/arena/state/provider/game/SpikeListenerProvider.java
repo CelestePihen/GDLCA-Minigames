@@ -35,8 +35,7 @@ public class SpikeListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        if (getArena().isPlayerInArena(player)) {
+        if (arena.isPlayerInArena(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -44,48 +43,28 @@ public class SpikeListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        Block block = event.getBlock();
 
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
-        if (getArena().getDefenders().getTeam().isOnTeam(player.getUniqueId())) {
-            if (block.getType() == Material.BREWING_STAND) {
-                getArena().sendTitle("Spike désamorcé", "");
-                getArena().addRoundDefender();
-                getArena().setArenaState(new TimeOverArenaState(getArena()));
-            } else {
-                event.setCancelled(true);
-            }
+        if (arena.getDefenders().getTeam().isOnTeam(player.getUniqueId()) && event.getBlock().getType() == Material.BREWING_STAND) {
+            arena.sendTitle("Spike désamorcé", "");
+            arena.addRoundDefender();
+            arena.setArenaState(new TimeOverArenaState(arena));
             return;
         }
 
         event.setCancelled(true);
-
     }
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Player player) {
-            if (!getArena().isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
             
-            if (event.getCause() == DamageCause.PROJECTILE) {
-                player.setHealth(0);
-            }
+        if (event.getCause() == DamageCause.PROJECTILE && player.getGameMode() == GameMode.SURVIVAL) {
+            arena.eliminate(player);
+        }
             
-        }
-    }
-
-    @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
-        Player victim =  event.getEntity();
-        if (!getArena().isPlayerInArena(victim)) return;
-
-        event.setDeathMessage("");
-
-        if (victim.getGameMode() == GameMode.SURVIVAL) {
-            getArena().eliminate(victim);
-        }
     }
     
 }

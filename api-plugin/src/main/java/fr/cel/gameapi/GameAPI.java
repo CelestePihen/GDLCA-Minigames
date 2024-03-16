@@ -1,5 +1,6 @@
 package fr.cel.gameapi;
 
+import fr.cel.gameapi.command.AfterReloadCommand;
 import fr.cel.gameapi.command.CoinsCommand;
 import fr.cel.gameapi.command.FriendsCommand;
 import fr.cel.gameapi.command.password.ChangePasswordCommand;
@@ -73,6 +74,7 @@ public final class GameAPI extends JavaPlugin {
         commandsManager.addCommand(getCommand("register"), new RegisterCommand(this));
         commandsManager.addCommand(getCommand("login"), new LoginCommand(this));
         commandsManager.addCommand(getCommand("changepsw"), new ChangePasswordCommand(this));
+        commandsManager.addCommand(getCommand("afterrl"), new AfterReloadCommand(this));
     }
 
     private Object getApi(Class<?> clazz) {

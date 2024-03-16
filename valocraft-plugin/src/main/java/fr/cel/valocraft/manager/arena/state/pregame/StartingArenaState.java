@@ -2,9 +2,11 @@ package fr.cel.valocraft.manager.arena.state.pregame;
 
 import java.util.UUID;
 
+import fr.cel.valocraft.manager.Role;
+import fr.cel.valocraft.manager.ValoTeam;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import fr.cel.valocraft.ValoCraft;
@@ -14,9 +16,10 @@ import fr.cel.valocraft.manager.arena.ValoArena;
 import fr.cel.valocraft.manager.arena.state.ArenaState;
 import fr.cel.valocraft.manager.arena.timer.pregame.StartingArenaTask;
 
+@Getter
 public class StartingArenaState extends ArenaState {
 
-    @Getter private StartingArenaTask arenaStartingTask;
+    private StartingArenaTask arenaStartingTask;
 
     public StartingArenaState(ValoArena arena) {
         super(arena);
@@ -29,7 +32,7 @@ public class StartingArenaState extends ArenaState {
         setSpawnPoint();
 
         int timer = 10;
-        arenaStartingTask = new StartingArenaTask(getArena(), timer);
+        arenaStartingTask = new StartingArenaTask(arena, timer);
         arenaStartingTask.runTaskTimer(main, 0, 20);
     }
 
@@ -41,13 +44,13 @@ public class StartingArenaState extends ArenaState {
 
     @Override
     public StateListenerProvider getListenerProvider() {
-        return new StartingListenerProvider(getArena());
+        return new StartingListenerProvider(arena);
     }
 
     private void setSpawnPoint() {
-        for (UUID uuid : getArena().getPlayers()) {
+        for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) player.setBedSpawnLocation(getArena().getSpawnLoc(), true);
+            if (player != null) player.setBedSpawnLocation(arena.getSpawnLoc(), true);
         }
     }
 

@@ -32,17 +32,13 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDeathAndKill(PlayerDeathEvent event) {
-        Player victim = event.getEntity();
-        if (!getArena().isPlayerInArena(victim)) return;
+        Player player = event.getEntity();
+        if (!getArena().isPlayerInArena(player)) return;
 
         event.setDeathMessage("");
 
         if (getArena().getTimer() < 30) {
-            getArena().sendMessage("Le joueur " + victim.getName() + " est mort avant les 30 secondes d'attente. Il est donc ressucité.");
-        }
-
-        else {
-            getArena().eliminate(victim);
+            getArena().sendMessage("Le joueur " + player.getName() + " est mort avant les 30 secondes d'attente. Il est donc ressucité.");
         }
     }
 
@@ -55,17 +51,10 @@ public class PlayingListenerProvider extends StateListenerProvider {
             if (!getArena().isPlayerInArena(pl)) return;
             if (!getArena().isPlayerInArena(p)) return;
 
-            if (getArena().getHiders().contains(damager.getUniqueId())) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (getArena().getHunterMode() == CCArena.HunterMode.LoupToucheTouche) {
-                event.setCancelled(true);
-                return;
-            }
-
             event.setCancelled(true);
+
+            if (getArena().getHiders().contains(pl.getUniqueId())) return;
+
             getArena().eliminate(p);
         }
 
@@ -91,10 +80,14 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onEntityDamageEvent(EntityDamageEvent event) {
-        if (getArena().isFallDamage()) return;
         if (!(event.getEntity() instanceof Player player)) return;
         if (!getArena().isPlayerInArena(player)) return;
-        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            event.setCancelled(!getArena().isFallDamage());
+        }
+
+        event.setCancelled(true);
     }
     
 }

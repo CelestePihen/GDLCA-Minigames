@@ -37,12 +37,11 @@ public class TimeOverListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Player player) {
-            if (!getArena().isPlayerInArena(player)) return;
+        if (event.getEntity() instanceof Player player) {
+            if (!arena.isPlayerInArena(player)) return;
             
             if (event.getCause() == DamageCause.PROJECTILE) {
-                player.setHealth(0);
+                arena.eliminate(player);
             }
             
         }
@@ -51,7 +50,7 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         event.setCancelled(true);
     }
@@ -59,7 +58,7 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         event.setCancelled(true);
     }
@@ -67,14 +66,14 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onDeathAndKill(PlayerDeathEvent event) {
         Player victim =  event.getEntity();
-        if (!getArena().isPlayerInArena(victim)) return;
+        if (!arena.isPlayerInArena(victim)) return;
 
         event.setDeathMessage("");
 
         if (victim.getGameMode() == GameMode.SURVIVAL) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(getArena().getGameManager().getMain(), () -> victim.spigot().respawn(), 10);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(arena.getGameManager().getMain(), () -> victim.spigot().respawn(), 10);
             victim.setGameMode(GameMode.SPECTATOR);
-            victim.sendMessage(getArena().getGameManager().getPrefix() + "Vous êtes mort(e).");
+            victim.sendMessage(arena.getGameManager().getPrefix() + "Vous êtes mort(e).");
         }
 
     }
@@ -98,10 +97,10 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItemDrop();
-        if (!(getArena().getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
+        if (!(arena.getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
         if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
@@ -110,10 +109,10 @@ public class TimeOverListenerProvider extends StateListenerProvider {
         Entity entity = event.getEntity();
         if (!(entity instanceof Player player)) return;
 
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItem();
-        if (!(getArena().getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
+        if (!(arena.getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
         if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
     

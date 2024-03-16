@@ -1,9 +1,9 @@
 name: ValoCraft
 version: '${project.version}'
 main: fr.cel.valocraft.ValoCraft
-api-version: 1.19
-authors: [ Cel ]
-depend: [Hub]
+api-version: 1.20
+authors: [ Cel, Deadsky ]
+depend: [GameAPI]
 commands:
   valocraft:
     description: La commande principale

@@ -41,9 +41,7 @@ public class MinigamesInventory extends AbstractInventory {
         switch (item.getType()) {
             case SPYGLASS -> GameAPI.getInstance().getInventoryManager().openInventory(new CacheCacheInventory(), player);
 
-            case BOW -> player.sendMessage(GameAPI.getInstance().getPrefix() + "Le Valocraft n'est pas disponible pour le moment !");
-
-//            case BOW -> GameAPI.getInstance().getInventoryManager().openInventory(new ValocraftInventory(), player);
+            case BOW -> GameAPI.getInstance().getInventoryManager().openInventory(new ValocraftInventory(), player);
 
             case NETHERITE_SWORD -> GameAPI.getInstance().getInventoryManager().openInventory(new PVPInventory(), player);
 

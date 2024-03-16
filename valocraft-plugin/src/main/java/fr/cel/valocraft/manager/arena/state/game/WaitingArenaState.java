@@ -18,9 +18,10 @@ import fr.cel.valocraft.manager.arena.timer.game.WaitingArenaTask;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 
+@Getter
 public class WaitingArenaState extends ArenaState {
 
-    @Getter private WaitingArenaTask waitingArenaTask;
+    private WaitingArenaTask waitingArenaTask;
 
     public WaitingArenaState(ValoArena arena) {
         super(arena);
@@ -30,19 +31,24 @@ public class WaitingArenaState extends ArenaState {
     public void onEnable(ValoCraft main) {
         super.onEnable(main);
 
-        if (getArena().getGlobalRound() == 1) addPlayersToBossBar();
-        if (getArena().getGlobalRound() == 13) getArena().inverseTeam();
+        if (arena.getGlobalRound() == 1) {
+            addPlayersToBossBar();
+        }
+
+        if (arena.getGlobalRound() == 13) {
+            arena.inverseTeam();
+        }
 
         removeSpike();
-        getArena().clearPlayers();
-        getArena().setGameModePlayers(GameMode.SURVIVAL);
-        getArena().showTeamRound();
+        arena.clearPlayers();
+        arena.setGameModePlayers(GameMode.SURVIVAL);
+        arena.showTeamRound();
         teleportPlayersToSpawnTeam();
         giveWeapons();
         showGlobalRound();
 
-        int timer = (getArena().getGlobalRound() == 1 || getArena().getGlobalRound() == 13 || (getArena().getRoundWinBlue() == 12 && getArena().getRoundWinRed() == 12)) ? 45 : 30;
-        waitingArenaTask = new WaitingArenaTask(getArena(), timer);
+        int timer = (arena.getGlobalRound() == 1 || arena.getGlobalRound() == 13 || (arena.getBlueTeam().getRoundWin() == 12 && arena.getRedTeam().getRoundWin() == 12)) ? 45 : 30;
+        waitingArenaTask = new WaitingArenaTask(arena, timer);
         waitingArenaTask.runTaskTimer(main, 0, 20);
     }
 
@@ -54,23 +60,23 @@ public class WaitingArenaState extends ArenaState {
 
     @Override
     public StateListenerProvider getListenerProvider() {
-        return new WaitingListenerProvider(getArena());
+        return new WaitingListenerProvider(arena);
     }
 
     private void teleportPlayersToSpawnTeam() {
-        for (UUID uuid : getArena().getAttackers().getTeam().getEntities()) {
+        for (UUID uuid : arena.getAttackers().getTeam().getEntities()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) player.teleport(getArena().getAttackersSpawn());
+            if (player != null) player.teleport(arena.getAttackersSpawn());
         }
 
-        for (UUID uuid : getArena().getDefenders().getTeam().getEntities()) {
+        for (UUID uuid : arena.getDefenders().getTeam().getEntities()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) player.teleport(getArena().getDefendersSpawn());
+            if (player != null) player.teleport(arena.getDefendersSpawn());
         }
     }
 
     private void giveWeapons() {
-        for (UUID uuid : getArena().getPlayers()) {
+        for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) return;
 
@@ -81,27 +87,27 @@ public class WaitingArenaState extends ArenaState {
             player.getInventory().addItem(bow, crossBow);
             player.getInventory().setItem(16, arrow);
         }
-        Bukkit.getPlayer(getArena().getAttackers().getTeam().getEntities().get(0)).getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).setDisplayName("Spike").toItemStack());
+        Bukkit.getPlayer(arena.getAttackers().getTeam().getEntities().get(0)).getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).setDisplayName("Spike").toItemStack());
     }
 
     private void showGlobalRound() {
-        for (UUID uuid : getArena().getPlayers()) {
+        for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) player.sendTitle("Manche " + getArena().getGlobalRound(), "", 10, 70, 20);
+            if (player != null) player.sendTitle("Manche " + arena.getGlobalRound(), "", 10, 70, 20);
         }
     }
 
     private void addPlayersToBossBar() {
-        for (UUID uuid : getArena().getPlayers()) {
+        for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) getArena().getBossBar().addPlayer(player);
+            if (player != null) arena.getBossBar().addPlayer(player);
         }
     }
 
     private void removeSpike() {
-        if (getArena().getSpike() != null) {
-            getArena().getSpike().setType(Material.AIR);
-            getArena().setSpike(null);
+        if (arena.getSpike() != null) {
+            arena.getSpike().setType(Material.AIR);
+            arena.setSpike(null);
         }
     }
 

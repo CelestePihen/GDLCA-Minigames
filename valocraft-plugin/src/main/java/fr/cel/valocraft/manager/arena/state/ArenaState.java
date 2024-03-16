@@ -11,7 +11,7 @@ import fr.cel.valocraft.manager.arena.ValoArena;
 
 public abstract class ArenaState implements Listener {
 
-    @Getter private final ValoArena arena;
+    protected final ValoArena arena;
     private StateListenerProvider listenerProvider;
 
     public ArenaState(ValoArena arena) {
