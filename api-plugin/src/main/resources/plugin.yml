@@ -16,3 +16,5 @@ commands:
     description: Commande pour se connecter
   changepsw:
     description: Commande pour se changer son mot de passe
+  afterrl:
+    description: Commande pour recharger les joueurs après un /reload

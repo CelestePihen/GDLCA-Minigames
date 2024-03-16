@@ -31,12 +31,5 @@ public class StartingListenerProvider extends StateListenerProvider {
             event.setCancelled(true);
         }
     }
-
-    @EventHandler
-    public void onEntityDamageEvent(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!getArena().isPlayerInArena(player)) return;
-        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
-    }
     
 }

@@ -57,10 +57,9 @@ public abstract class StateListenerProvider implements Listener {
 
     @EventHandler
     public void foodChange(FoodLevelChangeEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!arena.isPlayerInArena(player)) return;
-            event.setFoodLevel(20);
-        }
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
+        event.setFoodLevel(20);
     }
 
     @EventHandler
@@ -94,7 +93,7 @@ public abstract class StateListenerProvider implements Listener {
         if (type == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || (type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) ||
                 type == Material.SWEET_BERRY_BUSH || type == Material.CHEST ||  type == Material.HOPPER || type == Material.FURNACE || type == Material.BLAST_FURNACE ||
                 type == Material.SMOKER || type == Material.BARREL || type == Material.DISPENSER || type == Material.DROPPER ||
-                type == Material.CHEST_MINECART || type == Material.HOPPER_MINECART || type == Material.FURNACE_MINECART) {
+                type == Material.CHEST_MINECART || type == Material.HOPPER_MINECART || type == Material.FURNACE_MINECART || type == Material.CRAFTING_TABLE) {
             event.setCancelled(true);
             return;
         }
@@ -155,20 +154,18 @@ public abstract class StateListenerProvider implements Listener {
 
     @EventHandler
     public void onVehicleDamage(VehicleDamageEvent event) {
-        if (event.getAttacker() instanceof Player player) {
-            if (!arena.isPlayerInArena(player)) return;
-            if (player.isOp()) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getAttacker() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
+        if (player.isOp()) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void onVehicleDamage(VehicleEntityCollisionEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!arena.isPlayerInArena(player)) return;
-            if (player.isOp()) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
+        if (player.isOp()) return;
+        event.setCancelled(true);
     }
 
     @EventHandler

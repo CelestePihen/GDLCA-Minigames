@@ -25,9 +25,8 @@ public class WaitingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Player player) {
-            if (getArena().isPlayerInArena(player)) {
+        if (event.getEntity() instanceof Player player) {
+            if (arena.isPlayerInArena(player)) {
                 event.setCancelled(true);
             }
         }
@@ -35,38 +34,25 @@ public class WaitingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        if (getArena().isPlayerInArena(player)) {
+        if (arena.isPlayerInArena(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (getArena().isPlayerInArena(player)) {
+        if (arena.isPlayerInArena(event.getPlayer())) {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getMaterial() == Material.SPLASH_POTION) {
-                event.setCancelled(true);
-            }
         }
     }
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItemDrop();
-        if (!(getArena().getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
+        if (!(arena.getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
         if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
@@ -74,20 +60,20 @@ public class WaitingListenerProvider extends StateListenerProvider {
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
         Entity entity = event.getEntity();
         if (!(entity instanceof Player player)) return;
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItem();
-        if (!(getArena().getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
+        if (!(arena.getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
         if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         if (event.getTo().getBlock().getType() == Material.STRUCTURE_VOID) {
-            player.teleport(getArena().getRoleByPlayer(player).getSpawn());
+            player.teleport(arena.getRoleByPlayer(player).getSpawn());
         }
     }
 

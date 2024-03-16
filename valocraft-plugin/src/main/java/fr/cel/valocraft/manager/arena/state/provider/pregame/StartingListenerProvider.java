@@ -37,7 +37,7 @@ public class StartingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (!getArena().isPlayerInArena(player)) return;
+            if (!arena.isPlayerInArena(player)) return;
             event.setCancelled(true);
         }
     }
@@ -45,7 +45,7 @@ public class StartingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         event.setCancelled(true);
     }
@@ -53,7 +53,7 @@ public class StartingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         event.setCancelled(true);
     }
@@ -64,13 +64,13 @@ public class StartingListenerProvider extends StateListenerProvider {
         ItemStack itemStack = event.getItem();
         Action action = event.getAction();
         
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
         if (!event.hasItem()) return;
         if (!itemStack.hasItemMeta()) return;
         if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;
 
         if (itemStack.getItemMeta().getDisplayName().equalsIgnoreCase("Sélecteur d'équipes")) {
-            player.sendMessage(getArena().getGameManager().getPrefix() + "Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.");
+            player.sendMessage(arena.getGameManager().getPrefix() + "Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.");
         }
 
     }
@@ -78,7 +78,7 @@ public class StartingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItemDrop();
         if (item.getItemStack().getType() != Material.WHITE_WOOL
@@ -91,7 +91,7 @@ public class StartingListenerProvider extends StateListenerProvider {
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
         Entity entity = event.getEntity();
         if (!(entity instanceof Player player)) return;
-        if (!getArena().isPlayerInArena(player)) return;
+        if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItem();
         if (item.getItemStack().getType() != Material.WHITE_WOOL

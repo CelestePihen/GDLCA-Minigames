@@ -14,18 +14,15 @@ public class WaitingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (getArena().isPlayerInArena(player)) event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onEntityDamageEvent(EntityDamageEvent event) {
-        if (getArena().isFallDamage()) return;
         if (!(event.getEntity() instanceof Player player)) return;
         if (!getArena().isPlayerInArena(player)) return;
-        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            event.setCancelled(!getArena().isFallDamage());
+        }
+
+        event.setCancelled(true);
     }
 
 }
