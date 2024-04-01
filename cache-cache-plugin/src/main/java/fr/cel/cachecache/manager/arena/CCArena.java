@@ -475,9 +475,7 @@ public class CCArena {
         player.getInventory().addItem(
                 new ItemBuilder(Material.STICK)
                         .setDisplayName("Le tueur de cacheurs")
-                        .addEnchant(Enchantment.DAMAGE_ALL, 100)
-                        .addLoreLine("Ce bâton a déjà tué de nombreuses personnes.")
-                        .addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                        .addLoreLine("Ce bâton a déjà tué de nombreuses personnes...")
                         .toItemStack());
     }
 
@@ -489,7 +487,8 @@ public class CCArena {
         message = ChatUtility.format(gameManager.getPrefix() + message);
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.sendMessage(message);
+            if (player == null) continue;
+            player.sendMessage(message);
         }
     }
 
@@ -500,7 +499,8 @@ public class CCArena {
     public void playSound(Sound sound) {
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.playSound(player.getLocation(), sound, 1, 1);
+            if (player == null) continue;
+            player.playSound(player.getLocation(), sound, 1, 1);
         }
     }
 
@@ -511,7 +511,8 @@ public class CCArena {
     public void setLevel(int level) {
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.setLevel(level);
+            if (player == null) continue;
+            player.setLevel(level);
         }
     }
 
@@ -521,7 +522,8 @@ public class CCArena {
     public void clearPlayers() {
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.getInventory().clear();
+            if (player == null) continue;
+            player.getInventory().clear();
         }
     }
 
@@ -532,7 +534,8 @@ public class CCArena {
     public void setGameModePlayers(GameMode gameMode) {
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.setGameMode(gameMode);
+            if (player == null) continue;
+            player.setGameMode(gameMode);
         }
     }
 
@@ -542,7 +545,8 @@ public class CCArena {
     public void setSpawnPoint() {
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.setBedSpawnLocation(spawnLoc, true);
+            if (player == null) continue;
+            player.setBedSpawnLocation(spawnLoc, true);
         }
     }
 
@@ -552,10 +556,10 @@ public class CCArena {
     public void clearPotionEffects() {
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) {
-                for (PotionEffect potionEffect : player.getActivePotionEffects()) {
-                    player.removePotionEffect(potionEffect.getType());
-                }
+            if (player == null) continue;
+
+            for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+                player.removePotionEffect(potionEffect.getType());
             }
         }
     }
@@ -568,13 +572,12 @@ public class CCArena {
         OneHunter("Mode Tueur seul"),
         TwoHuntersAtStart("Mode Deux Tueurs"),
 
-        // Modes de jeu temporaires
+        // Temporaires
         LoupToucheTouche("Loup Touche-Touche"),
         Classique("Mode Classique"),
         TousContreUn("Mode Tous contre Un"),
         PluieDeBonus("Pluie de Bonus"),
-        Beta("Beta")
-        ;
+        Beta("Beta");
 
         private final String name;
 

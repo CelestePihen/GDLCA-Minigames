@@ -23,9 +23,8 @@ public class FlyCommand extends AbstractCommand {
             }
 
             player.setAllowFlight(!player.getAllowFlight());
-            player.setFlying(!player.isFlying());
 
-            if (player.isFlying()) sendMessageWithPrefix(player, "Tu as le fly.");
+            if (player.getAllowFlight()) sendMessageWithPrefix(player, "Tu as le fly.");
             else sendMessageWithPrefix(player, "Tu n'as plus le fly.");
 
             return;
@@ -39,20 +38,21 @@ public class FlyCommand extends AbstractCommand {
                     sendMessageWithPrefix(player, "Vous ne pouvez pas faire cette commande si le joueur est en spectateur.");
                     return;
                 }
+
                 target.setAllowFlight(!player.getAllowFlight());
-                target.setFlying(!player.isFlying());
-                if (target.isFlying()) {
+
+                if (target.getAllowFlight()) {
                     sendMessageWithPrefix(target, "Tu as le fly.");
                     sendMessageWithPrefix(player, "Tu as donné le fly à " + target.getName() + ".");
                 } else {
                     sendMessageWithPrefix(target, "Tu n'as plus le fly.");
                     sendMessageWithPrefix(player, "Tu as enlevé le fly à " + target.getName() + ".");
                 }
-                return;
             } else {
                 sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
                 return;
             }
+            return;
         }
         
         if (args.length > 2) {

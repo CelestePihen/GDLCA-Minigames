@@ -23,7 +23,7 @@ public final class GameAPI extends JavaPlugin {
 
     @Getter private static GameAPI instance;
 
-    @Getter private final String prefix = ChatUtility.format("[GDLCA Minigames]&r ", ChatUtility.UtilityColor.GOLD);
+    @Getter private final String prefix = ChatUtility.format("&6[GDLCA Minigames]&r ");
 
     @Getter private final List<ManagerAPI> apis = new ArrayList<>();
 
@@ -37,7 +37,6 @@ public final class GameAPI extends JavaPlugin {
         instance = this;
 
         database = new DatabaseManager("jdbc:mysql://", "95.111.253.89:3307", "gdlca", "cel", "Celeste9*LOL");
-        database.connect();
 
         rpUtils = new RPUtils();
 

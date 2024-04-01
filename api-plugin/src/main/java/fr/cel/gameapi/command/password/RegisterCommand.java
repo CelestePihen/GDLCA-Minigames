@@ -2,6 +2,8 @@ package fr.cel.gameapi.command.password;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.utils.ChatUtility;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -35,10 +37,10 @@ public class RegisterCommand extends AbstractCommand {
         }
 
         if (args[0].equals(args[1])) {
-            String encryptedPassword = encryptPassword(args[0]);
-            main.getDatabase().createAccount(player, encryptedPassword);
+            main.getDatabase().createAccount(player, encryptPassword(args[0]));
             main.getPlayersListener().getNewPlayers().remove(uuid);
-            player.kickPlayer("Merci de vous reconnecter avec votre mot de passe.");
+            main.getPlayerManager().sendPlayerToHub(player);
+            Bukkit.broadcastMessage(ChatUtility.format("[&a+&r] ") + player.getName());
         } else {
             player.sendMessage(main.getPrefix() + "Les 2 mots de passe ne sont pas les mêmes.");
         }

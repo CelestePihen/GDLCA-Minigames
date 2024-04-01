@@ -60,10 +60,7 @@ public class Config {
 
     public void setValue(String path, Object value) {
         config.set(path, value);
-        save();
-    }
 
-    private void save() {
         try {
             config.save(file);
         } catch (IOException e) {

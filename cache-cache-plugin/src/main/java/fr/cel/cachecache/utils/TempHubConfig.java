@@ -19,14 +19,11 @@ public class TempHubConfig {
     private YamlConfiguration config;
     private File file;
 
-    private final CacheCache main;
-
     public TempHubConfig(CacheCache main) {
-        this.main = main;
+        file = new File(main.getDataFolder(), "temporaryHub.yml");
     }
 
     public TemporaryHub getTemporaryHub() {
-        file = new File(main.getDataFolder(), "temporaryHub.yml");
         if (file.exists()) {
             config = new YamlConfiguration();
             try {

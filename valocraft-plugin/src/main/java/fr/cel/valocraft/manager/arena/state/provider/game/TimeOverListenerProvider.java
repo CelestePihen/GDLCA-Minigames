@@ -37,81 +37,61 @@ public class TimeOverListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!arena.isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
             
-            if (event.getCause() == DamageCause.PROJECTILE) {
-                arena.eliminate(player);
-            }
-            
+        if (event.getCause() == DamageCause.PROJECTILE) {
+            arena.eliminate(player);
         }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-
+        if (!arena.isPlayerInArena(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-
+        if (!arena.isPlayerInArena(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onDeathAndKill(PlayerDeathEvent event) {
-        Player victim =  event.getEntity();
-        if (!arena.isPlayerInArena(victim)) return;
-
-        event.setDeathMessage("");
-
-        if (victim.getGameMode() == GameMode.SURVIVAL) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(arena.getGameManager().getMain(), () -> victim.spigot().respawn(), 10);
-            victim.setGameMode(GameMode.SPECTATOR);
-            victim.sendMessage(arena.getGameManager().getPrefix() + "Vous êtes mort(e).");
-        }
-
-    }
-
-    @EventHandler
     public void onPotionSplash(PotionSplashEvent event) {
-        Block block = event.getHitBlock();
-        if (block == null) return;
-
-        Location location = block.getLocation();
-        for (int i = 0; i < 10; i++) {
-            double offsetX = Math.random() * 4 - 2;
-            double offsetY = Math.random() * 4 - 2;
-            double offsetZ = Math.random() * 4 - 2;
-            location.add(offsetX, offsetY, offsetZ);
-            location.getWorld().spawnParticle(Particle.SMOKE_LARGE, location, 1);
-            location.subtract(offsetX, offsetY, offsetZ);
-        }
+        // TODO SMOKE - à refaire
+//        Block block = event.getHitBlock();
+//        if (block == null) return;
+//
+//        Location location = block.getLocation();
+//        for (int i = 0; i < 10; i++) {
+//            double offsetX = Math.random() * 4 - 2;
+//            double offsetY = Math.random() * 4 - 2;
+//            double offsetZ = Math.random() * 4 - 2;
+//            location.add(offsetX, offsetY, offsetZ);
+//            location.getWorld().spawnParticle(Particle.SMOKE_LARGE, location, 1);
+//            location.subtract(offsetX, offsetY, offsetZ);
+//        }
     }
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         if (!arena.isPlayerInArena(player)) return;
 
-        Item item = event.getItemDrop();
+        final Item item = event.getItemDrop();
         if (!(arena.getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
         if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
-        Entity entity = event.getEntity();
+        final Entity entity = event.getEntity();
         if (!(entity instanceof Player player)) return;
 
         if (!arena.isPlayerInArena(player)) return;
 
-        Item item = event.getItem();
+        final Item item = event.getItem();
         if (!(arena.getAttackers().getTeam().isOnTeam(player.getUniqueId()))) return;
         if (item.getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }

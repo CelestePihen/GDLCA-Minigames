@@ -9,17 +9,15 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public abstract class AbstractCommand {
 
-    @Getter private final String permission;
-    @Getter private final boolean needPlayer;
-    @Getter private final boolean permissionRequired;
-
-    protected List<String> arguments;
+    private final String permission;
+    private final boolean needPlayer;
+    private final boolean permissionRequired;
 
     public AbstractCommand(String permission, boolean needPlayer, boolean permissionRequired) {
         this.permission = permission;
-        this.arguments = new ArrayList<>();
         this.needPlayer = needPlayer;
         this.permissionRequired = permissionRequired;
     }

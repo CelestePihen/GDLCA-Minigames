@@ -169,7 +169,6 @@ public class PlayerData {
         }
     }
 
-    // todo
     public String getEncryptedPassword() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -186,7 +185,6 @@ public class PlayerData {
             while (resultSet.next()) {
                 return resultSet.getString("password");
             }
-
             return "";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -203,7 +201,6 @@ public class PlayerData {
         return "";
     }
 
-    // todo
     public void setPassword(String password) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

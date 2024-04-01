@@ -39,28 +39,33 @@ public class PreGameListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!arena.isPlayerInArena(player)) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!arena.isPlayerInArena(event.getPlayer())) return;
+        final Player player = event.getPlayer();
+        if (!arena.isPlayerInArena(player)) return;
+        if (!player.isOp()) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (!arena.isPlayerInArena(event.getPlayer())) return;
+        final Player player = event.getPlayer();
+        if (!arena.isPlayerInArena(player)) return;
+        if (!player.isOp()) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
+
         if (!arena.isPlayerInArena(player)) return;
+
         Action action = event.getAction();
         ItemStack itemStack = event.getItem();
 
@@ -81,9 +86,8 @@ public class PreGameListenerProvider extends StateListenerProvider {
         if (!arena.isPlayerInArena(event.getPlayer())) return;
 
         Item item = event.getItemDrop();
-        if (item.getItemStack().getType() != Material.WHITE_WOOL
-        || item.getItemStack().getType() != Material.RED_WOOL
-        || item.getItemStack().getType() != Material.BLUE_WOOL) event.setCancelled(true);
+        if (item.getItemStack().getType() != Material.WHITE_WOOL || item.getItemStack().getType() != Material.RED_WOOL
+                || item.getItemStack().getType() != Material.BLUE_WOOL) event.setCancelled(true);
     }
 
     @EventHandler
@@ -93,7 +97,7 @@ public class PreGameListenerProvider extends StateListenerProvider {
         
         Item item = event.getItem();
         if (item.getItemStack().getType() != Material.WHITE_WOOL || item.getItemStack().getType() != Material.RED_WOOL ||
-                item.getItemStack().getType() != Material.BLUE_WOOL || item.getItemStack().getType() != Material.ORANGE_WOOL) event.setCancelled(true);
+                item.getItemStack().getType() != Material.BLUE_WOOL) event.setCancelled(true);
     }
     
 }
