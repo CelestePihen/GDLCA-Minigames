@@ -36,38 +36,31 @@ public class StartingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!arena.isPlayerInArena(player)) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-
+        if (!arena.isPlayerInArena(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-
+        if (!arena.isPlayerInArena(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void rightClickItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack itemStack = event.getItem();
-        Action action = event.getAction();
+        final Player player = event.getPlayer();
+        final ItemStack itemStack = event.getItem();
         
         if (!arena.isPlayerInArena(player)) return;
         if (!event.hasItem()) return;
-        if (!itemStack.hasItemMeta()) return;
-        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;
+        if (itemStack.getItemMeta() == null) return;
 
         if (itemStack.getItemMeta().getDisplayName().equalsIgnoreCase("Sélecteur d'équipes")) {
             player.sendMessage(arena.getGameManager().getPrefix() + "Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.");
@@ -77,27 +70,24 @@ public class StartingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItemDrop();
         if (item.getItemStack().getType() != Material.WHITE_WOOL
         || item.getItemStack().getType() != Material.RED_WOOL
-        || item.getItemStack().getType() != Material.BLUE_WOOL
-        || item.getItemStack().getType() != Material.ORANGE_WOOL) event.setCancelled(true);
+        || item.getItemStack().getType() != Material.BLUE_WOOL) event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
-        Entity entity = event.getEntity();
-        if (!(entity instanceof Player player)) return;
+        if (!(event.getEntity() instanceof Player player)) return;
         if (!arena.isPlayerInArena(player)) return;
 
         Item item = event.getItem();
         if (item.getItemStack().getType() != Material.WHITE_WOOL
         || item.getItemStack().getType() != Material.RED_WOOL
-        || item.getItemStack().getType() != Material.BLUE_WOOL
-        || item.getItemStack().getType() != Material.ORANGE_WOOL) event.setCancelled(true);
+        || item.getItemStack().getType() != Material.BLUE_WOOL) event.setCancelled(true);
     }
     
 }

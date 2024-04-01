@@ -6,15 +6,17 @@ commands:
   friends:
     description: Commande pour le système d'amis
     aliases: [f, friend, ami, amis]
+  register:
+    description: Permet de s'enregistrer
+  login:
+    description: Permet de se connecter
+  changepsw:
+    description: Permet de changer son mot de passe
+    aliases: [changepassword]
+  afterrl:
+    description: Commande à faire juste après un /reload
+    permission: gameapi:afterrl
   coins:
     description: Commande pour le système de pièces
-    aliases: [coin, pieces, piece]
+    aliases: [ coin, pieces, piece ]
     permission: gameapi.coins
-  register:
-    description: Commande pour s'enregistrer
-  login:
-    description: Commande pour se connecter
-  changepsw:
-    description: Commande pour se changer son mot de passe
-  afterrl:
-    description: Commande pour recharger les joueurs après un /reload

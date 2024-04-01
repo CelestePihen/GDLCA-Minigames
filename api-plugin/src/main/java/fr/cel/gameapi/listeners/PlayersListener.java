@@ -28,7 +28,7 @@ public class PlayersListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (!player.hasPlayedBefore()) {
             event.setJoinMessage(GameAPI.getInstance().getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !");
@@ -45,10 +45,12 @@ public class PlayersListener implements Listener {
         UUID uuid = player.getUniqueId();
         if (!main.getDatabase().hasAccount(player)) {
             newPlayers.add(uuid);
+            player.sendTitle("/register <mdp> <mdp>", "", 10, 70, 20);
             player.sendMessage(GameAPI.getInstance().getPrefix() + "Merci de faire la commande : /register <mot de passe> <mot de passe>");
         } else {
             players.add(uuid);
             main.getPlayerManager().addPlayerData(player);
+            player.sendTitle("/login <mot de passe>", "", 10, 70, 20);
             player.sendMessage(GameAPI.getInstance().getPrefix() + "Merci de faire la commande : /login <mot de passe>");
         }
     }
@@ -69,7 +71,7 @@ public class PlayersListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (newPlayers.contains(player.getUniqueId()) || players.contains(player.getUniqueId())) {
             event.setCancelled(true);
@@ -78,8 +80,8 @@ public class PlayersListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
+        final Player player = event.getPlayer();
+        final UUID uuid = player.getUniqueId();
 
         if (newPlayers.contains(uuid)) {
             player.sendMessage(GameAPI.getInstance().getPrefix() + "Merci de faire la commande : /register <mot de passe> <mot de passe>");
@@ -95,8 +97,8 @@ public class PlayersListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
+        final Player player = event.getPlayer();
+        final UUID uuid = player.getUniqueId();
 
         if (event.getMessage().contains("/register") || event.getMessage().contains("/login")) return;
 

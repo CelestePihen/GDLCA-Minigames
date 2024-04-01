@@ -56,7 +56,7 @@ public abstract class StateListenerProvider implements Listener {
     }
 
     @EventHandler
-    public void foodChange(FoodLevelChangeEvent event) {
+    public void onFoodChange(FoodLevelChangeEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!arena.isPlayerInArena(player)) return;
         event.setFoodLevel(20);
@@ -69,18 +69,17 @@ public abstract class StateListenerProvider implements Listener {
 
         if (!arena.isPlayerInArena(player)) return;
 
-        if (message.equalsIgnoreCase("/hub") || message.equalsIgnoreCase("/hub:hub") || message.equalsIgnoreCase("/hub " + player.getName()) || message.equalsIgnoreCase("/hub:hub " + player.getName())) {
+        if (message.contains("/hub")) {
             arena.removePlayer(player);
         }
     }
 
     @EventHandler
-    public void playerInteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
         
         if (!arena.isPlayerInArena(player)) return;
-
         if (block == null) return;
 
         Material type = block.getType();
@@ -170,18 +169,19 @@ public abstract class StateListenerProvider implements Listener {
 
     @EventHandler
     public void onVehicleDamage(VehicleEnterEvent event) {
-        if (event.getEntered() instanceof Player player) {
-            if (!arena.isPlayerInArena(player)) return;
-            if (player.isOp()) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getEntered() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
+        if (player.isOp()) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
+        if (!(event.getPlayer() instanceof Player player)) return;
+        if (!arena.isPlayerInArena(player)) return;
+        if (player.isOp()) return;
 
-        if (holder instanceof Entity entity) {
+        if (event.getInventory().getHolder() instanceof Entity entity) {
             if (entity.getType() == EntityType.MINECART_CHEST || entity.getType() == EntityType.MINECART_FURNACE || entity.getType() == EntityType.MINECART_HOPPER) {
                 event.setCancelled(true);
             }

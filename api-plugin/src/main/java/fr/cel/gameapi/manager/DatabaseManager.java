@@ -14,6 +14,7 @@ public class DatabaseManager {
     private final String database;
     private final String username;
     private final String password;
+
     private Connection connection;
 
     public DatabaseManager(String urlBase, String host, String database, String username, String password) {
@@ -25,16 +26,19 @@ public class DatabaseManager {
     }
 
     /**
-     * Permet de connecter la base de donnée quand le serveur s'ouvre
+     * Permet d'obtenir l'instance de Connection
      */
-    public void connect() {
+    public Connection getConnection() {
         if (!isOnline()) {
-            try {
-                connection = DriverManager.getConnection(urlBase + host + "/" + database, username, password);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (!isOnline()) {
+                try {
+                    connection = DriverManager.getConnection(urlBase + host + "/" + database, username, password);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
+        return connection;
     }
 
     /**
@@ -44,23 +48,15 @@ public class DatabaseManager {
         if (isOnline()) {
             try {
                 connection.close();
-                Bukkit.getConsoleSender().sendMessage(GameAPI.getInstance().getPrefix() + ChatUtility.format("&6Déconnexion à la BDD réussie !"));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public Connection getConnection() {
-        if (!isOnline()) {
-            this.connect();
-        }
-        return connection;
-    }
-
     /**
      * Permet de savoir si la base de donnée est connecté
-     * @return Retourne vrai si elle est connecté et faux si elle ne l'est pas
+     * @return Retourne vrai si elle est connectée et faux si elle ne l'est pas
      */
     private boolean isOnline() {
         try {
@@ -78,7 +74,6 @@ public class DatabaseManager {
      */
     public void createAccount(Player player, String password) {
         if (!hasAccount(player)) {
-            Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&cCreation d'un nouveau compte pour " + player.getName()));
             Connection connection = null;
             PreparedStatement preparedStatement = null;
             try {
@@ -92,8 +87,11 @@ public class DatabaseManager {
                 preparedStatement.setDouble(4, 0.0D);
                 preparedStatement.setBoolean(5, true);
                 preparedStatement.executeUpdate();
+
+                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&cCreation d'un nouveau compte pour " + player.getName()));
             } catch (SQLException e) {
                 e.printStackTrace();
+                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&cErreur en créant un nouveau compte pour " + player.getName()));
             } finally {
                 try {
                     if (preparedStatement != null) preparedStatement.close();
