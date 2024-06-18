@@ -2,6 +2,9 @@ package fr.cel.essentials.commands.utils;
 
 import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class DiscordCommand extends AbstractCommand {
 
@@ -12,6 +15,11 @@ public class DiscordCommand extends AbstractCommand {
     @Override
     public void onExecute(CommandSender sender, String[] args) {
         sendMessageWithPrefix(sender, "Le lien Discord est : https://discord.gg/vFjPYC4Mj8");
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] strings) {
+        return null;
     }
 
 }

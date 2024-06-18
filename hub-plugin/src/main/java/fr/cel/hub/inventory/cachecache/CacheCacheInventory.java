@@ -1,11 +1,10 @@
 package fr.cel.hub.inventory.cachecache;
 
-import fr.cel.cachecache.manager.CCGameManager;
+import fr.cel.cachecache.manager.CCArenaManager;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
-import fr.cel.hub.Hub;
 import fr.cel.hub.inventory.MinigamesInventory;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,17 +41,17 @@ public class CacheCacheInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case SCULK_CATALYST -> CCGameManager.getGameManager().getArenaManager().getArenas().get("warden").addPlayer(player, false);
-            case MINECART -> CCGameManager.getGameManager().getArenaManager().getArenas().get("mine").addPlayer(player, false);
-            case STONE_BRICKS -> CCGameManager.getGameManager().getArenaManager().getArenas().get("bunker").addPlayer(player, false);
+            case SCULK_CATALYST -> CCArenaManager.getArenaManager().getArenas().get("warden").addPlayer(player, false);
+            case MINECART -> CCArenaManager.getArenaManager().getArenas().get("mine").addPlayer(player, false);
+            case STONE_BRICKS -> CCArenaManager.getArenaManager().getArenas().get("bunker").addPlayer(player, false);
             case WHEAT -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Moulin", Material.WHEAT), player);
-            case BRICKS -> CCGameManager.getGameManager().getArenaManager().getArenas().get("ville").addPlayer(player, false);
+            case BRICKS -> CCArenaManager.getArenaManager().getArenas().get("ville").addPlayer(player, false);
             case WAXED_COPPER_BLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Steampunk", Material.WAXED_COPPER_BLOCK), player);
-            case SAND -> CCGameManager.getGameManager().getArenaManager().getArenas().get("desert").addPlayer(player, false);
+            case SAND -> CCArenaManager.getArenaManager().getArenas().get("desert").addPlayer(player, false);
             case SLIME_BALL -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Marais", Material.SLIME_BALL), player);
-            case WATER_BUCKET -> CCGameManager.getGameManager().getArenaManager().getArenas().get("aquatique").addPlayer(player, false);
+            case WATER_BUCKET -> CCArenaManager.getArenaManager().getArenas().get("aquatique").addPlayer(player, false);
 
-            case COMMAND_BLOCK -> CCGameManager.getGameManager().getArenaManager().getTemporaryHub().addPlayer(player);
+            case COMMAND_BLOCK -> CCArenaManager.getArenaManager().getTemporaryHub().addPlayer(player);
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
 

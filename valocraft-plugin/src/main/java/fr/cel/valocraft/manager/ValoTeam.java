@@ -41,14 +41,14 @@ public class ValoTeam {
     }
 
     public void clearPlayers() {
-        players.forEach(uuid -> role.getTeam().removeEntity(uuid));
+        players.forEach(uuid -> role.getTeam().removePlayer(Bukkit.getPlayer(uuid)));
         players.clear();
     }
 
     public void setRole(Role role) {
-        players.forEach(uuid -> this.role.getTeam().removeEntity(uuid));
+        players.forEach(uuid -> this.role.getTeam().removePlayer(Bukkit.getPlayer(uuid)));
         this.role = role;
-        players.forEach(uuid -> this.role.getTeam().addEntity(uuid));
+        players.forEach(uuid -> this.role.getTeam().addPlayer(Bukkit.getPlayer(uuid)));
     }
 
     public boolean isAllTeamInSpec() {

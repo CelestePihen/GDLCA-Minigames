@@ -1,9 +1,7 @@
 package fr.cel.hub.listener;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.hub.Hub;
-import fr.cel.hub.manager.NPCManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -15,18 +13,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener extends HListener {
 
     public PlayerListener(Hub main) {
         super(main);
-    }
-
-    @EventHandler
-    public void playerJoin(PlayerJoinEvent event) {
-        NPCManager.getNpcs().forEach(npc -> npc.spawn(event.getPlayer()));
     }
 
     @EventHandler

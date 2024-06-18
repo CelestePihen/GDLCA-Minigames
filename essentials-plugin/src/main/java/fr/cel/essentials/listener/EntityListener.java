@@ -1,5 +1,6 @@
 package fr.cel.essentials.listener;
 
+import fr.cel.essentials.commands.other.GodCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,22 +10,11 @@ import fr.cel.essentials.Essentials;
 
 public class EntityListener implements Listener {
 
-    private final Essentials main;
-
-    public EntityListener(Essentials main) {
-        this.main = main;
-    }
-
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
-
-        if (entity instanceof Player) {
-            if (main.containsPlayersInGod((Player) entity)) {
-                event.setCancelled(true);
-            }
-        }
-
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!GodCommand.getPlayersInGod().contains(player.getUniqueId())) return;
+        event.setCancelled(true);
     }
     
 }

@@ -6,6 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class HatCommand extends AbstractCommand {
 
     public HatCommand() {
@@ -16,15 +18,20 @@ public class HatCommand extends AbstractCommand {
     protected void onExecute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
 
-        if (args.length == 0) {
-            ItemStack it = player.getInventory().getItemInMainHand();
-            if (it.getType() == Material.AIR) return;
-            it.setAmount(1);
-            player.getInventory().setHelmet(it);
-            sendMessageWithPrefix(player, "Tu as mis sur ta tête : " + it.getType().name());
+        ItemStack it = player.getInventory().getItemInMainHand();
+        if (it.getType() == Material.AIR) {
+            sendMessageWithPrefix(player, "Vous ne pouvez pas ne rien mettre sur votre tête...");
+            return;
         }
-        
 
+        it.setAmount(1);
+        player.getInventory().setHelmet(it);
+        sendMessageWithPrefix(player, "Tu as mis sur ta tête : " + it.getType().name());
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] strings) {
+        return null;
     }
 
 }

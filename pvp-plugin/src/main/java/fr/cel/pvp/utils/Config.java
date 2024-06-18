@@ -1,52 +1,34 @@
 package fr.cel.pvp.utils;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.bukkit.Bukkit;
+import fr.cel.gameapi.utils.LocationUtility;
 import org.bukkit.Location;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.cel.pvp.PVP;
-import fr.cel.pvp.manager.arena.PVPArena;
+import fr.cel.pvp.arena.PVPArena;
 
 public class Config {
-    
-    private YamlConfiguration config;
-    private File file;
 
-    private String arenaName;
+    private final PVP main;
+    private final YamlConfiguration config;
+    private final File file;
+    private final String arenaName;
 
     public Config(PVP main, String arenaName) {
+        this.main = main;
+        this.arenaName = arenaName;
+
         this.file = new File(main.getDataFolder() + File.separator + "arenas", arenaName + ".yml");
         this.config = YamlConfiguration.loadConfiguration(this.file);
-        this.arenaName = arenaName;
-        this.load();
     }
 
     public PVPArena getArena() {
         String displayName = this.config.getString("displayName");
+        Location locationSpawn = LocationUtility.parseConfigToLoc(config, "locationSpawn");
 
-        String locSpawn = this.config.getString("locationSpawn");
-        Location locationSpawn = parseStringToLoc(locSpawn);
-
-        PVPArena arena = new PVPArena(arenaName, displayName, locationSpawn);
-        return arena;
-    }
-
-    private void load() {
-        try {
-            this.config.load(this.file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Location parseStringToLoc(String string) {
-        String[] parsedLoc = string.split(",");
-
-        return new Location(Bukkit.getWorld("world"), Double.valueOf(parsedLoc[0]), Double.valueOf(parsedLoc[1]), Double.valueOf(parsedLoc[2]));
+        return new PVPArena(arenaName, displayName, locationSpawn, main.getGameManager());
     }
 
 }

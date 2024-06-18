@@ -3,8 +3,7 @@ package fr.cel.hub.inventory;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
-import fr.cel.hub.inventory.cachecache.CacheCacheInventory;
-import fr.cel.parkour.manager.ParkourGameManager;
+import fr.cel.parkour.map.ParkourMapManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -26,7 +25,7 @@ public class ParkourInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case QUARTZ_BLOCK -> ParkourGameManager.getGameManager().getMapManager().getArenaByDisplayName("Parkour 1").addPlayer(player);
+            case QUARTZ_BLOCK -> ParkourMapManager.getMapManager().getArenaByDisplayName("Parkour 1").addPlayer(player);
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
 

@@ -16,13 +16,11 @@ public class MusicInventory extends AbstractInventory {
 
     private final World musicLocation = Bukkit.getWorld("world");
     private final Location location;
-    private final Hub main;
 
-    public MusicInventory(Hub main) {
+    public MusicInventory() {
         super("Mettre de la Musique", 27);
         this.currentSound = null;
         this.location = new Location(musicLocation, 270.5, 64, 59.5);
-        this.main = main;
     }
 
     @Override
@@ -51,11 +49,11 @@ public class MusicInventory extends AbstractInventory {
         if (item.getType() == Material.BARRIER) {
             if (this.currentSound != null) {
                 Bukkit.getOnlinePlayers().forEach(pl -> pl.stopSound(this.currentSound, SoundCategory.RECORDS));
-                player.sendMessage(GameAPI.getInstance().getPrefix() + "Vous avez arrêté la musique en cours.");
+                player.sendMessage(GameAPI.getPrefix() + "Vous avez arrêté la musique en cours.");
                 player.sendMessage();
                 player.closeInventory();
             } else {
-                player.sendMessage(GameAPI.getInstance().getPrefix() + "Il n'y a pas de musique actuellement.");
+                player.sendMessage(GameAPI.getPrefix() + "Il n'y a pas de musique actuellement.");
             }
             return;
         }
@@ -70,7 +68,7 @@ public class MusicInventory extends AbstractInventory {
 
         this.currentSound = sound;
         musicLocation.playSound(location, this.currentSound, SoundCategory.RECORDS, 2.0f, 1.0f);
-        player.sendMessage(GameAPI.getInstance().getPrefix() + "Vous avez mis la musique " + customMusic.getMusicName());
+        player.sendMessage(GameAPI.getPrefix() + "Vous avez mis la musique " + customMusic.getMusicName());
         player.closeInventory();
     }
 

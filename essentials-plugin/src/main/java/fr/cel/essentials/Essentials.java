@@ -22,40 +22,34 @@ import java.util.UUID;
 
 public class Essentials extends JavaPlugin {
 
-    @Getter private final List<UUID> playersInGod = new ArrayList<>();
-
     @Override
     public void onEnable() {
         super.onEnable();
 
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new EntityListener(this), this);
+        pm.registerEvents(new EntityListener(), this);
 
         CommandsManager commandsManager = GameAPI.getInstance().getCommandsManager();
-        commandsManager.addCommand(getCommand("heal"), new HealCommand());
-        commandsManager.addCommand(getCommand("feed"), new FeedCommand());
-        commandsManager.addCommand(getCommand("craft"), new CraftCommand());
-        commandsManager.addCommand(getCommand("gm"), new GMCommand());
-        commandsManager.addCommand(getCommand("top"), new TopCommand());
-        commandsManager.addCommand(getCommand("nv"), new NightVisionCommand());
-        commandsManager.addCommand(getCommand("bc"), new BroadcastCommand());
-        commandsManager.addCommand(getCommand("speed"), new SpeedCommand());
-        commandsManager.addCommand(getCommand("ec"), new EnderChestCommand());
-        commandsManager.addCommand(getCommand("anvil"), new AnvilCommand());
-        commandsManager.addCommand(getCommand("hat"), new HatCommand());
-        commandsManager.addCommand(getCommand("near"), new NearCommand());
-        commandsManager.addCommand(getCommand("god"), new GodCommand(this));
-        commandsManager.addCommand(getCommand("discord"), new DiscordCommand());
-        commandsManager.addCommand(getCommand("fly"), new FlyCommand());
+        commandsManager.addCommand("heal", new HealCommand(), this);
+        commandsManager.addCommand("feed", new FeedCommand(), this);
+        commandsManager.addCommand("craft", new CraftCommand(), this);
+        commandsManager.addCommand("gm", new GMCommand(), this);
+        commandsManager.addCommand("top", new TopCommand(), this);
+        commandsManager.addCommand("nv", new NightVisionCommand(), this);
+        commandsManager.addCommand("bc", new BroadcastCommand(), this);
+        commandsManager.addCommand("speed", new SpeedCommand(), this);
+        commandsManager.addCommand("ec", new EnderChestCommand(), this);
+        commandsManager.addCommand("anvil", new AnvilCommand(), this);
+        commandsManager.addCommand("hat", new HatCommand(), this);
+        commandsManager.addCommand("near", new NearCommand(), this);
+        commandsManager.addCommand("god", new GodCommand(), this);
+        commandsManager.addCommand("discord", new DiscordCommand(), this);
+        commandsManager.addCommand("fly", new FlyCommand(), this);
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-    }
-
-    public boolean containsPlayersInGod(Player player) {
-        return playersInGod.contains(player.getUniqueId());
     }
 
 }

@@ -1,14 +1,13 @@
 package fr.cel.cachecache.manager;
 
-import java.util.List;
-
-import fr.cel.cachecache.manager.arena.CCArena;
+import fr.cel.cachecache.arena.CCArena;
+import fr.cel.gameapi.utils.ItemBuilder;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import fr.cel.gameapi.utils.ItemBuilder;
-import lombok.Getter;
+import java.util.List;
 
 @Getter
 public abstract class GroundItem {

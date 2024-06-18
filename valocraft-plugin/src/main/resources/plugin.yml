@@ -1,4 +1,4 @@
-name: ValoCraft
+name: Valocraft
 version: '${project.version}'
 main: fr.cel.valocraft.ValoCraft
 api-version: 1.20
@@ -8,3 +8,4 @@ commands:
   valocraft:
     description: La commande principale
     permission: valocraft.valocommand
+    aliases: [valo]

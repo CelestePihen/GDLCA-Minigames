@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.List;
+
 public class NightVisionCommand extends AbstractCommand {
 
     public NightVisionCommand() {
@@ -23,6 +25,11 @@ public class NightVisionCommand extends AbstractCommand {
             player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 0, false, false));
             sendMessageWithPrefix(player, "Tu as maintenant l'effet Vision Nocturne.");
         }
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] strings) {
+        return null;
     }
 
 }

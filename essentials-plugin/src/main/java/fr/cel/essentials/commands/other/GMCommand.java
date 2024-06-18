@@ -6,10 +6,12 @@ import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class GMCommand extends AbstractCommand {
 
     public GMCommand() {
-        super("essentials:gm", true, true);
+        super("essentials:gm", false, true);
     }
 
     @Override
@@ -30,7 +32,6 @@ public class GMCommand extends AbstractCommand {
             
             player.setGameMode(mode);
             sendMessageWithPrefix(player, "Vous êtes en " + getModeName(mode) + ".");
-            return;
         }
 
         if (args.length == 2) {
@@ -43,15 +44,21 @@ public class GMCommand extends AbstractCommand {
             String modeString = getModeName(mode);
             Player target = Bukkit.getPlayer(args[1]);
 
-            if (target != null) {
+            if (isPlayerOnline(target, player)) {
                 target.setGameMode(mode);
                 sendMessageWithPrefix(target, "Vous avez été mis(e) en " + modeString);
                 sendMessageWithPrefix(sender, "Vous avez mis " + target.getName() + " en " + modeString + ".");
-            } else {
-                sendMessageWithPrefix(sender, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
         }
 
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        if (args.length == 1) {
+            return List.of("0", "1", "2", "3", "s", "c", "a", "sp");
+        }
+        return null;
     }
 
     private GameMode getGamemode(String mode) {

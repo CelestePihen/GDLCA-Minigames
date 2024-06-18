@@ -1,9 +1,9 @@
 package fr.cel.cachecache.utils;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.manager.CCGameManager;
-import fr.cel.cachecache.manager.arena.CCArena;
-import fr.cel.cachecache.manager.arena.TemporaryHub;
+import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.arena.TemporaryHub;
+import fr.cel.gameapi.utils.LocationUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,11 +16,13 @@ import java.util.List;
 
 public class TempHubConfig {
 
+    private final CacheCache main;
+    private final File file;
     private YamlConfiguration config;
-    private File file;
 
     public TempHubConfig(CacheCache main) {
-        file = new File(main.getDataFolder(), "temporaryHub.yml");
+        this.file = new File(main.getDataFolder(), "temporaryHub.yml");
+        this.main = main;
     }
 
     public TemporaryHub getTemporaryHub() {
@@ -30,11 +32,12 @@ public class TempHubConfig {
                 config.load(file);
                 return new TemporaryHub(
                         config.getBoolean("isActivated"),
-                        getLocation(config),
+                        LocationUtility.parseConfigToLoc(config, "location"),
                         getTemporaryArenas(),
                         CCArena.HunterMode.valueOf(config.getString("chosenHunterMode")),
                         config.getString("lastMap"),
-                        this
+                        this,
+                        main.getGameManager()
                 );
             } catch (IOException | InvalidConfigurationException e) {
                 e.printStackTrace();
@@ -43,19 +46,11 @@ public class TempHubConfig {
         return null;
     }
 
-    private Location getLocation(YamlConfiguration config) {
-        double x = config.getDouble("location.x");
-        double y = config.getDouble("location.y");
-        double z = config.getDouble("location.z");
-
-        return new Location(Bukkit.getWorld("world"), x, y, z);
-    }
-
     private List<CCArena> getTemporaryArenas() {
         List<CCArena> list = new ArrayList<>();
 
         for (String str : config.getStringList("temporaryMaps")) {
-            list.add(CCGameManager.getGameManager().getArenaManager().getArenas().get(str));
+            list.add(main.getCcArenaManager().getArenas().get(str));
         }
 
         return list;

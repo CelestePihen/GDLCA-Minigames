@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class TopCommand extends AbstractCommand {
 
     public TopCommand() {
@@ -21,5 +23,10 @@ public class TopCommand extends AbstractCommand {
         player.teleport(new Location(player.getWorld(), x + 0.5D, player.getWorld().getHighestBlockYAt(x, z) + 1, z + 0.5D));
         sendMessageWithPrefix(player, "Vous avez été téléporté(e) à la surface.");
     }
-    
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] strings) {
+        return null;
+    }
+
 }
