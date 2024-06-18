@@ -6,17 +6,18 @@ import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class FlyCommand extends AbstractCommand {
 
     public FlyCommand() {
-        super("essentials:fly", true, true);
+        super("essentials:fly", false,true);
     }
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
-
-        if (args.length == 0) {
+        if (args.length == 0 && isPlayer(sender)) {
+            Player player = (Player) sender;
             if (player.getGameMode().equals(GameMode.SPECTATOR)) {
                 sendMessageWithPrefix(player, "Vous ne pouvez pas faire cette commande en spectateur.");
                 return;
@@ -33,32 +34,33 @@ public class FlyCommand extends AbstractCommand {
         if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
 
-            if (target != null) {
+            if (isPlayerOnline(target, sender)) {
                 if (target.getGameMode().equals(GameMode.SPECTATOR)) {
-                    sendMessageWithPrefix(player, "Vous ne pouvez pas faire cette commande si le joueur est en spectateur.");
+                    sendMessageWithPrefix(sender, "Vous ne pouvez pas faire cette commande si le joueur est en spectateur.");
                     return;
                 }
 
-                target.setAllowFlight(!player.getAllowFlight());
+                target.setAllowFlight(!target.getAllowFlight());
 
                 if (target.getAllowFlight()) {
                     sendMessageWithPrefix(target, "Tu as le fly.");
-                    sendMessageWithPrefix(player, "Tu as donné le fly à " + target.getName() + ".");
+                    sendMessageWithPrefix(sender, "Tu as donné le fly à " + target.getName() + ".");
                 } else {
                     sendMessageWithPrefix(target, "Tu n'as plus le fly.");
-                    sendMessageWithPrefix(player, "Tu as enlevé le fly à " + target.getName() + ".");
+                    sendMessageWithPrefix(sender, "Tu as enlevé le fly à " + target.getName() + ".");
                 }
-            } else {
-                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
-                return;
             }
-            return;
         }
         
         if (args.length > 2) {
-            sendMessageWithPrefix(player, "La commande est : /fly ou /fly <joueur>");
+            sendMessageWithPrefix(sender, "La commande est : /fly ou /fly <joueur>");
         }
 
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        return null;
     }
 
 }

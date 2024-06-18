@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class EnderChestCommand extends AbstractCommand {
 
     public EnderChestCommand() {
@@ -23,14 +25,18 @@ public class EnderChestCommand extends AbstractCommand {
 
         if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
-            if (target != null) {
+
+            if (isPlayerOnline(target, sender)) {
                 player.openInventory(target.getEnderChest());
                 sendMessageWithPrefix(player, "Vous avez ouvert le coffre de l'ender de " + target.getName() + ".");
-            } else {
-                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
         }
         
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        return null;
     }
 
 }

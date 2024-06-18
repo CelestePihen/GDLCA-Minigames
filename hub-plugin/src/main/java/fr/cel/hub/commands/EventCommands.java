@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.List;
+
 public class EventCommands extends AbstractCommand {
 
     public EventCommands() {
@@ -29,6 +31,14 @@ public class EventCommands extends AbstractCommand {
             GameAPI.getInstance().getInventoryManager().openInventory(new EventInventory(Hub.getInstance()), player);
         }
 
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        if (args.length == 1) {
+            return List.of("hub");
+        }
+        return null;
     }
 
 }

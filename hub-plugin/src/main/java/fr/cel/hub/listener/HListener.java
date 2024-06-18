@@ -20,7 +20,7 @@ public class HListener implements Listener {
      * @param message Le message
      */
     protected void sendMessageWithPrefix(Player player, String message) {
-        player.sendMessage(GameAPI.getInstance().getPrefix() + message);
+        player.sendMessage(GameAPI.getPrefix() + message);
     }
 
 }

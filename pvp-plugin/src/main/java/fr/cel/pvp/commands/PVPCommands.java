@@ -5,52 +5,59 @@ import java.util.List;
 import java.util.UUID;
 
 import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.cel.pvp.manager.PVPGameManager;
-import fr.cel.pvp.manager.arena.PVPArena;
+import fr.cel.pvp.manager.GameManager;
+import fr.cel.pvp.arena.PVPArena;
 
 public class PVPCommands extends AbstractCommand {
 
-    private final PVPGameManager gameManager;
+    private final GameManager gameManager;
 
-    public PVPCommands(PVPGameManager gameManager) {
-        super("pvp:pvp", true, true);
+    public PVPCommands(GameManager gameManager) {
+        super("pvp:pvp", false, true);
         this.gameManager = gameManager;
     }
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
-
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("Vous devez etre un joueur pour faire cette commande.");
+        if (args.length == 0) {
+            sendHelp(sender);
             return;
         }
 
-        if (!player.hasPermission("pvp.pvp")) {
-            player.sendMessage(gameManager.getPrefix() + "Tu n'as pas la permission de faire cette commande.");
-        }
-
-        else if (args[0].equalsIgnoreCase("list")) {
-            if (gameManager.getArenaManager().getArenas().isEmpty()) {
-                player.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
+        if (args[0].equalsIgnoreCase("list")) {
+            if (gameManager.getMain().getPvpArenaManager().getArenas().isEmpty()) {
+                sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
                 return;
             }
-            gameManager.getArenaManager().getArenas().forEach(arena -> { player.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName()); });
+            gameManager.getMain().getPvpArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName()));
         }
 
-        else if (args[0].equalsIgnoreCase("listplayer")) {
+        else if (args[0].equalsIgnoreCase("reload")) {
+            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des arènes PVP ont été rechargées.");
+            gameManager.reloadArenaManager();
+            return;
+        }
 
-            if (!gameManager.getArenaManager().isPlayerInArena(player)) {
+        if (!isPlayer(sender)) {
+            sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            return;
+        }
+
+        Player player = (Player) sender;
+
+        if (args[0].equalsIgnoreCase("listplayer")) {
+
+            if (!gameManager.getMain().getPvpArenaManager().isPlayerInArena(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
                 return;
             }
 
-            PVPArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            PVPArena arena = gameManager.getMain().getPvpArenaManager().getArenaByPlayer(player);
             List<String> playersName = new ArrayList<>();
             for (UUID pls : arena.getPlayers()) {
                 Player player1 = Bukkit.getPlayer(pls);
@@ -58,12 +65,23 @@ public class PVPCommands extends AbstractCommand {
             }
             player.sendMessage(gameManager.getPrefix() + playersName);
         }
+    }
 
-        else if (args[0].equalsIgnoreCase("reload")) {
-            player.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des arènes PVP ont été rechargées.");
-            gameManager.reloadArenaManager();
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        if (args.length == 1) {
+            return List.of("reload", "list", "listplayer");
         }
 
+        return null;
+    }
+
+    private void sendHelp(CommandSender sender) {
+        sender.sendMessage(" ");
+        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du PVP]", ChatUtility.GOLD));
+        sender.sendMessage("/pvp reload : Recharge la configuration (les maps)");
+        sender.sendMessage("/pvp list : Envoie la liste des maps");
+        sender.sendMessage("/pvp listplayer : Envoie la liste des joueurs dans la carte où vous êtes");
     }
 
 }

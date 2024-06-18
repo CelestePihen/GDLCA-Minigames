@@ -2,20 +2,21 @@ package fr.cel.valocraft.commands;
 
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
-import fr.cel.valocraft.manager.ValoGameManager;
-import fr.cel.valocraft.manager.arena.ValoArena;
+import fr.cel.valocraft.manager.GameManager;
+import fr.cel.valocraft.arena.ValoArena;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ValoCommands extends AbstractCommand {
 
-    private final ValoGameManager gameManager;
+    private final GameManager gameManager;
 
-    public ValoCommands(ValoGameManager gameManager) {
+    public ValoCommands(GameManager gameManager) {
         super("valocraft:valocraft", false, true);
         this.gameManager = gameManager;
     }
@@ -34,11 +35,11 @@ public class ValoCommands extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("list")) {
-            if (gameManager.getArenaManager().getArenas().isEmpty()) {
+            if (gameManager.getValoArenaManager().getArenas().isEmpty()) {
                 sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
                 return;
             }
-            gameManager.getArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName()));
+            gameManager.getValoArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName()));
             return;
         }
 
@@ -50,7 +51,7 @@ public class ValoCommands extends AbstractCommand {
         Player player = (Player) sender;
 
         if (args[0].equalsIgnoreCase("start")) {
-            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            ValoArena arena = gameManager.getValoArenaManager().getArenaByPlayer(player);
 
             if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
@@ -65,7 +66,7 @@ public class ValoCommands extends AbstractCommand {
         }
 
         else if (args[0].equalsIgnoreCase("listplayer")) {
-            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            ValoArena arena = gameManager.getValoArenaManager().getArenaByPlayer(player);
 
             if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
@@ -81,7 +82,7 @@ public class ValoCommands extends AbstractCommand {
         }
 
         else if (args[0].equalsIgnoreCase("setround")) {
-            ValoArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            ValoArena arena = gameManager.getValoArenaManager().getArenaByPlayer(player);
 
             if (arena == null) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
@@ -104,22 +105,35 @@ public class ValoCommands extends AbstractCommand {
 
     }
 
-    private List<String> getPlayerNames(Set<UUID> playerUUIDs) {
-        return playerUUIDs.stream()
-                .map(Bukkit::getPlayer)
-                .filter(Objects::nonNull)
-                .map(Player::getName)
-                .collect(Collectors.toList());
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        if (args.length == 1) {
+            return List.of("start", "list", "listplayer", "reload", "setround");
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("setround")) {
+            return List.of("blue", "red");
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("setround")) {
+            return IntStream.range(1, 10).mapToObj(Integer::toString).collect(Collectors.toList());
+        }
+
+        return null;
     }
 
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(" ");
-        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du Valocraft]", ChatUtility.UtilityColor.GOLD));
+        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du Valocraft]", ChatUtility.GOLD));
         sender.sendMessage("/valo start : Commence la partie dans laquelle vous êtes");
         sender.sendMessage("/valo list : Envoie la liste des maps avec l'état du jeu actuel");
         sender.sendMessage("/valo listplayer : Envoie la liste des joueurs dans la partie où vous êtes");
         sender.sendMessage("/valo reload : Recharge la configuration (les maps)");
         sender.sendMessage("/valo setround <blue/red> <number> : Permet de changer le nombre de manches gagnées pour l'équipe choisie (sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
+    }
+
+    private List<String> getPlayerNames(Set<UUID> playerUUIDs) {
+        return playerUUIDs.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).map(Player::getName).collect(Collectors.toList());
     }
 
 }

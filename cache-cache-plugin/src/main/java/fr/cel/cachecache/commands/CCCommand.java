@@ -1,10 +1,12 @@
 package fr.cel.cachecache.commands;
 
-import fr.cel.cachecache.manager.CCGameManager;
-import fr.cel.cachecache.manager.arena.CCArena;
-import fr.cel.cachecache.manager.arena.TemporaryHub;
-import fr.cel.cachecache.manager.arena.state.pregame.PreGameArenaState;
-import fr.cel.cachecache.manager.arena.state.pregame.StartingArenaState;
+import fr.cel.cachecache.manager.CCArenaManager;
+import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.arena.TemporaryHub;
+import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
+import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
+import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
@@ -13,14 +15,17 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CCCommand extends AbstractCommand {
 
-    private final CCGameManager gameManager;
+    private final GameManager gameManager;
+    private final CCArenaManager arenaManager;
 
-    public CCCommand(CCGameManager gameManager) {
+    public CCCommand(GameManager gameManager) {
         super("cachecache:cachecache", false, true);
         this.gameManager = gameManager;
+        this.arenaManager = gameManager.getMain().getCcArenaManager();
     }
 
     @Override
@@ -33,28 +38,32 @@ public class CCCommand extends AbstractCommand {
         if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps Cache-Cache ont été rechargés.");
             gameManager.reloadArenaManager();
-            return;
+        }
+
+        if (args[0].equalsIgnoreCase("reloadTemporary")) {
+            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps temporaires Cache-Cache ont été rechargés.");
+            gameManager.reloadTemporaryHub();
         }
 
         if (args[0].equalsIgnoreCase("list")) {
-            if (gameManager.getArenaManager().getArenas().isEmpty()) {
-                sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installee.");
+            if (arenaManager.getArenas().isEmpty()) {
+                sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installée.");
                 return;
             }
-            for (CCArena arena : gameManager.getArenaManager().getArenas().values()) {
-                sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName());
-            }
-            return;
+
+            arenaManager.getArenas().values().forEach(arena ->
+                    sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName())
+            );
         }
 
         if (args[0].equalsIgnoreCase("enableTemporary")) {
-            final TemporaryHub temporaryHub = gameManager.getArenaManager().getTemporaryHub();
+            TemporaryHub temporaryHub = arenaManager.getTemporaryHub();
             temporaryHub.setActivated(!temporaryHub.isActivated());
 
             if (temporaryHub.isActivated()) {
-                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est active !");
+                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est activé !");
             } else {
-                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est désactive !");
+                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est désactivé !");
             }
             return;
         }
@@ -68,12 +77,12 @@ public class CCCommand extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("start")) {
 
-            if (!gameManager.getArenaManager().isPlayerInArena(player)) {
+            if (!arenaManager.isPlayerInArena(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
                 return;
             }
 
-            final CCArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            final CCArena arena = arenaManager.getArenaByPlayer(player);
 
             if (arena.getArenaState() instanceof PreGameArenaState) {
                 if (arena.getHunterMode() == CCArena.HunterMode.TwoHuntersAtStart) {
@@ -99,7 +108,7 @@ public class CCCommand extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("tempHub")) {
-            final TemporaryHub temporaryHub = gameManager.getArenaManager().getTemporaryHub();
+            final TemporaryHub temporaryHub = arenaManager.getTemporaryHub();
 
             if (!temporaryHub.isPlayerInTempHub(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans le Hub Temporaire.");
@@ -107,33 +116,59 @@ public class CCCommand extends AbstractCommand {
             }
 
             temporaryHub.chooseMapAndSendPlayers(player);
-            return;
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
-
-            if (!gameManager.getArenaManager().isPlayerInArena(player)) {
+            if (!arenaManager.isPlayerInArena(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
                 return;
             }
 
-            CCArena arena = gameManager.getArenaManager().getArenaByPlayer(player);
+            CCArena arena = arenaManager.getArenaByPlayer(player);
             List<String> playersName = new ArrayList<>();
             arena.getPlayers().forEach(pls -> playersName.add(Bukkit.getPlayer(pls).getName()));
-            player.sendMessage(gameManager.getPrefix() + "Joueurs: " + playersName);
+            player.sendMessage(gameManager.getPrefix() + "Joueurs : " + playersName);
+        }
+
+        if (args[0].equalsIgnoreCase("groundItems")) {
+            if (!arenaManager.isPlayerInArena(player)) {
+                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
+                return;
+            }
+
+            List<GroundItem> groundItems = arenaManager.getArenaByPlayer(player).getAvailableGroundItems();
+            StringBuilder messageBuilder = new StringBuilder(gameManager.getPrefix() + "Les Items disponibles sont :\n");
+            groundItems.forEach(groundItem -> messageBuilder.append(groundItem.getDisplayName()).append("\n"));
+            player.sendMessage(messageBuilder.toString());
         }
 
     }
 
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        if (args.length == 1) {
+            return List.of("start", "temphub", "enabletemporary", "list", "listplayer", "reload", "reloadtemporary", "grounditems");
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
+            return new ArrayList<>(arenaManager.getArenas().keySet());
+        }
+
+        return null;
+    }
+
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(" ");
-        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du Cache-Cache]", ChatUtility.UtilityColor.GOLD));
+        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du Cache-Cache]", ChatUtility.GOLD));
         sender.sendMessage("/cc start : Commence la partie dans laquelle vous êtes");
         sender.sendMessage("/cc temphub : Commence la partie du mode temporaire");
         sender.sendMessage("/cc enableTemporary : Active/Désactive le mode temporaire");
         sender.sendMessage("/cc list : Envoie la liste des maps avec l'état du jeu actuel");
         sender.sendMessage("/cc listplayer : Envoie la liste des joueurs dans la partie où vous êtes");
-        sender.sendMessage("/cc reload : Recharge la configuration (les maps)");
+        sender.sendMessage("/cc reload : Recharge les maps");
+        sender.sendMessage("/cc reloadTemporary : Recharge les maps temporaires");
+        sender.sendMessage("/cc groundItems : Envoie la liste des Items disponibles dans la map où vous êtes");
+        sender.sendMessage("/cc join <map> <player> : Rejoins une map");
     }
 
 }

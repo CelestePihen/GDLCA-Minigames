@@ -5,17 +5,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class FeedCommand extends AbstractCommand {
 
     public FeedCommand() {
-        super("essentials:feed", true, true);
+        super("essentials:feed", false, true);
     }
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
-
-        if (args.length == 0) {
+        if (args.length == 0 && isPlayer(sender)) {
+            Player player = (Player) sender;
             player.setFoodLevel(20);
             sendMessageWithPrefix(player, "Vous vous êtes rassasié(e).");
             return;
@@ -24,18 +25,21 @@ public class FeedCommand extends AbstractCommand {
         if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
 
-            if (target != null) {
+            if (isPlayerOnline(target, sender)) {
                 target.setFoodLevel(20);
                 sendMessageWithPrefix(target, "Vous avez été rassasié(e).");
-                sendMessageWithPrefix(player, "Vous avez rassasié " + target.getName());
-            } else {
-                sendMessageWithPrefix(player, "Ce joueur n'existe pas ou n'est pas connecté.");
+                sendMessageWithPrefix(sender, "Vous avez rassasié " + target.getName());
             }
         }
         
         if (args.length > 2) {
-            sendMessageWithPrefix(player, "La commande est : /feed ou /feed <joueur>");
+            sendMessageWithPrefix(sender, "La commande est : /feed ou /feed <joueur>");
         }
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] args) {
+        return null;
     }
 
 }

@@ -7,14 +7,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.cel.hub.commands.EventCommands;
 import fr.cel.hub.commands.HubCommands;
-import fr.cel.hub.manager.NPCManager;
 import lombok.Getter;
 
 public final class Hub extends JavaPlugin {
 
     @Getter private static Hub instance;
-
-    @Getter private NPCManager npcManager;
 
     /**
      * Se déclenche quand le plugin démarre
@@ -22,8 +19,6 @@ public final class Hub extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
-        npcManager = new NPCManager(this);
 
         registerListeners();
         registerCommands();
@@ -34,8 +29,6 @@ public final class Hub extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        // TODO désactiver pour le moment
-        // NPCManager.removeToAll();
     }
 
     /**
@@ -45,9 +38,6 @@ public final class Hub extends JavaPlugin {
         new PlayerListener(this);
         new ChatListener(this);
         new MinigameListener(this);
-
-        // TODO désactiver pour le moment
-        // new NPCListener(this);
     }
 
     /**
@@ -56,10 +46,8 @@ public final class Hub extends JavaPlugin {
     private void registerCommands() {
         CommandsManager commandsManager = GameAPI.getInstance().getCommandsManager();
 
-        commandsManager.addCommand(getCommand("event"), new EventCommands());
-        commandsManager.addCommand(getCommand("hub"), new HubCommands());
-        // TODO désactiver pour le moment
-        // commandsManager.addCommand(getCommand("npc"), new NPCCommand(this));
+        commandsManager.addCommand("event", new EventCommands(), this);
+        commandsManager.addCommand("hub", new HubCommands(), this);
     }
 
 }

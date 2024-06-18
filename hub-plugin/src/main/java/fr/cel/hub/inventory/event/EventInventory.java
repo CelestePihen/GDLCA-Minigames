@@ -31,25 +31,25 @@ public class EventInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case JUKEBOX -> GameAPI.getInstance().getInventoryManager().openInventory(new MusicInventory(main), player);
+            case JUKEBOX -> GameAPI.getInstance().getInventoryManager().openInventory(new MusicInventory(), player);
 
 
             case FIREWORK_ROCKET -> {
-                if (!eventActivated) {
-                    eventActivated = true;
-                    fireworkMusicEvent = new FireworkMusicEvent(main);
-                    fireworkMusicEvent.runTaskTimer(main, 0, 40);
-                } else {
-                    eventActivated = false;
-                    fireworkMusicEvent.cancel();
-                    fireworkMusicEvent = null;
-                }
-                player.closeInventory();
+//                if (!eventActivated) {
+//                    eventActivated = true;
+//                    fireworkMusicEvent = new FireworkMusicEvent(main);
+//                    fireworkMusicEvent.runTaskTimer(main, 0, 40);
+//                } else {
+//                    eventActivated = false;
+//                    fireworkMusicEvent.cancel();
+//                    fireworkMusicEvent = null;
+//                }
+//                player.closeInventory();
+                player.sendMessage(GameAPI.getPrefix() + "Bientôt disponible...");
             }
 
             case PLAYER_HEAD -> {
-                player.closeInventory();
-                player.sendMessage(GameAPI.getInstance().getPrefix() + "Bientôt disponible...");
+                player.sendMessage(GameAPI.getPrefix() + "Bientôt disponible...");
             }
 
             default -> {}

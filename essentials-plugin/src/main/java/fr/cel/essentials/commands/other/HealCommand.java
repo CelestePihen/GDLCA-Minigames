@@ -6,6 +6,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class HealCommand extends AbstractCommand {
 
     public HealCommand() {
@@ -24,21 +26,22 @@ public class HealCommand extends AbstractCommand {
 
         if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
-
-            if (target != null) {
+            if (isPlayerOnline(target, player)) {
                 target.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
                 sendMessageWithPrefix(target, "Vous avez été soigné(e).");
                 sendMessageWithPrefix(sender, "Vous avez soigné " + target.getName());
-            } else {
-                sendMessageWithPrefix(sender, "Ce joueur n'existe pas ou n'est pas connecté.");
             }
-            return;
         }
         
         else {
             sendMessageWithPrefix(player, "La commande est : /heal ou /heal <joueur>");
         }
 
+    }
+
+    @Override
+    protected List<String> onTabComplete(Player player, String[] strings) {
+        return null;
     }
 
 }
