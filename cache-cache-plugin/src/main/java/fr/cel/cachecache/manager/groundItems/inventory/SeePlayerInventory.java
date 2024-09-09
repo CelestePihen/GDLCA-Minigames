@@ -37,7 +37,7 @@ public class SeePlayerInventory extends AbstractInventory {
         if (item.getType() == Material.AIR) return;
 
         Player target = Bukkit.getPlayer(itemName);
-        if (arena.getPlayers().contains(target.getUniqueId())) {
+        if (target != null && arena.getPlayers().contains(target.getUniqueId())) {
             target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 8*20, 1, false, false, false));
             removeItem(player);
         } else {

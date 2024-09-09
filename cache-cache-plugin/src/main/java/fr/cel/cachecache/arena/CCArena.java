@@ -1,13 +1,13 @@
 package fr.cel.cachecache.arena;
 
-import fr.cel.cachecache.manager.GameManager;
-import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.arena.state.ArenaState;
 import fr.cel.cachecache.arena.state.game.PlayingArenaState;
 import fr.cel.cachecache.arena.state.game.WaitingArenaState;
 import fr.cel.cachecache.arena.state.pregame.InitArenaState;
 import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
+import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.utils.Config;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
@@ -34,7 +34,7 @@ public class CCArena {
     @Setter private Config config;
 
     // Names
-    private final String nameArena;
+    private final String arenaName;
     private final String displayName;
 
     // ArenaState / Timer / WolfTimer
@@ -82,10 +82,10 @@ public class CCArena {
 
     private UUID owner = null;
 
-    public CCArena(String nameArena, String displayName, HunterMode hunterMode, Location spawnLoc, Location waitingLoc, boolean fallDamage, GameManager gameManager) {
+    public CCArena(String arenaName, String displayName, HunterMode hunterMode, Location spawnLoc, Location waitingLoc, boolean fallDamage, GameManager gameManager) {
         this.gameManager = gameManager;
 
-        this.nameArena = nameArena;
+        this.arenaName = arenaName;
         this.displayName = displayName;
 
         this.spawnLoc = spawnLoc;
@@ -103,13 +103,13 @@ public class CCArena {
 
         this.spawnedGroundItems = new ArrayList<>();
 
-        this.scoreboard = new GameScoreboard("Cache-Cache");
+        this.scoreboard = new GameScoreboard("CC-" + arenaName);
 
-        this.teamHiders = scoreboard.registerTeam("h" + nameArena, ChatColor.GREEN);
+        this.teamHiders = scoreboard.registerTeam("hiders", ChatColor.GREEN);
         this.teamHiders.setNameTagVisibility(OptionStatus.NEVER);
         this.teamHiders.setAllowFriendlyFire(false);
 
-        this.teamSeekers = scoreboard.registerTeam("s" + nameArena, ChatColor.RED);
+        this.teamSeekers = scoreboard.registerTeam("seekers", ChatColor.RED);
         this.teamSeekers.setNameTagVisibility(OptionStatus.NEVER);
         this.teamSeekers.setAllowFriendlyFire(false);
 
@@ -159,13 +159,14 @@ public class CCArena {
     private void join(Player player, GameMode gameMode, boolean joinMessage, boolean teleportSpawn) {
         gameManager.getPlayerManager().removePlayerInHub(player);
 
+        players.add(player.getUniqueId());
+        scoreboard.addPlayer(player);
+
         player.getInventory().clear();
+
         if (players.isEmpty()) {
             becomeOwner(player);
         }
-
-        players.add(player.getUniqueId());
-        scoreboard.addPlayer(player);
 
         if (joinMessage) {
             sendMessage(player.getDisplayName() + " a rejoint la partie !");
@@ -175,13 +176,13 @@ public class CCArena {
             player.teleport(spawnLoc);
         }
 
-        if (hunterMode == HunterMode.LoupToucheTouche) {
-            wolfTimer.put(player.getUniqueId(), 0);
-        }
-
         player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + hunterMode.getName()), displayName, 10, 70, 20);
         player.setGameMode(gameMode);
         player.setGlowing(false);
+
+        if (hunterMode == HunterMode.LoupToucheTouche) {
+            wolfTimer.put(player.getUniqueId(), 0);
+        }
     }
 
     /**
@@ -204,8 +205,9 @@ public class CCArena {
 
         player.setGlowing(false);
 
+        // s'il y a encore des gens et que le joueur qui vient de quitter était l'hôte alors le joueur ayant rejoint après devient l'hôte
         if (!players.isEmpty() && owner == player.getUniqueId()) {
-            becomeOwner(Bukkit.getPlayer(players.get(0)));
+            becomeOwner(Objects.requireNonNull(Bukkit.getPlayer(players.getFirst())));
         }
 
         if (arenaState instanceof PreGameArenaState) return;
@@ -214,7 +216,7 @@ public class CCArena {
             startingArenaState.getStartingArenaTask().cancel();
             sendMessage("Démarrage annulé... Un joueur a quitté la partie.");
             setArenaState(new PreGameArenaState(this));
-            Bukkit.getPlayer(owner).getInventory().addItem(new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
+            Objects.requireNonNull(Bukkit.getPlayer(owner)).getInventory().addItem(new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
             return;
         }
 
@@ -254,7 +256,7 @@ public class CCArena {
             }
 
             case LoupToucheTouche -> {
-                message += "Tu es le loup ! Touche vite un autre joueur, sinon vous perdez !";
+                message += "Tu es le loup ! Touche vite un autre joueur, sinon tu vas perdre !";
                 subtitle = "Tu deviens le loup !";
                 becomeWolf(victim);
             }
@@ -301,12 +303,16 @@ public class CCArena {
         deadPlayer.setGameMode(GameMode.SPECTATOR);
     }
 
+    /**
+     * Permet de transformer le cacheur en loup
+     * @param hitPlayer Le cacheur qui vient de mourir
+     */
     public void becomeWolf(Player hitPlayer) {
         // Loup
-        Player wolf = Bukkit.getPlayer(seekers.get(0));
+        Player wolf = Bukkit.getPlayer(seekers.getFirst());
         if (wolf == null) return;
 
-        seekers.remove(seekers.get(0));
+        seekers.remove(seekers.getFirst());
         teamSeekers.removePlayer(wolf);
 
         hiders.add(wolf.getUniqueId());
@@ -416,14 +422,14 @@ public class CCArena {
                 getSpawnedGroundItems().clear();
                 timer = 0;
 
-                if (nameArena.equalsIgnoreCase("bunker")) {
-                    Block lever = Bukkit.getWorld("world").getBlockAt(leverLocation);
+                if (arenaName.equalsIgnoreCase("bunker")) {
+                    Block lever = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(leverLocation);
                     if (lever.getBlockData() instanceof Powerable powerable) {
                         powerable.setPowered(true);
                         lever.setBlockData(powerable);
                     }
 
-                    Block redstoneWire = Bukkit.getWorld("world").getBlockAt(redstoneWireLocation);
+                    Block redstoneWire = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(redstoneWireLocation);
                     redstoneWire.setType(Material.AIR);
                     redstoneWire.setType(Material.REDSTONE_WIRE);
                 }
@@ -459,8 +465,7 @@ public class CCArena {
      * @param player Le joueur
      */
     public void giveWeapon(Player player) {
-        player.getInventory().addItem(
-                new ItemBuilder(Material.STICK)
+        player.getInventory().addItem(new ItemBuilder(Material.STICK)
                         .setDisplayName("Le tueur de cacheurs")
                         .addLoreLine("Ce bâton a déjà tué de nombreuses personnes...")
                         .toItemStack());

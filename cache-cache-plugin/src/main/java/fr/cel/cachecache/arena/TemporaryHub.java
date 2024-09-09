@@ -1,7 +1,7 @@
 package fr.cel.cachecache.arena;
 
-import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
+import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.utils.TempHubConfig;
 import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
@@ -97,12 +97,12 @@ public class TemporaryHub implements Listener {
         Collections.shuffle(maps);
         CCArena arena = maps.get(0);
 
-        if (arena.getNameArena().equals(lastMap)) {
+        if (arena.getArenaName().equals(lastMap)) {
             arena = maps.get(1);
         }
 
         chosenMap = arena;
-        setLastMap(chosenMap.getNameArena());
+        setLastMap(chosenMap.getArenaName());
 
         sendMessage(gameManager.getPrefix() + "La carte a été choisie ! Démarrage de la partie.");
         players.forEach(uuid -> chosenMap.addPlayer(Bukkit.getPlayer(uuid), true));

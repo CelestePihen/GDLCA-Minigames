@@ -50,7 +50,7 @@ public class MinigamesInventory extends AbstractInventory {
             case BRUSH -> player.teleport(locationMuseum);
 
             case COMMAND_BLOCK -> {
-                player.sendMessage(GameAPI.getInstance().getPrefix() + "Indisponible pour le moment.");
+                player.sendMessage(GameAPI.getPrefix() + "Indisponible pour le moment.");
                 player.closeInventory();
             }
 

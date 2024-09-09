@@ -14,6 +14,7 @@ import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -29,13 +30,13 @@ public class WaitingArenaState extends ArenaState {
     public void onEnable(CacheCache main) {
         super.onEnable(main);
 
-        if (getArena().getNameArena().equalsIgnoreCase("bunker")) {
-            Block lever = Bukkit.getWorld("world").getBlockAt(getArena().getLeverLocation());
+        if (getArena().getArenaName().equalsIgnoreCase("bunker")) {
+            Block lever = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getLeverLocation());
             if (lever.getBlockData() instanceof Powerable powerable) {
                 powerable.setPowered(true);
                 lever.setBlockData(powerable);
 
-                Block redstoneWire = Bukkit.getWorld("world").getBlockAt(getArena().getRedstoneWireLocation());
+                Block redstoneWire = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getRedstoneWireLocation());
                 redstoneWire.setType(Material.AIR);
                 redstoneWire.setType(Material.REDSTONE_WIRE);
             }
@@ -46,7 +47,7 @@ public class WaitingArenaState extends ArenaState {
         switch (getArena().getHunterMode()) {
 
             case TwoHuntersAtStart -> {
-                Player player = Bukkit.getPlayer(getArena().getPlayers().get(0));
+                Player player = Bukkit.getPlayer(getArena().getPlayers().getFirst());
                 getArena().becomeSeeker(player);
                 player.teleport(getArena().getWaitingLoc());
 

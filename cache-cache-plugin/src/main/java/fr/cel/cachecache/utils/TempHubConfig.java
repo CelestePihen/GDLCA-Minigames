@@ -4,8 +4,6 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.TemporaryHub;
 import fr.cel.gameapi.utils.LocationUtility;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 

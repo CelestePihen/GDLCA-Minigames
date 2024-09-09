@@ -60,7 +60,11 @@ public class PlayingListenerProvider extends StateListenerProvider {
             return;
         }
 
-        if (damager instanceof Player || entity instanceof ArmorStand) {
+        if (event instanceof ArmorStand) {
+            event.setCancelled(true);
+        }
+
+        if (damager instanceof Player) {
             if (!arena.isPlayerInArena((Player) damager)) return;
             event.setCancelled(true);
         }
