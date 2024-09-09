@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Objects;
+
 public class PlayingWolfArenaTask extends BukkitRunnable {
 
     private final CCArena arena;
@@ -35,10 +37,10 @@ public class PlayingWolfArenaTask extends BukkitRunnable {
         int seconds = arena.getTimer() % 60;
 
         timerString = String.format("%02dmin%02ds", minutes, seconds);
-        arena.getPlayers().forEach(pls -> Bukkit.getPlayer(pls).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerString)));
+        arena.getPlayers().forEach(pls -> Objects.requireNonNull(Bukkit.getPlayer(pls)).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerString)));
 
         if (arena.getTimer() == 590) {
-            Player player = Bukkit.getPlayer(arena.getSeekers().get(0));
+            Player player = Bukkit.getPlayer(arena.getSeekers().getFirst());
             if (player == null) return;
 
             player.teleport(arena.getSpawnLoc());

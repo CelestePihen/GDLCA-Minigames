@@ -1,11 +1,11 @@
 package fr.cel.cachecache.arena.state.providers;
 
 import fr.cel.cachecache.CacheCache;
+import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.arena.state.game.PlayingArenaState;
 import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
 import fr.cel.cachecache.manager.GroundItem;
-import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.state.game.PlayingArenaState;
 import fr.cel.gameapi.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -22,6 +22,7 @@ public class SoundCatTimer extends BukkitRunnable {
         if (secondes > 0) {
             arena.getPlayers().forEach(uuid -> {
                 Player pl = Bukkit.getPlayer(uuid);
+                if (pl == null) return;
                 if (pl.getGameMode() == GameMode.SPECTATOR) return;
                 pl.playSound(pl, Sound.ENTITY_CAT_AMBIENT, SoundCategory.AMBIENT, 3.0f, 1.0f);
             });

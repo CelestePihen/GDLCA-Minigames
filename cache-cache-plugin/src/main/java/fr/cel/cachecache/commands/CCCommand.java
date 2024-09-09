@@ -1,11 +1,11 @@
 package fr.cel.cachecache.commands;
 
-import fr.cel.cachecache.manager.CCArenaManager;
-import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.TemporaryHub;
 import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
+import fr.cel.cachecache.manager.CCArenaManager;
+import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CCCommand extends AbstractCommand {
 
@@ -168,7 +167,6 @@ public class CCCommand extends AbstractCommand {
         sender.sendMessage("/cc reload : Recharge les maps");
         sender.sendMessage("/cc reloadTemporary : Recharge les maps temporaires");
         sender.sendMessage("/cc groundItems : Envoie la liste des Items disponibles dans la map où vous êtes");
-        sender.sendMessage("/cc join <map> <player> : Rejoins une map");
     }
 
 }
