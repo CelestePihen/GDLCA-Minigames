@@ -12,13 +12,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class EventInventory extends AbstractInventory {
 
+    private final Hub main = Hub.getInstance();
+
     private boolean eventActivated = false;
     private FireworkMusicEvent fireworkMusicEvent;
-    private final Hub main;
 
-    public EventInventory(Hub main) {
+    public EventInventory() {
         super("Événements", 27);
-        this.main = main;
     }
 
     @Override
@@ -45,10 +45,12 @@ public class EventInventory extends AbstractInventory {
 //                    fireworkMusicEvent = null;
 //                }
 //                player.closeInventory();
+                // TODO à refaire
                 player.sendMessage(GameAPI.getPrefix() + "Bientôt disponible...");
             }
 
             case PLAYER_HEAD -> {
+                // TODO à faire
                 player.sendMessage(GameAPI.getPrefix() + "Bientôt disponible...");
             }
 

@@ -16,14 +16,12 @@ public class GMCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
-
         if (args.length == 0 || args.length > 2) {
-            sendMessageWithPrefix(player, "La commande est : /gm <mode> ou /gm <mode> <joueur>");
+            sendMessageWithPrefix(sender, "La commande est : /gm <mode> ou /gm <mode> <joueur>");
             return;
         }
 
-        if (args.length == 1 && isPlayer(sender)) {
+        if (args.length == 1 && sender instanceof Player player) {
             GameMode mode = getGamemode(args[0]);
             if (mode == null) {
                 sendMessageWithPrefix(player, "Merci de mettre un mode de jeu valide.");
@@ -44,7 +42,7 @@ public class GMCommand extends AbstractCommand {
             String modeString = getModeName(mode);
             Player target = Bukkit.getPlayer(args[1]);
 
-            if (isPlayerOnline(target, player)) {
+            if (isPlayerOnline(target, sender)) {
                 target.setGameMode(mode);
                 sendMessageWithPrefix(target, "Vous avez été mis(e) en " + modeString);
                 sendMessageWithPrefix(sender, "Vous avez mis " + target.getName() + " en " + modeString + ".");

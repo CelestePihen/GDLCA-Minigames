@@ -2,8 +2,10 @@ package fr.cel.valocraft.commands;
 
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.valocraft.arena.state.pregame.PreGameArenaState;
 import fr.cel.valocraft.manager.GameManager;
 import fr.cel.valocraft.arena.ValoArena;
+import fr.cel.valocraft.manager.ValoArenaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,10 +17,12 @@ import java.util.stream.IntStream;
 public class ValoCommands extends AbstractCommand {
 
     private final GameManager gameManager;
+    private final ValoArenaManager arenaManager;
 
     public ValoCommands(GameManager gameManager) {
         super("valocraft:valocraft", false, true);
         this.gameManager = gameManager;
+        this.arenaManager = gameManager.getValoArenaManager();
     }
 
     @Override
@@ -29,63 +33,64 @@ public class ValoCommands extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des arènes ValoCraft ont été rechargées.");
+            sendMessageWithPrefix(sender, "Les fichiers de configuration des arènes ValoCraft ont été rechargées.");
             gameManager.reloadArenaManager();
             return;
         }
 
         if (args[0].equalsIgnoreCase("list")) {
-            if (gameManager.getValoArenaManager().getArenas().isEmpty()) {
-                sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
+            if (arenaManager.getArenas().isEmpty()) {
+                sendMessageWithPrefix(sender, "Aucune arène a été installée.");
                 return;
             }
-            gameManager.getValoArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName()));
+            arenaManager.getArenas().forEach(arena ->
+                    sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName())
+            );
             return;
         }
 
-        if (!isPlayer(sender)) {
-            sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+        if (!(sender instanceof Player player)) {
+            sendMessageWithPrefix(sender, "Vous devez etre un joueur pour effectuer cette commande.");
             return;
         }
 
-        Player player = (Player) sender;
+        if (!arenaManager.isPlayerInArena(player)) {
+            sendMessageWithPrefix(player, "Vous n'êtes pas dans une carte.");
+            return;
+        }
+
+        final ValoArena arena = arenaManager.getArenaByPlayer(player);
 
         if (args[0].equalsIgnoreCase("start")) {
-            ValoArena arena = gameManager.getValoArenaManager().getArenaByPlayer(player);
-
             if (arena == null) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
+                sendMessageWithPrefix(player, "Vous n'êtes pas dans une arène.");
                 return;
             }
 
             if (arena.startGame()) {
-                player.sendMessage(gameManager.getPrefix() + "La partie a été lancée !");
+                sendMessageWithPrefix(player, "La partie a été lancée !");
             } else {
-                player.sendMessage(gameManager.getPrefix() + "La partie ne peut pas être lancée.");
+                sendMessageWithPrefix(player, "La partie ne peut pas être lancée.");
             }
         }
 
         else if (args[0].equalsIgnoreCase("listplayer")) {
-            ValoArena arena = gameManager.getValoArenaManager().getArenaByPlayer(player);
-
-            if (arena == null) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
-                return;
-            }
-
             List<String> players = getPlayerNames(arena.getPlayers());
             List<String> blueTeam = getPlayerNames(arena.getBlueTeam().getPlayers());
             List<String> redTeam = getPlayerNames(arena.getRedTeam().getPlayers());
             List<String> spectators = getPlayerNames(arena.getSpectators());
 
-            player.sendMessage(gameManager.getPrefix() + "Joueurs :" + players + "\nTeam Bleu : " + blueTeam + "\nTeam Rouge : " + redTeam + " \nSpectateurs : " + spectators);
+            sendMessageWithPrefix(player,
+                    "Joueurs :" + players +
+                    "\nTeam Bleu : " + blueTeam +
+                    "\nTeam Rouge : " + redTeam +
+                    " \nSpectateurs : " + spectators
+            );
         }
 
         else if (args[0].equalsIgnoreCase("setround")) {
-            ValoArena arena = gameManager.getValoArenaManager().getArenaByPlayer(player);
-
-            if (arena == null) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
+            if (arena.getArenaState() instanceof PreGameArenaState) {
+                sendMessageWithPrefix(player, "La partie n'est pas lancée.");
                 return;
             }
 
@@ -95,10 +100,10 @@ public class ValoCommands extends AbstractCommand {
                 } else if (args[1].equalsIgnoreCase("red")) {
                     arena.getRedTeam().setRoundWin(Integer.parseInt(args[2]));
                 } else {
-                    player.sendMessage(gameManager.getPrefix() + "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
+                    sendMessageWithPrefix(player, "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
                 }
             } else {
-                player.sendMessage(gameManager.getPrefix() + "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
+                sendMessageWithPrefix(player, "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
             }
 
         }

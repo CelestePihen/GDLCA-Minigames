@@ -10,6 +10,7 @@ import java.util.List;
 
 public class AnvilCommand extends AbstractCommand {
 
+    // TODO faire en sorte que ça marche côté console
     public AnvilCommand() {
         super("essentials:anvil", true, true);
     }

@@ -1,12 +1,10 @@
 package fr.cel.pvp.arena;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
+import fr.cel.pvp.manager.GameManager;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -20,8 +18,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
-import fr.cel.pvp.manager.GameManager;
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class PVPArena implements Listener {
     

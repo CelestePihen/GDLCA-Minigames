@@ -16,9 +16,7 @@ public class HealCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
-
-        if (args.length == 0 && isPlayer(sender)) {
+        if (args.length == 0 && sender instanceof Player player) {
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             sendMessageWithPrefix(player, "Vous vous êtes soigné(e).");
             return;
@@ -26,15 +24,15 @@ public class HealCommand extends AbstractCommand {
 
         if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
-            if (isPlayerOnline(target, player)) {
-                target.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+            if (isPlayerOnline(target, sender)) {
+                target.setHealth(target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
                 sendMessageWithPrefix(target, "Vous avez été soigné(e).");
                 sendMessageWithPrefix(sender, "Vous avez soigné " + target.getName());
             }
         }
         
         else {
-            sendMessageWithPrefix(player, "La commande est : /heal ou /heal <joueur>");
+            sendMessageWithPrefix(sender, "La commande est : /heal ou /heal <joueur>");
         }
 
     }

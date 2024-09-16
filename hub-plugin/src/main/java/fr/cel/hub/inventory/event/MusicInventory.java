@@ -4,7 +4,6 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.gameapi.utils.RPUtils;
-import fr.cel.hub.Hub;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

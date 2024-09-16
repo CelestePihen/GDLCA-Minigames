@@ -19,14 +19,12 @@ public class NearCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
-
         if (args.length == 0 || args.length > 3) {
-            sendMessageWithPrefix(player, "La commande est : /near <radius> ou /near <radius> <joueur>");
+            sendMessageWithPrefix(sender, "La commande est : /near <radius> ou /near <radius> <joueur>");
             return;
         }
 
-        if (args.length == 1 && !isPlayer(sender)) {
+        if (args.length == 1 && sender instanceof Player player) {
             searchPlayers(player, player, args);
             return;
         }
@@ -35,7 +33,7 @@ public class NearCommand extends AbstractCommand {
             Player target = Bukkit.getPlayer(args[1]);
 
             if (isPlayerOnline(target, sender)) {
-                searchPlayers(player, target, args);
+                searchPlayers(sender, target, args);
             }
         }
     }
@@ -49,12 +47,12 @@ public class NearCommand extends AbstractCommand {
         return null;
     }
 
-    private void searchPlayers(Player player, Player target, String[] args) {
+    private void searchPlayers(CommandSender sender, Player target, String[] args) {
         int radius;
         try {
             radius = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            sendMessageWithPrefix(player, "Merci de mettre un nombre valide. La commande est : /near <radius> ou /near <radius> <joueur>");
+            sendMessageWithPrefix(sender, "Merci de mettre un nombre valide. La commande est : /near <radius> ou /near <radius> <joueur>");
             return;
         }
 
@@ -65,7 +63,7 @@ public class NearCommand extends AbstractCommand {
             }
         }
 
-        sendMessageWithPrefix(player, "Les joueurs proches de vous sont : " + playersName);
+        sendMessageWithPrefix(sender, "Les joueurs proches de vous sont : " + playersName);
     }
     
 }

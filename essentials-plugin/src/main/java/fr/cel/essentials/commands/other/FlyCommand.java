@@ -16,8 +16,7 @@ public class FlyCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
-        if (args.length == 0 && isPlayer(sender)) {
-            Player player = (Player) sender;
+        if (args.length == 0 && sender instanceof Player player) {
             if (player.getGameMode().equals(GameMode.SPECTATOR)) {
                 sendMessageWithPrefix(player, "Vous ne pouvez pas faire cette commande en spectateur.");
                 return;

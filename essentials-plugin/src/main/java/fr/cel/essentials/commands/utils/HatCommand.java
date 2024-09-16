@@ -10,6 +10,7 @@ import java.util.List;
 
 public class HatCommand extends AbstractCommand {
 
+    // TODO faire en sorte que ça marche côté console
     public HatCommand() {
         super("essentials:hat", true, true);
     }

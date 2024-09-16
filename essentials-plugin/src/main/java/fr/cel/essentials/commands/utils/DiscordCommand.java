@@ -8,6 +8,7 @@ import java.util.List;
 
 public class DiscordCommand extends AbstractCommand {
 
+    // TODO faire en sorte que ça marche côté console (l'envoyer à un joueur)
     public DiscordCommand() {
         super("essentials:discord", false, false);
     }

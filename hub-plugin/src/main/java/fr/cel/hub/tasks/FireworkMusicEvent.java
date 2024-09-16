@@ -2,7 +2,10 @@ package fr.cel.hub.tasks;
 
 import fr.cel.gameapi.utils.LocationUtility;
 import fr.cel.hub.Hub;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;

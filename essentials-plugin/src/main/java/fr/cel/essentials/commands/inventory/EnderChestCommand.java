@@ -9,6 +9,7 @@ import java.util.List;
 
 public class EnderChestCommand extends AbstractCommand {
 
+    // TODO faire en sorte que ça marche côté console
     public EnderChestCommand() {
         super("essentials:ec", true, true);
     }

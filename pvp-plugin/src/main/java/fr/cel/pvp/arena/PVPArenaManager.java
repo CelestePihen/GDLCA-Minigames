@@ -1,16 +1,15 @@
 package fr.cel.pvp.arena;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.pvp.PVP;
 import fr.cel.pvp.utils.Config;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PVPArenaManager {
 

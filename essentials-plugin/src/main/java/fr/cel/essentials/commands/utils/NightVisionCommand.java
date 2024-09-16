@@ -10,6 +10,7 @@ import java.util.List;
 
 public class NightVisionCommand extends AbstractCommand {
 
+    // TODO faire en sorte que ça marche côté console
     public NightVisionCommand() {
         super("nv", true, true);
     }
