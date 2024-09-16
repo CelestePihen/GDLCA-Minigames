@@ -3,7 +3,6 @@ package fr.cel.hub.inventory;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
-import fr.cel.hub.Hub;
 import fr.cel.hub.inventory.cachecache.CacheCacheInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

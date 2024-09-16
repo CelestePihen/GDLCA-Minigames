@@ -9,6 +9,7 @@ import java.util.List;
 
 public class TopCommand extends AbstractCommand {
 
+    // TODO faire en sorte que ça marche côté console
     public TopCommand() {
         super("essentials:top", true, true);
     }

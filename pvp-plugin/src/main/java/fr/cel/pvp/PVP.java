@@ -2,12 +2,11 @@ package fr.cel.pvp;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.pvp.arena.PVPArenaManager;
+import fr.cel.pvp.commands.PVPCommands;
+import fr.cel.pvp.manager.GameManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import fr.cel.pvp.commands.PVPCommands;
-import fr.cel.pvp.manager.GameManager;
 
 @Getter
 public class PVP extends JavaPlugin {

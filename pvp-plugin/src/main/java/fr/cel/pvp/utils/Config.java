@@ -1,13 +1,12 @@
 package fr.cel.pvp.utils;
 
-import java.io.File;
-
 import fr.cel.gameapi.utils.LocationUtility;
+import fr.cel.pvp.PVP;
+import fr.cel.pvp.arena.PVPArena;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import fr.cel.pvp.PVP;
-import fr.cel.pvp.arena.PVPArena;
+import java.io.File;
 
 public class Config {
 

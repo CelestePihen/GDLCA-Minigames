@@ -15,8 +15,7 @@ public class FeedCommand extends AbstractCommand {
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
-        if (args.length == 0 && isPlayer(sender)) {
-            Player player = (Player) sender;
+        if (args.length == 0 && sender instanceof Player player) {
             player.setFoodLevel(20);
             sendMessageWithPrefix(player, "Vous vous êtes rassasié(e).");
             return;

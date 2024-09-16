@@ -8,6 +8,7 @@ import java.util.List;
 
 public class CraftCommand extends AbstractCommand {
 
+    // TODO faire en sorte que ça marche côté console
     public CraftCommand() {
         super("essentials:craft", true, true);
     }

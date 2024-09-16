@@ -37,11 +37,13 @@ public class CCCommand extends AbstractCommand {
         if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps Cache-Cache ont été rechargés.");
             gameManager.reloadArenaManager();
+            return;
         }
 
         if (args[0].equalsIgnoreCase("reloadTemporary")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps temporaires Cache-Cache ont été rechargés.");
             gameManager.reloadTemporaryHub();
+            return;
         }
 
         if (args[0].equalsIgnoreCase("list")) {
@@ -53,6 +55,7 @@ public class CCCommand extends AbstractCommand {
             arenaManager.getArenas().values().forEach(arena ->
                     sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName())
             );
+            return;
         }
 
         if (args[0].equalsIgnoreCase("enableTemporary")) {
@@ -67,22 +70,31 @@ public class CCCommand extends AbstractCommand {
             return;
         }
 
-        if (!isPlayer(sender)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
             return;
         }
 
-        Player player = (Player) sender;
+        if (args[0].equalsIgnoreCase("tempHub")) {
+            final TemporaryHub temporaryHub = arenaManager.getTemporaryHub();
 
-        if (args[0].equalsIgnoreCase("start")) {
-
-            if (!arenaManager.isPlayerInArena(player)) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
+            if (!temporaryHub.isPlayerInTempHub(player)) {
+                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans le Hub Temporaire.");
                 return;
             }
 
-            final CCArena arena = arenaManager.getArenaByPlayer(player);
+            temporaryHub.chooseMapAndSendPlayers(player);
+            return;
+        }
 
+        if (!arenaManager.isPlayerInArena(player)) {
+            player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
+            return;
+        }
+
+        final CCArena arena = arenaManager.getArenaByPlayer(player);
+
+        if (args[0].equalsIgnoreCase("start")) {
             if (arena.getArenaState() instanceof PreGameArenaState) {
                 if (arena.getHunterMode() == CCArena.HunterMode.TwoHuntersAtStart) {
                     if (arena.getPlayers().size() <= 2) {
@@ -100,44 +112,24 @@ public class CCCommand extends AbstractCommand {
                     }
                 }
 
-            } else {
+            }
+            else {
                 player.sendMessage(gameManager.getPrefix() + "La partie est déjà lancée.");
             }
-            return;
-        }
-
-        if (args[0].equalsIgnoreCase("tempHub")) {
-            final TemporaryHub temporaryHub = arenaManager.getTemporaryHub();
-
-            if (!temporaryHub.isPlayerInTempHub(player)) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans le Hub Temporaire.");
-                return;
-            }
-
-            temporaryHub.chooseMapAndSendPlayers(player);
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
-            if (!arenaManager.isPlayerInArena(player)) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
-                return;
-            }
-
-            CCArena arena = arenaManager.getArenaByPlayer(player);
             List<String> playersName = new ArrayList<>();
             arena.getPlayers().forEach(pls -> playersName.add(Bukkit.getPlayer(pls).getName()));
             player.sendMessage(gameManager.getPrefix() + "Joueurs : " + playersName);
         }
 
         if (args[0].equalsIgnoreCase("groundItems")) {
-            if (!arenaManager.isPlayerInArena(player)) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
-                return;
-            }
-
             List<GroundItem> groundItems = arenaManager.getArenaByPlayer(player).getAvailableGroundItems();
+
             StringBuilder messageBuilder = new StringBuilder(gameManager.getPrefix() + "Les Items disponibles sont :\n");
             groundItems.forEach(groundItem -> messageBuilder.append(groundItem.getDisplayName()).append("\n"));
+
             player.sendMessage(messageBuilder.toString());
         }
 

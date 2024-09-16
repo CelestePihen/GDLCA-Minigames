@@ -23,9 +23,7 @@ public class SpeedCommand extends AbstractCommand {
             return;
         }
 
-        if (args.length == 1 && isPlayer(sender)) {
-            Player player = (Player) sender;
-
+        if (args.length == 1 && sender instanceof Player player) {
             int speed;
             try {
                 speed = Integer.parseInt(args[0]);

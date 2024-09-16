@@ -1,17 +1,15 @@
 package fr.cel.pvp.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.pvp.arena.PVPArena;
+import fr.cel.pvp.manager.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.cel.pvp.manager.GameManager;
-import fr.cel.pvp.arena.PVPArena;
+import java.util.List;
+import java.util.UUID;
 
 public class PVPCommands extends AbstractCommand {
 
@@ -43,12 +41,10 @@ public class PVPCommands extends AbstractCommand {
             return;
         }
 
-        if (!isPlayer(sender)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
             return;
         }
-
-        Player player = (Player) sender;
 
         if (args[0].equalsIgnoreCase("listplayer")) {
 
@@ -58,12 +54,14 @@ public class PVPCommands extends AbstractCommand {
             }
 
             PVPArena arena = gameManager.getMain().getPvpArenaManager().getArenaByPlayer(player);
-            List<String> playersName = new ArrayList<>();
+
+            StringBuilder sb = new StringBuilder();
             for (UUID pls : arena.getPlayers()) {
                 Player player1 = Bukkit.getPlayer(pls);
-                if (player1 != null) playersName.add(player1.getName());
+                if (player1 != null) sb.append(player1.getName()).append(", ");
             }
-            player.sendMessage(gameManager.getPrefix() + playersName);
+
+            sendMessageWithPrefix(player, sb.toString());
         }
     }
 
@@ -72,7 +70,6 @@ public class PVPCommands extends AbstractCommand {
         if (args.length == 1) {
             return List.of("reload", "list", "listplayer");
         }
-
         return null;
     }
 

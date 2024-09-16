@@ -34,7 +34,6 @@ public class ParkourCommands extends AbstractCommand {
             } else {
                 gameManager.getMain().getParkourMapManager().getMaps().forEach((s, map) -> sendMessageWithPrefix(sender, "Parkour " + map.getDisplayName()));
             }
-            return;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
@@ -42,12 +41,10 @@ public class ParkourCommands extends AbstractCommand {
             gameManager.reloadArenaManager();
         }
 
-        if (!isPlayer(sender)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
             return;
         }
-
-        Player player = (Player) sender;
 
         if (args[0].equalsIgnoreCase("listplayer")) {
 
@@ -57,11 +54,13 @@ public class ParkourCommands extends AbstractCommand {
             }
 
             ParkourMap arena = gameManager.getMain().getParkourMapManager().getArenaByPlayer(player);
+
             List<String> playersName = new ArrayList<>();
             for (UUID pls : arena.getPlayers()) {
-                Player player1 = Bukkit.getPlayer(pls);
-                if (player1 != null) playersName.add(player1.getName());
+                Player pl = Bukkit.getPlayer(pls);
+                if (pl != null) playersName.add(pl.getName());
             }
+
             player.sendMessage(gameManager.getPrefix() + playersName);
         }
     }

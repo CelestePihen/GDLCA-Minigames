@@ -39,6 +39,10 @@ public class ValoArenaManager {
         return null;
     }
 
+    public boolean isPlayerInArena(Player player) {
+        return arenas.stream().anyMatch(arena -> arena.isPlayerInArena(player));
+    }
+
     public void loadArenas(GameManager gameManager) {
         arenas.clear();
         File folder = new File(main.getDataFolder(), "arenas");

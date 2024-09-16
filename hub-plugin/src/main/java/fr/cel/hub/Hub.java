@@ -2,12 +2,13 @@ package fr.cel.hub;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.CommandsManager;
-import fr.cel.hub.listener.*;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import fr.cel.hub.commands.EventCommands;
 import fr.cel.hub.commands.HubCommands;
+import fr.cel.hub.listener.ChatListener;
+import fr.cel.hub.listener.ItemListener;
+import fr.cel.hub.listener.PlayerListener;
 import lombok.Getter;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Hub extends JavaPlugin {
 
@@ -37,7 +38,7 @@ public final class Hub extends JavaPlugin {
     private void registerListeners() {
         new PlayerListener(this);
         new ChatListener(this);
-        new MinigameListener(this);
+        new ItemListener(this);
     }
 
     /**

@@ -2,13 +2,9 @@ package fr.cel.hub.commands;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.command.AbstractCommand;
-import fr.cel.hub.Hub;
-import fr.cel.hub.inventory.MinigamesInventory;
 import fr.cel.hub.inventory.event.EventInventory;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.util.List;
 
@@ -27,8 +23,8 @@ public class EventCommands extends AbstractCommand {
             return;
         }
 
-        if (GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player) && args[0].equalsIgnoreCase("hub")) {
-            GameAPI.getInstance().getInventoryManager().openInventory(new EventInventory(Hub.getInstance()), player);
+        if (args[0].equalsIgnoreCase("hub") && GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) {
+            GameAPI.getInstance().getInventoryManager().openInventory(new EventInventory(), player);
         }
 
     }
