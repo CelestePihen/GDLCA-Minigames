@@ -236,7 +236,7 @@ public class CCArena {
                 getWolfTimer().remove(player.getUniqueId());
             }
 
-            checkWin();
+            checkWinOrEndGame();
         }
     }
 
@@ -272,7 +272,7 @@ public class CCArena {
         victim.sendTitle("Tu es mort(e).", subtitle, 10, 70, 20);
 
         if (hunterMode != HunterMode.LoupToucheTouche) {
-            checkWin();
+            checkWinOrEndGame();
         }
     }
 
@@ -413,15 +413,16 @@ public class CCArena {
     /**
      * Permet de vérifier si la victoire doit être activée
      */
-    public void checkWin() {
+    public void checkWinOrEndGame() {
         if (this.hunterMode == HunterMode.LoupToucheTouche) {
             endWolf();
         } else {
             if (seekers.isEmpty() || hiders.isEmpty()) {
+		        // TODO marche pas
                 getSpawnedGroundItems().forEach(Entity::remove);
                 getSpawnedGroundItems().clear();
-                timer = 0;
 
+		        // TODO à refaire
                 if (arenaName.equalsIgnoreCase("bunker")) {
                     Block lever = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(leverLocation);
                     if (lever.getBlockData() instanceof Powerable powerable) {
@@ -437,16 +438,18 @@ public class CCArena {
                 setArenaState(new InitArenaState(this));
                 sendWinnerMessage();
 
+                scoreboard.resetScoreboard();
+                hiders.clear();
+                seekers.clear();
+
                 for (UUID uuid : players) {
                     Player player = Bukkit.getPlayer(uuid);
                     if (player == null) continue;
                     gameManager.getPlayerManager().sendPlayerToHub(player);
                 }
 
-                scoreboard.resetScoreboard();
-                hiders.clear();
-                seekers.clear();
                 players.clear();
+                timer = 0;
             }
         }
     }
