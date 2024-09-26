@@ -27,7 +27,7 @@ public class PlayingWolfArenaTask extends BukkitRunnable {
     public void run() {
         if (arena.getTimer() <= 0) {
             cancel();
-            arena.checkWin();
+            arena.checkWinOrEndGame();
             return;
         }
 
