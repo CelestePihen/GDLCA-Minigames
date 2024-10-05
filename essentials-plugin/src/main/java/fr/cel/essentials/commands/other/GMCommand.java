@@ -21,15 +21,20 @@ public class GMCommand extends AbstractCommand {
             return;
         }
 
-        if (args.length == 1 && sender instanceof Player player) {
-            GameMode mode = getGamemode(args[0]);
-            if (mode == null) {
-                sendMessageWithPrefix(player, "Merci de mettre un mode de jeu valide.");
-                return;
+        if (sender instanceof Player player) {
+            if (args.length == 1) {
+                GameMode mode = getGamemode(args[0]);
+                if (mode == null) {
+                    sendMessageWithPrefix(player, "Merci de mettre un mode de jeu valide.");
+                    return;
+                }
+
+                player.setGameMode(mode);
+                sendMessageWithPrefix(player, "Vous êtes en " + getModeName(mode) + ".");
             }
-            
-            player.setGameMode(mode);
-            sendMessageWithPrefix(player, "Vous êtes en " + getModeName(mode) + ".");
+        } else {
+            sendMessageWithPrefix(sender, "Cette commande doit être exécutée par un joueur.");
+            return;
         }
 
         if (args.length == 2) {
