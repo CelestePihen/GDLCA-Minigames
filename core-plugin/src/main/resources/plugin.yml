@@ -1,0 +1,6 @@
+name: core-plugin
+version: '0.1-1.21.1'
+main: fr.cel.core.Core
+api-version: '1.21'
+load: STARTUP
+authors: [ Cel ]

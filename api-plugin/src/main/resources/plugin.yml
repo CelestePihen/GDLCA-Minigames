@@ -1,0 +1,19 @@
+name: GameAPI
+version: '${project.version}'
+main: fr.cel.gameapi.GameAPI
+api-version: '1.21'
+commands:
+  friends:
+    description: Commande pour le système d'amis
+    aliases: [f, friend, ami, amis]
+  coins:
+    description: Commande pour le système de pièces
+    aliases: [coin, pieces, piece]
+    permission: gameapi.coins
+  gamecompass:
+    description: Commande qui donne le Sélectionneur de Mini-Jeux
+    permission: gameapi.gamecompass
+    aliases: [compass]
+  profile:
+    description: Commande qui permet d'ouvrir le profil du joueur
+    aliases: [p, profil]
