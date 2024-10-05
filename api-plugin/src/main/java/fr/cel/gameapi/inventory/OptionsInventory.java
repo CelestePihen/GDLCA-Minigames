@@ -4,7 +4,6 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.PlayerData;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -37,13 +36,13 @@ public class OptionsInventory extends AbstractInventory {
     public void interact(Player player, String itemName, ItemStack item) {
         if (item.getType() == Material.GREEN_DYE) {
             playerData.setAllowFriends(false);
-            setItem(0, greenDye);
+            setItem(0, redDye);
             player.sendMessage(GameAPI.getPrefix() + "Vous avez désactivé les demandes d'amis.");
         }
 
         else if (item.getType() == Material.RED_DYE) {
             playerData.setAllowFriends(true);
-            setItem(0, redDye);
+            setItem(0, greenDye);
             player.sendMessage(GameAPI.getPrefix() + "Vous avez activé les demandes d'amis.");
         }
     }
