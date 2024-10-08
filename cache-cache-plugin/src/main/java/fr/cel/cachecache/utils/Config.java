@@ -4,6 +4,7 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.utils.LocationUtility;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,6 +33,12 @@ public class Config {
             config = new YamlConfiguration();
             try {
                 config.load(file);
+
+                if (!config.contains("displayName")) {
+                    Bukkit.getConsoleSender().sendMessage("§cAttention ! Un fichier n'étant pas une carte est dans le dossier arenas");
+                    return null;
+                }
+
                 CCArena arena = new CCArena(
                         arenaName,
                         config.getString("displayName"),

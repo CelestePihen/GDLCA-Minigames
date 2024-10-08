@@ -17,8 +17,10 @@ public class CommandsManager {
     public void registerCommands() {
         addCommand("coins", new CoinsCommand(main.getPlayerManager()),  main);
         addCommand("friends", new FriendsCommand(main.getFriendsManager()),  main);
-        addCommand("gamecompass", new GameCompassComand(main),  main);
-        addCommand("profile", new ProfileCommand(),  main);
+        addCommand("gamecompass", new GameCompassComand(main.getPlayerManager()),  main);
+        addCommand("profile", new ProfileCommand(), main);
+        addCommand("welcome", new WelcomeCommand(main.getPlayerManager()),  main);
+        addCommand("barrier", new BarrierCommand(),  main);
     }
 
     /**
@@ -30,7 +32,7 @@ public class CommandsManager {
         PluginCommand pluginCommand = plugin.getCommand(commandName);
 
         if (pluginCommand == null) {
-            Bukkit.getConsoleSender().sendMessage(GameAPI.getPrefix() + "La commande " + commandName + " n'a pas été mise dans le plugin.yml du plugin");
+            Bukkit.getConsoleSender().sendMessage(GameAPI.getPrefix() + "La commande " + commandName + " n'a pas été mise dans le plugin.yml du plugin " + plugin.getName());
             return;
         }
 

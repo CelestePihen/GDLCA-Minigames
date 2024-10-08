@@ -8,13 +8,9 @@ import fr.cel.cachecache.arena.state.providers.game.WaitingListenerProvider;
 import fr.cel.cachecache.arena.timer.game.WaitingArenaTask;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -30,17 +26,17 @@ public class WaitingArenaState extends ArenaState {
     public void onEnable(CacheCache main) {
         super.onEnable(main);
 
-        if (getArena().getArenaName().equalsIgnoreCase("bunker")) {
-            Block lever = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getLeverLocation());
-            if (lever.getBlockData() instanceof Powerable powerable) {
-                powerable.setPowered(true);
-                lever.setBlockData(powerable);
-
-                Block redstoneWire = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getRedstoneWireLocation());
-                redstoneWire.setType(Material.AIR);
-                redstoneWire.setType(Material.REDSTONE_WIRE);
-            }
-        }
+//        if (getArena().getArenaName().equalsIgnoreCase("bunker")) {
+//            Block lever = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getLeverLocation());
+//            if (lever.getBlockData() instanceof Powerable powerable) {
+//                powerable.setPowered(true);
+//                lever.setBlockData(powerable);
+//
+//                Block redstoneWire = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getRedstoneWireLocation());
+//                redstoneWire.setType(Material.AIR);
+//                redstoneWire.setType(Material.REDSTONE_WIRE);
+//            }
+//        }
 
         Collections.shuffle(getArena().getPlayers());
 

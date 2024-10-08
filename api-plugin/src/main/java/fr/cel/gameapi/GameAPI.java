@@ -9,10 +9,9 @@ import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.RPUtils;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.net.URI;
-import java.util.HashMap;
 
 @Getter
 public final class GameAPI extends JavaPlugin {
@@ -32,11 +31,19 @@ public final class GameAPI extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // TODO tester localhost
         database = new DatabaseManager("95.111.253.89", 3307, "gdlca", "cel", "Celeste9*LOL");
         database.init();
 
         playerManager = new PlayerManager();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playerManager.addPlayerData(player);
+            player.sendMessage(ChatUtility.format("Attention ! Si un reload du serveur a été effectué, ne soyez pas étonné(e) si certaines fonctionnalités non-voulues"
+                    + " (genre le fait qu'on puisse ouvrir les coffres ou le fait d'interagir avec certains blocs) soient activés.\n"
+                    + "Si vous voulez revenir à la normale, revenez au Hub (/hub) et rejoignez le mode de jeu dans lequel vous étiez", ChatUtility.RED)
+            );
+        }
+
         friendsManager = new FriendsManager(this);
 
         commandsManager = new CommandsManager(this);

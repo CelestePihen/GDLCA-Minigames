@@ -40,7 +40,10 @@ public class RPUtils {
         PIGSTEP("Pigstep", "Lena Raine", Sound.MUSIC_DISC_PIGSTEP),
         OTHERSIDE("otherside", "Lena Raine", Sound.MUSIC_DISC_OTHERSIDE),
         WARDEN("5", "Samuel Âberg", Sound.MUSIC_DISC_5),
-        RELIC("Relic", "Aaron Cherof", Sound.MUSIC_DISC_RELIC)
+        RELIC("Relic", "Aaron Cherof", Sound.MUSIC_DISC_RELIC),
+        CREATOR("Creator", "Lena Raine", Sound.MUSIC_DISC_CREATOR),
+        CREATOR_MUSIC_BOX("Creator Music Box", "Lena Raine", Sound.MUSIC_DISC_CREATOR_MUSIC_BOX),
+        PRECIPICE("Precipice", "Aaron Cherof", Sound.MUSIC_DISC_PRECIPICE),
         ;
 
         private final String musicName;
@@ -64,6 +67,7 @@ public class RPUtils {
     @Getter
     public enum Advancements {
         // Hub
+        BIENVENUE("bienvenue"),
         DJ("dj"),
 
         // Mini-Jeux Général

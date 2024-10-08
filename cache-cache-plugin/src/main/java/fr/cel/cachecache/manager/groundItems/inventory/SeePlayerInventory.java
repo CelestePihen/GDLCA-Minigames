@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.UUID;
+
 public class SeePlayerInventory extends AbstractInventory {
 
     private final CCArena arena;
@@ -23,12 +25,14 @@ public class SeePlayerInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inventory) {
-        arena.getPlayers().forEach(uuid -> {
+        for (UUID uuid : arena.getPlayers()) {
             Player pl = Bukkit.getPlayer(uuid);
-            if (pl == null) return;
-            if (pl.getGameMode() == GameMode.SPECTATOR) return;
-            inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName(pl.getDisplayName()).setSkullOwner(pl).toItemStack());
-        });
+
+            if (pl == null) continue;
+            if (pl.getGameMode() == GameMode.SPECTATOR) continue;
+
+            inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName(pl.getDisplayName()).setSkullOwner(Bukkit.createPlayerProfile(pl.getUniqueId())).toItemStack());
+        }
     }
 
     @Override

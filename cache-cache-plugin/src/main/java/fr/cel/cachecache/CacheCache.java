@@ -18,6 +18,7 @@ public class CacheCache extends JavaPlugin {
     public void onEnable() {
         this.gameManager = new GameManager(this);
         this.ccArenaManager = new CCArenaManager(this);
+
         gameManager.reloadTemporaryHub();
 
         GameAPI.getInstance().getCommandsManager().addCommand("cachecache", new CCCommand(gameManager),  this);
