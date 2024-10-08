@@ -1,6 +1,7 @@
 package fr.cel.gameapi.command;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -10,18 +11,18 @@ import java.util.List;
 
 public class GameCompassComand extends AbstractCommand {
 
-    private final GameAPI main;
+    private final PlayerManager playerManager;
 
-    public GameCompassComand(GameAPI main) {
+    public GameCompassComand(PlayerManager playerManager) {
         super("gameapi:gamecompass", true, true);
-        this.main = main;
+        this.playerManager = playerManager;
     }
 
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
         final Player player = (Player) sender;
 
-        if (!main.getPlayerManager().containsPlayerInHub(player)) {
+        if (!playerManager.containsPlayerInHub(player)) {
             player.sendMessage(GameAPI.getPrefix() + "Tu ne peux pas obtenir le Sélectionneur de mini-jeux en dehors du Hub.");
             return;
         }

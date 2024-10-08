@@ -27,26 +27,14 @@ public class FriendsManager {
      * @param friend Le joueur qui a reçu la demande
      */
     public void addFriend(Player player, Player friend) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         String ps = "INSERT INTO friends (uuid_player, uuid_friend) VALUES (?, ?)";
-        try {
-            connection = main.getDatabase().getConnection();
-            preparedStatement = connection.prepareStatement(ps);
-
+        try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.setString(2, friend.getUniqueId().toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (connection != null && !connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -56,26 +44,14 @@ public class FriendsManager {
      * @param friend L'ami qui ne va plus être l'ami du joueur
      */
     public void removeFriend(Player player, Player friend) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         String ps = "DELETE FROM friends WHERE uuid_player = ? and uuid_friend = ?";
-        try {
-            connection = main.getDatabase().getConnection();
-            preparedStatement = connection.prepareStatement(ps);
-
-            preparedStatement.setString(1, player.getName());
-            preparedStatement.setString(2, friend.getName());
+        try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.setString(2, friend.getUniqueId().toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (connection != null && !connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -86,35 +62,20 @@ public class FriendsManager {
      */
     public List<String> getFriendsUUIDList(Player player) {
         List<String> friendsList = new ArrayList<>();
-
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         String ps = "SELECT uuid_friend FROM friends WHERE uuid_player = ?";
-        ResultSet resultSet = null;
-        try {
-            connection = main.getDatabase().getConnection();
 
-            preparedStatement = connection.prepareStatement(ps);
+        try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
 
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                friendsList.add(resultSet.getString("uuid_friend"));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    friendsList.add(resultSet.getString("uuid_friend"));
+                }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            return friendsList;
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (resultSet != null) resultSet.close();
-                if (connection != null && !connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+
         return friendsList;
     }
 

@@ -74,12 +74,8 @@ public class DatabaseManager {
      */
     public void createAccount(Player player) {
         if (!hasAccount(player)) {
-            Connection connection = null;
-            PreparedStatement preparedStatement = null;
             String ps = "INSERT INTO players (uuid_player, coins, allowFriends) VALUES (?, ?, ?)";
-            try {
-                connection = getConnection();
-                preparedStatement = connection.prepareStatement(ps);
+            try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
 
                 preparedStatement.setString(1, player.getUniqueId().toString());
                 preparedStatement.setDouble(2, 0.0D);
@@ -87,16 +83,9 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
 
                 Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&cCréation d'un nouveau compte pour " + player.getName()));
-            } catch (SQLException e) {
+            } catch(SQLException e){
                 Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&cErreur en créant un nouveau compte pour " + player.getName()));
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null && !connection.isClosed()) connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
@@ -107,35 +96,16 @@ public class DatabaseManager {
      * @return Retourne true si le joueur a déjà un compte et false s'il n'en a pas
      */
     public boolean hasAccount(Player player) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         String ps = "SELECT uuid_player FROM players WHERE uuid_player = ?";
-        ResultSet resultSet = null;
-        try {
-            connection = getConnection();
-            preparedStatement = connection.prepareStatement(ps);
-
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
 
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                return true;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
             }
-
-            return false;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (resultSet != null) resultSet.close();
-                if (connection != null && !connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-
         return false;
     }
 

@@ -2,16 +2,14 @@ package fr.cel.cachecache.arena.state.providers;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.state.game.PlayingArenaState;
 import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
 import fr.cel.cachecache.manager.GroundItem;
-import fr.cel.gameapi.utils.ItemBuilder;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Powerable;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Lightable;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,18 +17,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.UUID;
 
 public abstract class StateListenerProvider implements Listener {
 
@@ -65,10 +63,53 @@ public abstract class StateListenerProvider implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        final Player player = event.getPlayer();
+        Player player = event.getPlayer();
         if (!arena.isPlayerInArena(player)) return;
         if (!event.getMessage().contains("/hub")) return;
         arena.removePlayer(player);
+    }
+
+    @EventHandler
+    public void onLeverAction(BlockRedstoneEvent event) {
+        if (event.getBlock().getType() != Material.LEVER) return;
+        if (!event.getBlock().getLocation().equals(arena.getLeverLocation())) return;
+
+        boolean isPowered = event.getNewCurrent() > 0;
+
+        for (UUID uuid : arena.getHiders()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+
+            if (isPowered) {
+                player.getInventory().setHelmet(null);
+            } else {
+                player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
+            }
+        }
+
+        for (UUID uuid : arena.getSeekers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+            player.setGlowing(isPowered);
+        }
+
+        arena.changeLamps(isPowered);
+    }
+
+    @EventHandler
+    public void onSwappedItem(PlayerSwapHandItemsEvent event) {
+        Player player = event.getPlayer();
+        if (!arena.isPlayerInArena(player)) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onDropItem(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        if(!arena.isPlayerInArena(player)) return;
+
+        if (event.getItemDrop().getItemStack().getType() == Material.AMETHYST_SHARD)
+            event.setCancelled(true);
     }
 
     @EventHandler
@@ -89,22 +130,23 @@ public abstract class StateListenerProvider implements Listener {
         if (type == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || (type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) ||
                 type == Material.SWEET_BERRY_BUSH || type == Material.CHEST ||  type == Material.HOPPER || type == Material.FURNACE || type == Material.BLAST_FURNACE ||
                 type == Material.SMOKER || type == Material.BARREL || type == Material.DISPENSER || type == Material.DROPPER ||
-                type == Material.CHEST_MINECART || type == Material.HOPPER_MINECART || type == Material.FURNACE_MINECART || type == Material.CRAFTING_TABLE) {
+                type == Material.CHEST_MINECART || type == Material.HOPPER_MINECART || type == Material.FURNACE_MINECART || type == Material.CRAFTING_TABLE ||
+                type == Material.DRAGON_EGG) {
             event.setCancelled(true);
             return;
         }
 
-        if (type == Material.LEVER && arena.getArenaState() instanceof PlayingArenaState && isLeverLocation(block.getLocation())) {
-            if (block.getBlockData() instanceof Powerable powerable) {
-                if (powerable.isPowered()) {
-                    arena.getHiders().forEach(uuid -> Bukkit.getPlayer(uuid).getInventory().setHelmet(new ItemStack(Material.AIR)));
-                    arena.getSeekers().forEach(uuid -> Bukkit.getPlayer(uuid).setGlowing(true));
-                } else {
-                    arena.getHiders().forEach(uuid -> Bukkit.getPlayer(uuid).getInventory().setHelmet(new ItemBuilder(Material.CARVED_PUMPKIN).setDisplayName("Masque").toItemStack()));
-                    arena.getSeekers().forEach(uuid -> Bukkit.getPlayer(uuid).setGlowing(false));
-                }
-            }
-        }
+//        if (type == Material.LEVER && arena.getArenaState() instanceof PlayingArenaState && isLeverLocation(block.getLocation())) {
+//            if (block.getBlockData() instanceof Powerable powerable) {
+//                if (powerable.isPowered()) {
+//                    arena.getHiders().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).getInventory().setHelmet(new ItemStack(Material.AIR)));
+//                    arena.getSeekers().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).setGlowing(true));
+//                } else {
+//                    arena.getHiders().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).getInventory().setHelmet(new ItemBuilder(Material.CARVED_PUMPKIN).setDisplayName("Masque").toItemStack()));
+//                    arena.getSeekers().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).setGlowing(false));
+//                }
+//            }
+//        }
 
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
@@ -144,17 +186,17 @@ public abstract class StateListenerProvider implements Listener {
 
     }
 
-    private boolean isLeverLocation(Location locationBlock) {
-        boolean b = false;
-        if (locationBlock.getBlockX() == arena.getLeverLocation().getBlockX()) {
-            if (locationBlock.getBlockY() == arena.getLeverLocation().getBlockY()) {
-                if (locationBlock.getBlockZ() == arena.getLeverLocation().getBlockZ()) {
-                    b = true;
-                }
-            }
-        }
-        return b;
-    }
+//    private boolean isLeverLocation(Location locationBlock) {
+//        boolean b = false;
+//        if (locationBlock.getBlockX() == arena.getLeverLocation().getBlockX()) {
+//            if (locationBlock.getBlockY() == arena.getLeverLocation().getBlockY()) {
+//                if (locationBlock.getBlockZ() == arena.getLeverLocation().getBlockZ()) {
+//                    b = true;
+//                }
+//            }
+//        }
+//        return b;
+//    }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -164,7 +206,7 @@ public abstract class StateListenerProvider implements Listener {
         ItemStack itemStack = event.getCurrentItem();
         if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
-        if (itemStack.getType() == Material.CARVED_PUMPKIN) {
+        if (itemStack.getType() == Material.CARVED_PUMPKIN || itemStack.getType() == Material.AMETHYST_SHARD) {
             event.setCancelled(true);
         }
     }

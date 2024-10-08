@@ -3,6 +3,7 @@ package fr.cel.gameapi.manager;
 import fr.cel.gameapi.manager.database.PlayerData;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -14,14 +15,14 @@ import java.util.*;
 @Getter
 public class PlayerManager {
 
-    private final Map<UUID, PlayerData> playersData = new HashMap<>();
-    private final Set<UUID> playersInHub;
-    private final Location spawnLocation;
+    private final Set<UUID> playersInHub = new HashSet<>();
 
-    public PlayerManager() {
-        playersInHub = new HashSet<>();
-        spawnLocation = new Location(Bukkit.getWorld("world"), 264.5, 68, 90.5, 180F, 0F);
-    }
+    @Setter private UUID newPlayer = null;
+    private final Set<UUID> playersWhoWelcomed = new HashSet<>();
+
+    private final Map<UUID, PlayerData> playersData = new HashMap<>();
+
+    private final Location spawnLocation = new Location(Bukkit.getWorld("world"), 264.5, 68, 90.5, 180F, 0F);
 
     /**
      * Ajoute le PlayerData du joueur dans la Map
@@ -90,7 +91,7 @@ public class PlayerManager {
         player.getInventory().clear();
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setDisplayName("&rSélectionneur de mini-jeux").toItemStack());
-        player.getInventory().setItem(8, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getPlayerProfile()).setDisplayName("&rMon Profil").toItemStack());
+        player.getInventory().setItem(8, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getPlayerProfile()).setDisplayName("&fMon Profil").toItemStack());
     }
 
 }

@@ -10,11 +10,14 @@ import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 public class CCCommand extends AbstractCommand {
 
@@ -94,6 +97,16 @@ public class CCCommand extends AbstractCommand {
 
         final CCArena arena = arenaManager.getArenaByPlayer(player);
 
+        if (args[0].equalsIgnoreCase("calcul")) {
+            calculRedstoneLamps(player, args);
+            return;
+        }
+
+        if (args[0].equalsIgnoreCase("owner")) {
+            sender.sendMessage(gameManager.getPrefix() + "Le \"créateur\" de la partie est " + Objects.requireNonNull(Bukkit.getPlayer(arena.getOwner())).getName());
+            return;
+        }
+
         if (args[0].equalsIgnoreCase("start")) {
             if (arena.getArenaState() instanceof PreGameArenaState) {
                 if (arena.getHunterMode() == CCArena.HunterMode.TwoHuntersAtStart) {
@@ -120,7 +133,7 @@ public class CCCommand extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("listplayer")) {
             List<String> playersName = new ArrayList<>();
-            arena.getPlayers().forEach(pls -> playersName.add(Bukkit.getPlayer(pls).getName()));
+            arena.getPlayers().forEach(pls -> playersName.add(Objects.requireNonNull(Bukkit.getPlayer(pls)).getName()));
             player.sendMessage(gameManager.getPrefix() + "Joueurs : " + playersName);
         }
 
@@ -138,7 +151,7 @@ public class CCCommand extends AbstractCommand {
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
         if (args.length == 1) {
-            return List.of("start", "temphub", "enabletemporary", "list", "listplayer", "reload", "reloadtemporary", "grounditems");
+            return List.of("start", "temphub", "enabletemporary", "list", "listplayer", "reload", "reloadtemporary", "grounditems", "owner");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
@@ -159,6 +172,64 @@ public class CCCommand extends AbstractCommand {
         sender.sendMessage("/cc reload : Recharge les maps");
         sender.sendMessage("/cc reloadTemporary : Recharge les maps temporaires");
         sender.sendMessage("/cc groundItems : Envoie la liste des Items disponibles dans la map où vous êtes");
+        sender.sendMessage("/cc owner : Envoie le nom du \"créateur\" de la partie");
+        sender.sendMessage("/cc calcul x1 y1 z1 x2 y2 z2 : (Re-)Calcule les lampes de redstone (normalement) de la map Bunker.");
+    }
+
+    private void calculRedstoneLamps(Player player, String[] args) {
+        if (args.length != 7) {
+            sendMessageWithPrefix(player, "Usage: /calcul x1 y1 z1 x2 y2 z2");
+            return;
+        }
+
+        // Récupérer les coordonnées
+        int x1 = Integer.parseInt(args[1]);
+        int y1 = Integer.parseInt(args[2]);
+        int z1 = Integer.parseInt(args[3]);
+        int x2 = Integer.parseInt(args[4]);
+        int y2 = Integer.parseInt(args[5]);
+        int z2 = Integer.parseInt(args[6]);
+
+        // Assurer que x1 <= x2, y1 <= y2, z1 <= z2
+        int minX = Math.min(x1, x2);
+        int maxX = Math.max(x1, x2);
+        int minY = Math.min(y1, y2);
+        int maxY = Math.max(y1, y2);
+        int minZ = Math.min(z1, z2);
+        int maxZ = Math.max(z1, z2);
+
+        // Obtenir le monde dans lequel le joueur se trouve
+        World world = player.getWorld();
+
+        // Boucler à travers tous les blocs dans la région donnée
+        int count = 0;
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Block block = world.getBlockAt(x, y, z);
+                    if (block.getType() == Material.REDSTONE_LAMP) {
+                        // Ajouter la position au fichier lamps.yml
+                        Map<String, Object> lampData = new HashMap<>();
+                        lampData.put("world", world.getName());
+                        lampData.put("x", x);
+                        lampData.put("y", y);
+                        lampData.put("z", z);
+
+                        gameManager.getLampsConfig().set("lamps." + count, lampData);
+                        count++;
+                    }
+                }
+            }
+        }
+
+        // Sauvegarder le fichier YAML
+        try {
+            gameManager.getLampsConfig().save(gameManager.getLampsFile());
+            player.sendMessage("§a" + count + " lampes de redstone trouvées et sauvegardées dans lamps.yml !");
+        } catch (IOException e) {
+            player.sendMessage("§cErreur lors de la sauvegarde du fichier lamps.yml !");
+            e.printStackTrace();
+        }
     }
 
 }

@@ -7,7 +7,12 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +24,9 @@ public class GameManager {
     private final String prefix;
     private final CacheCache main;
 
+    private final File lampsFile;
+    private final YamlConfiguration lampsConfig;
+
     private final PlayerManager playerManager = GameAPI.getInstance().getPlayerManager();
 
     public GameManager(CacheCache main) {
@@ -26,6 +34,22 @@ public class GameManager {
         this.prefix = ChatUtility.format("&6[Cache-Cache] &r");
 
         addGroundItems();
+
+        // Bunker
+        File folder = new File(main.getDataFolder(), "lamps");
+        if (!folder.exists()) folder.mkdirs();
+
+        lampsFile = new File(folder, "lamps.yml");
+        if (!lampsFile.exists()) {
+            try {
+                lampsFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        lampsConfig = YamlConfiguration.loadConfiguration(lampsFile);
+        // Bunker
     }
 
     /**

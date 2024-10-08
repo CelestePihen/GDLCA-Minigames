@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemListener extends HListener {
 
@@ -23,7 +22,7 @@ public class ItemListener extends HListener {
     }
 
     @EventHandler
-    public void onInteract(final PlayerInteractEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
         if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
@@ -33,23 +32,20 @@ public class ItemListener extends HListener {
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) return;
-
         Action action = event.getAction();
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            if (itemMeta.getDisplayName().equals("Sélectionneur de mini-jeux")) {
+            if (itemStack.getType() == Material.COMPASS) {
                 GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
             }
 
-            else if (itemMeta.getDisplayName().equalsIgnoreCase("Mon Profil")) {
+            else if (itemStack.getType() == Material.PLAYER_HEAD) {
                 GameAPI.getInstance().getInventoryManager().openInventory(new ProfileInventory(player), player);
             }
         }
     }
 
     @EventHandler
-    public void onInteractInventory(final InventoryClickEvent event) {
+    public void onInteractInventory(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
         if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
@@ -64,7 +60,7 @@ public class ItemListener extends HListener {
     }
 
     @EventHandler
-    public void onSwappedItem(final PlayerSwapHandItemsEvent event) {
+    public void onSwappedItem(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
 
         if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
@@ -74,7 +70,7 @@ public class ItemListener extends HListener {
     }
 
     @EventHandler
-    public void onDropItem(final PlayerDropItemEvent event) {
+    public void onDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
 
         if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;

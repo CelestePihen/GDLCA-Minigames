@@ -17,7 +17,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -78,12 +81,13 @@ public class CCArena {
 
     // Bunker
     @Getter private final Location leverLocation = new Location(Bukkit.getWorld("world"), 54, 52, -217);
-    @Getter private final Location redstoneWireLocation = new Location(Bukkit.getWorld("world"), 56, 52, -217);
+    private final FileConfiguration lampsConfig;
 
     private UUID owner = null;
 
     public CCArena(String arenaName, String displayName, HunterMode hunterMode, Location spawnLoc, Location waitingLoc, boolean fallDamage, GameManager gameManager) {
         this.gameManager = gameManager;
+        this.lampsConfig = gameManager.getLampsConfig();
 
         this.arenaName = arenaName;
         this.displayName = displayName;
@@ -114,6 +118,8 @@ public class CCArena {
         this.teamSeekers.setAllowFriendlyFire(false);
 
         this.fallDamage = fallDamage;
+
+        activateLeverAndLamps();
     }
 
     /**
@@ -159,14 +165,17 @@ public class CCArena {
     private void join(Player player, GameMode gameMode, boolean joinMessage, boolean teleportSpawn) {
         gameManager.getPlayerManager().removePlayerInHub(player);
 
-        players.add(player.getUniqueId());
-        scoreboard.addPlayer(player);
-
+        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + hunterMode.getName()), displayName, 10, 70, 20);
+        player.setGameMode(gameMode);
+        player.setGlowing(false);
         player.getInventory().clear();
 
         if (players.isEmpty()) {
             becomeOwner(player);
         }
+
+        players.add(player.getUniqueId());
+        scoreboard.addPlayer(player);
 
         if (joinMessage) {
             sendMessage(player.getDisplayName() + " a rejoint la partie !");
@@ -175,10 +184,6 @@ public class CCArena {
         if (teleportSpawn) {
             player.teleport(spawnLoc);
         }
-
-        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + hunterMode.getName()), displayName, 10, 70, 20);
-        player.setGameMode(gameMode);
-        player.setGlowing(false);
 
         if (hunterMode == HunterMode.LoupToucheTouche) {
             wolfTimer.put(player.getUniqueId(), 0);
@@ -207,7 +212,9 @@ public class CCArena {
 
         // s'il y a encore des gens et que le joueur qui vient de quitter était l'hôte alors le joueur ayant rejoint après devient l'hôte
         if (!players.isEmpty() && owner == player.getUniqueId()) {
-            becomeOwner(Objects.requireNonNull(Bukkit.getPlayer(players.getFirst())));
+            Player newOwner = Bukkit.getPlayer(players.getFirst());
+            if (newOwner != null)
+                becomeOwner(newOwner);
         }
 
         if (arenaState instanceof PreGameArenaState) return;
@@ -422,18 +429,7 @@ public class CCArena {
                 getSpawnedGroundItems().forEach(Entity::remove);
                 getSpawnedGroundItems().clear();
 
-		        // TODO à refaire
-                if (arenaName.equalsIgnoreCase("bunker")) {
-                    Block lever = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(leverLocation);
-                    if (lever.getBlockData() instanceof Powerable powerable) {
-                        powerable.setPowered(true);
-                        lever.setBlockData(powerable);
-                    }
-
-                    Block redstoneWire = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(redstoneWireLocation);
-                    redstoneWire.setType(Material.AIR);
-                    redstoneWire.setType(Material.REDSTONE_WIRE);
-                }
+                activateLeverAndLamps();
 
                 setArenaState(new InitArenaState(this));
                 sendWinnerMessage();
@@ -461,6 +457,54 @@ public class CCArena {
         if (seekers.isEmpty()) sendMessage("&bL'équipe des cacheurs &rremporte la partie !");
         else if (hiders.isEmpty()) sendMessage("&cL'équipe des chercheurs &rremporte la partie !");
         else sendMessage("Égalité !");
+    }
+
+    /**
+     * Fait devenir le joueur le "créateur" de la partie
+     * @param player Le joueur qui va devenir "créateur" de la partie
+     */
+    private void becomeOwner(Player player) {
+        owner = player.getUniqueId();
+        player.sendMessage(gameManager.getPrefix() + "Tu es désormais l'hôte de la partie !");
+        if (arenaState instanceof PreGameArenaState) {
+            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
+        }
+    }
+
+    public void activateLeverAndLamps() {
+        if (arenaName.equalsIgnoreCase("bunker")) {
+            Block lever = Bukkit.getWorld("world").getBlockAt(leverLocation);
+            if (lever.getBlockData() instanceof Powerable powerable) {
+                powerable.setPowered(true);
+                lever.setBlockData(powerable);
+            }
+
+            changeLamps(true);
+        }
+    }
+
+    public void changeLamps(boolean activate) {
+        if (lampsConfig.contains("lamps")) {
+            for (String key : lampsConfig.getConfigurationSection("lamps").getKeys(false)) {
+                World world = Bukkit.getWorld("world");
+
+                int x = lampsConfig.getInt("lamps." + key + ".x");
+                int y = lampsConfig.getInt("lamps." + key + ".y");
+                int z = lampsConfig.getInt("lamps." + key + ".z");
+
+                Block lampBlock = world.getBlockAt(x, y, z);
+
+                if (lampBlock.getType() == Material.REDSTONE_LAMP) {
+                    BlockData blockData = lampBlock.getBlockData();
+
+                    if (blockData instanceof Lightable) {
+                        Lightable lightable = (Lightable) lampBlock.getBlockData();
+                        lightable.setLit(activate);
+                        lampBlock.setBlockData(lightable);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -602,14 +646,6 @@ public class CCArena {
     public void setLastHunter(String playerName) {
         this.lastHunter = playerName;
         config.setValue("lastHunter", lastHunter);
-    }
-
-    private void becomeOwner(Player player) {
-        owner = player.getUniqueId();
-        player.sendMessage(gameManager.getPrefix() + "Tu es désormais l'hôte de la partie !");
-        if (arenaState instanceof PreGameArenaState) {
-            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
-        }
     }
 
 }
