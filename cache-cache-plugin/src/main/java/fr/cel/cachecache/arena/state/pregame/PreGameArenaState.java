@@ -2,9 +2,9 @@ package fr.cel.cachecache.arena.state.pregame;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.arena.providers.StateListenerProvider;
+import fr.cel.cachecache.arena.providers.pregame.PreGameListenerProvider;
 import fr.cel.cachecache.arena.state.ArenaState;
-import fr.cel.cachecache.arena.state.providers.StateListenerProvider;
-import fr.cel.cachecache.arena.state.providers.pregame.PreGameListenerProvider;
 
 import javax.annotation.Nullable;
 

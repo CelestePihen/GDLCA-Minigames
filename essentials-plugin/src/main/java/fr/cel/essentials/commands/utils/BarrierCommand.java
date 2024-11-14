@@ -1,5 +1,6 @@
-package fr.cel.gameapi.command;
+package fr.cel.essentials.commands;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -11,7 +12,7 @@ import java.util.List;
 public class BarrierCommand extends AbstractCommand {
 
     public BarrierCommand() {
-        super("gameapi:barrier", false, true);
+        super("essentials:barrier", false, true);
     }
 
     @Override

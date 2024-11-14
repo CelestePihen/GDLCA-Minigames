@@ -3,6 +3,8 @@ package fr.cel.hub.inventory;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
+import fr.cel.halloween.manager.HalloweenMapManager;
+import fr.cel.hub.Hub;
 import fr.cel.hub.inventory.cachecache.CacheCacheInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,11 +15,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class MinigamesInventory extends AbstractInventory {
 
-    private final Location locationMuseum;
+    private final Location locationMuseum = new Location(Bukkit.getWorld("world"), 234.5, 95, 412.5, -90.0f, 0.0f);
 
     public MinigamesInventory() {
         super("Sélectionneur de mini-jeux", 54);
-        locationMuseum = new Location(Bukkit.getWorld("world"), 234.5, 95, 412.5, -90.0f, 0.0f);
     }
 
     @Override
@@ -28,8 +29,25 @@ public class MinigamesInventory extends AbstractInventory {
         inv.setItem(15, new ItemBuilder(Material.IRON_BOOTS).setDisplayName("&aParkour").toItemStack());
         inv.setItem(17, new ItemBuilder(Material.BRUSH).setDisplayName("&aMusée").toItemStack());
 
-        for (int slot = 27; slot <= 35; slot += 2) {
-            inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName("&eIndisponible").toItemStack());
+        // Event Halloween
+        if (Hub.getInstance().getConfig().getBoolean("halloweenEvent")) {
+            for (int slot = 27; slot <= 35; slot += 2) {
+                inv.setItem(slot, new ItemBuilder(Material.JACK_O_LANTERN).setDisplayName("&6Halloween").toItemStack());
+            }
+        }
+
+        // Event Noël
+        else if (Hub.getInstance().getConfig().getBoolean("christmasEvent")) {
+            for (int slot = 27; slot <= 35; slot += 2) {
+                inv.setItem(slot, new ItemBuilder(Material.SNOW_BLOCK).setDisplayName("&6Noël").toItemStack());
+            }
+        }
+
+        // Indisponible
+        else {
+            for (int slot = 27; slot <= 35; slot += 2) {
+                inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName("&eIndisponible").toItemStack());
+            }
         }
 
         inv.setItem(49, new ItemBuilder(Material.BARRIER).setDisplayName("Quitter").toItemStack());
@@ -47,6 +65,11 @@ public class MinigamesInventory extends AbstractInventory {
             case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourInventory(), player);
 
             case BRUSH -> player.teleport(locationMuseum);
+
+            case JACK_O_LANTERN -> HalloweenMapManager.getMapManager().getMaps().get("manoir").addPlayer(player);
+
+            case SNOW_BLOCK -> player.sendMessage(GameAPI.getPrefix() + "Cet événement n'est pas encore prêt...");
+            /*ChristmasMapManager.getMapManager().getMaps().get("atelier").addPlayer(player);*/
 
             case COMMAND_BLOCK -> {
                 player.sendMessage(GameAPI.getPrefix() + "Indisponible pour le moment.");

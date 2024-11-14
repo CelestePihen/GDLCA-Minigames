@@ -13,14 +13,13 @@ import java.util.UUID;
 @Getter
 public class InventoryManager {
 
-    private final Map<UUID, AbstractInventory> inventoryDataMap;
+    private final Map<UUID, AbstractInventory> inventoryDataMap = new HashMap<>();
 
     public InventoryManager(GameAPI main) {
-        this.inventoryDataMap = new HashMap<>();
         main.getServer().getPluginManager().registerEvents(new InventoryListener(this), main);
     }
 
-    public void openInventory(AbstractInventory inventory, final Player player) {
+    public void openInventory(AbstractInventory inventory, Player player) {
         inventory.createInventory();
         player.openInventory(inventory.getInv());
         inventoryDataMap.put(player.getUniqueId(), inventory);

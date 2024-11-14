@@ -35,7 +35,7 @@ public class Config {
                 config.load(file);
 
                 if (!config.contains("displayName")) {
-                    Bukkit.getConsoleSender().sendMessage("§cAttention ! Un fichier n'étant pas une carte est dans le dossier arenas");
+                    Bukkit.getConsoleSender().sendMessage("§6[Cache-Cache] §cAttention ! Un fichier n'étant pas une carte est dans le dossier arenas");
                     return null;
                 }
 

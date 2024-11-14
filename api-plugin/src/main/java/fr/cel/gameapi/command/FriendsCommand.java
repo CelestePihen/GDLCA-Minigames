@@ -131,6 +131,16 @@ public class FriendsCommand extends AbstractCommand {
                 Player target = Bukkit.getPlayer(args[1]);
 
                 if (isPlayerOnline(target, sender)) {
+                    if (friendsManager.isFriendWith(player, target)) {
+                        sendMessageWithPrefix(player, "Vous êtes déjà ami avec cette personne.");
+                        return;
+                    }
+
+                    if (requestsFriends.containsValue(player)) {
+                        sendMessageWithPrefix(player, "Vous avez déjà une demande d'ami en cours.");
+                        return;
+                    }
+
                     PlayerData friendData = GameAPI.getInstance().getPlayerManager().getPlayerData(target);
                     if (friendData == null) {
                         sendMessageWithPrefix(player, "&cErreur &ravec le profil du joueur ! Si le problème persiste, contactez un administrateur.");
@@ -143,16 +153,6 @@ public class FriendsCommand extends AbstractCommand {
 
                     if (!friendData.isAllowingFriends()) {
                         sendMessageWithPrefix(target, args[1] + " n'accepte pas les demandes d'amis.");
-                    }
-
-                    if (requestsFriends.containsValue(player)) {
-                        sendMessageWithPrefix(player, "Vous avez déjà une demande d'ami en cours.");
-                        return;
-                    }
-
-                    if (friendsManager.isFriendWith(player, target)) {
-                        sendMessageWithPrefix(player, "Vous êtes déjà ami avec cette personne.");
-                        return;
                     }
 
                     requestsFriends.put(target, player);

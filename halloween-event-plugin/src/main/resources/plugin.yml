@@ -1,0 +1,11 @@
+name: Halloween
+version: 1.0.0
+main: fr.cel.halloween.HalloweenEvent
+api-version: '1.21'
+authors: [ Cel ]
+depend: [ GameAPI ]
+commands:
+  halloween:
+    description: Commande principale du plugin
+    permission: halloween.halloween
+    aliases: [ he ]

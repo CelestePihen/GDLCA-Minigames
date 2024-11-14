@@ -19,14 +19,14 @@ public class CommandsManager {
         addCommand("friends", new FriendsCommand(main.getFriendsManager()),  main);
         addCommand("gamecompass", new GameCompassComand(main.getPlayerManager()),  main);
         addCommand("profile", new ProfileCommand(), main);
-        addCommand("welcome", new WelcomeCommand(main.getPlayerManager()),  main);
-        addCommand("barrier", new BarrierCommand(),  main);
+        addCommand("welcome", new WelcomeCommand(main.getPlayerManager()), main);
     }
 
     /**
      * Permet d'enregistrer une commande
      * @param commandName Le nom de la commande
      * @param abstractCommand La classe de la commande
+     * @param plugin Le plugin correspondant
      */
     public void addCommand(String commandName, AbstractCommand abstractCommand, JavaPlugin plugin) {
         PluginCommand pluginCommand = plugin.getCommand(commandName);

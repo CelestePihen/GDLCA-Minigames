@@ -1,12 +1,9 @@
 # GDLCA Minigames
  
 Things that I want to do :
-- API
-- Hub V1.0.3
+- API 2.0
+- Hub V1.1
 - Cache-Cache V1.2
-- Valocraft V1.01
+- Valocraft V1.0.1
 - PVP V1.1
 - Parkour V1.1
-- Manhunt ?
-- Lore
-- Tournois

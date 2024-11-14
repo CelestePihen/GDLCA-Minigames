@@ -7,8 +7,6 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;

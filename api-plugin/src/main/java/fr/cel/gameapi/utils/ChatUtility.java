@@ -2,7 +2,7 @@ package fr.cel.gameapi.utils;
 
 import org.bukkit.ChatColor;
 
-public class ChatUtility {
+public final class ChatUtility {
 
     public final static String BLACK = "&0";
     public final static String DARK_BLUE = "&1";

@@ -1,0 +1,6 @@
+host: "host"
+port: 0000
+database: "database"
+database_test: "database_test"
+username: "username"
+password: "password"

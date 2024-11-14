@@ -1,8 +1,9 @@
-package fr.cel.cachecache.arena.state.providers.game;
+package fr.cel.cachecache.arena.providers.game;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.state.providers.StateListenerProvider;
+import fr.cel.cachecache.arena.providers.StateListenerProvider;
+import fr.cel.cachecache.manager.GroundItem;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -12,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -67,6 +69,24 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (damager instanceof Player) {
             if (!arena.isPlayerInArena((Player) damager)) return;
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!arena.isPlayerInArena(player)) return;
+
+        ItemStack itemStack = event.getItem();
+        if (itemStack == null) return;
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) return;
+
+        for (GroundItem groundItem : arena.getAvailableGroundItems()) {
+            if (groundItem != null && itemMeta.getDisplayName().equalsIgnoreCase(groundItem.getDisplayName())) {
+                groundItem.onInteract(player, arena);
+            }
         }
     }
 

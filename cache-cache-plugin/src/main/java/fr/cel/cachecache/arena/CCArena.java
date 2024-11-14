@@ -40,8 +40,10 @@ public class CCArena {
     private final String arenaName;
     private final String displayName;
 
-    // ArenaState / Timer / WolfTimer
+    // ArenaState
     private ArenaState arenaState;
+
+    // Timer / WolfTimer
     @Setter private int timer;
     private final Map<UUID, Integer> wolfTimer;
 
@@ -284,6 +286,25 @@ public class CCArena {
     }
 
     /**
+     * Permet de transformer le cacheur en non cacheur
+     * @param deadPlayer Le cacheur qui vient de mourir
+     */
+    private void becomeNonSeeker(Player deadPlayer) {
+        if (hunterMode != HunterMode.LoupToucheTouche && hiders.size() == 1) {
+            if (timer > bestTimer) {
+                setBestTimer();
+                setBestPlayer(deadPlayer.getName());
+            }
+        }
+
+        hiders.remove(deadPlayer.getUniqueId());
+        teamHiders.removePlayer(deadPlayer);
+
+        seekers.add(deadPlayer.getUniqueId());
+        teamSeekers.removePlayer(deadPlayer);
+    }
+
+    /**
      * Permet de transformer le cacheur en chercheur
      * @param deadPlayer Le cacheur qui vient de mourir
      */
@@ -396,25 +417,6 @@ public class CCArena {
         seekers.clear();
         players.clear();
         wolfTimer.clear();
-    }
-
-    /**
-     * Permet de transformer le cacheur en non cacheur
-     * @param deadPlayer Le cacheur qui vient de mourir
-     */
-    private void becomeNonSeeker(Player deadPlayer) {
-        if (hunterMode != HunterMode.LoupToucheTouche && hiders.size() == 1) {
-            if (timer > bestTimer) {
-                setBestTimer();
-                setBestPlayer(deadPlayer.getName());
-            }
-        }
-
-        hiders.remove(deadPlayer.getUniqueId());
-        teamHiders.removePlayer(deadPlayer);
-
-        seekers.add(deadPlayer.getUniqueId());
-        teamSeekers.removePlayer(deadPlayer);
     }
 
     /**

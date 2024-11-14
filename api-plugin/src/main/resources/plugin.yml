@@ -21,6 +21,3 @@ commands:
     description: Commande qui donne le Sélectionneur de Mini-Jeux
     aliases: [compass]
     permission: gameapi.gamecompass
-  barrier:
-    description: Commande qui donne un bloc de barrièer à un joueur
-    permission: gameapi.barrier

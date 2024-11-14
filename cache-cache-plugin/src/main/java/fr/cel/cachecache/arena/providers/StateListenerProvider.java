@@ -1,15 +1,12 @@
-package fr.cel.cachecache.arena.state.providers;
+package fr.cel.cachecache.arena.providers;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
-import fr.cel.cachecache.manager.GroundItem;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Lightable;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -117,37 +114,6 @@ public abstract class StateListenerProvider implements Listener {
         Player player = event.getPlayer();
         if (!arena.isPlayerInArena(player)) return;
 
-        Block block = event.getClickedBlock();
-        if (block == null) return;
-
-        Material type = block.getType();
-
-        if (event.getAction() == Action.PHYSICAL && type == Material.FARMLAND) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if (type == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || (type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) ||
-                type == Material.SWEET_BERRY_BUSH || type == Material.CHEST ||  type == Material.HOPPER || type == Material.FURNACE || type == Material.BLAST_FURNACE ||
-                type == Material.SMOKER || type == Material.BARREL || type == Material.DISPENSER || type == Material.DROPPER ||
-                type == Material.CHEST_MINECART || type == Material.HOPPER_MINECART || type == Material.FURNACE_MINECART || type == Material.CRAFTING_TABLE ||
-                type == Material.DRAGON_EGG) {
-            event.setCancelled(true);
-            return;
-        }
-
-//        if (type == Material.LEVER && arena.getArenaState() instanceof PlayingArenaState && isLeverLocation(block.getLocation())) {
-//            if (block.getBlockData() instanceof Powerable powerable) {
-//                if (powerable.isPowered()) {
-//                    arena.getHiders().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).getInventory().setHelmet(new ItemStack(Material.AIR)));
-//                    arena.getSeekers().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).setGlowing(true));
-//                } else {
-//                    arena.getHiders().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).getInventory().setHelmet(new ItemBuilder(Material.CARVED_PUMPKIN).setDisplayName("Masque").toItemStack()));
-//                    arena.getSeekers().forEach(uuid -> Objects.requireNonNull(Bukkit.getPlayer(uuid)).setGlowing(false));
-//                }
-//            }
-//        }
-
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
 
@@ -178,25 +144,25 @@ public abstract class StateListenerProvider implements Listener {
             return;
         }
 
-        for (GroundItem groundItem : arena.getAvailableGroundItems()) {
-            if (groundItem != null && itemMeta.getDisplayName().equalsIgnoreCase(groundItem.getDisplayName())) {
-                groundItem.onInteract(player, arena);
-            }
+        Block block = event.getClickedBlock();
+        if (block == null) return;
+
+        Material type = block.getType();
+
+        if (event.getAction() == Action.PHYSICAL && type == Material.FARMLAND) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (type == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || (type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) ||
+                type == Material.SWEET_BERRY_BUSH || type == Material.CHEST ||  type == Material.HOPPER || type == Material.FURNACE || type == Material.BLAST_FURNACE ||
+                type == Material.SMOKER || type == Material.BARREL || type == Material.DISPENSER || type == Material.DROPPER ||
+                type == Material.CHEST_MINECART || type == Material.HOPPER_MINECART || type == Material.FURNACE_MINECART || type == Material.CRAFTING_TABLE ||
+                type == Material.DRAGON_EGG) {
+            event.setCancelled(true);
         }
 
     }
-
-//    private boolean isLeverLocation(Location locationBlock) {
-//        boolean b = false;
-//        if (locationBlock.getBlockX() == arena.getLeverLocation().getBlockX()) {
-//            if (locationBlock.getBlockY() == arena.getLeverLocation().getBlockY()) {
-//                if (locationBlock.getBlockZ() == arena.getLeverLocation().getBlockZ()) {
-//                    b = true;
-//                }
-//            }
-//        }
-//        return b;
-//    }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {

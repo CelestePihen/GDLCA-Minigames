@@ -1,15 +1,15 @@
-package fr.cel.cachecache.arena.state.providers.pregame;
+package fr.cel.cachecache.arena.providers.pregame;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.state.providers.StateListenerProvider;
+import fr.cel.cachecache.arena.providers.StateListenerProvider;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-public class StartingListenerProvider extends StateListenerProvider {
+public class PreGameListenerProvider extends StateListenerProvider {
 
-    public StartingListenerProvider(CCArena arena) {
+    public PreGameListenerProvider(CCArena arena) {
         super(arena);
     }
 

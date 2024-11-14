@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -74,18 +75,29 @@ public class DatabaseManager {
      */
     public void createAccount(Player player) {
         if (!hasAccount(player)) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
             String ps = "INSERT INTO players (uuid_player, coins, allowFriends) VALUES (?, ?, ?)";
-            try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+            try {
+                connection = getConnection();
+                preparedStatement = connection.prepareStatement(ps);
 
                 preparedStatement.setString(1, player.getUniqueId().toString());
                 preparedStatement.setDouble(2, 0.0D);
                 preparedStatement.setBoolean(3, true);
                 preparedStatement.executeUpdate();
 
-                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&cCréation d'un nouveau compte pour " + player.getName()));
-            } catch(SQLException e){
-                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&cErreur en créant un nouveau compte pour " + player.getName()));
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Création d'un nouveau compte pour " + player.getName());
+            } catch (SQLException e) {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Erreur en créant un nouveau compte pour " + player.getName());
                 e.printStackTrace();
+            } finally {
+                try {
+                    if (preparedStatement != null) preparedStatement.close();
+                    if (connection != null && !connection.isClosed()) connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -96,16 +108,31 @@ public class DatabaseManager {
      * @return Retourne true si le joueur a déjà un compte et false s'il n'en a pas
      */
     public boolean hasAccount(Player player) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         String ps = "SELECT uuid_player FROM players WHERE uuid_player = ?";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            preparedStatement = connection.prepareStatement(ps);
+
             preparedStatement.setString(1, player.getUniqueId().toString());
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next();
-            }
+            resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (resultSet != null) resultSet.close();
+                if (connection != null && !connection.isClosed()) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
         return false;
     }
 

@@ -46,7 +46,7 @@ public class ParkourMapManager {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
                 maps.put(name, new Config(main, name).getArena());
-                Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix() + ChatUtility.format("Chargement de la zone Parkour ") + name);
+                Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix() + ChatUtility.format("Chargement de la zone Parkour " + name, ChatUtility.WHITE));
             }
         }
     }
