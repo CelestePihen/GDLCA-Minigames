@@ -178,11 +178,10 @@ public class CCCommand extends AbstractCommand {
 
     private void calculRedstoneLamps(Player player, String[] args) {
         if (args.length != 7) {
-            sendMessageWithPrefix(player, "Usage: /calcul x1 y1 z1 x2 y2 z2");
+            sendMessageWithPrefix(player, "Usage : /cc calcul x1 y1 z1 x2 y2 z2");
             return;
         }
 
-        // Récupérer les coordonnées
         int x1 = Integer.parseInt(args[1]);
         int y1 = Integer.parseInt(args[2]);
         int z1 = Integer.parseInt(args[3]);
@@ -198,19 +197,15 @@ public class CCCommand extends AbstractCommand {
         int minZ = Math.min(z1, z2);
         int maxZ = Math.max(z1, z2);
 
-        // Obtenir le monde dans lequel le joueur se trouve
         World world = player.getWorld();
 
-        // Boucler à travers tous les blocs dans la région donnée
         int count = 0;
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = world.getBlockAt(x, y, z);
                     if (block.getType() == Material.REDSTONE_LAMP) {
-                        // Ajouter la position au fichier lamps.yml
                         Map<String, Object> lampData = new HashMap<>();
-                        lampData.put("world", world.getName());
                         lampData.put("x", x);
                         lampData.put("y", y);
                         lampData.put("z", z);
@@ -222,7 +217,6 @@ public class CCCommand extends AbstractCommand {
             }
         }
 
-        // Sauvegarder le fichier YAML
         try {
             gameManager.getLampsConfig().save(gameManager.getLampsFile());
             player.sendMessage("§a" + count + " lampes de redstone trouvées et sauvegardées dans lamps.yml !");

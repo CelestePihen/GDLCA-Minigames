@@ -1,7 +1,7 @@
-package fr.cel.cachecache.arena.state.providers.game;
+package fr.cel.cachecache.arena.providers.game;
 
 import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.state.providers.StateListenerProvider;
+import fr.cel.cachecache.arena.providers.StateListenerProvider;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;

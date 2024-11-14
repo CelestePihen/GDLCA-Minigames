@@ -15,12 +15,11 @@ import java.util.*;
 @Getter
 public class PlayerManager {
 
+    private final Map<UUID, PlayerData> playersData = new HashMap<>();
     private final Set<UUID> playersInHub = new HashSet<>();
 
     @Setter private UUID newPlayer = null;
     private final Set<UUID> playersWhoWelcomed = new HashSet<>();
-
-    private final Map<UUID, PlayerData> playersData = new HashMap<>();
 
     private final Location spawnLocation = new Location(Bukkit.getWorld("world"), 264.5, 68, 90.5, 180F, 0F);
 
@@ -33,15 +32,6 @@ public class PlayerManager {
     }
 
     /**
-     * Permet d'obtenir le PlayerData du joueur
-     * @param player Le joueur
-     * @return Retourne le PlayerData
-     */
-    public PlayerData getPlayerData(Player player) {
-        return playersData.get(player.getUniqueId());
-    }
-
-    /**
      * Permet de retirer le PlayerData du joueur de la Map
      * @param player Le joueur qui a quitté
      */
@@ -50,20 +40,12 @@ public class PlayerManager {
     }
 
     /**
-     * Retire le joueur dans la liste des joueurs dans le Monde Normal
-     * @param player Le joueur à retirer
+     * Permet d'obtenir le PlayerData du joueur
+     * @param player Le joueur
+     * @return Retourne le PlayerData
      */
-    public void removePlayerInHub(Player player) {
-        playersInHub.remove(player.getUniqueId());
-    }
-
-    /**
-     * Détecte si le joueur est dans le Hub
-     * @param player Le joueur à détecter
-     * @return Renvoie si le joueur est dans le Hub ou pas
-     */
-    public boolean containsPlayerInHub(Player player) {
-        return playersInHub.contains(player.getUniqueId());
+    public PlayerData getPlayerData(Player player) {
+        return playersData.get(player.getUniqueId());
     }
 
     /**
@@ -92,6 +74,23 @@ public class PlayerManager {
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setDisplayName("&rSélectionneur de mini-jeux").toItemStack());
         player.getInventory().setItem(8, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getPlayerProfile()).setDisplayName("&fMon Profil").toItemStack());
+    }
+
+    /**
+     * Retire le joueur dans la liste des joueurs dans le Monde Normal
+     * @param player Le joueur à retirer
+     */
+    public void removePlayerInHub(Player player) {
+        playersInHub.remove(player.getUniqueId());
+    }
+
+    /**
+     * Détecte si le joueur est dans le Hub
+     * @param player Le joueur à détecter
+     * @return Renvoie si le joueur est dans le Hub ou pas
+     */
+    public boolean containsPlayerInHub(Player player) {
+        return playersInHub.contains(player.getUniqueId());
     }
 
 }

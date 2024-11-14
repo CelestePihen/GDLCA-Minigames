@@ -8,8 +8,7 @@ import lombok.Getter;
 
 public class GameManager {
 
-    @Getter
-    private static GameManager gameManager;
+    @Getter private static GameManager gameManager;
 
     @Getter private final ValoCraft main;
     @Getter private final PlayerManager playerManager = GameAPI.getInstance().getPlayerManager();

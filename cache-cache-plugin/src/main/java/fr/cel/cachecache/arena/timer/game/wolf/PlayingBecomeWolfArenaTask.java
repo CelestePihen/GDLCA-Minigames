@@ -17,7 +17,7 @@ public class PlayingBecomeWolfArenaTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        UUID uuid = arena.getSeekers().get(0);
+        UUID uuid = arena.getSeekers().getFirst();
 
         int currentTime = arena.getWolfTimer().get(uuid);
         arena.getWolfTimer().put(uuid, currentTime + 1);

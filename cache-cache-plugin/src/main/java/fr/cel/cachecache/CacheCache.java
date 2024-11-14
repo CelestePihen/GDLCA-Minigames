@@ -25,6 +25,6 @@ public class CacheCache extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() { }
 
 }

@@ -6,79 +6,52 @@ api-version: 1.19
 commands:
   heal:
     description: Permet de se soigner les joueurs
-    permission: skyessentials.heal
+    permission: essentials.heal
   feed:
     description: Permet de se rassasier les joueurs
-    permission: skyessentials.feed
+    permission: essentials.feed
   craft:
     description: Permet d'ouvrir un établi
     aliases: [workbench]
-    permission: skyessentials.craft
+    permission: essentials.craft
   gm:
     description: Permet de changer le mode de jeu des joueurs
-    permission: skyessentials.gm
+    permission: essentials.gm
   top:
     description: Permet de se téléporter à la surface
-    permission: skyessentials.top
+    permission: essentials.top
   nv:
     description: Permet de se donner l'effet Vision Nocturne
     aliases: [nightvision]
-    permission: skyessentials.nv
+    permission: essentials.nv
   bc:
     description: Permet d'envoyer un message que tous les joueurs verront
     aliases: [broadcast]
-    permission: skyessentials.bc
+    permission: essentials.bc
   speed:
     description: Permet de changer la vitesse des joueurs
-    permission: skyessentials.speed
+    permission: essentials.speed
   ec:
     description: Permet d'ouvrir le coffre de l'end des joueurs
     aliases: [enderchest]
-    permission: skyessentials.ec
+    permission: essentials.ec
   anvil:
     description: Permet d'ouvrir une enclume
-    permission: skyessentials.anvil
+    permission: essentials.anvil
   hat:
     description: Permet de mettre l'objet qu'il a dans sa main sur sa tête
-    permission: skyessentials.hat
+    permission: essentials.hat
   near:
     description: Permet de savoir quels sont les joueurs autour du joueur
-    permission: skyessentials.near
+    permission: essentials.near
   god:
     description: Permet de mettre le mode invulnérable sur les joueurs
-    permission: skyessentials.god
+    permission: essentials.god
   discord:
     description: Donne le lien discord aux joueurs
   fly:
     description: Permet de mettre le vol au joueur
-    permission: skyessentials.fly
-
-permissions:
-  skyessentials.heal:
-    description: Permission pour soigner les joueurs
-  skyessentials.feed:
-    description: Permission pour rassasier les joueurs
-  skyessentials.craft:
-    description: Permission pour ouvrir un établi
-  skyessentials.gm:
-    description: Permission pour changer le mode de jeu des joueurs
-  skyessentials.top:
-    description: Permission pour se téléporter à la surface
-  skyessentials.nv:
-    description: Permission pour se donner l'effet Vision Nocturne
-  skyessentials.bc:
-    description: Permission pour envoyer un message que tous les joueurs verront
-  skyessentials.speed:
-    description: Permission de changer la vitesse des joueurs
-  skyessentials.anvil:
-    description: Permission d'ouvrir une enclume
-  skyessentials.hat:
-    description: Permission de mettre l'objet qu'il a dans sa main sur sa tête
-  skyessentials.near:
-    description: Permission de savoir quels sont les joueurs autour du joueur
-  skyessentials.god:
-    description: Permission de mettre le mode invulnérable sur les joueurs
-  skyessentials.discord:
-    description: Permission d'envoyer le lien discord
-  skyessentials.fly:
-    description: Permission de voler
+    permission: essentials.fly
+  barrier:
+    description: Commande qui donne un bloc de barrièer à un joueur
+    permission: gameapi.barrier

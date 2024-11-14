@@ -25,7 +25,7 @@ import java.util.Map;
  * @author NonameSL
  */
 
-public class ItemBuilder {
+public final class ItemBuilder {
 
     private final ItemStack is;
 
@@ -68,8 +68,8 @@ public class ItemBuilder {
      */
     public ItemBuilder setDurability(int dur) {
         ItemMeta meta = is.getItemMeta();
-        if (meta instanceof Damageable) {
-            ((Damageable) meta).setDamage(dur);
+        if (meta instanceof Damageable damageable) {
+            damageable.setDamage(dur);
             is.setItemMeta(meta);
         }
         return this;

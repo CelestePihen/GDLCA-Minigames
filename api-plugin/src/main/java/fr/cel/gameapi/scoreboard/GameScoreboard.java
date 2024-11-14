@@ -56,7 +56,6 @@ public class GameScoreboard {
         }
 
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        playersUUID.remove(player.getUniqueId());
     }
 
     public void resetScoreboard() {
@@ -65,6 +64,8 @@ public class GameScoreboard {
             if (player == null) return;
             removePlayer(player);
         }
+
+        playersUUID.clear();
     }
 
 }

@@ -1,6 +1,7 @@
 package fr.cel.gameapi;
 
 import fr.cel.gameapi.listeners.PlayersListener;
+import fr.cel.gameapi.listeners.ServerListeners;
 import fr.cel.gameapi.manager.CommandsManager;
 import fr.cel.gameapi.manager.InventoryManager;
 import fr.cel.gameapi.manager.PlayerManager;
@@ -29,19 +30,26 @@ public final class GameAPI extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         instance = this;
 
-        database = new DatabaseManager("95.111.253.89", 3307, "gdlca", "cel", "Celeste9*LOL");
+        if (getServer().getOnlineMode()) {
+            database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
+        } else {
+            database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database_test"), getConfig().getString("username"), getConfig().getString("password"));
+        }
+
         database.init();
 
         playerManager = new PlayerManager();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             playerManager.addPlayerData(player);
+            if (!player.isOp()) continue;
+
             player.sendMessage(ChatUtility.format("Attention ! Si un reload du serveur a été effectué, ne soyez pas étonné(e) si certaines fonctionnalités non-voulues"
                     + " (genre le fait qu'on puisse ouvrir les coffres ou le fait d'interagir avec certains blocs) soient activés.\n"
-                    + "Si vous voulez revenir à la normale, revenez au Hub (/hub) et rejoignez le mode de jeu dans lequel vous étiez", ChatUtility.RED)
-            );
+                    + "Si vous voulez revenir à la normale, revenez au Hub (/hub) et rejoignez le mode de jeu dans lequel vous étiez", ChatUtility.RED));
         }
 
         friendsManager = new FriendsManager(this);
@@ -53,6 +61,7 @@ public final class GameAPI extends JavaPlugin {
         rpUtils = new RPUtils();
 
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
+        getServer().getPluginManager().registerEvents(new ServerListeners(), this);
     }
 
     @Override

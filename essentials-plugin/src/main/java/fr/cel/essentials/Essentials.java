@@ -1,5 +1,6 @@
 package fr.cel.essentials;
 
+import fr.cel.essentials.commands.BarrierCommand;
 import fr.cel.essentials.commands.other.*;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.CommandsManager;
@@ -45,6 +46,7 @@ public class Essentials extends JavaPlugin {
         commandsManager.addCommand("god", new GodCommand(), this);
         commandsManager.addCommand("discord", new DiscordCommand(), this);
         commandsManager.addCommand("fly", new FlyCommand(), this);
+        commandsManager.addCommand("barrier", new BarrierCommand(), this);
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.Map;
  * Cette classe sert au Pack de Ressources
  */
 @Getter
-public class RPUtils {
+public final class RPUtils {
 
     private final Map<String, CustomMusic> musics = new HashMap<>();
 

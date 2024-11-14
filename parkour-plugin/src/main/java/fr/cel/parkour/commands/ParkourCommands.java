@@ -34,11 +34,13 @@ public class ParkourCommands extends AbstractCommand {
             } else {
                 gameManager.getMain().getParkourMapManager().getMaps().forEach((s, map) -> sendMessageWithPrefix(sender, "Parkour " + map.getDisplayName()));
             }
+            return;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps Parkour ont été rechargees.");
             gameManager.reloadArenaManager();
+            return;
         }
 
         if (!(sender instanceof Player player)) {
@@ -47,7 +49,6 @@ public class ParkourCommands extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
-
             if (!gameManager.getMain().getParkourMapManager().isPlayerInArena(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une map Parkour.");
                 return;

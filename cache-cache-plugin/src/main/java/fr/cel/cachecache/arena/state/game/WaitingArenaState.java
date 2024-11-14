@@ -2,9 +2,9 @@ package fr.cel.cachecache.arena.state.game;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.arena.providers.StateListenerProvider;
+import fr.cel.cachecache.arena.providers.game.WaitingListenerProvider;
 import fr.cel.cachecache.arena.state.ArenaState;
-import fr.cel.cachecache.arena.state.providers.StateListenerProvider;
-import fr.cel.cachecache.arena.state.providers.game.WaitingListenerProvider;
 import fr.cel.cachecache.arena.timer.game.WaitingArenaTask;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -25,18 +25,6 @@ public class WaitingArenaState extends ArenaState {
     @Override
     public void onEnable(CacheCache main) {
         super.onEnable(main);
-
-//        if (getArena().getArenaName().equalsIgnoreCase("bunker")) {
-//            Block lever = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getLeverLocation());
-//            if (lever.getBlockData() instanceof Powerable powerable) {
-//                powerable.setPowered(true);
-//                lever.setBlockData(powerable);
-//
-//                Block redstoneWire = Objects.requireNonNull(Bukkit.getWorld("world")).getBlockAt(getArena().getRedstoneWireLocation());
-//                redstoneWire.setType(Material.AIR);
-//                redstoneWire.setType(Material.REDSTONE_WIRE);
-//            }
-//        }
 
         Collections.shuffle(getArena().getPlayers());
 
