@@ -9,7 +9,7 @@
 *.nar
 hs_err_pid*
 replay_pid*
-.paper-nms
+new-gdlca/
 
 ##############################
 ## Maven
