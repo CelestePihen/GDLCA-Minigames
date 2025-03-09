@@ -16,16 +16,16 @@ public abstract class GroundItem {
     private final String displayName;
     private final ItemStack itemStack;
 
-    public GroundItem(String name, Material material, String displayName, List<String> lores, int customModelData) {
+    public GroundItem(String name, Material material, String displayName, List<String> lores, String itemModel) {
         this.name = name;
         this.displayName = displayName;
-        this.itemStack = new ItemBuilder(material).setDisplayName(displayName).setCustomModelData(customModelData).setLore(lores).toItemStack();
+        this.itemStack = new ItemBuilder(material).setDisplayName(displayName).setItemModel(itemModel).setLore(lores).toItemStack();
     }
 
     /**
-     * L'action à effectuer
-     * @param player Le joueur
-     * @param arena L'arène où le joueur est
+     * Cette méthode va s'activer quand le joueur fera clic droit avec l'objet
+     * @param player L'instance du joueur
+     * @param arena La carte où le joueur est
      */
     public void onInteract(Player player, CCArena arena) {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();

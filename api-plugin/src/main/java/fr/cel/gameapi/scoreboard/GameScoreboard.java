@@ -51,14 +51,17 @@ public class GameScoreboard {
      * @param player Le joueur à retirer
      */
     public void removePlayer(Player player) {
-        for (GameTeam gameTeam : gameTeams) {
-            gameTeam.removePlayer(player);
-        }
-
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
+    /**
+     * Réinitialise le scoreboard en enlevant tous les joueurs du scoreboard (et de leur équipe)
+     */
     public void resetScoreboard() {
+        for (GameTeam gameTeam : this.gameTeams) {
+            gameTeam.clearTeam();
+        }
+
         for (UUID uuid : playersUUID) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) return;

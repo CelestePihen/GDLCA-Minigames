@@ -2,11 +2,8 @@ package fr.cel.cachecache.commands;
 
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.TemporaryHub;
-import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
-import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
 import fr.cel.cachecache.manager.CCArenaManager;
 import fr.cel.cachecache.manager.GameManager;
-import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
@@ -56,8 +53,7 @@ public class CCCommand extends AbstractCommand {
             }
 
             arenaManager.getArenas().values().forEach(arena ->
-                    sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName())
-            );
+                    sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName()));
             return;
         }
 
@@ -75,6 +71,19 @@ public class CCCommand extends AbstractCommand {
 
         if (!(sender instanceof Player player)) {
             sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            return;
+        }
+
+        if (args[0].equalsIgnoreCase("join")) {
+            if (arenaManager.getArenas().containsKey(args[1])) {
+                if (args.length == 3) {
+                    arenaManager.getArenas().get(args[1]).addPlayer(Bukkit.getPlayer(args[2]), false);
+                } else {
+                    arenaManager.getArenas().get(args[1]).addPlayer(player, false);
+                }
+            } else {
+                sendMessageWithPrefix(player, "Merci de sélectionner une carte valide.");
+            }
             return;
         }
 
@@ -99,36 +108,14 @@ public class CCCommand extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("calcul")) {
             calculRedstoneLamps(player, args);
-            return;
         }
 
         if (args[0].equalsIgnoreCase("owner")) {
-            sender.sendMessage(gameManager.getPrefix() + "Le \"créateur\" de la partie est " + Objects.requireNonNull(Bukkit.getPlayer(arena.getOwner())).getName());
-            return;
+            sender.sendMessage(gameManager.getPrefix() + "Le \"créateur\" de la partie est " + Bukkit.getPlayer(arena.getOwner()).getName());
         }
 
         if (args[0].equalsIgnoreCase("start")) {
-            if (arena.getArenaState() instanceof PreGameArenaState) {
-                if (arena.getHunterMode() == CCArena.HunterMode.TwoHuntersAtStart) {
-                    if (arena.getPlayers().size() <= 2) {
-                        player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 3 joueurs) !");
-                    } else {
-                        arena.setArenaState(new StartingArenaState(arena));
-                    }
-                }
-
-                else {
-                    if (arena.getPlayers().size() < 2) {
-                        player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 2 joueurs) !");
-                    } else {
-                        arena.setArenaState(new StartingArenaState(arena));
-                    }
-                }
-
-            }
-            else {
-                player.sendMessage(gameManager.getPrefix() + "La partie est déjà lancée.");
-            }
+            arena.startGame(player);
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
@@ -137,21 +124,19 @@ public class CCCommand extends AbstractCommand {
             player.sendMessage(gameManager.getPrefix() + "Joueurs : " + playersName);
         }
 
-        if (args[0].equalsIgnoreCase("groundItems")) {
-            List<GroundItem> groundItems = arenaManager.getArenaByPlayer(player).getAvailableGroundItems();
-
+        if (args[0].equalsIgnoreCase("grounditems")) {
             StringBuilder messageBuilder = new StringBuilder(gameManager.getPrefix() + "Les Items disponibles sont :\n");
-            groundItems.forEach(groundItem -> messageBuilder.append(groundItem.getDisplayName()).append("\n"));
+            arenaManager.getArenaByPlayer(player).getAvailableGroundItems().forEach(groundItem ->
+                    messageBuilder.append(groundItem.getDisplayName()).append("\n"));
 
             player.sendMessage(messageBuilder.toString());
         }
-
     }
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
         if (args.length == 1) {
-            return List.of("start", "temphub", "enabletemporary", "list", "listplayer", "reload", "reloadtemporary", "grounditems", "owner");
+            return List.of("start", "temphub", "enabletemporary", "list", "listplayer", "reload", "reloadtemporary", "grounditems", "owner", "join");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("join")) {

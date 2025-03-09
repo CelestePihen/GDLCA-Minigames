@@ -2,9 +2,6 @@ package fr.cel.hub.listener;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.hub.Hub;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -22,16 +19,14 @@ public class PlayerListener extends HListener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getEntity() instanceof Player player) || !GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void playerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(event.getPlayer())) return;
-        if (event.getPlayer().isOp()) return;
+        Player player = event.getPlayer();
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player) || player.isOp()) return;
         event.setCancelled(true);
     }
 
@@ -44,36 +39,21 @@ public class PlayerListener extends HListener {
 
     @EventHandler
     public void playerInteractEntity(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
-        Entity entity = event.getEntity();
-
-        if (damager instanceof Player && !(entity instanceof Player)) {
-            if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub((Player) damager)) return;
-            if (damager.isOp()) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getDamager() instanceof Player damager) || event.getEntity() instanceof Player) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(damager) || damager.isOp()) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
-        final Player player = event.getPlayer();
-        final Block block = event.getClickedBlock();
-
-        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-        if (player.isOp()) return;
-        if (block == null) return;
-        final Material type = block.getType();
-        if (type == Material.LECTERN) return;
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) event.setCancelled(true);
-        if (type == Material.FLOWER_POT || type.name().startsWith("POTTED_") || type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) event.setCancelled(true);
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(event.getPlayer()) || event.getPlayer().isOp() || event.getClickedBlock() == null) return;
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) event.setCancelled(true);
     }
 
     @EventHandler
     public void foodChange(FoodLevelChangeEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-            event.setCancelled(true);
-        }
+        if (!(event.getEntity() instanceof Player player) || !GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
+        event.setCancelled(true);
     }
     
 }

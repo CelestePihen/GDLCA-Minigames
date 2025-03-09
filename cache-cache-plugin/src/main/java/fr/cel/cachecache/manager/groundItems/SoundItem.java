@@ -14,7 +14,7 @@ public class SoundItem extends GroundItem {
     private static final List<String> lores = List.of("Cet objet vous permet de vous mettre des sons aux autres joueurs.");
 
     public SoundItem() {
-        super("soundItem", Material.NOTE_BLOCK, "Sons", lores, 1);
+        super("soundItem", Material.NOTE_BLOCK, "Sons", lores, "cc_sound");
     }
 
     @Override

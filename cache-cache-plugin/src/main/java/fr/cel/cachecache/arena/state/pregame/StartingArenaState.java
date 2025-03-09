@@ -2,8 +2,8 @@ package fr.cel.cachecache.arena.state.pregame;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.providers.StateListenerProvider;
-import fr.cel.cachecache.arena.providers.pregame.StartingListenerProvider;
+import fr.cel.cachecache.arena.listeners.StateListenerProvider;
+import fr.cel.cachecache.arena.listeners.pregame.StartingListenerProvider;
 import fr.cel.cachecache.arena.state.ArenaState;
 import fr.cel.cachecache.arena.timer.pregame.StartingArenaTask;
 import lombok.Getter;

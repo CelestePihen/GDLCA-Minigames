@@ -8,7 +8,9 @@ import fr.cel.cachecache.arena.state.pregame.PreGameArenaState;
 import fr.cel.cachecache.arena.state.pregame.StartingArenaState;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.GroundItem;
+import fr.cel.cachecache.utils.CheckAdvancements;
 import fr.cel.cachecache.utils.Config;
+import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -17,7 +19,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,54 +33,50 @@ import java.util.*;
 @Getter
 public class CCArena {
 
-    // GameManager / Config
     private final GameManager gameManager;
     @Setter private Config config;
 
-    // Names
     private final String arenaName;
     private final String displayName;
 
-    // ArenaState
     private ArenaState arenaState;
 
-    // Timer / WolfTimer
-    @Setter private int timer;
-    private final Map<UUID, Integer> wolfTimer;
+    @Setter private int timer = 0;
+    private final Map<UUID, Integer> wolfTimer = new HashMap<>();
 
     // Best Record
-    @Setter private int bestTimer;
+    private int bestTimer;
     private String bestPlayer;
 
-    // Last Hunter
     private String lastHunter;
 
-    // Hunter Mode
-    private final HunterMode hunterMode;
+    private final CCMode ccMode;
 
     // Ground Items
     @Setter private List<GroundItem> availableGroundItems; // Items disponibles pour la map
     @Setter private List<Location> locationGroundItems; // Position des spawners à Items
-    private final List<Item> spawnedGroundItems; // Les Items qui sont dans la map
+    private final List<Item> spawnedGroundItems = new ArrayList<>(); // Items qui sont dans la map
 
-    // Locations
     private final Location spawnLoc;
     private final Location waitingLoc;
 
     // Team Lists
-    private final List<UUID> players;
-    private final List<UUID> hiders;
-    private final List<UUID> seekers;
+    private final List<UUID> players = new ArrayList<>();
+    private final List<UUID> hiders = new ArrayList<>();
+    private final List<UUID> seekers = new ArrayList<>();
 
-    // Scoreboard
     private final GameScoreboard scoreboard;
 
-    // Teams
+    // Minecraft Teams
     private final GameTeam teamHiders;
     private final GameTeam teamSeekers;
 
-    // Dégâts de chute
     private final boolean fallDamage;
+
+    // Number of players there were at the start of the game
+    @Setter private int nbPlayerBeginning = 0;
+
+    private final CheckAdvancements checkAdvancements;
 
     // Bunker
     @Getter private final Location leverLocation = new Location(Bukkit.getWorld("world"), 54, 52, -217);
@@ -87,7 +84,7 @@ public class CCArena {
 
     private UUID owner = null;
 
-    public CCArena(String arenaName, String displayName, HunterMode hunterMode, Location spawnLoc, Location waitingLoc, boolean fallDamage, GameManager gameManager) {
+    public CCArena(String arenaName, String displayName, CCMode ccMode, Location spawnLoc, Location waitingLoc, boolean fallDamage, GameManager gameManager) {
         this.gameManager = gameManager;
         this.lampsConfig = gameManager.getLampsConfig();
 
@@ -97,19 +94,11 @@ public class CCArena {
         this.spawnLoc = spawnLoc;
         this.waitingLoc = waitingLoc;
 
-        this.players = new ArrayList<>();
-        this.hiders = new ArrayList<>();
-        this.seekers = new ArrayList<>();
-
         this.arenaState = new InitArenaState(this);
-        this.timer = 0;
-        this.wolfTimer = new HashMap<>();
+        this.ccMode = ccMode;
+        this.fallDamage = fallDamage;
 
-        this.hunterMode = hunterMode;
-
-        this.spawnedGroundItems = new ArrayList<>();
-
-        this.scoreboard = new GameScoreboard("CC-" + arenaName);
+        this.scoreboard = new GameScoreboard(arenaName);
 
         this.teamHiders = scoreboard.registerTeam("hiders", ChatColor.GREEN);
         this.teamHiders.setNameTagVisibility(OptionStatus.NEVER);
@@ -119,7 +108,7 @@ public class CCArena {
         this.teamSeekers.setNameTagVisibility(OptionStatus.NEVER);
         this.teamSeekers.setAllowFriendlyFire(false);
 
-        this.fallDamage = fallDamage;
+        this.checkAdvancements = new CheckAdvancements(this);
 
         activateLeverAndLamps();
     }
@@ -143,8 +132,9 @@ public class CCArena {
     }
 
     /**
-     * Permet d'ajouter le joueur dans l'arène
-     * @param player Le joueur à ajouter
+     * Ajoute un joueur dans l'arène
+     * @param player Le joueur à ajouter à l'arène
+     * @param tempHub Spécifie si on ajoute le joueur dans le Hub temporaire ou pas
      */
     public void addPlayer(Player player, boolean tempHub) {
         if (isPlayerInArena(player)) return;
@@ -164,37 +154,36 @@ public class CCArena {
         }
     }
 
+    /**
+     * Permet à un joueur de rejoindre l'arène avec les paramètres définis.
+     * @param player Le joueur
+     * @param gameMode Le mode de jeu dans lequel il doit être
+     * @param joinMessage Spécifie si on envoie le message de join aux autres joueurs
+     * @param teleportSpawn Spécifie si on téléporte le joueur au spawn de la carte
+     */
     private void join(Player player, GameMode gameMode, boolean joinMessage, boolean teleportSpawn) {
         gameManager.getPlayerManager().removePlayerInHub(player);
 
-        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + hunterMode.getName()), displayName, 10, 70, 20);
+        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + ccMode.getName()), displayName, 10, 70, 20);
         player.setGameMode(gameMode);
         player.setGlowing(false);
         player.getInventory().clear();
 
-        if (players.isEmpty()) {
-            becomeOwner(player);
-        }
+        // s'il n'y a pas de joueurs dans la carte alors le joueur devient le gérant de la partie
+        if (players.isEmpty()) becomeOwner(player);
 
         players.add(player.getUniqueId());
         scoreboard.addPlayer(player);
 
-        if (joinMessage) {
-            sendMessage(player.getDisplayName() + " a rejoint la partie !");
-        }
+        if (joinMessage) sendMessage(player.getDisplayName() + " a rejoint la partie !");
+        if (teleportSpawn) player.teleport(spawnLoc);
 
-        if (teleportSpawn) {
-            player.teleport(spawnLoc);
-        }
-
-        if (hunterMode == HunterMode.LoupToucheTouche) {
-            wolfTimer.put(player.getUniqueId(), 0);
-        }
+        if (ccMode == CCMode.LoupToucheTouche) wolfTimer.put(player.getUniqueId(), 0);
     }
 
     /**
-     * Permet de retirer le joueur
-     * @param player Le joueur
+     * Retire un joueur de la partie
+     * @param player Le joueur qui quitte
      */
     public void removePlayer(Player player) {
         if (!isPlayerInArena(player)) return;
@@ -213,10 +202,9 @@ public class CCArena {
         player.setGlowing(false);
 
         // s'il y a encore des gens et que le joueur qui vient de quitter était l'hôte alors le joueur ayant rejoint après devient l'hôte
-        if (!players.isEmpty() && owner == player.getUniqueId()) {
+        if (!players.isEmpty() && owner.equals(player.getUniqueId())) {
             Player newOwner = Bukkit.getPlayer(players.getFirst());
-            if (newOwner != null)
-                becomeOwner(newOwner);
+            if (newOwner != null) becomeOwner(newOwner);
         }
 
         if (arenaState instanceof PreGameArenaState) return;
@@ -225,7 +213,7 @@ public class CCArena {
             startingArenaState.getStartingArenaTask().cancel();
             sendMessage("Démarrage annulé... Un joueur a quitté la partie.");
             setArenaState(new PreGameArenaState(this));
-            Objects.requireNonNull(Bukkit.getPlayer(owner)).getInventory().addItem(new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
+            Bukkit.getPlayer(owner).getInventory().addItem(new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
             return;
         }
 
@@ -250,6 +238,32 @@ public class CCArena {
     }
 
     /**
+     * Lance la partie
+     * @param player Le joueur qui lance
+     */
+    public void startGame(Player player) {
+        if (getArenaState() instanceof PreGameArenaState) {
+            if (getCcMode() == CCMode.TwoHuntersAtStart) {
+                if (getPlayers().size() < CCMode.TwoHuntersAtStart.getRequiredPlayers()) {
+                    player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 3 joueurs) !");
+                } else {
+                    setArenaState(new StartingArenaState(this));
+                }
+            }
+            else {
+                if (getPlayers().size() < 2) {
+                    player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 2 joueurs) !");
+                } else {
+                    setArenaState(new StartingArenaState(this));
+                }
+            }
+        }
+        else {
+            player.sendMessage(gameManager.getPrefix() + "La partie est déjà lancée.");
+        }
+    }
+
+    /**
      * Permet d'éliminer le joueur
      * @param victim Le joueur qui est éliminé
      */
@@ -257,7 +271,7 @@ public class CCArena {
         String message = gameManager.getPrefix();
         String subtitle;
 
-        switch (hunterMode) {
+        switch (ccMode) {
             case OneHunter -> {
                 message += "Tu es mort(e). Tu deviens spectateur !";
                 subtitle = "Tu es spectateur !";
@@ -277,12 +291,12 @@ public class CCArena {
             }
         }
 
-        victim.sendMessage(message);
-        victim.sendTitle("Tu es mort(e).", subtitle, 10, 70, 20);
-
-        if (hunterMode != HunterMode.LoupToucheTouche) {
-            checkWinOrEndGame();
+        if (hiders.size() == 1) {
+            victim.sendMessage(message);
+            victim.sendTitle("Tu es mort(e).", subtitle, 10, 70, 20);
         }
+
+        if (ccMode != CCMode.LoupToucheTouche) checkWinOrEndGame();
     }
 
     /**
@@ -290,7 +304,7 @@ public class CCArena {
      * @param deadPlayer Le cacheur qui vient de mourir
      */
     private void becomeNonSeeker(Player deadPlayer) {
-        if (hunterMode != HunterMode.LoupToucheTouche && hiders.size() == 1) {
+        if (ccMode != CCMode.LoupToucheTouche && hiders.size() == 1) {
             if (timer > bestTimer) {
                 setBestTimer();
                 setBestPlayer(deadPlayer.getName());
@@ -301,7 +315,7 @@ public class CCArena {
         teamHiders.removePlayer(deadPlayer);
 
         seekers.add(deadPlayer.getUniqueId());
-        teamSeekers.removePlayer(deadPlayer);
+        teamSeekers.addPlayer(deadPlayer);
     }
 
     /**
@@ -310,10 +324,6 @@ public class CCArena {
      */
     public void becomeSeeker(Player deadPlayer) {
         becomeNonSeeker(deadPlayer);
-
-        if (getTimer() < 600) {
-            deadPlayer.setGlowing(true);
-        }
 
         deadPlayer.getInventory().clear();
         deadPlayer.teleport(spawnLoc);
@@ -343,7 +353,7 @@ public class CCArena {
         seekers.remove(seekers.getFirst());
         teamSeekers.removePlayer(wolf);
 
-        hiders.add(wolf.getUniqueId());
+        hiders.add(seekers.getFirst());
         teamHiders.addPlayer(wolf);
 
         wolf.getInventory().clear();
@@ -357,7 +367,11 @@ public class CCArena {
         giveWeapon(hitPlayer);
     }
 
-    // Permet de savoir le joueur avec le moins de temps en Loup
+    /**
+     * Permet de savoir le joueur avec le moins de temps en Loup <br>
+     * Seulement dans le mode Loup Touche-Touche
+     * @return Retourne une instance du joueur qui a le moins de temps
+     */
     public Player getPlayerWithLowestTime() {
         UUID uuid = null;
         int lowestTime = 12000;
@@ -371,47 +385,45 @@ public class CCArena {
             }
         }
 
-        if (uuid != null) {
-            return Bukkit.getPlayer(uuid);
-        }
+        if (uuid != null) return Bukkit.getPlayer(uuid);
         return null;
     }
 
-    // Permet de gérer la fin de partie du mode Loup Touche-Touche
+    /**
+     * Gére la fin de la partie du mode Loup Touche-Touche
+     */
     private void endWolf() {
-        String name = getPlayerWithLowestTime().getName();
-        int time = wolfTimer.get(getPlayerWithLowestTime().getUniqueId());
-
-        if (getPlayerWithLowestTime() == null) {
-            sendMessage("Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
-        }
-
         if (arenaState instanceof PlayingArenaState playingArenaState) {
             if (playingArenaState.getPlayingArenaTask() != null) playingArenaState.getPlayingArenaTask().cancel();
             if (playingArenaState.getPlayingWolfArenaTask() != null) playingArenaState.getPlayingWolfArenaTask().cancel();
             if (playingArenaState.getPlayingBecomeWolfArenaTask() != null) playingArenaState.getPlayingBecomeWolfArenaTask().cancel();
         }
 
-        if (time < bestTimer) {
-            bestTimer = time;
-            config.setValue("bestTime", bestTimer);
+        if (getPlayerWithLowestTime() == null) {
+            sendMessage("Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
 
-            bestPlayer = name;
-            config.setValue("bestPlayer", bestPlayer);
+            String name = getPlayerWithLowestTime().getName();
+            int time = wolfTimer.get(getPlayerWithLowestTime().getUniqueId());
+
+            if (time < bestTimer) {
+                setBestTimer(time);
+                setBestPlayer(name);
+            }
+
+            String bestTime = String.format("%02dmin%02ds", (time % 3600) / 60, time % 60);
+
+            sendMessage("Victoire de " + name + " qui a tenu " + bestTime + " en tant que coureur !");
         }
 
-        String bestTime = String.format("%02dmin%02ds", (time % 3600) / 60, time % 60);
-
-        sendMessage("Victoire de " + name + " qui a tenu " + bestTime + " en tant que coureur !");
+        setArenaState(new InitArenaState(this));
         timer = 0;
 
-        setArenaState(new InitArenaState(this));
-
-        players.forEach(pls -> {
-            Player player = Bukkit.getPlayer(pls);
-            if (player == null) return;
+        for (UUID uuid : players) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
             gameManager.getPlayerManager().sendPlayerToHub(player);
-        });
+        }
+
         scoreboard.resetScoreboard();
         hiders.clear();
         seekers.clear();
@@ -420,25 +432,28 @@ public class CCArena {
     }
 
     /**
-     * Permet de vérifier si la victoire doit être activée
+     * Vérifie si la fin de la partie doit être activée
      */
     public void checkWinOrEndGame() {
-        if (this.hunterMode == HunterMode.LoupToucheTouche) {
+        if (this.ccMode == CCMode.LoupToucheTouche) {
             endWolf();
         } else {
             if (seekers.isEmpty() || hiders.isEmpty()) {
-		        // TODO marche pas
-                getSpawnedGroundItems().forEach(Entity::remove);
-                getSpawnedGroundItems().clear();
+                // Advancement : Le ménage des nuisibles
+                if (timer <= 480 && !seekers.isEmpty()) {
+                    Player player = Bukkit.getPlayer(seekers.getFirst());
+                    if (player != null) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
+                }
 
+                checkAdvancements.stopAllChecks();
+
+                clearGroundItems();
                 activateLeverAndLamps();
 
                 setArenaState(new InitArenaState(this));
                 sendWinnerMessage();
 
                 scoreboard.resetScoreboard();
-                hiders.clear();
-                seekers.clear();
 
                 for (UUID uuid : players) {
                     Player player = Bukkit.getPlayer(uuid);
@@ -447,18 +462,20 @@ public class CCArena {
                 }
 
                 players.clear();
+                hiders.clear();
+                seekers.clear();
                 timer = 0;
             }
         }
     }
 
     /**
-     * Envoie le message des gagnants
+     * Envoie le message des gagnants aux joueurs
      */
     private void sendWinnerMessage() {
         if (seekers.isEmpty()) sendMessage("&bL'équipe des cacheurs &rremporte la partie !");
         else if (hiders.isEmpty()) sendMessage("&cL'équipe des chercheurs &rremporte la partie !");
-        else sendMessage("Égalité !");
+        else sendMessage("Égalité ?");
     }
 
     /**
@@ -470,42 +487,6 @@ public class CCArena {
         player.sendMessage(gameManager.getPrefix() + "Tu es désormais l'hôte de la partie !");
         if (arenaState instanceof PreGameArenaState) {
             player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
-        }
-    }
-
-    public void activateLeverAndLamps() {
-        if (arenaName.equalsIgnoreCase("bunker")) {
-            Block lever = Bukkit.getWorld("world").getBlockAt(leverLocation);
-            if (lever.getBlockData() instanceof Powerable powerable) {
-                powerable.setPowered(true);
-                lever.setBlockData(powerable);
-            }
-
-            changeLamps(true);
-        }
-    }
-
-    public void changeLamps(boolean activate) {
-        if (lampsConfig.contains("lamps")) {
-            for (String key : lampsConfig.getConfigurationSection("lamps").getKeys(false)) {
-                World world = Bukkit.getWorld("world");
-
-                int x = lampsConfig.getInt("lamps." + key + ".x");
-                int y = lampsConfig.getInt("lamps." + key + ".y");
-                int z = lampsConfig.getInt("lamps." + key + ".z");
-
-                Block lampBlock = world.getBlockAt(x, y, z);
-
-                if (lampBlock.getType() == Material.REDSTONE_LAMP) {
-                    BlockData blockData = lampBlock.getBlockData();
-
-                    if (blockData instanceof Lightable) {
-                        Lightable lightable = (Lightable) lampBlock.getBlockData();
-                        lightable.setLit(activate);
-                        lampBlock.setBlockData(lightable);
-                    }
-                }
-            }
         }
     }
 
@@ -521,12 +502,50 @@ public class CCArena {
     }
 
     /**
+     * Active le levier et les lampes de la carte Bunker
+     */
+    public void activateLeverAndLamps() {
+        if (arenaName.equalsIgnoreCase("bunker")) {
+            Block lever = Bukkit.getWorld("world").getBlockAt(leverLocation);
+            if (lever.getBlockData() instanceof Powerable powerable) {
+                powerable.setPowered(true);
+                lever.setBlockData(powerable);
+            }
+
+            changeLamps(true);
+        }
+    }
+
+    /**
+     * Change l'état des lampes de la carte Bunker
+     * @param activate True pour activer les lumières, false pour désactiver
+     */
+    public void changeLamps(boolean activate) {
+        if (lampsConfig.contains("lamps")) {
+            for (String key : Objects.requireNonNull(lampsConfig.getConfigurationSection("lamps")).getKeys(false)) {
+                int x = lampsConfig.getInt("lamps." + key + ".x");
+                int y = lampsConfig.getInt("lamps." + key + ".y");
+                int z = lampsConfig.getInt("lamps." + key + ".z");
+
+                Block lampBlock = Bukkit.getWorld("world").getBlockAt(x, y, z);
+
+                if (lampBlock.getType() != Material.REDSTONE_LAMP) continue;
+
+                if (lampBlock.getBlockData() instanceof Lightable lightable) {
+                    lightable.setLit(activate);
+                    lampBlock.setBlockData(lightable);
+                }
+            }
+        }
+    }
+
+    /**
      * Envoie un message à tous les joueurs dans l'arène
      * @param message Le message à envoyer
      */
     public void sendMessage(String message) {
-        message = ChatUtility.format(gameManager.getPrefix() + message);
-        for (UUID pls : this.getPlayers()) {
+        message = gameManager.getPrefix() + ChatUtility.format(message);
+        for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
             player.sendMessage(message);
@@ -538,7 +557,7 @@ public class CCArena {
      * @param sound Le son à faire entendre
      */
     public void playSound(Sound sound) {
-        for (UUID pls : this.getPlayers()) {
+        for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
             player.playSound(player.getLocation(), sound, 1, 1);
@@ -550,7 +569,7 @@ public class CCArena {
      * @param level Le nombre de niveau d'expérience
      */
     public void setLevel(int level) {
-        for (UUID pls : this.getPlayers()) {
+        for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
             player.setLevel(level);
@@ -561,7 +580,7 @@ public class CCArena {
      * Permet de vider l'inventaire des joueurs
      */
     public void clearPlayers() {
-        for (UUID pls : this.getPlayers()) {
+        for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
             player.getInventory().clear();
@@ -573,7 +592,7 @@ public class CCArena {
      * @param gameMode Le mode de jeu
      */
     public void setGameModePlayers(GameMode gameMode) {
-        for (UUID pls : this.getPlayers()) {
+        for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
             player.setGameMode(gameMode);
@@ -584,7 +603,7 @@ public class CCArena {
      * Permet de changer le point d'apparition des joueurs
      */
     public void setSpawnPoint() {
-        for (UUID pls : this.getPlayers()) {
+        for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
             player.setRespawnLocation(spawnLoc, true);
@@ -595,7 +614,7 @@ public class CCArena {
      * Permet d'enlever tous les effets de potion des joueurs
      */
     public void clearPotionEffects() {
-        for (UUID pls : this.getPlayers()) {
+        for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
 
@@ -605,33 +624,45 @@ public class CCArena {
         }
     }
 
-    /**
-     * Les modes de jeu
-     */
-    @Getter public enum HunterMode {
-        Normal("Mode Normal"),
-        OneHunter("Mode Tueur seul"),
-        TwoHuntersAtStart("Mode Deux Tueurs"),
+    @Getter public enum CCMode {
+        Normal("Normal"),
+        OneHunter("Tueur seul"),
+        TwoHuntersAtStart("Deux Tueurs", 3),
 
         // Temporaires
         LoupToucheTouche("Loup Touche-Touche"),
-        Classique("Mode Classique"),
-        TousContreUn("Mode Tous contre Un"),
+        Classique("Classique"),
+        TousContreUn("Tous contre Un"),
         PluieDeBonus("Pluie de Bonus"),
         Beta("Beta");
 
         private final String name;
-        HunterMode(String name) {
+        private final int requiredPlayers;
+
+        CCMode(String name) {
+            this(name, 2);
+        }
+
+        CCMode(String name, int requiredPlayers) {
             this.name = name;
+            this.requiredPlayers = requiredPlayers;
         }
     }
 
     /**
-     * Permet de changer le record de l'arène
+     * Permet de changer le record de l'arène avec le temps de la partie.
      */
     public void setBestTimer() {
-        this.bestTimer = getTimer();
-        config.setValue("bestTime", getTimer());
+        setBestTimer(timer);
+    }
+
+    /**
+     * Permet de changer le record de l'arène
+     * @param time Le temps à mettre
+     */
+    public void setBestTimer(int time) {
+        this.bestTimer = time;
+        config.setValue("bestTime", time);
     }
 
     /**
@@ -648,6 +679,11 @@ public class CCArena {
     public void setLastHunter(String playerName) {
         this.lastHunter = playerName;
         config.setValue("lastHunter", lastHunter);
+    }
+
+    private void clearGroundItems() {
+        spawnedGroundItems.stream().filter(Objects::nonNull).forEach(Entity::remove);
+        spawnedGroundItems.clear();
     }
 
 }

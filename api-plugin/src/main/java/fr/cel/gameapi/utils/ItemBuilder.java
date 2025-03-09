@@ -1,9 +1,8 @@
 package fr.cel.gameapi.utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -233,49 +232,6 @@ public final class ItemBuilder {
     }
 
     /**
-     * Add an ItemFlag.
-     * @param itemFlag The item flags to add
-     */
-    public ItemBuilder addItemFlags(ItemFlag itemFlag) {
-        ItemMeta im = is.getItemMeta();
-        im.addItemFlags(itemFlag);
-        is.setItemMeta(im);
-        return this;
-    }
-
-    /**
-     * Add all ItemFlags.
-     */
-    public ItemBuilder addAllItemFlags() {
-        ItemMeta im = is.getItemMeta();
-        im.addItemFlags(ItemFlag.values());
-        is.setItemMeta(im);
-        return this;
-    }
-
-    /**
-     * Hide the tooltip of the item.
-     * @return
-     */
-    public ItemBuilder hideTooltip() {
-        ItemMeta im = is.getItemMeta();
-        im.setHideTooltip(true);
-        is.setItemMeta(im);
-        return this;
-    }
-
-    /**
-     * Sets the custom model data to the item
-     * @param customModelData The item customModelData to set
-     */
-    public ItemBuilder setCustomModelData(int customModelData) {
-        ItemMeta im = is.getItemMeta();
-        im.setCustomModelData(customModelData);
-        is.setItemMeta(im);
-        return this;
-    }
-
-    /**
      * Sets the armor color of a leather armor piece. Works only on leather armor pieces.
      * @param color The color to set it to.
      */
@@ -288,11 +244,56 @@ public final class ItemBuilder {
         return this;
     }
 
+    // Added
     /**
-     * Retrieves the itemstack from the ItemBuilder.
+     * Add the ItemFlag to the item
+     * @param itemFlag The item flags to add
+     */
+    public ItemBuilder addItemFlags(ItemFlag itemFlag) {
+        ItemMeta im = is.getItemMeta();
+        im.addItemFlags(itemFlag);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Add all ItemFlags to the item
+     */
+    public ItemBuilder addAllItemFlags() {
+        ItemMeta im = is.getItemMeta();
+        im.addItemFlags(ItemFlag.values());
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Hide the tooltip of the item.
+     */
+    public ItemBuilder hideTooltip() {
+        ItemMeta im = is.getItemMeta();
+        im.setHideTooltip(true);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Sets the custom model to the item
+     * @param itemModel The item model to set
+     */
+    public ItemBuilder setItemModel(String itemModel) {
+        ItemMeta im = is.getItemMeta();
+        im.setItemModel(NamespacedKey.fromString("gdlca:" + itemModel));
+        is.setItemMeta(im);
+        return this;
+    }
+    // Added
+
+    /**
+     * Get the itemstack from the ItemBuilder.
      * @return The itemstack created/modified by the ItemBuilder instance.
      */
     public ItemStack toItemStack(){
         return is;
     }
+
 }

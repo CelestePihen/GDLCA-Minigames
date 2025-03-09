@@ -57,7 +57,8 @@ public class NearCommand extends AbstractCommand {
         }
 
         List<String> playersName = new ArrayList<>();
-        for (Entity entity : target.getNearbyEntities(radius, radius, radius)) {
+        List<Entity> Entities = target.getNearbyEntities(radius, radius, radius);
+        for (Entity entity : Entities) {
             if (entity instanceof Player pl) {
                 playersName.add(pl.getName());
             }

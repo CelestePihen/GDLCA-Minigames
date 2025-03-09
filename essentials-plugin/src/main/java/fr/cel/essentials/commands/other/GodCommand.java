@@ -26,9 +26,11 @@ public class GodCommand extends AbstractCommand {
         if (args.length == 0) {
             if (playersInGod.contains(player.getUniqueId())) {
                 playersInGod.remove(player.getUniqueId());
+                player.setInvulnerable(false);
                 sendMessageWithPrefix(player, "Vous n'êtes plus en mode invulnérable.");
             } else {
                 playersInGod.add(player.getUniqueId());
+                player.setInvulnerable(true);
                 sendMessageWithPrefix(player, "Vous êtes en mode invulnérable.");
             }
             return;
@@ -40,10 +42,12 @@ public class GodCommand extends AbstractCommand {
             if (isPlayerOnline(target, player)) {
                 if (playersInGod.contains(target.getUniqueId())) {
                     playersInGod.remove(target.getUniqueId());
+                    target.setInvulnerable(false);
                     sendMessageWithPrefix(target, "Vous n'êtes plus en mode invulnérable.");
                     sendMessageWithPrefix(player, "Vous avez enlevé le mode invulnérable de " + target.getName() + ".");
                 } else {
                     playersInGod.add(player.getUniqueId());
+                    target.setInvulnerable(true);
                     sendMessageWithPrefix(target, "Vous avez été mis(e) en mode invulnérable.");
                     sendMessageWithPrefix(player, "Vous avez mis en mode invulnérable " + target.getName() + ".");
                 }

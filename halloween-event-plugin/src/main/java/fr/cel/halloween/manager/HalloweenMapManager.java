@@ -45,7 +45,7 @@ public class HalloweenMapManager {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
                 maps.put(name, new Config(main, name).getMap());
-                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[HalloweenEvent]", ChatUtility.GOLD) + ChatUtility.format("Chargement de la carte Halloween " + name, ChatUtility.WHITE));
+                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[HalloweenEvent] ", ChatUtility.GOLD) + ChatUtility.format("Chargement de la carte Halloween " + name, ChatUtility.WHITE));
             }
         }
     }

@@ -32,16 +32,35 @@ public abstract class AbstractInventory {
         addItems(inv);
     }
 
+    /**
+     * Permet de mettre un item au slot spécifié
+     * @param slot Le slot où vous voulez que l'item va
+     * @param itemStack L'itemstack de l'item
+     */
     protected void setItem(int slot, ItemStack itemStack) {
         inv.setItem(slot, itemStack);
     }
 
+    /**
+     * Permet d'ajouter ou pas des vitres dans l'inventaire
+     * @return Vrai si vous en voulez, faux si vous n'en voulez pas
+     */
     protected boolean makeGlassPane() {
         return true;
     }
 
+    /**
+     * Permet d'ajouter des items à la création de l'inventaire
+     * @param inv L'inventaire
+     */
     protected abstract void addItems(Inventory inv);
 
+    /**
+     * Permet de spécifier quel item fait quoi quand on le sélectionne dans l'inventaire
+     * @param player Le joueur qui a effectué l'action
+     * @param itemName Le nom de l'item
+     * @param item L'item
+     */
     public abstract void interact(Player player, String itemName, ItemStack item);
 
 }

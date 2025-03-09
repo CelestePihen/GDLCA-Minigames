@@ -4,6 +4,8 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.gameapi.utils.RPUtils;
+import fr.cel.gameapi.utils.RPUtils.CustomMusic;
+import fr.cel.hub.manager.MusicManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -11,20 +13,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class MusicInventory extends AbstractInventory {
 
-    private Sound currentSound;
-
-    private final World musicLocation = Bukkit.getWorld("world");
-    private final Location location;
-
     public MusicInventory() {
-        super("Mettre de la Musique", 27);
-        this.currentSound = null;
-        this.location = new Location(musicLocation, 270.5, 64, 59.5);
+        super("Musique", 27);
     }
 
     @Override
     protected void addItems(Inventory inv) {
-        GameAPI.getInstance().getRpUtils().getMusics().forEach((name, customMusic) -> {
+        RPUtils.getMusics().forEach((name, customMusic) -> {
             ItemBuilder itemBuilder = new ItemBuilder(Material.JUKEBOX);
 
             itemBuilder.setDisplayName(customMusic.getMusicName());
@@ -46,27 +41,19 @@ public class MusicInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         if (item.getType() == Material.BARRIER) {
-            if (this.currentSound != null) {
-                Bukkit.getOnlinePlayers().forEach(pl -> pl.stopSound(this.currentSound, SoundCategory.RECORDS));
-                player.sendMessage(GameAPI.getPrefix() + "Vous avez arrêté la musique en cours.");
-                player.sendMessage();
-                player.closeInventory();
-            } else {
-                player.sendMessage(GameAPI.getPrefix() + "Il n'y a pas de musique actuellement.");
-            }
+            MusicManager.stopMusic(player);
             return;
         }
 
-        RPUtils.CustomMusic customMusic = GameAPI.getInstance().getRpUtils().getMusics().get(itemName);
+        CustomMusic customMusic = RPUtils.getMusics().get(itemName);
         if (customMusic == null) return;
-        Sound sound = customMusic.getSound();
 
-        if (this.currentSound != null) {
-            Bukkit.getOnlinePlayers().forEach(pl -> pl.stopSound(this.currentSound, SoundCategory.RECORDS));
+        if (customMusic.getCustomSound() == null) {
+            MusicManager.startMusic(customMusic.getVanillaSound(), player);
+        } else {
+            MusicManager.startMusic(customMusic.getCustomSound(), player);
         }
 
-        this.currentSound = sound;
-        musicLocation.playSound(location, this.currentSound, SoundCategory.RECORDS, 2.0f, 1.0f);
         player.sendMessage(GameAPI.getPrefix() + "Vous avez mis la musique " + customMusic.getMusicName());
         player.closeInventory();
     }

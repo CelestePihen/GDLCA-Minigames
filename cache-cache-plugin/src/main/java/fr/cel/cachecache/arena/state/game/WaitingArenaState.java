@@ -2,8 +2,8 @@ package fr.cel.cachecache.arena.state.game;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.providers.StateListenerProvider;
-import fr.cel.cachecache.arena.providers.game.WaitingListenerProvider;
+import fr.cel.cachecache.arena.listeners.StateListenerProvider;
+import fr.cel.cachecache.arena.listeners.game.WaitingListenerProvider;
 import fr.cel.cachecache.arena.state.ArenaState;
 import fr.cel.cachecache.arena.timer.game.WaitingArenaTask;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
 public class WaitingArenaState extends ArenaState {
@@ -26,68 +27,93 @@ public class WaitingArenaState extends ArenaState {
     public void onEnable(CacheCache main) {
         super.onEnable(main);
 
-        Collections.shuffle(getArena().getPlayers());
+        switch (getArena().getCcMode()) {
 
-        switch (getArena().getHunterMode()) {
-
+            // TODO refaire un jour tout le système pour ne pas tomber 2 fois de suite Chercheur
             case TwoHuntersAtStart -> {
-                Player player = Bukkit.getPlayer(getArena().getPlayers().getFirst());
-                getArena().becomeSeeker(player);
-                player.teleport(getArena().getWaitingLoc());
+                Collections.shuffle(getArena().getPlayers());
 
-                Player player2 = Bukkit.getPlayer(getArena().getPlayers().get(1));
-                getArena().becomeSeeker(player2);
-                player2.teleport(getArena().getWaitingLoc());
+                int index = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                UUID randomUUID = getArena().getPlayers().get(index);
+                Player seeker = Bukkit.getPlayer(randomUUID);
+
+                while (seeker.getName().equalsIgnoreCase(getArena().getLastHunter())) {
+                    index = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                    randomUUID = getArena().getPlayers().get(index);
+                    seeker = Bukkit.getPlayer(randomUUID);
+                }
+
+                int index2 = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                UUID randomUUID2 = getArena().getPlayers().get(index2);
+                Player seeker2 = Bukkit.getPlayer(randomUUID2);
+
+                while (seeker2.getName().equalsIgnoreCase(getArena().getLastHunter()) || seeker2.getName().equalsIgnoreCase(seeker.getName())) {
+                    index2 = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                    randomUUID2 = getArena().getPlayers().get(index2);
+                    seeker2 = Bukkit.getPlayer(randomUUID2);
+                }
+
+                getArena().becomeSeeker(seeker);
+                seeker.teleport(getArena().getWaitingLoc());
+
+                getArena().becomeSeeker(seeker2);
+                seeker2.teleport(getArena().getWaitingLoc());
             }
 
             case TousContreUn -> {
-                for (int i = 0; i < getArena().getPlayers().size() - 1; i++) {
-                    Player player = Bukkit.getPlayer(getArena().getPlayers().get(i));
+                Collections.shuffle(getArena().getPlayers());
 
-                    getArena().becomeSeeker(player);
-                    player.teleport(getArena().getWaitingLoc());
+                for (int i = 0; i < getArena().getPlayers().size() - 1; i++) {
+                    Player seeker = Bukkit.getPlayer(getArena().getPlayers().get(i));
+                    getArena().becomeSeeker(seeker);
+                    seeker.teleport(getArena().getWaitingLoc());
                 }
             }
 
             case LoupToucheTouche -> {
-                UUID randomUUID = getArena().getPlayers().get(0);
-                Player player = Bukkit.getPlayer(randomUUID);
+                int index = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                UUID randomUUID = getArena().getPlayers().get(index);
+                Player seeker = Bukkit.getPlayer(randomUUID);
 
-                if (player.getName().equals(getArena().getLastHunter())) {
-                    randomUUID = getArena().getPlayers().get(1);
-                    player = Bukkit.getPlayer(randomUUID);
+                if (seeker.getName().equals(getArena().getLastHunter())) {
+                    index = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                    randomUUID = getArena().getPlayers().get(index);
+                    seeker = Bukkit.getPlayer(randomUUID);
                 }
 
-                getArena().setLastHunter(player.getName());
-                getArena().getSeekers().add(player.getUniqueId());
-                getArena().getTeamSeekers().addPlayer(player);
+                getArena().setLastHunter(seeker.getName());
+                getArena().getSeekers().add(seeker.getUniqueId());
+                getArena().getTeamSeekers().addPlayer(seeker);
 
-                player.getInventory().clear();
-                getArena().giveWeapon(player);
-                player.teleport(getArena().getWaitingLoc());
+                seeker.getInventory().clear();
+                getArena().giveWeapon(seeker);
+                seeker.teleport(getArena().getWaitingLoc());
             }
 
             default -> {
-                UUID randomUUID = getArena().getPlayers().get(0);
-                Player player = Bukkit.getPlayer(randomUUID);
+                int index = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                UUID randomUUID = getArena().getPlayers().get(index);
+                Player seeker = Bukkit.getPlayer(randomUUID);
 
-                if (player.getName().equals(getArena().getLastHunter())) {
-                    randomUUID = getArena().getPlayers().get(1);
-                    player = Bukkit.getPlayer(randomUUID);
+                if (seeker.getName().equalsIgnoreCase(getArena().getLastHunter())) {
+                    index = ThreadLocalRandom.current().nextInt(getArena().getPlayers().size());
+                    randomUUID = getArena().getPlayers().get(index);
+                    seeker = Bukkit.getPlayer(randomUUID);
                 }
 
-                getArena().setLastHunter(player.getName());
-                getArena().becomeSeeker(player);
-                player.teleport(getArena().getWaitingLoc());
+                getArena().setLastHunter(seeker.getName());
+                getArena().becomeSeeker(seeker);
+                seeker.teleport(getArena().getWaitingLoc());
             }
 
         }
 
         for (UUID pls : getArena().getPlayers()) {
             if (!getArena().getSeekers().contains(pls)) {
-                getArena().getHiders().add(pls);
-
                 Player player = Bukkit.getPlayer(pls);
+                if (player == null) continue;
+
+                getArena().getHiders().add(pls);
                 getArena().getTeamHiders().addPlayer(player);
                 player.teleport(getArena().getSpawnLoc());
             }
@@ -98,8 +124,9 @@ public class WaitingArenaState extends ArenaState {
         int seconds = getArena().getBestTimer() % 60;
 
         String bestTime = String.format("%02dh%02dmin%02ds", hours, minutes, seconds);
-        getArena().sendMessage("Le meilleur temps est de " + bestTime + " détenu par " + getArena().getBestPlayer());
-        
+        getArena().sendMessage("Le meilleur temps est de " + bestTime + " détenu par " + getArena().getBestPlayer() + ".");
+
+        // TODO utilité du timer ? car cette classe sert juste à désigner les cacheurs et chercheurs donc autant le mettre dans Playing ?
         waitingArenaTask = new WaitingArenaTask(getArena());
         waitingArenaTask.runTaskTimer(main, 0, 20);
     }

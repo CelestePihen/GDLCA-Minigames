@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class SoundInventory extends AbstractInventory {
 
@@ -28,7 +29,6 @@ public class SoundInventory extends AbstractInventory {
     protected void addItems(Inventory inventory) {
         ItemStack goat_horn = new ItemBuilder(Material.GOAT_HORN).setDisplayName("Corne de chèvres").toItemStack();
         ItemStack cat = new ItemBuilder(Material.STRING).setDisplayName("Chats").toItemStack();
-
         inventory.addItem(goat_horn, cat);
     }
 
@@ -37,24 +37,29 @@ public class SoundInventory extends AbstractInventory {
         if (!arena.isPlayerInArena(player)) return;
 
         if (item.getType() == Material.STRING) {
-            SoundCatTimer soundCatTimer = new SoundCatTimer(arena);
-            soundCatTimer.runTaskTimer(arena.getGameManager().getMain(), 0, 20);
-
             removeItem(player);
-            return;
+
+            if (arena.getCheckAdvancements().getMiaou().getPlayerInside().get(player.getUniqueId())) {
+                arena.getCheckAdvancements().giveMiaou(player);
+            }
+
+            new SoundCatTimer(arena).runTaskTimer(arena.getGameManager().getMain(), 0, 20);
         }
 
-        if (item.getType() == Material.GOAT_HORN) {
+        else if (item.getType() == Material.GOAT_HORN) {
+            removeItem(player);
+
             Sound sound = goatHornSounds.get(new Random().nextInt(goatHornSounds.size()));
-            arena.getPlayers().forEach(uuid -> {
+            for (UUID uuid : arena.getPlayers()) {
                 Player pl = Bukkit.getPlayer(uuid);
-                if (pl.getGameMode() == GameMode.SPECTATOR) return;
+                if (pl == null || pl.getGameMode() == GameMode.SPECTATOR) continue;
                 pl.playSound(pl, sound, SoundCategory.AMBIENT, 2.0f, 1.0f);
-            });
+            }
 
-            removeItem(player);
+            if (arena.getArenaName().equalsIgnoreCase("sp") || arena.getArenaName().equalsIgnoreCase("sp2")) {
+                arena.getCheckAdvancements().giveRaidChateau(player);
+            }
         }
-
     }
 
     private void removeItem(Player player) {

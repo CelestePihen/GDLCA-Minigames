@@ -23,11 +23,9 @@ public class ItemListener extends HListener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
-        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-
-        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player) || event.getHand() != EquipmentSlot.HAND) return;
 
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
@@ -48,8 +46,7 @@ public class ItemListener extends HListener {
     public void onInteractInventory(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
-        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-        if (player.isOp()) return;
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player) || player.isOp()) return;
 
         ItemStack item = event.getCurrentItem();
         if (item == null) return;
@@ -62,24 +59,15 @@ public class ItemListener extends HListener {
     @EventHandler
     public void onSwappedItem(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-
-        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-        if (player.isOp()) return;
-
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player) || player.isOp()) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-
-        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-        if (player.isOp()) return;
-
-        ItemStack item = event.getItemDrop().getItemStack();
-        if (item.getType() == Material.COMPASS || item.getType() == Material.PLAYER_HEAD) {
-            event.setCancelled(true);
-        }
+        if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player) || player.isOp()) return;
+        event.setCancelled(true);
     }
 
 }

@@ -8,6 +8,8 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
+
 public class SoundCatTimer extends BukkitRunnable {
     
     private final CCArena arena;
@@ -20,12 +22,11 @@ public class SoundCatTimer extends BukkitRunnable {
     @Override
     public void run() {
         if (secondes > 0) {
-            arena.getPlayers().forEach(uuid -> {
+            for (UUID uuid : arena.getPlayers()) {
                 Player pl = Bukkit.getPlayer(uuid);
-                if (pl == null) return;
-                if (pl.getGameMode() == GameMode.SPECTATOR) return;
+                if (pl == null || pl.getGameMode() == GameMode.SPECTATOR) continue;
                 pl.playSound(pl, Sound.ENTITY_CAT_AMBIENT, SoundCategory.AMBIENT, 3.0f, 1.0f);
-            });
+            }
             secondes--;
         } else {
             cancel();

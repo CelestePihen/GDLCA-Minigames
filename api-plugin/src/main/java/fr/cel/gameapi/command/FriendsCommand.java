@@ -1,6 +1,7 @@
 package fr.cel.gameapi.command;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.inventory.FriendsInventory;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.PlayerData;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -8,7 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FriendsCommand extends AbstractCommand {
 
@@ -76,40 +79,7 @@ public class FriendsCommand extends AbstractCommand {
             }
 
             else if (args[0].equalsIgnoreCase("list")) {
-                if (friendsManager.getFriendCounter(player) == 0) {
-                    sendMessageWithPrefix(player, "Vous n'avez pas d'amis...");
-                    return;
-                }
-
-                List<String> friendsOnline = new ArrayList<>();
-                List<String> friendsOffline = new ArrayList<>();
-
-                for (String friendUUID : friendsManager.getFriendsUUIDList(player)) {
-                    Player friend = Bukkit.getPlayer(UUID.fromString(friendUUID));
-                    if (friend == null) {
-                        friendsOffline.add(Bukkit.getOfflinePlayer(UUID.fromString(friendUUID)).getName());
-                    } else {
-                        friendsOnline.add(friend.getName());
-                    }
-                }
-
-                if (friendsOnline.isEmpty()) {
-                    sendMessageWithPrefix(player, "Amis en ligne : Aucun(e) ami(e) en ligne.");
-                } else {
-                    StringBuilder message = new StringBuilder();
-                    for (String s : friendsOnline) message.append(s).append(", ");
-                    message.toString().trim();
-                    sendMessageWithPrefix(player, "Amis en ligne : [" + message.substring(0, message.length() - 2) + "]");
-                }
-
-                if (friendsOffline.isEmpty()) {
-                    sendMessageWithPrefix(player, "Amis hors-ligne : Aucun(e) ami(e) hors-ligne.");
-                } else {
-                    StringBuilder message = new StringBuilder();
-                    for (String s : friendsOffline) message.append(s).append(", ");
-                    message.toString().trim();
-                    sendMessageWithPrefix(player, "Amis hors-ligne : [" + message.substring(0, message.length() - 2) + "]");
-                }
+                GameAPI.getInstance().getInventoryManager().openInventory(new FriendsInventory(player), player);
                 return;
             }
 
