@@ -10,25 +10,26 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.UUID;
 
 public class BlindnessItem extends GroundItem {
 
     private static final List<String> lores = List.of("Cet objet vous permet de rendre aveugle tous les joueurs de la partie sauf vous pendant 5 secondes.");
 
     public BlindnessItem() {
-        super("blindnessItem", Material.FERMENTED_SPIDER_EYE, "Aveuglement", lores, 1);
+        super("blindnessItem", Material.FERMENTED_SPIDER_EYE, "Aveuglement", lores, "cc_blindness");
     }
 
     @Override
     public void onInteract(Player player, CCArena arena) {
-        arena.getPlayers().forEach(uuid -> {
+        for (UUID uuid : arena.getPlayers()) {
             Player pl = Bukkit.getPlayer(uuid);
-            if (pl == null) return;
-            if (pl == player || pl.getGameMode() == GameMode.SPECTATOR) return;
+            if (pl == null) continue;
+            if (pl == player || pl.getGameMode() == GameMode.SPECTATOR) continue;
             pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1, false, false, true));
 
             super.onInteract(player, arena);
-        });
+        }
     }
     
 }

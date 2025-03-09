@@ -26,7 +26,7 @@ public class GameTeam {
      */
     public void addPlayer(Player player) {
         if (containsPlayer(player)) return;
-        team.addEntry(player.getName());
+        team.addPlayer(player);
     }
 
     /**
@@ -53,7 +53,7 @@ public class GameTeam {
      * @return Retourne true si le joueur est dans l'équipe
      */
     public boolean containsPlayer(Player player) {
-        return team.hasEntry(player.getName());
+        return team.hasPlayer(player);
     }
 
     /**

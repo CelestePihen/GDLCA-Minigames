@@ -1,6 +1,7 @@
 package fr.cel.gameapi.listeners;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.AdvancementsManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,6 +35,7 @@ public class PlayersListener implements Listener {
             main.getPlayerManager().getPlayersWhoWelcomed().clear();
 
             main.getDatabase().createAccount(player);
+            main.getAdvancementsManager().giveAdvancement(player, AdvancementsManager.Advancements.ROOT);
         } else {
             event.setJoinMessage(ChatUtility.format("[&a+&r] ") + player.getName());
         }
@@ -41,8 +43,8 @@ public class PlayersListener implements Listener {
         main.getPlayerManager().addPlayerData(player);
         main.getPlayerManager().sendPlayerToHub(player);
 
-        player.setPlayerListHeader(ChatUtility.format("Amusez-vous bien sur GDLCA Minigames !", ChatUtility.GREEN));
-        player.setPlayerListFooter(ChatUtility.format("Discord : &fdiscord.gg/vFjPYC4Mj8", ChatUtility.AQUA));
+        player.setPlayerListHeader(ChatUtility.format("&aAmusez-vous bien sur &bGDLCA Minigames !"));
+        player.setPlayerListFooter(ChatUtility.format("&3Discord &f: discord.gg/vFjPYC4Mj8"));
     }
 
     @EventHandler(priority = EventPriority.HIGH)

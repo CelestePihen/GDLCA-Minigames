@@ -48,8 +48,8 @@ public final class Hub extends JavaPlugin {
     private void registerCommands() {
         CommandsManager commandsManager = GameAPI.getInstance().getCommandsManager();
 
-        commandsManager.addCommand("event", new EventCommands(), this);
         commandsManager.addCommand("hub", new HubCommands(), this);
+        commandsManager.addCommand("event", new EventCommands(), this);
     }
 
 }

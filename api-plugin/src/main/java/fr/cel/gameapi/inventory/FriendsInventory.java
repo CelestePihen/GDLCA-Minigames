@@ -1,6 +1,7 @@
 package fr.cel.gameapi.inventory;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,22 +23,34 @@ public class FriendsInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        for (String friendUUID : GameAPI.getInstance().getFriendsManager().getFriendsUUIDList(player)) {
-            inv.addItem(new ItemBuilder(Material.PLAYER_HEAD)
-                    .setDisplayName(Bukkit.getOfflinePlayer(UUID.fromString(friendUUID)).getName())
-                    .setSkullOwner(Bukkit.createPlayerProfile(UUID.fromString(friendUUID)))
-                    .toItemStack()
-            );
+        for (String friendUUIDStr : GameAPI.getInstance().getFriendsManager().getFriendsUUIDList(player)) {
+            UUID friendUUID = UUID.fromString(friendUUIDStr);
+            Player friend = Bukkit.getPlayer(friendUUID);
+
+            OfflinePlayer offlineFriend = Bukkit.getOfflinePlayer(friendUUID);
+            String friendName = (offlineFriend.hasPlayedBefore() || friend != null) ? offlineFriend.getName() : "???";
+
+            boolean isOnline = (friend != null);
+            String statusColor = isOnline ? "&aEn ligne" : "&cHors-ligne";
+
+            ItemStack skull = new ItemBuilder(Material.PLAYER_HEAD)
+                    .setLore(ChatUtility.format(statusColor))
+                    .setDisplayName(friendName)
+                    .setSkullOwner(Bukkit.createPlayerProfile(friendUUID))
+                    .toItemStack();
+
+            inv.addItem(skull);
         }
     }
 
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
-
+        // TODO afficher le profil de l'ami
     }
 
     @Override
     protected boolean makeGlassPane() {
         return false;
     }
+
 }

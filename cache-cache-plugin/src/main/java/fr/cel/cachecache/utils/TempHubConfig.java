@@ -32,7 +32,7 @@ public class TempHubConfig {
                         config.getBoolean("isActivated"),
                         LocationUtility.parseConfigToLoc(config, "location"),
                         getTemporaryArenas(),
-                        CCArena.HunterMode.valueOf(config.getString("chosenHunterMode")),
+                        CCArena.CCMode.valueOf(config.getString("chosenHunterMode")),
                         config.getString("lastMap"),
                         this,
                         main.getGameManager()

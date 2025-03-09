@@ -19,6 +19,11 @@ public class InventoryManager {
         main.getServer().getPluginManager().registerEvents(new InventoryListener(this), main);
     }
 
+    /**
+     * Montre un nouvelle inventaire de type AbstractInventory à un joueur
+     * @param inventory L'inventaire de type AbstractInventory
+     * @param player Le joueur à qui montrer l'inventaire
+     */
     public void openInventory(AbstractInventory inventory, Player player) {
         inventory.createInventory();
         player.openInventory(inventory.getInv());

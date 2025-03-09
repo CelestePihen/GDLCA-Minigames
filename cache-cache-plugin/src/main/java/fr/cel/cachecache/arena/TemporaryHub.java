@@ -8,8 +8,6 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -45,11 +43,11 @@ public class TemporaryHub implements Listener {
     private final List<UUID> players;
     @Getter private CCArena chosenMap;
 
-    public TemporaryHub(boolean isActivated, Location location, List<CCArena> maps, CCArena.HunterMode chosenHunterMode, String lastMap, TempHubConfig config, GameManager gameManager) {
+    public TemporaryHub(boolean isActivated, Location location, List<CCArena> maps, CCArena.CCMode chosenCCMode, String lastMap, TempHubConfig config, GameManager gameManager) {
         this.isActivated = isActivated;
         this.location = location;
         this.maps = maps;
-        this.chosenHunterMode = chosenHunterMode.getName();
+        this.chosenHunterMode = chosenCCMode.getName();
         this.lastMap = lastMap;
         this.config = config;
 
@@ -154,41 +152,24 @@ public class TemporaryHub implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        final Player player = event.getPlayer();
+        Player player = event.getPlayer();
         if (!event.getMessage().contains("/hub")) return;
         if (!isPlayerInTempHub(player)) return;
         removePlayer(player);
     }
 
     @EventHandler
-    public void playerInteract(PlayerInteractEvent event) {
-        Block block = event.getClickedBlock();
+    public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-
         if (!isPlayerInTempHub(player)) return;
-        if (block == null) return;
 
-        Material type = block.getType();
-        
-        if (event.getAction() == Action.PHYSICAL && type == Material.FARMLAND) {
+        if ((event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK) || event.getAction() == Action.PHYSICAL)
             event.setCancelled(true);
-            return;
-        }
-
-        if (type == Material.FLOWER_POT || block.getType().name().startsWith("POTTED_") || (type == Material.CAVE_VINES || type == Material.CAVE_VINES_PLANT) ||
-                type == Material.SWEET_BERRY_BUSH || type == Material.CHEST ||  type == Material.HOPPER || type == Material.FURNACE || type == Material.BLAST_FURNACE ||
-                type == Material.SMOKER || type == Material.BARREL || type == Material.DISPENSER || type == Material.DROPPER ||
-                type == Material.CHEST_MINECART || type == Material.HOPPER_MINECART || type == Material.FURNACE_MINECART || type == Material.CRAFTING_TABLE) {
-            event.setCancelled(true);
-        }
-
     }
 
     @EventHandler
     public void playerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        Player player = event.getPlayer();
-        if (!isPlayerInTempHub(player)) return;
-        if (player.isOp()) return;
+        if (!isPlayerInTempHub(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
@@ -196,37 +177,27 @@ public class TemporaryHub implements Listener {
     public void onVehicleDamage(VehicleDamageEvent event) {
         if (!(event.getAttacker() instanceof Player player)) return;
         if (!isPlayerInTempHub(player)) return;
-        if (player.isOp()) return;
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleDamage(VehicleEntityCollisionEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!isPlayerInTempHub(player)) return;
-        if (player.isOp()) return;
+    public void onVehicleCollision(VehicleEntityCollisionEvent event) {
+        if (!(event.getEntity() instanceof Player player) || !isPlayerInTempHub(player)) return;
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleDamage(VehicleEnterEvent event) {
-        if (!(event.getEntered() instanceof Player player)) return;
-        if (!isPlayerInTempHub(player)) return;
-        if (player.isOp()) return;
+    public void onVehicleEnter(VehicleEnterEvent event) {
+        if (!(event.getEntered() instanceof Player player) || !isPlayerInTempHub(player)) return;
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (!(event.getPlayer() instanceof Player player)) return;
-        if (!isPlayerInTempHub(player)) return;
-        if (player.isOp()) return;
+        if (!(event.getPlayer() instanceof Player player) || !isPlayerInTempHub(player) || !(event.getInventory().getHolder() instanceof Entity entity)) return;
 
-        if (event.getInventory().getHolder() instanceof Entity entity) {
-            if (entity.getType() == EntityType.CHEST_MINECART || entity.getType() == EntityType.FURNACE_MINECART || entity.getType() == EntityType.HOPPER_MINECART) {
-                event.setCancelled(true);
-            }
-        }
+        EntityType type = entity.getType();
+        if (type == EntityType.CHEST_MINECART || type == EntityType.FURNACE_MINECART || type == EntityType.HOPPER_MINECART) event.setCancelled(true);
     }
 
 }

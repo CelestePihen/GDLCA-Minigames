@@ -18,7 +18,6 @@ public class StartingArenaTask extends BukkitRunnable {
     @Override
     public void run() {
         if (timer <= 0) {
-            cancel();
             arena.setArenaState(new WaitingArenaState(arena));
             return;
         }
@@ -27,13 +26,12 @@ public class StartingArenaTask extends BukkitRunnable {
         arena.setLevel(timer);
 
         if (timer == 10 || (timer <= 5 && timer != 0)) {
-            arena.sendMessage("Démarre dans " + timer + getSeconds() + "...");
+            arena.sendMessage("Démarre dans " + timer + getTextSeconds() + "...");
             arena.playSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
         }
-
     }
     
-    private String getSeconds() {
+    private String getTextSeconds() {
         return timer == 1 ? " seconde" : " secondes";
     }
 

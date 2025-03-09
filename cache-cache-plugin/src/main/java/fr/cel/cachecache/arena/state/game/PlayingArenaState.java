@@ -2,8 +2,8 @@ package fr.cel.cachecache.arena.state.game;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.providers.StateListenerProvider;
-import fr.cel.cachecache.arena.providers.game.PlayingListenerProvider;
+import fr.cel.cachecache.arena.listeners.StateListenerProvider;
+import fr.cel.cachecache.arena.listeners.game.PlayingListenerProvider;
 import fr.cel.cachecache.arena.state.ArenaState;
 import fr.cel.cachecache.arena.timer.game.GroundItemsArenaTask;
 import fr.cel.cachecache.arena.timer.game.PlayingArenaTask;
@@ -30,7 +30,10 @@ public class PlayingArenaState extends ArenaState {
     public void onEnable(CacheCache main) {
         super.onEnable(main);
 
-        switch (getArena().getHunterMode()) {
+        getArena().setNbPlayerBeginning(getArena().getPlayers().size());
+        getArena().getCheckAdvancements().startAllChecks();
+
+        switch (getArena().getCcMode()) {
             case Classique, TousContreUn -> {
                 playingArenaTask = new PlayingArenaTask(getArena());
                 playingArenaTask.runTaskTimer(main, 0, 20);
@@ -50,7 +53,7 @@ public class PlayingArenaState extends ArenaState {
                 groundItemsArenaTask.runTaskTimer(main, 0, 1200);
             }
 
-            default -> {
+            case Normal, TwoHuntersAtStart, Beta -> {
                 playingArenaTask = new PlayingArenaTask(getArena());
                 playingArenaTask.runTaskTimer(main, 0, 20);
 

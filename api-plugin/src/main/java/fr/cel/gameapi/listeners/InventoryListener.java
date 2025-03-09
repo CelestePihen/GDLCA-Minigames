@@ -2,6 +2,7 @@ package fr.cel.gameapi.listeners;
 
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.InventoryManager;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,23 +25,20 @@ public class InventoryListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         AbstractInventory abstractInventory = inventoryManager.getInventoryDataMap().getOrDefault(player.getUniqueId(), null);
-        if (abstractInventory != null) {
-            ItemStack item = event.getCurrentItem();
-            if (item == null) return;
-            if (item.getItemMeta() == null) return;
+        if (abstractInventory == null) return;
 
-            abstractInventory.interact(player, item.getItemMeta().getDisplayName(), item);
-            event.setCancelled(true);
-        }
+        ItemStack item = event.getCurrentItem();
+        if (item == null || item.getItemMeta() == null || item.getType() == Material.AIR) return;
+
+        abstractInventory.interact(player, item.getItemMeta().getDisplayName(), item);
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         final UUID playerUUID = event.getPlayer().getUniqueId();
-
-        if (inventoryManager.getInventoryDataMap().getOrDefault(playerUUID, null) != null) {
-            inventoryManager.getInventoryDataMap().remove(playerUUID);
-        }
+        if (inventoryManager.getInventoryDataMap().getOrDefault(playerUUID, null) == null) return;
+        inventoryManager.getInventoryDataMap().remove(playerUUID);
     }
 
 }

@@ -27,12 +27,10 @@ public class CacheCacheInventory extends AbstractInventory {
         inv.setItem(19, new ItemBuilder(Material.BRICKS).setDisplayName(ChatUtility.format("&dVille")).toItemStack());
         inv.setItem(21, new ItemBuilder(Material.WAXED_COPPER_BLOCK).setDisplayName(ChatUtility.format("&dSteampunk")).toItemStack());
         inv.setItem(23, new ItemBuilder(Material.SAND).setDisplayName(ChatUtility.format("&dDésert")).toItemStack());
-        inv.setItem(25, new ItemBuilder(Material.SLIME_BALL).setDisplayName(ChatUtility.format("&dMarais")).toItemStack());
+        inv.setItem(25, new ItemBuilder(Material.SNOW_BLOCK).setDisplayName(ChatUtility.format("&dChalet")).toItemStack());
 
-        inv.setItem(37, new ItemBuilder(Material.WATER_BUCKET).setDisplayName(ChatUtility.format("&dParc Aquatique")).toItemStack());
-
-        for (int slot = 39; slot <= 43; slot += 2) {
-            inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName(ChatUtility.format("&eMaisons")).toItemStack());
+        for (int slot = 37; slot <= 43; slot += 2) {
+            inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName(ChatUtility.format("&eLoup Touche-Touche")).toItemStack());
         }
 
         inv.setItem(49, new ItemBuilder(Material.BARRIER).setDisplayName("Retour").toItemStack());
@@ -48,8 +46,7 @@ public class CacheCacheInventory extends AbstractInventory {
             case BRICKS -> CCArenaManager.getArenaManager().getArenas().get("ville").addPlayer(player, false);
             case WAXED_COPPER_BLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Steampunk", Material.WAXED_COPPER_BLOCK), player);
             case SAND -> CCArenaManager.getArenaManager().getArenas().get("desert").addPlayer(player, false);
-            case SLIME_BALL -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Marais", Material.SLIME_BALL), player);
-            case WATER_BUCKET -> CCArenaManager.getArenaManager().getArenas().get("aquatique").addPlayer(player, false);
+            case SNOW_BLOCK -> CCArenaManager.getArenaManager().getArenas().get("chalet").addPlayer(player, false);
 
             case COMMAND_BLOCK -> CCArenaManager.getArenaManager().getTemporaryHub().addPlayer(player);
 

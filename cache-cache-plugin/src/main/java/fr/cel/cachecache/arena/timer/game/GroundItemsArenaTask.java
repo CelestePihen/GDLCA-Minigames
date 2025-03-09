@@ -4,7 +4,6 @@ import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
@@ -19,9 +18,9 @@ public class GroundItemsArenaTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (arena.getHunterMode() == CCArena.HunterMode.Normal) {
+        if (arena.getCcMode() == CCArena.CCMode.Normal) {
             spawnItem();
-        } else if (arena.getHunterMode() == CCArena.HunterMode.PluieDeBonus) {
+        } else if (arena.getCcMode() == CCArena.CCMode.PluieDeBonus) {
             spawnItem().setGlowing(true);
             spawnItem().setGlowing(true);
         }
@@ -32,9 +31,7 @@ public class GroundItemsArenaTask extends BukkitRunnable {
         Location randomLocation = arena.getLocationGroundItems().get(r.nextInt(arena.getLocationGroundItems().size()));
         GroundItem rGroundItem = arena.getAvailableGroundItems().get(r.nextInt(arena.getAvailableGroundItems().size()));
 
-        ItemStack itemStack = rGroundItem.getItemStack();
-
-        Item droppedItem = randomLocation.getWorld().dropItem(randomLocation, itemStack);
+        Item droppedItem = randomLocation.getWorld().dropItem(randomLocation, rGroundItem.getItemStack());
         droppedItem.setUnlimitedLifetime(true);
         arena.getSpawnedGroundItems().add(droppedItem);
         arena.sendMessage("Un objet est apparu !");

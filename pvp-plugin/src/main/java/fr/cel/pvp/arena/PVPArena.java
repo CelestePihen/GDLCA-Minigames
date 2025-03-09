@@ -111,7 +111,7 @@ public class PVPArena implements Listener {
         if (!isPlayerInArena(player)) return;
         if (!isPlayerInArena(damager)) return;
 
-        damager.setHealth(damager.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        damager.setHealth(damager.getAttribute(Attribute.MAX_HEALTH).getValue());
         damager.setFoodLevel(20);
     }
 

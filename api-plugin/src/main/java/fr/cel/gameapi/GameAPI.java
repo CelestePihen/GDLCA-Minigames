@@ -2,14 +2,13 @@ package fr.cel.gameapi;
 
 import fr.cel.gameapi.listeners.PlayersListener;
 import fr.cel.gameapi.listeners.ServerListeners;
-import fr.cel.gameapi.manager.CommandsManager;
-import fr.cel.gameapi.manager.InventoryManager;
-import fr.cel.gameapi.manager.PlayerManager;
+import fr.cel.gameapi.manager.*;
 import fr.cel.gameapi.manager.database.DatabaseManager;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.RPUtils;
 import lombok.Getter;
+import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,12 +25,14 @@ public final class GameAPI extends JavaPlugin {
     private PlayerManager playerManager;
     private DatabaseManager database;
     private CommandsManager commandsManager;
-    private RPUtils rpUtils;
+    private StatisticsManager statisticsManager;
+    private AdvancementsManager advancementsManager;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+        Bukkit.getServer()
 
         if (getServer().getOnlineMode()) {
             database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
@@ -39,17 +40,23 @@ public final class GameAPI extends JavaPlugin {
             database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database_test"), getConfig().getString("username"), getConfig().getString("password"));
         }
 
-        database.init();
+        try {
+            database.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+            getServer().shutdown();
+        }
 
         playerManager = new PlayerManager();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             playerManager.addPlayerData(player);
+
             if (!player.isOp()) continue;
 
-            player.sendMessage(ChatUtility.format("Attention ! Si un reload du serveur a été effectué, ne soyez pas étonné(e) si certaines fonctionnalités non-voulues"
-                    + " (genre le fait qu'on puisse ouvrir les coffres ou le fait d'interagir avec certains blocs) soient activés.\n"
-                    + "Si vous voulez revenir à la normale, revenez au Hub (/hub) et rejoignez le mode de jeu dans lequel vous étiez", ChatUtility.RED));
+            player.sendMessage("\n\n\n\n");
+            player.sendMessage(ChatUtility.format(ChatUtility.RED + "Attention !" + ChatUtility.WHITE +
+                    " Un reload a été effectué. Faites /hub si vous êtes buggé(e)."));
         }
 
         friendsManager = new FriendsManager(this);
@@ -58,7 +65,11 @@ public final class GameAPI extends JavaPlugin {
         commandsManager.registerCommands();
 
         inventoryManager = new InventoryManager(this);
-        rpUtils = new RPUtils();
+
+        RPUtils.registerMusics();
+
+        statisticsManager = new StatisticsManager(this);
+        advancementsManager = new AdvancementsManager();
 
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
         getServer().getPluginManager().registerEvents(new ServerListeners(), this);

@@ -42,7 +42,7 @@ public class Config {
                 CCArena arena = new CCArena(
                         arenaName,
                         config.getString("displayName"),
-                        CCArena.HunterMode.valueOf(config.getString("hunterMode")),
+                        CCArena.CCMode.valueOf(config.getString("hunterMode")),
                         LocationUtility.parseConfigToLoc(config, "locationSpawn"),
                         LocationUtility.parseConfigToLoc(config, "locationWaiting"),
                         config.getBoolean("fallDamage"),

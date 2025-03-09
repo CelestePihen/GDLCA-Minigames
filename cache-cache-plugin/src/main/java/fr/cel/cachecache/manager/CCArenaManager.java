@@ -49,7 +49,7 @@ public class CCArenaManager {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
                 arenas.put(name, new Config(main, name).getArena());
-                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[Cache-Cache]", ChatUtility.GOLD) + ChatUtility.format("Chargement de la map Cache-Cache " + name, ChatUtility.WHITE));
+                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[Cache-Cache] ", ChatUtility.GOLD) + ChatUtility.format("Chargement de la map Cache-Cache " + name, ChatUtility.WHITE));
             }
         }
     }

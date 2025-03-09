@@ -1,11 +1,6 @@
 package fr.cel.gameapi.manager.database;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.utils.RPUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -16,11 +11,9 @@ import java.util.UUID;
 
 public class PlayerData {
 
-    private final Player player;
     private final UUID uuid;
 
     public PlayerData(Player player) {
-        this.player = player;
         this.uuid = player.getUniqueId();
     }
 
@@ -173,35 +166,6 @@ public class PlayerData {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    // TODO
-    public void giveAdvancement(RPUtils.Advancements advancements) {
-        NamespacedKey key = NamespacedKey.fromString("gdlca:" + advancements.getAdvancementName());
-        if (key == null) return;
-
-        Advancement advancement = Bukkit.getAdvancement(key);
-        if (advancement == null) return;
-
-        AdvancementProgress progress = player.getAdvancementProgress(advancement);
-        if (!progress.isDone()) {
-            progress.awardCriteria("impossible");
-            if (advancement.getDisplay() != null) player.sendMessage(advancement.getDisplay().getDescription());
-        }
-    }
-
-    // TODO
-    public void removeAdvancement(RPUtils.Advancements advancements) {
-        NamespacedKey key = NamespacedKey.fromString("gdlca:" + advancements.getAdvancementName());
-        if (key == null) return;
-
-        Advancement advancement = Bukkit.getAdvancement(key);
-        if (advancement == null) return;
-
-        AdvancementProgress progress = player.getAdvancementProgress(advancement);
-        if (progress.isDone()) {
-            progress.revokeCriteria("impossible");
         }
     }
 

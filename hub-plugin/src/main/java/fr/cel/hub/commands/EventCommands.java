@@ -21,6 +21,7 @@ public class EventCommands extends AbstractCommand {
 
         if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) {
             sendMessageWithPrefix(player, "Vous devez être dans le Hub pour pouvoir faire cette commande.");
+            return;
         }
 
         if (args.length == 0) {

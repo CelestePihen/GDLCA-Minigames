@@ -14,16 +14,19 @@ public class CommandsManager {
         this.main = main;
     }
 
+    /**
+     * Enregistre toutes les commandes
+     */
     public void registerCommands() {
-        addCommand("coins", new CoinsCommand(main.getPlayerManager()),  main);
-        addCommand("friends", new FriendsCommand(main.getFriendsManager()),  main);
-        addCommand("gamecompass", new GameCompassComand(main.getPlayerManager()),  main);
+        addCommand("coins", new CoinsCommand(main.getPlayerManager()), main);
+        addCommand("friends", new FriendsCommand(main.getFriendsManager()), main);
+        addCommand("gamecompass", new GameCompassComand(main.getPlayerManager()), main);
         addCommand("profile", new ProfileCommand(), main);
         addCommand("welcome", new WelcomeCommand(main.getPlayerManager()), main);
     }
 
     /**
-     * Permet d'enregistrer une commande
+     * Permet de créer une nouvelle commande
      * @param commandName Le nom de la commande
      * @param abstractCommand La classe de la commande
      * @param plugin Le plugin correspondant

@@ -42,9 +42,7 @@ public class CelebrationEvent extends AbstractInventory {
                 setItem(0, new ItemBuilder(Material.JACK_O_LANTERN).setDisplayName("&6Halloween").addLoreLine(Hub.getInstance().getConfig().getBoolean("halloweenEvent") ? ChatUtility.format("&aActivé") : ChatUtility.format("&cDésactivé")).toItemStack());
             }
 
-            case SNOW_BLOCK -> {
-                player.sendMessage("En cours de création");
-            }
+            case SNOW_BLOCK -> player.sendMessage("Bientôt...");
 
             case BARRIER -> player.closeInventory();
 
