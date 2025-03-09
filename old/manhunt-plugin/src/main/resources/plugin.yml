@@ -1,7 +1,0 @@
-name: ManHunt
-version: '${project.version}'
-main: fr.cel.manhunt.ManHunt
-api-version: 1.19
-author: Cel
-commands:
-  manhunt:
