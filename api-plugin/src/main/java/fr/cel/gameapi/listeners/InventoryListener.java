@@ -2,6 +2,7 @@ package fr.cel.gameapi.listeners;
 
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.InventoryManager;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.awt.*;
 import java.util.UUID;
 
 public class InventoryListener implements Listener {
@@ -36,9 +38,10 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        final UUID playerUUID = event.getPlayer().getUniqueId();
-        if (inventoryManager.getInventoryDataMap().getOrDefault(playerUUID, null) == null) return;
-        inventoryManager.getInventoryDataMap().remove(playerUUID);
+        UUID playerUUID = event.getPlayer().getUniqueId();
+
+        if (inventoryManager.getInventoryDataMap().getOrDefault(playerUUID, null) != null)
+            inventoryManager.getInventoryDataMap().remove(playerUUID);
     }
 
 }

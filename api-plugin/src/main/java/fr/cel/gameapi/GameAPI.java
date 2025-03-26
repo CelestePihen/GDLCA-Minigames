@@ -32,7 +32,6 @@ public final class GameAPI extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
-        Bukkit.getServer()
 
         if (getServer().getOnlineMode()) {
             database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));

@@ -1,0 +1,12 @@
+displayName: "Miner 5 diamants"
+description: "Miner 5 diamants"
+material: "DIAMOND_ORE"
+count: 5
+durationType: WEEKLY
+
+# condition pour miner
+job:
+  name: "MINER"
+  amountXp: 15
+  type: "DIAMOND_ORE",
+  amount: 5

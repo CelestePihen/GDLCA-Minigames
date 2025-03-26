@@ -1,0 +1,11 @@
+name: DailyQuests
+version: '1.0.0'
+authors: [ Cel ]
+main: fr.cel.dailyquests.DailyQuests
+api-version: '1.21'
+prefix: DailyQuests
+commands:
+  seequest:
+    description: "Permet de voir les quêtes"
+  setcustom:
+    description: "Permet de changer la quête custom"

@@ -1,0 +1,12 @@
+displayName: "Tuer 5 zombies"
+description: "Tuer 5 zombies"
+material: "ROTTEN_FLESH"
+count: 5
+durationType: DAILY
+
+# condition pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 10
+  type: "ZOMBIE",
+  amount: 5

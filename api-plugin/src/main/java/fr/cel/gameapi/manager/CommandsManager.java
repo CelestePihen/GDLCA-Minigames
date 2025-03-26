@@ -23,6 +23,7 @@ public class CommandsManager {
         addCommand("gamecompass", new GameCompassComand(main.getPlayerManager()), main);
         addCommand("profile", new ProfileCommand(), main);
         addCommand("welcome", new WelcomeCommand(main.getPlayerManager()), main);
+        addCommand("statistics", new StatisticsCommand(), main);
     }
 
     /**

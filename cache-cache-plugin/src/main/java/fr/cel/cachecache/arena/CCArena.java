@@ -681,6 +681,9 @@ public class CCArena {
         config.setValue("lastHunter", lastHunter);
     }
 
+    /**
+     * Enlève tous les objets de la carte
+     */
     private void clearGroundItems() {
         spawnedGroundItems.stream().filter(Objects::nonNull).forEach(Entity::remove);
         spawnedGroundItems.clear();
