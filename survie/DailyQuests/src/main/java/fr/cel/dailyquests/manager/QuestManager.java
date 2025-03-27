@@ -51,7 +51,7 @@ public class QuestManager {
             QuestData weeklyQuest = qPlayer.getWeeklyQuest();
 
             if (dailyQuest != null) {
-                LocalDateTime lastUpdate = dailyQuest.lastUpdate();
+                LocalDateTime lastUpdate = dailyQuest.getLastUpdate();
                 long hoursSinceLastUpdate = lastUpdate.until(now, ChronoUnit.HOURS);
 
                 if (hoursSinceLastUpdate >= 24) {
@@ -60,7 +60,7 @@ public class QuestManager {
             }
 
             if (weeklyQuest != null) {
-                LocalDateTime lastUpdate = weeklyQuest.lastUpdate();
+                LocalDateTime lastUpdate = weeklyQuest.getLastUpdate();
                 long hoursSinceLastUpdate = lastUpdate.until(now, ChronoUnit.HOURS);
 
                 if (hoursSinceLastUpdate >= 168) {
@@ -84,17 +84,17 @@ public class QuestManager {
             // Quête journalière
             String dailyQuestName = config.getString("dailyQuest.name");
             String dailyQuestDate = config.getString("dailyQuest.date");
-            int dailyQuestAmount = config.getInt("dailyQuest.currentAmount");
+            int dailyQuestAmount = config.getInt("dailyQuest.amount");
 
             // Quête hebdomadaire
             String weeklyQuestName = config.getString("weeklyQuest.name");
             String weeklyQuestDate = config.getString("weeklyQuest.date");
-            int weeklyQuestAmount = config.getInt("weeklyQuest.currentAmount");
+            int weeklyQuestAmount = config.getInt("weeklyQuest.amount");
 
             // Quête custom
             String customQuestName = config.getString("customQuest.name");
             String customQuestDate = config.getString("customQuest.date");
-            int customQuestAmount = config.getInt("customQuest.currentAmount");
+            int customQuestAmount = config.getInt("customQuest.amount");
 
             // Convertit les dates sous format String en instance LocalDateTime
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -129,21 +129,21 @@ public class QuestManager {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerFile);
 
             if (qPlayer.getDailyQuest() != null) {
-                config.set("dailyQuest.name", qPlayer.getDailyQuest().quest().name());
-                config.set("dailyQuest.date", qPlayer.getDailyQuest().lastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                config.set("dailyQuest.amount", qPlayer.getDailyQuest().currentAmount());
+                config.set("dailyQuest.name", qPlayer.getDailyQuest().getQuest().name());
+                config.set("dailyQuest.date", qPlayer.getDailyQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                config.set("dailyQuest.amount", qPlayer.getDailyQuest().getCurrentAmount());
             }
 
             if (qPlayer.getWeeklyQuest() != null) {
-                config.set("weeklyQuest.name", qPlayer.getWeeklyQuest().quest().name());
-                config.set("weeklyQuest.date", qPlayer.getWeeklyQuest().lastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                config.set("weeklyQuest.amount", qPlayer.getWeeklyQuest().currentAmount());
+                config.set("weeklyQuest.name", qPlayer.getWeeklyQuest().getQuest().name());
+                config.set("weeklyQuest.date", qPlayer.getWeeklyQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                config.set("weeklyQuest.amount", qPlayer.getWeeklyQuest().getCurrentAmount());
             }
 
             if (qPlayer.getCustomQuest() != null) {
-                config.set("customQuest.name", qPlayer.getCustomQuest().quest().name());
-                config.set("customQuest.date", qPlayer.getCustomQuest().lastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                config.set("customQuest.amount", qPlayer.getCustomQuest().currentAmount());
+                config.set("customQuest.name", qPlayer.getCustomQuest().getQuest().name());
+                config.set("customQuest.date", qPlayer.getCustomQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                config.set("customQuest.amount", qPlayer.getCustomQuest().getCurrentAmount());
             }
 
             config.save(playerFile);

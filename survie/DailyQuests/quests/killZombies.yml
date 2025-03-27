@@ -8,5 +8,5 @@ durationType: DAILY
 job:
   name: "HUNTER"
   amountXp: 10
-  type: "ZOMBIE",
+  type: "ZOMBIE"
   amount: 5

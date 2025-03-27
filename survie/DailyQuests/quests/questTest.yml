@@ -7,7 +7,7 @@ count: 1
 job:
   name: "HUNTER"
   amountXp: 10
-  type: "ZOMBIE",
+  type: "ZOMBIE"
   amount: 5
 
 # condition pour bûcheron
