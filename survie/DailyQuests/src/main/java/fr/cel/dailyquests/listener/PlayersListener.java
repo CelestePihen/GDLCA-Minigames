@@ -2,8 +2,8 @@ package fr.cel.dailyquests.listener;
 
 import fr.cel.dailyquests.DailyQuests;
 import fr.cel.dailyquests.manager.QPlayer;
-import fr.cel.dailyquests.manager.quest.Quest;
 import fr.cel.dailyquests.manager.QuestManager;
+import fr.cel.dailyquests.manager.quest.Quest;
 import fr.cel.dailyquests.manager.quest.QuestData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -46,7 +46,7 @@ public class PlayersListener implements Listener {
 
         // si le joueur a une quête journalière et qu'il y a eu le changement de quête
         if (qPlayer.getDailyQuest() != null) {
-            LocalDateTime lastUpdate = qPlayer.getDailyQuest().lastUpdate();
+            LocalDateTime lastUpdate = qPlayer.getDailyQuest().getLastUpdate();
             long hoursSinceLastUpdate = lastUpdate.until(now, ChronoUnit.HOURS);
 
             if (hoursSinceLastUpdate >= 24) {
@@ -60,7 +60,7 @@ public class PlayersListener implements Listener {
 
         // si le joueur a une quête hebdomadaire et qu'il y a eu le changement de quête
         if (qPlayer.getWeeklyQuest() != null) {
-            LocalDateTime lastUpdate = qPlayer.getWeeklyQuest().lastUpdate();
+            LocalDateTime lastUpdate = qPlayer.getWeeklyQuest().getLastUpdate();
             long hoursSinceLastUpdate = lastUpdate.until(now, ChronoUnit.HOURS);
 
             if (hoursSinceLastUpdate >= 24*7) {
@@ -77,7 +77,7 @@ public class PlayersListener implements Listener {
             qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
         }
         // sinon si la quête custom que le joueur a n'est pas la même que celle actuellement alors on la change
-        else if (!qPlayer.getCustomQuest().quest().name().equals(questManager.getCustomQuest().name())) {
+        else if (!qPlayer.getCustomQuest().getQuest().name().equals(questManager.getCustomQuest().name())) {
             qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
         }
     }

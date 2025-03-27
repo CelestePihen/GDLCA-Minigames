@@ -2,11 +2,11 @@ package fr.cel.dailyquests.command;
 
 import fr.cel.dailyquests.manager.QPlayer;
 import fr.cel.dailyquests.manager.QuestManager;
-import fr.cel.dailyquests.manager.quest.Quest;
 import fr.cel.dailyquests.manager.quest.QuestData;
 import fr.cel.dailyquests.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,19 +35,25 @@ public class SeeQuestCommand implements CommandExecutor {
 
         Inventory inv = Bukkit.createInventory(null, 9*3, Component.text("Vos quêtes"));
 
-        inv.setItem(11, new ItemBuilder(dailyQuest.quest().material(), dailyQuest.quest().count())
-                .setDisplayName(dailyQuest.quest().displayName())
-                .setLore(dailyQuest.quest().description(), String.valueOf(dailyQuest.currentAmount()))
+        for (int i = 0; i < inv.getSize(); i++) {
+            inv.setItem(i, new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                    .hideTooltip()
+                    .toItemStack());
+        }
+
+        inv.setItem(11, new ItemBuilder(dailyQuest.getQuest().material(), dailyQuest.getQuest().count())
+                .setDisplayName(dailyQuest.getQuest().displayName())
+                .setLore(dailyQuest.getQuest().description(), String.valueOf(dailyQuest.getCurrentAmount()))
                 .toItemStack());
 
-        inv.setItem(13, new ItemBuilder(weeklyQuest.quest().material(), weeklyQuest.quest().count())
-                .setDisplayName(weeklyQuest.quest().displayName())
-                .setLore(weeklyQuest.quest().description(), String.valueOf(weeklyQuest.currentAmount()))
+        inv.setItem(13, new ItemBuilder(weeklyQuest.getQuest().material(), weeklyQuest.getQuest().count())
+                .setDisplayName(weeklyQuest.getQuest().displayName())
+                .setLore(weeklyQuest.getQuest().description(), String.valueOf(weeklyQuest.getCurrentAmount()))
                 .toItemStack());
 
-        inv.setItem(15, new ItemBuilder(customQuest.quest().material(), customQuest.quest().count())
-                .setDisplayName(customQuest.quest().displayName())
-                .setLore(customQuest.quest().description(), String.valueOf(customQuest.currentAmount()))
+        inv.setItem(15, new ItemBuilder(customQuest.getQuest().material(), customQuest.getQuest().count())
+                .setDisplayName(customQuest.getQuest().displayName())
+                .setLore(customQuest.getQuest().description(), String.valueOf(customQuest.getCurrentAmount()))
                 .toItemStack());
 
         player.openInventory(inv);

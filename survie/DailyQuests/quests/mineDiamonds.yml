@@ -8,5 +8,5 @@ durationType: WEEKLY
 job:
   name: "MINER"
   amountXp: 15
-  type: "DIAMOND_ORE",
+  type: "DIAMOND_ORE"
   amount: 5

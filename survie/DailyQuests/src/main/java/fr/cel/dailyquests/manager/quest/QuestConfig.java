@@ -66,7 +66,7 @@ public class QuestConfig {
                         Material.valueOf(config.getString("material")), config.getInt("count"),
                         new Condition(
                                 Condition.Jobs.valueOf(config.getString("job.name")), config.getInt("job.amountXp"),
-                                config.getString("type"), config.getInt("amount")),
+                                config.getString("job.type"), config.getInt("job.amount")),
                         durationType
                 );
             } catch (IOException | InvalidConfigurationException | NullPointerException e) {

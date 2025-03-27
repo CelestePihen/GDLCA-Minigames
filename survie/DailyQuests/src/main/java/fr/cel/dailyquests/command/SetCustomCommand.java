@@ -19,7 +19,8 @@ public class SetCustomCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (!(sender instanceof Player player)) {
+        if (sender instanceof Player player && !player.isOp()) {
+            player.sendMessage(Component.text("Vous ne pouvez pas faire cette commande."));
             return false;
         }
 
@@ -28,14 +29,14 @@ public class SetCustomCommand implements CommandExecutor {
             Quest customQuest = questManager.getQuestByName(customQuestName);
 
             if (customQuest == null) {
-                player.sendMessage(Component.text("La quête custom " + customQuestName + " n'existe pas."));
+                sender.sendMessage(Component.text("La quête custom " + customQuestName + " n'existe pas."));
                 return false;
             }
 
             questManager.setCustomQuest(customQuest);
-            player.sendMessage(Component.text("La quête custom a été mise à jour ! Nouvelle quête : " + customQuestName));
+            sender.sendMessage(Component.text("La quête custom a été mise à jour ! Nouvelle quête : " + customQuestName));
         } else {
-            player.sendMessage(Component.text("La commande est : /setcustom <nom_quete_custom>"));
+            sender.sendMessage(Component.text("La commande est : /setcustom <nom_quete_custom>"));
             return false;
         }
 

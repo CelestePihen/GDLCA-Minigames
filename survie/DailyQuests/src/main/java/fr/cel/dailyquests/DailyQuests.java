@@ -3,8 +3,11 @@ package fr.cel.dailyquests;
 import fr.cel.dailyquests.command.SeeQuestCommand;
 import fr.cel.dailyquests.command.SetCustomCommand;
 import fr.cel.dailyquests.listener.PlayersListener;
+import fr.cel.dailyquests.listener.QuestListener;
 import fr.cel.dailyquests.manager.QuestManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,7 +32,12 @@ public final class DailyQuests extends JavaPlugin {
         this.questManager = new QuestManager(this);
         scheduleDailyTask();
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            questManager.getPlayerData().put(player.getUniqueId(), questManager.loadQPlayer(player));
+        }
+
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
+        getServer().getPluginManager().registerEvents(new QuestListener(questManager), this);
 
         getCommand("seequest").setExecutor(new SeeQuestCommand(questManager));
         getCommand("setcustom").setExecutor(new SetCustomCommand(questManager));
