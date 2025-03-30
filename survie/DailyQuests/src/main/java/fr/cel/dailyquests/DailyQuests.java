@@ -2,32 +2,38 @@ package fr.cel.dailyquests;
 
 import fr.cel.dailyquests.command.SeeQuestCommand;
 import fr.cel.dailyquests.command.SetCustomCommand;
+import fr.cel.dailyquests.listener.InventoryListener;
 import fr.cel.dailyquests.listener.PlayersListener;
 import fr.cel.dailyquests.listener.QuestListener;
 import fr.cel.dailyquests.manager.QuestManager;
+import fr.cel.dailyquests.manager.quest.Quest;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 @Getter
 public final class DailyQuests extends JavaPlugin {
 
+    @Getter private static DailyQuests instance;
+
     private QuestManager questManager;
+    private File globalFile;
+    private YamlConfiguration globalFileConfig;
 
     @Override
     public void onEnable() {
-        File playerFolder = new File(getDataFolder(), "players");
-        if (!playerFolder.exists()) playerFolder.mkdirs();
+        instance = this;
 
-        File questsFolder = new File(getDataFolder(), "quests");
-        if (!questsFolder.exists()) questsFolder.mkdirs();
+        loadFolders();
 
         this.questManager = new QuestManager(this);
         scheduleDailyTask();
@@ -36,33 +42,69 @@ public final class DailyQuests extends JavaPlugin {
             questManager.getPlayerData().put(player.getUniqueId(), questManager.loadQPlayer(player));
         }
 
-        getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
-        getServer().getPluginManager().registerEvents(new QuestListener(questManager), this);
+        registerCommands();
+        registerListeners();
+    }
 
-        getCommand("seequest").setExecutor(new SeeQuestCommand(questManager));
-        getCommand("setcustom").setExecutor(new SetCustomCommand(questManager));
+    @Override
+    public void onDisable() {
+        Bukkit.getOnlinePlayers().forEach(player -> player.kick(Component.text("Redémarrage du serveur !")));
     }
 
     /**
      * Lance le chronomètre permettant de détecter si l'on est passé au jour suivant ou pas
      */
     private void scheduleDailyTask() {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Paris"));
-        LocalDateTime nextMidnight = now.truncatedTo(ChronoUnit.DAYS).plusDays(1);
-        long delay = now.until(nextMidnight, ChronoUnit.MILLIS) / 50; // Convertir les millisecondes en ticks (1 tick = 50ms)
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            LocalDateTime now = LocalDateTime.now();
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                questManager.renewQuestsForAllPlayers();
-                scheduleDailyTask();
+            if (now.getHour() == 0 && now.getMinute() == 0 && now.getSecond() == 0) {
+                if (now.getDayOfWeek() == DayOfWeek.MONDAY) {
+                    questManager.renewQuestsForAllPlayers(Quest.DurationType.WEEKLY);
+                }
+                questManager.renewQuestsForAllPlayers(Quest.DurationType.DAILY);
+                Bukkit.broadcast(Component.text("Renouvellement des quêtes !"));
+                questManager.setLastUpdate(now);
             }
-        }.runTaskLater(this, delay);
+        }, 0L, 20L);
     }
 
-    @Override
-    public void onDisable() {
-        questManager.savePlayers();
+    private void loadFolders() {
+        File playerFolder = new File(getDataFolder(), "players");
+        if (!playerFolder.exists()) playerFolder.mkdirs();
+
+        File questsFolder = new File(getDataFolder(), "quests");
+        if (!questsFolder.exists()) questsFolder.mkdirs();
+
+        File buildingsFolder = new File(getDataFolder(), "buildings");
+        if (!buildingsFolder.exists()) buildingsFolder.mkdirs();
+
+        globalFile = new File(getDataFolder(), "globalFile.yml");
+        if (!globalFile.exists()) {
+            try {
+                globalFile.createNewFile();
+            } catch (IOException e) {
+                getSLF4JLogger().error("Erreur pour créer le fichier globalFile.yml : {} ", e.getMessage());
+            }
+        }
+
+        this.globalFileConfig = new YamlConfiguration();
+        try {
+            this.globalFileConfig.load(globalFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            getSLF4JLogger().error("Erreur au chargement du fichier globalFile.yml : {}", e.getMessage());
+        }
+    }
+
+    private void registerCommands() {
+        getCommand("seequest").setExecutor(new SeeQuestCommand(questManager));
+        getCommand("setcustom").setExecutor(new SetCustomCommand(this));
+    }
+
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
+        getServer().getPluginManager().registerEvents(new QuestListener(questManager), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
     }
 
 }

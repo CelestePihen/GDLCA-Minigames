@@ -13,17 +13,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 public class PlayersListener implements Listener {
 
-    private final DailyQuests main;
     private final QuestManager questManager;
 
     public PlayersListener(DailyQuests main) {
-        this.main = main;
         this.questManager = main.getQuestManager();
     }
 
@@ -32,52 +30,42 @@ public class PlayersListener implements Listener {
         Player player = event.getPlayer();
         QPlayer qPlayer = questManager.loadQPlayer(player);
 
-        if (qPlayer == null) {
-            event.joinMessage(Component.empty());
-            player.kick(Component.text("Erreur à la connexion... Merci de contacter un admin sur Discord !"));
-            return;
-        }
-
         event.joinMessage(Component.text("[+] ", NamedTextColor.GREEN).append(player.name().color(NamedTextColor.WHITE)));
 
         questManager.getPlayerData().put(player.getUniqueId(), qPlayer);
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Paris"));
 
-        // si le joueur a une quête journalière et qu'il y a eu le changement de quête
-        if (qPlayer.getDailyQuest() != null) {
-            LocalDateTime lastUpdate = qPlayer.getDailyQuest().getLastUpdate();
-            long hoursSinceLastUpdate = lastUpdate.until(now, ChronoUnit.HOURS);
+        // récupére dernière mise à jour individuelle du joueur
+        LocalDateTime lastUpdate = qPlayer.getLastUpdate();
 
-            if (hoursSinceLastUpdate >= 24) {
-                qPlayer.renewQuest(Quest.DurationType.DAILY, questManager);
-            }
-        }
-        // sinon on lui met une quête (nouveau joueur)
-        else {
+        // si joueur jamais eu quêtes, on les met
+        if (lastUpdate == null) {
             qPlayer.renewQuest(Quest.DurationType.DAILY, questManager);
+            qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager);
+            qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
+            qPlayer.setLastUpdate(now); // On enregistre la première mise à jour
+            return;
         }
 
-        // si le joueur a une quête hebdomadaire et qu'il y a eu le changement de quête
-        if (qPlayer.getWeeklyQuest() != null) {
-            LocalDateTime lastUpdate = qPlayer.getWeeklyQuest().getLastUpdate();
-            long hoursSinceLastUpdate = lastUpdate.until(now, ChronoUnit.HOURS);
+        // vérifie si passé nouveau jour depuis dernière màj
+        if (lastUpdate.toLocalDate().isBefore(now.toLocalDate())) {
+            qPlayer.renewQuest(Quest.DurationType.DAILY, questManager);
 
-            if (hoursSinceLastUpdate >= 24*7) {
+            // si lundi et joueur pas eu màj cette semaine
+            if (now.getDayOfWeek() == DayOfWeek.MONDAY) {
                 qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager);
             }
-        }
-        // sinon on lui met une quête (nouveau joueur)
-        else {
-            qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager);
+
+            player.sendMessage(Component.text("Tes quêtes ont été renouvelées !"));
+
+            // met à jour dernière màj pour joueur
+            qPlayer.setLastUpdate(now);
         }
 
-        // si le joueur n'a pas la quête custom (nouveau joueur)
         if (qPlayer.getCustomQuest() == null) {
             qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
-        }
-        // sinon si la quête custom que le joueur a n'est pas la même que celle actuellement alors on la change
-        else if (!qPlayer.getCustomQuest().getQuest().name().equals(questManager.getCustomQuest().name())) {
+        } else if (!qPlayer.getCustomQuest().getQuest().getName().equals(questManager.getCustomQuest().getName())) {
             qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
         }
     }

@@ -36,8 +36,8 @@ public class QuestListener implements Listener {
         Quest weeklyQuest = weeklyQuestData.getQuest();
 
         // vérif pour quête journalière
-        if (!dailyQuestData.isFinished() && dailyQuest.condition().job() == Condition.Jobs.MINER) {
-            if (Material.valueOf(dailyQuest.condition().condition()) == event.getBlock().getType()) {
+        if (!dailyQuestData.isFinished() && dailyQuest.getCondition().job() == Condition.Jobs.MINER) {
+            if (Material.valueOf(dailyQuest.getCondition().condition()) == event.getBlock().getType()) {
                 dailyQuestData.setCurrentAmount(dailyQuestData.getCurrentAmount() + 1);
                 if (dailyQuestData.isFinished()) {
                     player.sendMessage(Component.text("Vous avez terminé votre quête journalière !"));
@@ -47,8 +47,8 @@ public class QuestListener implements Listener {
         }
 
         // vérif pour quête hebdomadaire
-        if (!weeklyQuestData.isFinished() && weeklyQuest.condition().job() == Condition.Jobs.MINER) {
-            if (Material.valueOf(weeklyQuest.condition().condition()) == event.getBlock().getType()) {
+        if (!weeklyQuestData.isFinished() && weeklyQuest.getCondition().job() == Condition.Jobs.MINER) {
+            if (Material.valueOf(weeklyQuest.getCondition().condition()) == event.getBlock().getType()) {
                 weeklyQuestData.setCurrentAmount(weeklyQuestData.getCurrentAmount() + 1);
                 if (weeklyQuestData.isFinished()) {
                     player.sendMessage(Component.text("Vous avez terminé votre quête hebdomadaire !"));
@@ -73,8 +73,8 @@ public class QuestListener implements Listener {
         Quest weeklyQuest = weeklyQuestData.getQuest();
 
         // vérif pour quête journalière
-        if (!dailyQuestData.isFinished() && dailyQuest.condition().job() == Condition.Jobs.HUNTER) {
-            if (EntityType.valueOf(dailyQuest.condition().condition()) == event.getEntity().getType()) {
+        if (!dailyQuestData.isFinished() && dailyQuest.getCondition().job() == Condition.Jobs.HUNTER) {
+            if (EntityType.valueOf(dailyQuest.getCondition().condition()) == event.getEntity().getType()) {
                 dailyQuestData.setCurrentAmount(dailyQuestData.getCurrentAmount() + 1);
                 if (dailyQuestData.isFinished()) {
                     player.sendMessage(Component.text("Vous avez terminé votre quête journalière !"));
@@ -84,8 +84,8 @@ public class QuestListener implements Listener {
         }
 
         // vérif pour quête hebdomadaire
-        else if (!weeklyQuestData.isFinished() && weeklyQuest.condition().job() == Condition.Jobs.HUNTER) {
-            if (EntityType.valueOf(weeklyQuest.condition().condition()) == event.getEntity().getType()) {
+        else if (!weeklyQuestData.isFinished() && weeklyQuest.getCondition().job() == Condition.Jobs.HUNTER) {
+            if (EntityType.valueOf(weeklyQuest.getCondition().condition()) == event.getEntity().getType()) {
                 weeklyQuestData.setCurrentAmount(weeklyQuestData.getCurrentAmount() + 1);
                 if (weeklyQuestData.isFinished()) {
                     player.sendMessage(Component.text("Vous avez terminé votre quête hebdomadaire !"));

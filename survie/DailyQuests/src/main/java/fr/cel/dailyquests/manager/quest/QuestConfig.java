@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public class QuestConfig {
+public final class QuestConfig {
 
     private final DailyQuests main;
     private final String questName;
@@ -46,12 +46,16 @@ public class QuestConfig {
                 Quest.DurationType durationType = Quest.DurationType.valueOf(config.getString("durationType"));
 
                 if (durationType == Quest.DurationType.CUSTOM) {
+                    if (!config.contains("completion")) {
+                        main.getSLF4JLogger().info("Attention ! Il manque la catégorie completion dans la quête custom {}", questName);
+                        return null;
+                    }
+
                     return new Quest(
                             questName, config.getString("displayName"),
                             config.getString("description"),
                             Material.valueOf(config.getString("material")), config.getInt("count"),
-                            new Condition(null, 0, "", 0),
-                            durationType
+                            Quest.CustomCompletion.valueOf(config.getString("completion"))
                     );
                 }
 

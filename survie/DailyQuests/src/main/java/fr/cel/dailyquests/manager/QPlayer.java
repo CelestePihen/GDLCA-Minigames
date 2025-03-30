@@ -14,7 +14,7 @@ import java.util.Random;
 import java.util.UUID;
 
 @Getter
-public class QPlayer {
+public final class QPlayer {
 
     private final Player player;
     private final UUID uuid;
@@ -22,6 +22,8 @@ public class QPlayer {
     @Setter private QuestData dailyQuest;
     @Setter private QuestData weeklyQuest;
     @Setter private QuestData customQuest;
+
+    @Getter @Setter private LocalDateTime lastUpdate;
 
     public QPlayer(Player player, QuestData dailyQuest, QuestData weeklyQuest, QuestData customQuest) {
         this.player = player;
@@ -43,7 +45,7 @@ public class QPlayer {
 
         Player player = getPlayer();
         if (player != null) {
-            player.sendMessage("Nouvelle quête " + durationType.name().toLowerCase() + " disponible : " + newQuest.displayName());
+            player.sendMessage("Nouvelle quête " + durationType.name().toLowerCase() + " disponible : " + newQuest.getDisplayName());
         }
     }
 
@@ -51,7 +53,7 @@ public class QPlayer {
         List<Quest> quests = new ArrayList<>();
 
         for (Quest q : questManager.getQuests().values()) {
-            if (q.durationType() == durationType) quests.add(q);
+            if (q.getDurationType() == durationType) quests.add(q);
         }
 
         return quests.get(new Random().nextInt(quests.size()));
