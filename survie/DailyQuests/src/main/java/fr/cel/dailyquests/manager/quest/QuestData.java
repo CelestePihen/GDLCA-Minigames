@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public final class QuestData {
+
     private final Quest quest;
     @Setter private int currentAmount;
     private final LocalDateTime lastUpdate;
@@ -17,8 +18,12 @@ public final class QuestData {
         this.lastUpdate = lastUpdate;
     }
 
+    public QuestData(Quest quest, int currentAmount) {
+        this(quest, currentAmount, LocalDateTime.now());
+    }
+
     public boolean isFinished() {
-        return getCurrentAmount() == getQuest().condition().amount();
+        return getCurrentAmount() == getQuest().getCondition().amount();
     }
 
 }

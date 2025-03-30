@@ -3,3 +3,4 @@ description: "Pas une maison en terre svp, un truc minimum beau"
 material: "OAK_PLANKS"
 count: 1
 durationType: CUSTOM
+completion: NO_COMPLETABLE

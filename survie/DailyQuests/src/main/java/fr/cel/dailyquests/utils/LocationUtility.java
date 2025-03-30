@@ -5,6 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+import java.io.IOException;
+
 @UtilityClass
 public class LocationUtility {
 
@@ -17,7 +20,7 @@ public class LocationUtility {
      * @throws NumberFormatException Si l'une des parties de la chaîne ne peut pas être convertie en double.
      * @throws ArrayIndexOutOfBoundsException Si la chaîne n'a pas le bon format (moins de trois parties).
      */
-    public Location parseStringToLoc(YamlConfiguration config, String string) {
+    public Location parseStringToLoc(String string) {
         String[] parsedLoc = string.split(",");
 
         double x = Double.parseDouble(parsedLoc[0]);
@@ -25,6 +28,26 @@ public class LocationUtility {
         double z = Double.parseDouble(parsedLoc[2]);
 
         return new Location(Bukkit.getWorld("world"), x, y, z);
+    }
+
+    public String parseCoordinatesToString(double x, double y, double z) {
+        return x + "," + y + "," + z;
+    }
+
+    public void parseLocationToConfig(Location location, YamlConfiguration config, File file, String loc) {
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+
+        config.set(loc + ".x", x);
+        config.set(loc + ".y", y);
+        config.set(loc + ".z", z);
+
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            System.out.println("Impossible de sauvegarder le fichier " + file.getName() + " : " + e.getMessage());
+        }
     }
 
     /**

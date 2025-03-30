@@ -1,4 +1,4 @@
 Quêtes pas liées aux métiers :
- - construire sa maison (quelque chose qui peut s'apparenter à une maison quoi genre pas une maison en terre) -> vérif par les autres joueurs
- - construire un/e "bâtiment communautaire" (genre une mairie / commissariat / bibliothèque / route / etc) -> déposer dans un coffre les matériaux requis -> on voit le bâtiment se construire quand tous les matériaux sont présents
- - 
+ - construire sa maison (quelque chose qui peut s'apparenter à une maison, pas une maison en terre) -> vérif par les autres joueurs
+ - construire un "bâtiment communautaire" (genre une mairie / commissariat / bibliothèque / route / etc)
+    -> déposer dans un coffre les matériaux requis -> on voit le bâtiment se construire quand tous les matériaux sont présents
