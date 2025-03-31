@@ -6,6 +6,7 @@ import fr.cel.dailyquests.manager.quest.QuestConfig;
 import fr.cel.dailyquests.manager.quest.QuestData;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -14,10 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public final class QuestManager {
 
@@ -54,14 +52,11 @@ public final class QuestManager {
      */
     public void renewQuestsForAllPlayers(Quest.DurationType durationType) {
         for (QPlayer qPlayer : playerData.values()) {
-            QuestData dailyQuest = qPlayer.getDailyQuest();
-            QuestData weeklyQuest = qPlayer.getWeeklyQuest();
-
-            if (dailyQuest != null && durationType == Quest.DurationType.DAILY) {
+            if (durationType == Quest.DurationType.DAILY && qPlayer.getDailyQuest() != null) {
                 qPlayer.renewQuest(Quest.DurationType.DAILY, this);
             }
 
-            if (weeklyQuest != null && durationType == Quest.DurationType.WEEKLY) {
+            if (durationType == Quest.DurationType.WEEKLY && qPlayer.getWeeklyQuest() != null) {
                 qPlayer.renewQuest(Quest.DurationType.WEEKLY, this);
             }
         }
@@ -113,60 +108,20 @@ public final class QuestManager {
             String lu = config.getString("lastUpdate");
             LocalDateTime lastUpdate = LocalDateTime.parse(lu, formatter);
 
-            QPlayer qPlayer = new QPlayer(player, dailyQuestData, weeklyQuestData, customQuestData);
+            // Completed Quests
+            List<String> completedDailyQuests = new ArrayList<>(config.getStringList("completedDailyQuests"));
+            List<String> completedWeeklyQuests = new ArrayList<>(config.getStringList("completedWeeklyQuests"));
+
+            QPlayer qPlayer = new QPlayer(player, dailyQuestData, weeklyQuestData, customQuestData, completedDailyQuests, completedWeeklyQuests);
             qPlayer.setLastUpdate(lastUpdate);
 
             return qPlayer;
         } else {
             createPlayerFile(player, playerFile);
-            QPlayer qPlayer = new QPlayer(player, null, null, null);
+            QPlayer qPlayer = new QPlayer(player, null, null, null, new ArrayList<>(), new ArrayList<>());
             qPlayer.setLastUpdate(null);
             return qPlayer;
         }
-    }
-
-    /**
-     * Sauvegarde l'avancée des quêtes du joueur
-     * @param qPlayer Instance de QPlayer du joueur
-     */
-    public void saveQPlayer(QPlayer qPlayer) {
-        final File playerFile = new File(main.getDataFolder() + File.separator + "players", qPlayer.getUuid().toString() + ".yml");
-        try {
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(playerFile);
-
-            if (qPlayer.getDailyQuest() != null) {
-                config.set("dailyQuest.name", qPlayer.getDailyQuest().getQuest().getName());
-                config.set("dailyQuest.date", qPlayer.getDailyQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                config.set("dailyQuest.amount", qPlayer.getDailyQuest().getCurrentAmount());
-            }
-
-            if (qPlayer.getWeeklyQuest() != null) {
-                config.set("weeklyQuest.name", qPlayer.getWeeklyQuest().getQuest().getName());
-                config.set("weeklyQuest.date", qPlayer.getWeeklyQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                config.set("weeklyQuest.amount", qPlayer.getWeeklyQuest().getCurrentAmount());
-            }
-
-            if (qPlayer.getCustomQuest() != null) {
-                config.set("customQuest.name", qPlayer.getCustomQuest().getQuest().getName());
-                config.set("customQuest.date", qPlayer.getCustomQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                config.set("customQuest.amount", qPlayer.getCustomQuest().getCurrentAmount());
-            }
-
-            if (qPlayer.getLastUpdate() != null) {
-                config.set("lastUpdate", qPlayer.getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            }
-
-            config.save(playerFile);
-        } catch (IOException | NullPointerException e) {
-            main.getSLF4JLogger().error("Impossible de sauvegarder le fichier pour {}", qPlayer.getUuid());
-        }
-    }
-
-    /**
-     * Sauvegarde l'avancée des quêtes de tous les joueurs
-     */
-    public void savePlayers() {
-        for (QPlayer qPlayer : this.playerData.values()) saveQPlayer(qPlayer);
     }
 
     /**

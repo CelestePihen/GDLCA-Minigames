@@ -33,7 +33,8 @@ public final class DailyQuests extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        loadFolders();
+        createFolders();
+        createGlobalFile();
 
         this.questManager = new QuestManager(this);
         scheduleDailyTask();
@@ -69,7 +70,10 @@ public final class DailyQuests extends JavaPlugin {
         }, 0L, 20L);
     }
 
-    private void loadFolders() {
+    /**
+     * Crée les dossiers requis au fonctionnement du plugin s'ils n'existent pas
+     */
+    private void createFolders() {
         File playerFolder = new File(getDataFolder(), "players");
         if (!playerFolder.exists()) playerFolder.mkdirs();
 
@@ -78,7 +82,12 @@ public final class DailyQuests extends JavaPlugin {
 
         File buildingsFolder = new File(getDataFolder(), "buildings");
         if (!buildingsFolder.exists()) buildingsFolder.mkdirs();
+    }
 
+    /**
+     * Crée le fichier globalFile s'il n'existe pas
+     */
+    private void createGlobalFile() {
         globalFile = new File(getDataFolder(), "globalFile.yml");
         if (!globalFile.exists()) {
             try {
@@ -96,11 +105,17 @@ public final class DailyQuests extends JavaPlugin {
         }
     }
 
+    /**
+     * Enregistre les commandes
+     */
     private void registerCommands() {
         getCommand("seequest").setExecutor(new SeeQuestCommand(questManager));
         getCommand("setcustom").setExecutor(new SetCustomCommand(this));
     }
 
+    /**
+     * Enregistre les événements
+     */
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
         getServer().getPluginManager().registerEvents(new QuestListener(questManager), this);
