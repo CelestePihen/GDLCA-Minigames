@@ -17,7 +17,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class PlayersListener implements Listener {
+public final class PlayersListener implements Listener {
 
     private final QuestManager questManager;
 
@@ -39,12 +39,12 @@ public class PlayersListener implements Listener {
         // récupére dernière mise à jour individuelle du joueur
         LocalDateTime lastUpdate = qPlayer.getLastUpdate();
 
-        // si joueur jamais eu quêtes, on les met
+        // si joueur a jamais eu de quêtes, on les met
         if (lastUpdate == null) {
             qPlayer.renewQuest(Quest.DurationType.DAILY, questManager);
             qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager);
             qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
-            qPlayer.setLastUpdate(now); // On enregistre la première mise à jour
+            qPlayer.setLastUpdate(now); // enregistre première mise à jour
             return;
         }
 
@@ -52,7 +52,7 @@ public class PlayersListener implements Listener {
         if (lastUpdate.toLocalDate().isBefore(now.toLocalDate())) {
             qPlayer.renewQuest(Quest.DurationType.DAILY, questManager);
 
-            // si lundi et joueur pas eu màj cette semaine
+            // si lundi et joueur a pas eu de màj cette semaine
             if (now.getDayOfWeek() == DayOfWeek.MONDAY) {
                 qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager);
             }
@@ -63,9 +63,7 @@ public class PlayersListener implements Listener {
             qPlayer.setLastUpdate(now);
         }
 
-        if (qPlayer.getCustomQuest() == null) {
-            qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
-        } else if (!qPlayer.getCustomQuest().getQuest().getName().equals(questManager.getCustomQuest().getName())) {
+        if (qPlayer.getCustomQuest() == null || !qPlayer.getCustomQuest().getQuest().getName().equals(questManager.getCustomQuest().getName())) {
             qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
         }
     }
@@ -75,7 +73,7 @@ public class PlayersListener implements Listener {
         Player player = event.getPlayer();
 
         event.quitMessage(Component.text("[-] ", NamedTextColor.RED).append(player.name().color(NamedTextColor.WHITE)));
-        if (questManager.getPlayerData().get(player.getUniqueId()) != null) questManager.saveQPlayer(questManager.getPlayerData().get(event.getPlayer().getUniqueId()));
+        if (questManager.getPlayerData().get(player.getUniqueId()) != null) questManager.getPlayerData().get(event.getPlayer().getUniqueId()).saveQPlayer();
     }
 
 }

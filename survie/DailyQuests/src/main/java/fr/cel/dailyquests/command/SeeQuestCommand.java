@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public class SeeQuestCommand implements CommandExecutor {
+public final class SeeQuestCommand implements CommandExecutor {
 
     private final QuestManager questManager;
 
@@ -49,7 +49,7 @@ public class SeeQuestCommand implements CommandExecutor {
         inv.setItem(13, new ItemBuilder(weeklyQuest.getQuest().getMaterial(), weeklyQuest.getQuest().getCount())
                 .setDisplayName(weeklyQuest.getQuest().getDisplayName())
                 .setLore(ChatUtility.format(weeklyQuest.getQuest().getDescription(), ChatUtility.WHITE),
-                        ChatUtility.format(weeklyQuest.getCurrentAmount()+ "/" + dailyQuest.getQuest().getCondition().amount(), ChatUtility.WHITE))
+                        ChatUtility.format(weeklyQuest.getCurrentAmount()+ "/" + weeklyQuest.getQuest().getCondition().amount(), ChatUtility.WHITE))
                 .toItemStack());
 
         if (customQuest.getQuest() != null) {

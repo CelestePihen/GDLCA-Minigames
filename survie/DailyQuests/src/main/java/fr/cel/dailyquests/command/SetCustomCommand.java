@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class SetCustomCommand implements CommandExecutor {
+public final class SetCustomCommand implements CommandExecutor {
 
     private final DailyQuests main;
     private final QuestManager questManager;
