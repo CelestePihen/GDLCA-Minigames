@@ -1,7 +1,9 @@
 package fr.cel.dailyquests.command;
 
+import fr.cel.dailyquests.DailyQuests;
 import fr.cel.dailyquests.manager.QPlayer;
 import fr.cel.dailyquests.manager.QuestManager;
+import fr.cel.dailyquests.manager.quest.Quest;
 import fr.cel.dailyquests.manager.quest.QuestData;
 import fr.cel.dailyquests.utils.ChatUtility;
 import fr.cel.dailyquests.utils.ItemBuilder;
@@ -17,10 +19,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SeeQuestCommand implements CommandExecutor {
 
+    private final DailyQuests main;
     private final QuestManager questManager;
 
-    public SeeQuestCommand(QuestManager questManager) {
-        this.questManager = questManager;
+    public SeeQuestCommand(DailyQuests main) {
+        this.main = main;
+        this.questManager = main.getQuestManager();
     }
 
     @Override
@@ -53,10 +57,16 @@ public final class SeeQuestCommand implements CommandExecutor {
                 .toItemStack());
 
         if (customQuest.getQuest() != null) {
-            inv.setItem(15, new ItemBuilder(customQuest.getQuest().getMaterial(), customQuest.getQuest().getCount())
+            ItemBuilder itemBuilder = new ItemBuilder(customQuest.getQuest().getMaterial(), customQuest.getQuest().getCount())
                     .setDisplayName(customQuest.getQuest().getDisplayName())
-                    .setLore(ChatUtility.format(customQuest.getQuest().getDescription(), ChatUtility.WHITE))
-                    .toItemStack());
+                    .setLore(ChatUtility.format(customQuest.getQuest().getDescription(), ChatUtility.WHITE));
+
+            if (customQuest.getQuest().getCustomCompletion() == Quest.CustomCompletion.CHESTS) {
+                String percentage = String.format("%.2f", main.getBuildingManager().getPercentage());
+                itemBuilder.addLoreLine(ChatUtility.format("Taux de complétion : " + percentage + "%", ChatUtility.WHITE));
+            }
+
+            inv.setItem(15, itemBuilder.toItemStack());
         } else {
             inv.setItem(15, new ItemBuilder(Material.BARRIER).setDisplayName("Aucune quête communautaire n'est activée.").toItemStack());
         }

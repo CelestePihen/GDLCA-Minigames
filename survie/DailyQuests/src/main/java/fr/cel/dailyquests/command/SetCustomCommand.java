@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -26,8 +25,8 @@ public final class SetCustomCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (sender instanceof Player player && !player.isOp()) {
-            player.sendMessage(Component.text("Vous ne pouvez pas faire cette commande."));
+        if (!sender.isOp()) {
+            sender.sendMessage(Component.text("Vous ne pouvez pas faire cette commande."));
             return false;
         }
 

@@ -1,10 +1,12 @@
 package fr.cel.dailyquests;
 
+import fr.cel.dailyquests.command.BuildingBookCommand;
 import fr.cel.dailyquests.command.SeeQuestCommand;
 import fr.cel.dailyquests.command.SetCustomCommand;
 import fr.cel.dailyquests.listener.InventoryListener;
 import fr.cel.dailyquests.listener.PlayersListener;
 import fr.cel.dailyquests.listener.QuestListener;
+import fr.cel.dailyquests.manager.BuildingManager;
 import fr.cel.dailyquests.manager.QuestManager;
 import fr.cel.dailyquests.manager.quest.Quest;
 import lombok.Getter;
@@ -26,6 +28,8 @@ public final class DailyQuests extends JavaPlugin {
     @Getter private static DailyQuests instance;
 
     private QuestManager questManager;
+    private BuildingManager buildingManager;
+
     private File globalFile;
     private YamlConfiguration globalFileConfig;
 
@@ -36,6 +40,7 @@ public final class DailyQuests extends JavaPlugin {
         createFolders();
         createGlobalFile();
 
+        this.buildingManager = new BuildingManager(this);
         this.questManager = new QuestManager(this);
         scheduleDailyTask();
 
@@ -79,9 +84,6 @@ public final class DailyQuests extends JavaPlugin {
 
         File questsFolder = new File(getDataFolder(), "quests");
         if (!questsFolder.exists()) questsFolder.mkdirs();
-
-        File buildingsFolder = new File(getDataFolder(), "buildings");
-        if (!buildingsFolder.exists()) buildingsFolder.mkdirs();
     }
 
     /**
@@ -109,8 +111,9 @@ public final class DailyQuests extends JavaPlugin {
      * Enregistre les commandes
      */
     private void registerCommands() {
-        getCommand("seequest").setExecutor(new SeeQuestCommand(questManager));
+        getCommand("seequest").setExecutor(new SeeQuestCommand(this));
         getCommand("setcustom").setExecutor(new SetCustomCommand(this));
+        getCommand("buildingbook").setExecutor(new BuildingBookCommand(buildingManager));
     }
 
     /**

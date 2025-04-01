@@ -6,7 +6,6 @@ import fr.cel.dailyquests.manager.quest.QuestConfig;
 import fr.cel.dailyquests.manager.quest.QuestData;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 

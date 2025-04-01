@@ -9,11 +9,5 @@ commands:
     description: "Permet de voir les quêtes"
   setcustom:
     description: "Permet de changer la quête custom"
-  addbuilding:
-    description: ""
-  loadbuilding:
-    description: ""
-  startbuilding:
-    description: ""
-  bookbuilding:
+  buildingbook:
     description: ""
