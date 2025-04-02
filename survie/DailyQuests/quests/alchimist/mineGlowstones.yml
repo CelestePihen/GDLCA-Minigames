@@ -1,0 +1,10 @@
+displayName: "Récolte de poudre lumineuse"
+description: "Récoltez 20 blocs de poudres lumineuses"
+material: "GLOWSTONE"
+count: 20
+durationType: DAILY
+job:
+  name: "ALCHEMIST"
+  amountXp: 25
+  type: "GLOWSTONE"
+  amount: 20

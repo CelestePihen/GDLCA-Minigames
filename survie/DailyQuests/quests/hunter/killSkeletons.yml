@@ -1,0 +1,12 @@
+displayName: "Chasseur de squelettes"
+description: "Éliminez 10 squelettes et récupérez leurs os"
+material: "BONE"
+count: 10
+durationType: DAILY
+
+# type pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 12
+  type: "SKELETON"
+  amount: 10

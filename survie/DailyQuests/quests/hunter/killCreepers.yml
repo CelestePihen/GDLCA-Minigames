@@ -1,0 +1,12 @@
+displayName: "La menace verte"
+description: "Éliminez 12 creepers avant qu'ils n'explosent"
+material: "GUNPOWDER"
+count: 12
+durationType: DAILY
+
+# type pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 18
+  type: "CREEPER"
+  amount: 12

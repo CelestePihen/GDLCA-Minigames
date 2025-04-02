@@ -1,0 +1,10 @@
+displayName: "L'éleveur expert"
+description: "Nourrissez et élevez 50 animaux"
+material: "HAY_BLOCK"
+count: 50
+durationType: WEEKLY
+job:
+  name: "FARMER"
+  amountXp: 75
+  type: "BREED"
+  amount: 50

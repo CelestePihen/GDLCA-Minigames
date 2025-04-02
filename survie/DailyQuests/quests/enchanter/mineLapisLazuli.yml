@@ -1,0 +1,10 @@
+displayName: "Le pouvoir du lapis"
+description: "Collectez 20 lapis-lazuli"
+material: "LAPIS_LAZULI"
+count: 20
+durationType: DAILY
+job:
+  name: "ENCHANTER"
+  amountXp: 15
+  type: "LAPIS_LAZULI"
+  amount: 20

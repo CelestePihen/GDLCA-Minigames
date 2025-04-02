@@ -1,6 +1,6 @@
 package fr.cel.dailyquests.manager.quest;
 
-public record Condition(Jobs job, int amountXp, String condition, int amount) {
+public record Condition(Jobs job, int amountXp, String type, int amount) {
 
     /**
      * Les métiers <br>
@@ -8,8 +8,10 @@ public record Condition(Jobs job, int amountXp, String condition, int amount) {
      */
     public enum Jobs {
         HUNTER,
-        LUMBERJACK,
         MINER,
+        FARMER,
+        ENCHANTER,
+        ALCHEMIST
     }
 
 }

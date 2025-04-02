@@ -1,0 +1,10 @@
+displayName: "Maître brasseur"
+description: "Fabriquez 5 potions"
+material: "BREWING_STAND"
+count: 5
+durationType: DAILY
+job:
+  name: "ALCHEMIST"
+  amountXp: 20
+  type: "POTION"
+  amount: 5

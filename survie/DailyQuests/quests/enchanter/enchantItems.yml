@@ -1,0 +1,10 @@
+displayName: "Premier enchantement"
+description: "Enchantez 3 items"
+material: "ENCHANTING_TABLE"
+count: 3
+durationType: DAILY
+job:
+  name: "ENCHANTER"
+  amountXp: 20
+  type: "ENCHANT"
+  amount: 3

@@ -1,0 +1,10 @@
+displayName: "Le nether en bouteille"
+description: "Récoltez 20 verrues du Nether"
+material: "NETHER_WART"
+count: 20
+durationType: WEEKLY
+job:
+  name: "ALCHEMIST"
+  amountXp: 50
+  type: "NETHER_WART"
+  amount: 20
