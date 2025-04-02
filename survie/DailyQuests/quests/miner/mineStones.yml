@@ -1,0 +1,10 @@
+displayName: "Pierre à l'infini"
+description: "Récoltez 200 blocs de pierre"
+material: "STONE"
+count: 64
+durationType: DAILY
+job:
+  name: "MINER"
+  amountXp: 15
+  type: "STONE"
+  amount: 200

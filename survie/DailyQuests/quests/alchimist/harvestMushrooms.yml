@@ -1,0 +1,10 @@
+displayName: "Collection de champignons"
+description: "Récoltez 15 champignons rouges et bruns"
+material: "RED_MUSHROOM"
+count: 15
+durationType: DAILY
+job:
+  name: "ALCHEMIST"
+  amountXp: 15
+  type: "MUSHROOM"
+  amount: 15

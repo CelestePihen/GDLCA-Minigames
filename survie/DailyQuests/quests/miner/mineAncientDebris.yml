@@ -1,0 +1,10 @@
+displayName: "Richesse ancienne"
+description: "Trouvez et exploitez 32 débris antiques"
+material: "ANCIENT_DEBRIS"
+count: 32
+durationType: WEEKLY
+job:
+  name: "MINER"
+  amountXp: 80
+  type: "ANCIENT_DEBRIS"
+  amount: 32

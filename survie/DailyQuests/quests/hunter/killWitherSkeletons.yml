@@ -1,0 +1,12 @@
+displayName: "Chasseur de Wither Skeletons"
+description: "Chassez 120 squelettes du Nether"
+material: "WITHER_SKELETON_SKULL"
+count: 3
+durationType: WEEKLY
+
+# type pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 360
+  type: "WITHER_SKELETON"
+  amount: 120

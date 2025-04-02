@@ -122,7 +122,7 @@ public final class DailyQuests extends JavaPlugin {
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
         getServer().getPluginManager().registerEvents(new QuestListener(questManager), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(questManager), this);
     }
 
 }

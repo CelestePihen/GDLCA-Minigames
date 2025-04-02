@@ -1,0 +1,10 @@
+displayName: "La ferme sucrée"
+description: "Récoltez 20 cannes à sucre"
+material: "SUGAR_CANE"
+count: 20
+durationType: DAILY
+job:
+  name: "FARMER"
+  amountXp: 15
+  type: "SUGAR_CANE"
+  amount: 20

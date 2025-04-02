@@ -1,0 +1,10 @@
+displayName: "Bibliothécaire"
+description: "Fabriquez 15 étagères à livres"
+material: "BOOKSHELF"
+count: 15
+durationType: DAILY
+job:
+  name: "ENCHANTER"
+  amountXp: 20
+  type: "BOOKSHELF"
+  amount: 15

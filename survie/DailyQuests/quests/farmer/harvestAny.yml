@@ -1,0 +1,10 @@
+displayName: "Ferme industrielle"
+description: "Récoltez 500 cultures en une semaine"
+material: "GOLDEN_HOE"
+count: 64
+durationType: WEEKLY
+job:
+  name: "FARMER"
+  amountXp: 100
+  type: "ANY_CROP"
+  amount: 500

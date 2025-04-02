@@ -1,0 +1,10 @@
+displayName: "Le pain quotidien"
+description: "Récoltez 40 plants de blé"
+material: "WHEAT"
+count: 40
+durationType: DAILY
+job:
+  name: "FARMER"
+  amountXp: 15
+  type: "WHEAT"
+  amount: 40
