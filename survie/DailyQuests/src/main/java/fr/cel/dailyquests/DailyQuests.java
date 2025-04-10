@@ -1,16 +1,17 @@
 package fr.cel.dailyquests;
 
-import fr.cel.dailyquests.command.BuildingBookCommand;
-import fr.cel.dailyquests.command.SeeQuestCommand;
-import fr.cel.dailyquests.command.SetCustomCommand;
+import fr.cel.dailyquests.command.*;
 import fr.cel.dailyquests.listener.InventoryListener;
 import fr.cel.dailyquests.listener.PlayersListener;
 import fr.cel.dailyquests.listener.QuestListener;
 import fr.cel.dailyquests.manager.BuildingManager;
 import fr.cel.dailyquests.manager.QuestManager;
 import fr.cel.dailyquests.manager.quest.Quest;
+import fr.cel.dailyquests.utils.ChatUtility;
+import fr.floppa.jobs.Jobs;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,6 +28,10 @@ public final class DailyQuests extends JavaPlugin {
 
     @Getter private static DailyQuests instance;
 
+    @Getter private static final String prefix = ChatUtility.format("[DailyQuests] ", ChatUtility.GOLD);
+
+    @Getter private Jobs jobs;
+
     private QuestManager questManager;
     private BuildingManager buildingManager;
 
@@ -37,16 +42,19 @@ public final class DailyQuests extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        jobs = (Jobs) Bukkit.getServer().getPluginManager().getPlugin("Jobs");
+
+        if (jobs == null) {
+            getSLF4JLogger().error("Impossible de charger le plugin Jobs.");
+            Bukkit.shutdown();
+        }
+
         createFolders();
         createGlobalFile();
 
         this.buildingManager = new BuildingManager(this);
         this.questManager = new QuestManager(this);
         scheduleDailyTask();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            questManager.getPlayerData().put(player.getUniqueId(), questManager.loadQPlayer(player));
-        }
 
         registerCommands();
         registerListeners();
@@ -66,11 +74,15 @@ public final class DailyQuests extends JavaPlugin {
 
             if (now.getHour() == 0 && now.getMinute() == 0 && now.getSecond() == 0) {
                 if (now.getDayOfWeek() == DayOfWeek.MONDAY) {
-                    questManager.renewQuestsForAllPlayers(Quest.DurationType.WEEKLY);
+                    questManager.renewQuestsForAllPlayers(Quest.DurationType.WEEKLY, now);
                 }
-                questManager.renewQuestsForAllPlayers(Quest.DurationType.DAILY);
-                Bukkit.broadcast(Component.text("Renouvellement des quêtes !"));
+                questManager.renewQuestsForAllPlayers(Quest.DurationType.DAILY, now);
                 questManager.setLastUpdate(now);
+
+                getSLF4JLogger().info("Renouvellement des quêtes !");
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.showTitle(Title.title(Component.text("Renouvellement des quêtes !"), Component.text("")));
+                }
             }
         }, 0L, 20L);
     }
@@ -114,6 +126,10 @@ public final class DailyQuests extends JavaPlugin {
         getCommand("seequest").setExecutor(new SeeQuestCommand(this));
         getCommand("setcustom").setExecutor(new SetCustomCommand(this));
         getCommand("buildingbook").setExecutor(new BuildingBookCommand(buildingManager));
+        getCommand("forcequest").setExecutor(new ForceQuestCommand(questManager));
+
+        getCommand("renewquest").setExecutor(new RenewQuestCommand(questManager));
+        getCommand("renewquest").setTabCompleter(new RenewQuestCommand(questManager));
     }
 
     /**

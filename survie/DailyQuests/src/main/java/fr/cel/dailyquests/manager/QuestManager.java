@@ -49,14 +49,18 @@ public final class QuestManager {
     /**
      * Met à jour les quêtes journalières et hebdomadaires de tous les joueurs connectés
      */
-    public void renewQuestsForAllPlayers(Quest.DurationType durationType) {
+    public void renewQuestsForAllPlayers(Quest.DurationType durationType, LocalDateTime now) {
         for (QPlayer qPlayer : playerData.values()) {
+            qPlayer.setLastUpdate(now);
+
             if (durationType == Quest.DurationType.DAILY && qPlayer.getDailyQuest() != null) {
-                qPlayer.renewQuest(Quest.DurationType.DAILY, this);
+                qPlayer.renewQuest(Quest.DurationType.DAILY, this, false);
+                qPlayer.setHasRenewDaily(false);
             }
 
             if (durationType == Quest.DurationType.WEEKLY && qPlayer.getWeeklyQuest() != null) {
-                qPlayer.renewQuest(Quest.DurationType.WEEKLY, this);
+                qPlayer.renewQuest(Quest.DurationType.WEEKLY, this, false);
+                qPlayer.setHasRenewWeekly(false);
             }
         }
     }
@@ -76,11 +80,13 @@ public final class QuestManager {
             String dailyQuestName = config.getString("dailyQuest.name");
             String dailyQuestDate = config.getString("dailyQuest.date");
             int dailyQuestAmount = config.getInt("dailyQuest.amount");
+            boolean hasRenewDaily = config.getBoolean("dailyQuest.renewDaily");
 
             // quête hebdomadaire
             String weeklyQuestName = config.getString("weeklyQuest.name");
             String weeklyQuestDate = config.getString("weeklyQuest.date");
             int weeklyQuestAmount = config.getInt("weeklyQuest.amount");
+            boolean hasRenewWeekly = config.getBoolean("weeklyQuest.renewDaily");
 
             // quête custom
             String customQuestName = config.getString("customQuest.name");
@@ -111,13 +117,13 @@ public final class QuestManager {
             List<String> completedDailyQuests = new ArrayList<>(config.getStringList("completedDailyQuests"));
             List<String> completedWeeklyQuests = new ArrayList<>(config.getStringList("completedWeeklyQuests"));
 
-            QPlayer qPlayer = new QPlayer(player, dailyQuestData, weeklyQuestData, customQuestData, completedDailyQuests, completedWeeklyQuests);
+            QPlayer qPlayer = new QPlayer(player, dailyQuestData, weeklyQuestData, customQuestData, completedDailyQuests, completedWeeklyQuests, hasRenewDaily, hasRenewWeekly);
             qPlayer.setLastUpdate(lastUpdate);
 
             return qPlayer;
         } else {
             createPlayerFile(player, playerFile);
-            QPlayer qPlayer = new QPlayer(player, null, null, null, new ArrayList<>(), new ArrayList<>());
+            QPlayer qPlayer = new QPlayer(player, null, null, null, new ArrayList<>(), new ArrayList<>(), false, false);
             qPlayer.setLastUpdate(null);
             return qPlayer;
         }

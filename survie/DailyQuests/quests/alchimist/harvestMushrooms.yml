@@ -6,5 +6,5 @@ durationType: DAILY
 job:
   name: "ALCHEMIST"
   amountXp: 15
-  type: "MUSHROOM"
+  type: "ANY_MUSHROOM"
   amount: 15
