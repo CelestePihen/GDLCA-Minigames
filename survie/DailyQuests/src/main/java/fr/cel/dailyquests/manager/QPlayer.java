@@ -32,9 +32,12 @@ public final class QPlayer {
     private final List<String> completedDailyQuests;
     private final List<String> completedWeeklyQuests;
 
-    @Getter @Setter private LocalDateTime lastUpdate;
+    @Setter private boolean hasRenewDaily;
+    @Setter private boolean hasRenewWeekly;
 
-    public QPlayer(Player player, QuestData dailyQuest, QuestData weeklyQuest, QuestData customQuest, List<String> completedDailyQuests, List<String> completedWeeklyQuests) {
+    @Setter private LocalDateTime lastUpdate;
+
+    public QPlayer(Player player, QuestData dailyQuest, QuestData weeklyQuest, QuestData customQuest, List<String> completedDailyQuests, List<String> completedWeeklyQuests, boolean hasRenewDaily, boolean hasRenewWeekly) {
         this.player = player;
         this.uuid = player.getUniqueId();
 
@@ -44,6 +47,9 @@ public final class QPlayer {
 
         this.completedDailyQuests = completedDailyQuests;
         this.completedWeeklyQuests = completedWeeklyQuests;
+
+        this.hasRenewDaily = hasRenewDaily;
+        this.hasRenewWeekly = hasRenewWeekly;
     }
 
     /**
@@ -51,20 +57,31 @@ public final class QPlayer {
      * @param durationType La durée (journalier ou hebdomadaire)
      * @param questManager Le gestionnaire de quêtes
      */
-    public void renewQuest(Quest.DurationType durationType, QuestManager questManager) {
+    public void renewQuest(Quest.DurationType durationType, QuestManager questManager, boolean isPlayer) {
         Quest newQuest = selectNewQuest(durationType, questManager);
 
         if (durationType == Quest.DurationType.DAILY) {
-            setDailyQuest(new QuestData(newQuest, 0, LocalDateTime.now(ZoneId.of("Europe/Paris"))));
-            completedDailyQuests.add(newQuest.getName());
+            if (isPlayer && !hasRenewDaily) {
+                setDailyQuest(new QuestData(newQuest, 0, LocalDateTime.now(ZoneId.of("Europe/Paris"))));
+                completedDailyQuests.add(newQuest.getName());
+                player.sendMessage(Component.text("Nouvelle quête journalière disponible : " + newQuest.getDisplayName()));
+                hasRenewDaily = true;
+            } else if (!isPlayer) {
+                setDailyQuest(new QuestData(newQuest, 0, LocalDateTime.now(ZoneId.of("Europe/Paris"))));
+                completedDailyQuests.add(newQuest.getName());
+                player.sendMessage(Component.text("Nouvelle quête journalière disponible : " + newQuest.getDisplayName()));
+            }
         } else if (durationType == Quest.DurationType.WEEKLY) {
-            setWeeklyQuest(new QuestData(newQuest, 0, LocalDateTime.now(ZoneId.of("Europe/Paris"))));
-            completedWeeklyQuests.add(newQuest.getName());
-        }
-
-        Player player = getPlayer();
-        if (player != null) {
-            player.sendMessage(Component.text("Nouvelle quête " + durationType.name().toLowerCase() + " disponible : " + newQuest.getDisplayName()));
+            if (isPlayer && !hasRenewWeekly) {
+                setWeeklyQuest(new QuestData(newQuest, 0, LocalDateTime.now(ZoneId.of("Europe/Paris"))));
+                completedWeeklyQuests.add(newQuest.getName());
+                player.sendMessage(Component.text("Nouvelle quête hebdomadaire disponible : " + newQuest.getDisplayName()));
+                hasRenewWeekly = true;
+            } else if (!isPlayer) {
+                setWeeklyQuest(new QuestData(newQuest, 0, LocalDateTime.now(ZoneId.of("Europe/Paris"))));
+                completedWeeklyQuests.add(newQuest.getName());
+                player.sendMessage(Component.text("Nouvelle quête hebdomadaire disponible : " + newQuest.getDisplayName()));
+            }
         }
     }
 
@@ -80,12 +97,14 @@ public final class QPlayer {
                 config.set("dailyQuest.name", getDailyQuest().getQuest().getName());
                 config.set("dailyQuest.date", getDailyQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 config.set("dailyQuest.amount", getDailyQuest().getCurrentAmount());
+                config.set("dailyQuest.renew", hasRenewDaily);
             }
 
             if (getWeeklyQuest() != null) {
                 config.set("weeklyQuest.name", getWeeklyQuest().getQuest().getName());
                 config.set("weeklyQuest.date", getWeeklyQuest().getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 config.set("weeklyQuest.amount", getWeeklyQuest().getCurrentAmount());
+                config.set("weeklyQuest.renew", hasRenewWeekly);
             }
 
             if (getCustomQuest() != null) {
@@ -108,7 +127,7 @@ public final class QPlayer {
 
             config.save(playerFile);
         } catch (IOException | NullPointerException e) {
-            DailyQuests.getInstance().getSLF4JLogger().error("Impossible de sauvegarder le fichier pour {}", getUuid());
+            DailyQuests.getInstance().getSLF4JLogger().error("Impossible de sauvegarder le fichier pour {} - {}", getPlayer().getName(), getUuid());
         }
     }
 

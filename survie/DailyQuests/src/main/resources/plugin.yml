@@ -1,13 +1,19 @@
 name: DailyQuests
-version: '1.0.0'
+version: '1.0'
 authors: [ Cel ]
 main: fr.cel.dailyquests.DailyQuests
 api-version: '1.21'
 prefix: DailyQuests
+depend:
+  - Jobs
 commands:
   seequest:
     description: "Permet de voir les quêtes"
   setcustom:
     description: "Permet de changer la quête custom"
   buildingbook:
-    description: ""
+    description: "Donne un livre contenant les matériaux manquants pour le bâtiment"
+  forcequest:
+    description: "Permet de valider une quête buggé pour un joueur"
+  renewquest:
+    description: "Permet de renouveller une quête buggé pour un joueur"

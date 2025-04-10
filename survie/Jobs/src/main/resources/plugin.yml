@@ -1,0 +1,23 @@
+name: Jobs
+version: '1.0'
+main: fr.floppa.jobs.Jobs
+api-version: '1.21'
+authors: [ "Floppa", "Cel___" ]
+commands:
+    help:
+        description: "Affiche les commandes du plugin"
+    jafar:
+        description: "Marque 'Jafar' en vert."
+    resetlevel:
+        description: "Réinitialise ses niveaux dans les métiers"
+        permission: "jobs:resetlevel"
+    kitdepart:
+        description: "Donne le choix du kit de départ"
+    level:
+        description: "Donne le niveau des métiers"
+    niveau:
+        description: "Donne le niveau des métiers"
+    jobs:
+        description: "Affiche les différents paliers des métiers avec les items déblocables"
+    metiers:
+        description: "Affiche les différents paliers des métiers avec les items déblocables"

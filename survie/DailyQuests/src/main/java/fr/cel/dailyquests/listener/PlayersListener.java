@@ -41,8 +41,8 @@ public final class PlayersListener implements Listener {
 
         // si joueur a jamais eu de quêtes, on les met
         if (lastUpdate == null) {
-            qPlayer.renewQuest(Quest.DurationType.DAILY, questManager);
-            qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager);
+            qPlayer.renewQuest(Quest.DurationType.DAILY, questManager, false);
+            qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager, false);
             qPlayer.setCustomQuest(new QuestData(questManager.getCustomQuest(), 0, LocalDateTime.now()));
             qPlayer.setLastUpdate(now); // enregistre première mise à jour
             return;
@@ -50,11 +50,13 @@ public final class PlayersListener implements Listener {
 
         // vérifie si passé nouveau jour depuis dernière màj
         if (lastUpdate.toLocalDate().isBefore(now.toLocalDate())) {
-            qPlayer.renewQuest(Quest.DurationType.DAILY, questManager);
+            qPlayer.renewQuest(Quest.DurationType.DAILY, questManager, false);
+            qPlayer.setHasRenewDaily(false);
 
             // si lundi et joueur a pas eu de màj cette semaine
             if (now.getDayOfWeek() == DayOfWeek.MONDAY) {
-                qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager);
+                qPlayer.renewQuest(Quest.DurationType.WEEKLY, questManager, false);
+                qPlayer.setHasRenewWeekly(false);
             }
 
             player.sendMessage(Component.text("Tes quêtes ont été renouvelées !"));
