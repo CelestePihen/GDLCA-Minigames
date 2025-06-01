@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PlayersListener implements Listener {
+public final class PlayersListener implements Listener {
 
     private final GameAPI main;
 
@@ -72,8 +72,7 @@ public class PlayersListener implements Listener {
         if (event.getPlayer().isOp()) return;
 
         for (String cmd : blockedCommands) {
-            if (event.getMessage().toLowerCase().startsWith("/" + cmd))
-                event.setCancelled(true);
+            if (event.getMessage().toLowerCase().startsWith("/" + cmd)) event.setCancelled(true);
         }
     }
 

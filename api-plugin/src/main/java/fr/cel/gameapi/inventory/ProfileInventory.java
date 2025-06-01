@@ -30,8 +30,7 @@ public class ProfileInventory extends AbstractInventory {
         inv.setItem(12, new ItemBuilder(Material.ENDER_PEARL).setDisplayName(ChatUtility.AQUA + "Partie").
                 setLore(ChatUtility.format("Bientôt", ChatUtility.GOLD)).toItemStack());
 
-        inv.setItem(14, new ItemBuilder(Material.PAPER).setDisplayName(ChatUtility.GREEN + "Statistiques")
-                .setLore(ChatUtility.format("Bientôt", ChatUtility.GOLD)).toItemStack());
+        inv.setItem(14, new ItemBuilder(Material.PAPER).setDisplayName(ChatUtility.GREEN + "Statistiques").toItemStack());
 
         inv.setItem(16, new ItemBuilder(Material.CLOCK).setDisplayName(ChatUtility.BLUE + "Options").toItemStack());
     }
@@ -43,7 +42,9 @@ public class ProfileInventory extends AbstractInventory {
 
             case CANDLE -> GameAPI.getInstance().getInventoryManager().openInventory(new FriendsInventory(player), player);
 
-            case PAPER, ENDER_PEARL -> player.sendMessage(GameAPI.getPrefix() + "Bientôt");
+            case PAPER -> GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(), player);
+
+            case ENDER_PEARL -> player.sendMessage(GameAPI.getPrefix() + "Bientôt");
 
             case CLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new OptionsInventory(player), player);
 

@@ -15,8 +15,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.util.EnumSet;
@@ -64,7 +64,7 @@ public class NPC {
         actions.add(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER);
         actions.add(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME);
 
-        ClientboundPlayerInfoUpdatePacket playerInfoPacket = new ClientboundPlayerInfoUpdatePacket(actions, getEntry());
+        ClientboundPlayerInfoUpdatePacket playerInfoPacket = new ClientboundPlayerInfoUpdatePacket(actions, serverPlayer.getServer().getPlayerList().getPlayers());
         serverPlayer.connection.send(playerInfoPacket);
 
         serverPlayer.setPos(location.getX(), location.getY(), location.getZ());
@@ -97,15 +97,9 @@ public class NPC {
 
     private ClientboundPlayerInfoUpdatePacket.Entry getEntry() {
         return new ClientboundPlayerInfoUpdatePacket.Entry(
-                uuid,
-                gameProfile,
-                false,
-                0,
-                serverPlayer.gameMode.getGameModeForPlayer(),
-                serverPlayer.getTabListDisplayName(),
-                true,
-                -1,
-                Optionull.map(serverPlayer.getChatSession(), RemoteChatSession::asData)
+                uuid, gameProfile, false, 0,
+                serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer.getTabListDisplayName(),
+                true, -1, Optionull.map(serverPlayer.getChatSession(), RemoteChatSession::asData)
         );
     }
 

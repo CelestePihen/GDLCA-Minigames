@@ -155,33 +155,6 @@ public class CCArena {
     }
 
     /**
-     * Permet à un joueur de rejoindre l'arène avec les paramètres définis.
-     * @param player Le joueur
-     * @param gameMode Le mode de jeu dans lequel il doit être
-     * @param joinMessage Spécifie si on envoie le message de join aux autres joueurs
-     * @param teleportSpawn Spécifie si on téléporte le joueur au spawn de la carte
-     */
-    private void join(Player player, GameMode gameMode, boolean joinMessage, boolean teleportSpawn) {
-        gameManager.getPlayerManager().removePlayerInHub(player);
-
-        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + ccMode.getName()), displayName, 10, 70, 20);
-        player.setGameMode(gameMode);
-        player.setGlowing(false);
-        player.getInventory().clear();
-
-        // s'il n'y a pas de joueurs dans la carte alors le joueur devient le gérant de la partie
-        if (players.isEmpty()) becomeOwner(player);
-
-        players.add(player.getUniqueId());
-        scoreboard.addPlayer(player);
-
-        if (joinMessage) sendMessage(player.getDisplayName() + " a rejoint la partie !");
-        if (teleportSpawn) player.teleport(spawnLoc);
-
-        if (ccMode == CCMode.LoupToucheTouche) wolfTimer.put(player.getUniqueId(), 0);
-    }
-
-    /**
      * Retire un joueur de la partie
      * @param player Le joueur qui quitte
      */
@@ -300,25 +273,6 @@ public class CCArena {
     }
 
     /**
-     * Permet de transformer le cacheur en non cacheur
-     * @param deadPlayer Le cacheur qui vient de mourir
-     */
-    private void becomeNonSeeker(Player deadPlayer) {
-        if (ccMode != CCMode.LoupToucheTouche && hiders.size() == 1) {
-            if (timer > bestTimer) {
-                setBestTimer();
-                setBestPlayer(deadPlayer.getName());
-            }
-        }
-
-        hiders.remove(deadPlayer.getUniqueId());
-        teamHiders.removePlayer(deadPlayer);
-
-        seekers.add(deadPlayer.getUniqueId());
-        teamSeekers.addPlayer(deadPlayer);
-    }
-
-    /**
      * Permet de transformer le cacheur en chercheur
      * @param deadPlayer Le cacheur qui vient de mourir
      */
@@ -390,103 +344,43 @@ public class CCArena {
     }
 
     /**
-     * Gére la fin de la partie du mode Loup Touche-Touche
-     */
-    private void endWolf() {
-        if (arenaState instanceof PlayingArenaState playingArenaState) {
-            if (playingArenaState.getPlayingArenaTask() != null) playingArenaState.getPlayingArenaTask().cancel();
-            if (playingArenaState.getPlayingWolfArenaTask() != null) playingArenaState.getPlayingWolfArenaTask().cancel();
-            if (playingArenaState.getPlayingBecomeWolfArenaTask() != null) playingArenaState.getPlayingBecomeWolfArenaTask().cancel();
-        }
-
-        if (getPlayerWithLowestTime() == null) {
-            sendMessage("Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
-
-            String name = getPlayerWithLowestTime().getName();
-            int time = wolfTimer.get(getPlayerWithLowestTime().getUniqueId());
-
-            if (time < bestTimer) {
-                setBestTimer(time);
-                setBestPlayer(name);
-            }
-
-            String bestTime = String.format("%02dmin%02ds", (time % 3600) / 60, time % 60);
-
-            sendMessage("Victoire de " + name + " qui a tenu " + bestTime + " en tant que coureur !");
-        }
-
-        setArenaState(new InitArenaState(this));
-        timer = 0;
-
-        for (UUID uuid : players) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            gameManager.getPlayerManager().sendPlayerToHub(player);
-        }
-
-        scoreboard.resetScoreboard();
-        hiders.clear();
-        seekers.clear();
-        players.clear();
-        wolfTimer.clear();
-    }
-
-    /**
      * Vérifie si la fin de la partie doit être activée
      */
     public void checkWinOrEndGame() {
+        // Mode Loup Touche-Touche
         if (this.ccMode == CCMode.LoupToucheTouche) {
             endWolf();
-        } else {
-            if (seekers.isEmpty() || hiders.isEmpty()) {
-                // Advancement : Le ménage des nuisibles
-                if (timer <= 480 && !seekers.isEmpty()) {
-                    Player player = Bukkit.getPlayer(seekers.getFirst());
-                    if (player != null) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
-                }
-
-                checkAdvancements.stopAllChecks();
-
-                clearGroundItems();
-                activateLeverAndLamps();
-
-                setArenaState(new InitArenaState(this));
-                sendWinnerMessage();
-
-                scoreboard.resetScoreboard();
-
-                for (UUID uuid : players) {
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player == null) continue;
-                    gameManager.getPlayerManager().sendPlayerToHub(player);
-                }
-
-                players.clear();
-                hiders.clear();
-                seekers.clear();
-                timer = 0;
-            }
+            return;
         }
-    }
 
-    /**
-     * Envoie le message des gagnants aux joueurs
-     */
-    private void sendWinnerMessage() {
-        if (seekers.isEmpty()) sendMessage("&bL'équipe des cacheurs &rremporte la partie !");
-        else if (hiders.isEmpty()) sendMessage("&cL'équipe des chercheurs &rremporte la partie !");
-        else sendMessage("Égalité ?");
-    }
+        // Mode normal
+        if (seekers.isEmpty() || hiders.isEmpty()) {
+            // Advancement : Le ménage des nuisibles
+            if (timer <= 480 && !seekers.isEmpty()) {
+                Player player = Bukkit.getPlayer(seekers.getFirst());
+                if (player != null) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
+            }
 
-    /**
-     * Fait devenir le joueur le "créateur" de la partie
-     * @param player Le joueur qui va devenir "créateur" de la partie
-     */
-    private void becomeOwner(Player player) {
-        owner = player.getUniqueId();
-        player.sendMessage(gameManager.getPrefix() + "Tu es désormais l'hôte de la partie !");
-        if (arenaState instanceof PreGameArenaState) {
-            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
+            checkAdvancements.stopAllChecks();
+
+            clearGroundItems();
+            activateLeverAndLamps();
+
+            setArenaState(new InitArenaState(this));
+            sendWinnerMessage();
+
+            scoreboard.resetScoreboard();
+
+            for (UUID uuid : players) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null) continue;
+                gameManager.getPlayerManager().sendPlayerToHub(player);
+            }
+
+            players.clear();
+            hiders.clear();
+            seekers.clear();
+            timer = 0;
         }
     }
 
@@ -679,6 +573,115 @@ public class CCArena {
     public void setLastHunter(String playerName) {
         this.lastHunter = playerName;
         config.setValue("lastHunter", lastHunter);
+    }
+
+    /**
+     * Permet à un joueur de rejoindre l'arène avec les paramètres définis.
+     * @param player Le joueur
+     * @param gameMode Le mode de jeu dans lequel il doit être
+     * @param joinMessage Spécifie si on envoie le message de join aux autres joueurs
+     * @param teleportSpawn Spécifie si on téléporte le joueur au spawn de la carte
+     */
+    private void join(Player player, GameMode gameMode, boolean joinMessage, boolean teleportSpawn) {
+        gameManager.getPlayerManager().removePlayerInHub(player);
+
+        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + ccMode.getName()), displayName, 10, 70, 20);
+        player.setGameMode(gameMode);
+        player.setGlowing(false);
+        player.getInventory().clear();
+
+        // s'il n'y a pas de joueurs dans la carte alors le joueur devient le gérant de la partie
+        if (players.isEmpty()) becomeOwner(player);
+
+        players.add(player.getUniqueId());
+        scoreboard.addPlayer(player);
+
+        if (joinMessage) sendMessage(player.getDisplayName() + " a rejoint la partie !");
+        if (teleportSpawn) player.teleport(spawnLoc);
+
+        if (ccMode == CCMode.LoupToucheTouche) wolfTimer.put(player.getUniqueId(), 0);
+    }
+
+    /**
+     * Permet de transformer le cacheur en non cacheur
+     * @param deadPlayer Le cacheur qui vient de mourir
+     */
+    private void becomeNonSeeker(Player deadPlayer) {
+        if (ccMode != CCMode.LoupToucheTouche && hiders.size() == 1) {
+            if (timer > bestTimer) {
+                setBestTimer();
+                setBestPlayer(deadPlayer.getName());
+            }
+        }
+
+        hiders.remove(deadPlayer.getUniqueId());
+        teamHiders.removePlayer(deadPlayer);
+
+        seekers.add(deadPlayer.getUniqueId());
+        teamSeekers.addPlayer(deadPlayer);
+    }
+
+    /**
+     * Gére la fin de la partie du mode Loup Touche-Touche
+     */
+    private void endWolf() {
+        if (arenaState instanceof PlayingArenaState playingArenaState) {
+            if (playingArenaState.getPlayingArenaTask() != null) playingArenaState.getPlayingArenaTask().cancel();
+            if (playingArenaState.getPlayingWolfArenaTask() != null) playingArenaState.getPlayingWolfArenaTask().cancel();
+            if (playingArenaState.getPlayingBecomeWolfArenaTask() != null) playingArenaState.getPlayingBecomeWolfArenaTask().cancel();
+        }
+
+        if (getPlayerWithLowestTime() == null) {
+            sendMessage("Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
+
+            String name = getPlayerWithLowestTime().getName();
+            int time = wolfTimer.get(getPlayerWithLowestTime().getUniqueId());
+
+            if (time < bestTimer) {
+                setBestTimer(time);
+                setBestPlayer(name);
+            }
+
+            String bestTime = String.format("%02dmin%02ds", (time % 3600) / 60, time % 60);
+
+            sendMessage("Victoire de " + name + " qui a tenu " + bestTime + " en tant que coureur !");
+        }
+
+        setArenaState(new InitArenaState(this));
+        timer = 0;
+
+        for (UUID uuid : players) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+            gameManager.getPlayerManager().sendPlayerToHub(player);
+        }
+
+        scoreboard.resetScoreboard();
+        hiders.clear();
+        seekers.clear();
+        players.clear();
+        wolfTimer.clear();
+    }
+
+    /**
+     * Envoie le message des gagnants aux joueurs
+     */
+    private void sendWinnerMessage() {
+        if (seekers.isEmpty()) sendMessage("&bL'équipe des cacheurs &rremporte la partie !");
+        else if (hiders.isEmpty()) sendMessage("&cL'équipe des chercheurs &rremporte la partie !");
+        else sendMessage("Égalité ?");
+    }
+
+    /**
+     * Fait devenir le joueur le "créateur" de la partie
+     * @param player Le joueur qui va devenir "créateur" de la partie
+     */
+    private void becomeOwner(Player player) {
+        owner = player.getUniqueId();
+        player.sendMessage(gameManager.getPrefix() + "Tu es désormais l'hôte de la partie !");
+        if (arenaState instanceof PreGameArenaState) {
+            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
+        }
     }
 
     /**
