@@ -8,6 +8,19 @@ The server has 4 minigames and event minigames :
 - [Parkour](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/parkour-plugin)
 - [PVP](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/pvp-plugin)
 - [Halloween Event](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/halloween-event-plugin)
-- Birthday Event
 
-It also has other plugins to help us like the [API](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/api-plugin) or [Essentials](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/essentials-plugin) (this plugin is used in game)
+It also has other plugins to help us like the [API](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/api-plugin) or [Essentials](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/essentials-plugin)
+
+
+# GDLCA Minigames
+
+**GDLCA Minigames** est un serveur **[Minecraft](https://www.minecraft.net)** mini-jeux dans la dernière version du jeu. Le serveur était à l'origine un *serveur survie* créé en avril 2022 avec mes amis et il s'est transformé en **serveur mini-jeux**.
+
+Le serveur a 4 mini-jeux et des mini-jeux d'événements :
+- [Cache-cache](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/cache-cache-plugin)
+- [Valocraft](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/valocraft-plugin) (re-création du jeu Valorant de Riot Games)
+- [Parkour](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/parkour-plugin)
+- [PVP](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/pvp-plugin)
+- [Événement Halloween](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/halloween-event-plugin)
+
+Il y a aussi d'autres plugins pour nous aider comme l'[API](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/api-plugin) ou [Essentials](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/essentials-plugin).
