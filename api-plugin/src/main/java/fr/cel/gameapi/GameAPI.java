@@ -8,7 +8,6 @@ import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.RPUtils;
 import lombok.Getter;
-import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

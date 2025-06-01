@@ -2,7 +2,6 @@ package fr.cel.gameapi.listeners;
 
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.InventoryManager;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,10 +10,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.awt.*;
 import java.util.UUID;
 
-public class InventoryListener implements Listener {
+public final class InventoryListener implements Listener {
 
     private final InventoryManager inventoryManager;
 

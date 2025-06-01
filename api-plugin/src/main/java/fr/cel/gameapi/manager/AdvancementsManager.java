@@ -1,7 +1,6 @@
 package fr.cel.gameapi.manager;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
@@ -35,10 +34,9 @@ public class AdvancementsManager {
                 for (UUID uuid : uuids) {
                     Player pl = Bukkit.getPlayer(uuid);
                     if (pl == null) continue;
-                    pl.sendMessage(Component.text(player.getName() + " a obtenu le succès ").append(a.displayName()));
+                    pl.sendMessage(player.getName() + " a obtenu le succès " + a.getDisplay().getTitle());
                 }
             }
-
         }
     }
 
