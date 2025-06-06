@@ -4,6 +4,8 @@ main: fr.cel.gameapi.GameAPI
 api-version: '1.21'
 author: Cel
 prefix: GameAPI
+depend:
+  - ProtocolLib
 libraries:
   - com.zaxxer:HikariCP:6.2.1
   - org.postgresql:postgresql:42.7.4
@@ -25,3 +27,6 @@ commands:
     description: Commande qui donne le Sélectionneur de Mini-Jeux
     aliases: [compass]
     permission: gameapi.gamecompass
+  statistics:
+    description: Commande qui permet de voir les statistiques du joueur
+    aliases: [stat, stats]

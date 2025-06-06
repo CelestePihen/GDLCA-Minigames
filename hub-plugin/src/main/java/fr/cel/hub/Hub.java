@@ -2,6 +2,7 @@ package fr.cel.hub;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.npc.NPCManager;
 import fr.cel.hub.commands.EventCommands;
 import fr.cel.hub.commands.HubCommands;
 import fr.cel.hub.listener.ChatListener;
@@ -13,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Hub extends JavaPlugin {
 
     @Getter private static Hub instance;
+    @Getter private NPCManager npcManager;
 
     /**
      * Se déclenche quand le plugin démarre
@@ -21,6 +23,9 @@ public final class Hub extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+
+        this.npcManager = new NPCManager(this);
+        this.npcManager.loadNPCs();
 
         registerListeners();
         registerCommands();
@@ -31,6 +36,7 @@ public final class Hub extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+
     }
 
     /**
@@ -40,6 +46,7 @@ public final class Hub extends JavaPlugin {
         new PlayerListener(this);
         new ChatListener(this);
         new ItemListener(this);
+        getServer().getPluginManager().registerEvents(this.npcManager, this);
     }
 
     /**

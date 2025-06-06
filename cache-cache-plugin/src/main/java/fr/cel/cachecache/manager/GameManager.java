@@ -6,7 +6,7 @@ import fr.cel.cachecache.utils.TempHubConfig;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager;
 import fr.cel.gameapi.manager.PlayerManager;
-import fr.cel.gameapi.manager.StatisticsManager;
+import fr.cel.gameapi.manager.database.StatisticsManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;

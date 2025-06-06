@@ -2,9 +2,13 @@ package fr.cel.gameapi;
 
 import fr.cel.gameapi.listeners.PlayersListener;
 import fr.cel.gameapi.listeners.ServerListeners;
-import fr.cel.gameapi.manager.*;
+import fr.cel.gameapi.manager.AdvancementsManager;
+import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.InventoryManager;
+import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.manager.database.DatabaseManager;
 import fr.cel.gameapi.manager.database.FriendsManager;
+import fr.cel.gameapi.manager.database.StatisticsManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.RPUtils;
 import lombok.Getter;
@@ -32,23 +36,32 @@ public final class GameAPI extends JavaPlugin {
         saveDefaultConfig();
         instance = this;
 
+        // Detect if the config.yml file is properly configured
+        if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") ||
+                !getConfig().contains("username") || !getConfig().contains("password")) {
+            getLogger().severe(ChatUtility.format("&cPlease configure the database settings in the config.yml file."));
+            getServer().shutdown();
+            return;
+        }
+
+        // Detect if the server is running in online mode or not
         if (getServer().getOnlineMode()) {
-            database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
+            this.database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
         } else {
-            database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database_test"), getConfig().getString("username"), getConfig().getString("password"));
+            this.database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database_test"), getConfig().getString("username"), getConfig().getString("password"));
         }
 
         try {
-            database.init();
+            this.database.init();
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogger().severe(ChatUtility.format("&cAn error occurred while connecting to the database. Please check your configuration." + e.getMessage()));
             getServer().shutdown();
         }
 
-        playerManager = new PlayerManager();
+        this.playerManager = new PlayerManager();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            playerManager.addPlayerData(player);
+            this.playerManager.addPlayerData(player);
 
             if (!player.isOp()) continue;
 
@@ -57,17 +70,17 @@ public final class GameAPI extends JavaPlugin {
                     " Un reload a été effectué. Faites /hub si vous êtes buggé(e)."));
         }
 
-        friendsManager = new FriendsManager(this);
+        this.friendsManager = new FriendsManager(this);
 
-        commandsManager = new CommandsManager(this);
-        commandsManager.registerCommands();
+        this.commandsManager = new CommandsManager(this);
+        this.commandsManager.registerCommands();
 
-        inventoryManager = new InventoryManager(this);
+        this.inventoryManager = new InventoryManager(this);
 
         RPUtils.registerMusics();
 
-        statisticsManager = new StatisticsManager(this);
-        advancementsManager = new AdvancementsManager();
+        this.statisticsManager = new StatisticsManager(this);
+        this.advancementsManager = new AdvancementsManager();
 
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
         getServer().getPluginManager().registerEvents(new ServerListeners(), this);

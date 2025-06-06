@@ -88,9 +88,21 @@ public final class ItemBuilder {
      * Set the displayname of the item.
      * @param text The name to change it to.
      */
+    @Deprecated
     public ItemBuilder setDisplayName(String text){
         ItemMeta im = is.getItemMeta();
         im.setDisplayName(ChatUtility.format(text));
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Set the itemname of the item.
+     * @param text The name to change it to.
+     */
+    public ItemBuilder setItemName(String text){
+        ItemMeta im = is.getItemMeta();
+        im.setItemName(ChatUtility.format(text));
         is.setItemMeta(im);
         return this;
     }

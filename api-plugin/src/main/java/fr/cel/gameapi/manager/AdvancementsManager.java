@@ -13,7 +13,7 @@ import java.util.UUID;
 public class AdvancementsManager {
 
     /**
-     * Donne un succès au joueur
+     * Donne un succès au joueur. N'envoye le message qu'aux joueurs dans la liste uuids.
      * @param player L'instance du joueur à qui vous voulez donner le succès
      * @param advancement L'identifiant du succès à donner
      */

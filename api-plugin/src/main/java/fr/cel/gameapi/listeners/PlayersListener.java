@@ -20,6 +20,17 @@ public final class PlayersListener implements Listener {
 
     private final GameAPI main;
 
+    // The commands to remove from no-op players
+    private final Set<String> blockedCommands = new HashSet<>(Arrays.asList(
+            "?", "about", "help", "pl", "plugins", "ver", "version",
+            "bukkit:?", "bukkit:about", "bukkit:help", "bukkit:pl", "bukkit:plugins", "bukkit:ver", "bukkit:version",
+            "callback", "paper:callback",
+            "me", "trigger",
+            "minecraft:me", "minecraft:trigger", "minecraft:help",
+            "fastasyncworldedit", "fawe", "we", "worldedit",
+            "fastasyncworldedit:fastasyncworldedit", "fastasyncworldedit:fawe", "fastasyncworldedit:we", "fastasyncworldedit:worldedit"
+    ));
+
     public PlayersListener(GameAPI main) {
         this.main = main;
     }
@@ -55,17 +66,6 @@ public final class PlayersListener implements Listener {
         main.getPlayerManager().removePlayerInHub(player);
         main.getPlayerManager().removePlayerData(player);
     }
-
-    // Remove commands from no-op players
-    private final Set<String> blockedCommands = new HashSet<>(Arrays.asList(
-            "?", "about", "help", "pl", "plugins", "ver", "version",
-            "bukkit:?", "bukkit:about", "bukkit:help", "bukkit:pl", "bukkit:plugins", "bukkit:ver", "bukkit:version",
-            "callback", "paper:callback",
-            "me", "trigger",
-            "minecraft:me", "minecraft:trigger", "minecraft:help",
-            "fastasyncworldedit", "fawe", "we", "worldedit",
-            "fastasyncworldedit:fastasyncworldedit", "fastasyncworldedit:fawe", "fastasyncworldedit:we", "fastasyncworldedit:worldedit"
-    ));
 
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {

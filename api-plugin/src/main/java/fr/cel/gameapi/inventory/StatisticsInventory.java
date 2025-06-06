@@ -16,27 +16,27 @@ public class StatisticsInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(9, new ItemBuilder(Material.COMPASS).setDisplayName("Hub").toItemStack());
-        inv.setItem(11, new ItemBuilder(Material.SPYGLASS).setDisplayName("Cache-Cache").toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.BOW).setDisplayName("Valocraft").toItemStack());
-        inv.setItem(15, new ItemBuilder(Material.NETHERITE_SWORD).setDisplayName("PVP").toItemStack());
-        inv.setItem(17, new ItemBuilder(Material.IRON_BOOTS).setDisplayName("Parkour").toItemStack());
+        inv.setItem(9, new ItemBuilder(Material.COMPASS).setDisplayName("&aHub").toItemStack());
+        inv.setItem(11, new ItemBuilder(Material.SPYGLASS).setDisplayName("&aCache-Cache").toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.BOW).setDisplayName("&aValocraft").toItemStack());
+        inv.setItem(15, new ItemBuilder(Material.NETHERITE_SWORD).setDisplayName("&aPVP").toItemStack());
+        inv.setItem(17, new ItemBuilder(Material.IRON_BOOTS).setDisplayName("&aParkour").toItemStack());
     }
 
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case COMPASS: GameAPI.getInstance().getInventoryManager().openInventory(new HubStatsInventory(player), player);
+            case COMPASS -> GameAPI.getInstance().getInventoryManager().openInventory(new HubStatsInventory(player), player);
 
-            case SPYGLASS: GameAPI.getInstance().getInventoryManager().openInventory(new CCStatsInventory(player), player);
+            case SPYGLASS -> GameAPI.getInstance().getInventoryManager().openInventory(new CCStatsInventory(player), player);
 
-            case BOW: GameAPI.getInstance().getInventoryManager().openInventory(new ValoStatsInventory(player), player);
+            case BOW -> GameAPI.getInstance().getInventoryManager().openInventory(new ValoStatsInventory(player), player);
 
-            case NETHERITE_SWORD: GameAPI.getInstance().getInventoryManager().openInventory(new PVPStatsInventory(player), player);
+            case NETHERITE_SWORD -> GameAPI.getInstance().getInventoryManager().openInventory(new PVPStatsInventory(player), player);
 
-            case IRON_BOOTS: GameAPI.getInstance().getInventoryManager().openInventory(new ParkourStatsInventory(player), player);
+            case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourStatsInventory(player), player);
 
-            default: {}
+            default -> {}
         }
     }
 
