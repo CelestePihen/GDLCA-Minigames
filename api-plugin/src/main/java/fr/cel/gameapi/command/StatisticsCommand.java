@@ -13,6 +13,7 @@ public class StatisticsCommand extends AbstractCommand {
         super("gameapi:statistics", true, false);
     }
 
+    // TODO adapter pour avoir accès aux statistiques des autres joueurs et pas seulement du joueur qui exécute la commande
     @Override
     protected void onExecute(CommandSender sender, String[] args) {
         Player player = (Player) sender;

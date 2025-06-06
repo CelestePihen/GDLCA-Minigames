@@ -10,6 +10,7 @@ public class CommandsManager {
 
     private final GameAPI main;
 
+    // TODO mettre JavaPlugin en paramètre du constructeur directement
     public CommandsManager(GameAPI main) {
         this.main = main;
     }

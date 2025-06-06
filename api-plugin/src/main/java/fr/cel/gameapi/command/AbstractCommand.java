@@ -4,15 +4,14 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 @Getter
-public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
+public abstract class AbstractCommand implements TabExecutor {
 
     private final String permission;
     private final boolean needPlayer;
