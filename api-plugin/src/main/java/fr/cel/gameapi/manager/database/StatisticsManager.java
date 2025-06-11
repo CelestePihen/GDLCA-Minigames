@@ -38,7 +38,7 @@ public class StatisticsManager {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error updating player statistic: " + e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class StatisticsManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error retrieving player statistic: " + e.getMessage());
         }
         return 0;
     }
@@ -129,7 +129,7 @@ public class StatisticsManager {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error adding CC game statistic: " + e.getMessage());
         }
     }
 
@@ -151,7 +151,7 @@ public class StatisticsManager {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error adding Valocraft game statistic: " + e.getMessage());
         }
     }
 

@@ -2,6 +2,7 @@ package fr.cel.gameapi.manager.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import fr.cel.gameapi.GameAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -81,8 +82,7 @@ public class DatabaseManager {
 
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Création d'un nouveau compte pour " + player.getName());
             } catch (SQLException e) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Erreur en créant un nouveau compte pour " + player.getName());
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage());
             }
         }
     }
@@ -101,7 +101,7 @@ public class DatabaseManager {
                 return resultSet.next();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Erreur lors de la vérification du compte pour " + player.getName() + ": " + e.getMessage());
         }
         return false;
     }

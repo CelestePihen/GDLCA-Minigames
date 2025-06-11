@@ -2,6 +2,7 @@ package fr.cel.gameapi.manager.npc;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import fr.cel.gameapi.GameAPI;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -27,7 +28,7 @@ public class SkinFetcher {
             String skinSignature = properties.get("signature").getAsString();
             return new Skin(skinValue, skinSignature);
         } catch (Exception e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error fetching skin for username: " + username + " - " + e.getMessage());
             return null;
         }
     }

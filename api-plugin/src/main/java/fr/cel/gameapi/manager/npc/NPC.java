@@ -314,7 +314,7 @@ public class NPC {
             field.setAccessible(true);
             field.set(packet, value);
         } catch (Exception e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Failed to set value for field " + fieldName + " in packet " + packet.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
 

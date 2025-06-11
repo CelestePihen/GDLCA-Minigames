@@ -42,14 +42,14 @@ public class WelcomeCommand extends AbstractCommand {
             return;
         }
 
-        Bukkit.broadcastMessage(GameAPI.getPrefix() + player.getName() + " a souhaité la bienvenue à " + newPlayer.getName());
+        newPlayer.sendMessage(GameAPI.getPrefix() + player.getName() + " a souhaité la bienvenue à " + newPlayer.getName());
         playerManager.getPlayerData(player).addCoins(5.0D);
         playerManager.getPlayersWhoWelcomed().add(player.getUniqueId());
     }
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-        return null;
+        return List.of();
     }
 
 }

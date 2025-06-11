@@ -1,5 +1,6 @@
 package fr.cel.gameapi.manager.npc;
 
+import fr.cel.gameapi.GameAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -32,7 +33,7 @@ public class ConfigNPC {
                         new Skin(config.getString("skin.value"), config.getString("skin.signature"))
                 );
             } catch (IOException | InvalidConfigurationException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("Error loading NPC configuration for " + name + ": " + e.getMessage());
             }
         }
 
