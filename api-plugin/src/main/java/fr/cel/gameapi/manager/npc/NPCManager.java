@@ -26,6 +26,8 @@ public class NPCManager implements Listener {
 
     @Getter private final Map<String, NPC> npcs = new HashMap<>();
 
+    // TODO ajouter une map avec le nom du NPC et le nom du plugin qui l'a créé
+
     private final JavaPlugin main;
 
     /**

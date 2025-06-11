@@ -112,6 +112,13 @@ public class NPC {
         Packet<?> packet = this.npc.getAddEntityPacket(serverEntity);
         sendPacket(packet, player);
         sendPacket(new ClientboundSetEntityDataPacket(this.npc.getId(), synchedEntityData.getNonDefaultValues()), player);
+
+        // retirer le NPC de la tablist après l’avoir affiché
+        Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> {
+            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+            ClientboundPlayerInfoRemovePacket removePacket = new ClientboundPlayerInfoRemovePacket(List.of(this.uuid));
+            serverPlayer.connection.send(removePacket);
+        }, 20L);
     }
 
     /**

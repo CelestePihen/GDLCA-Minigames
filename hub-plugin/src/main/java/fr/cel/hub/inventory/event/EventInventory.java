@@ -16,9 +16,9 @@ public class EventInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(10, new ItemBuilder(Material.JUKEBOX).setDisplayName("Mettre de la Musique").toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.FIREWORK_ROCKET).setDisplayName("Activer le Système").toItemStack());
-        inv.setItem(16, new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("???").toItemStack());
+        inv.setItem(10, new ItemBuilder(Material.JUKEBOX).setItemName("Mettre de la Musique").toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.FIREWORK_ROCKET).setItemName("Activer le Système").toItemStack());
+        inv.setItem(16, new ItemBuilder(Material.PLAYER_HEAD).setItemName("???").toItemStack());
     }
 
     @Override
