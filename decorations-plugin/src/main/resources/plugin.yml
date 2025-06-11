@@ -1,0 +1,15 @@
+name: Decorations
+version: '1.0.0'
+main: fr.cel.decorationsplugin.DecorationsPlugin
+api-version: '1.21'
+prefix: Decorations
+depend: [ GameAPI ]
+authors: [ Cel ]
+commands:
+    decorations:
+        description: Gérer les décorations dans le jeu
+        aliases: [ deco ]
+        permission: decorations.command
+permissions:
+    decorations:
+        description: Permet au joueur d'utiliser la commande

@@ -298,6 +298,17 @@ public final class ItemBuilder {
         is.setItemMeta(im);
         return this;
     }
+
+    /**
+     * Sets the custom model to the item
+     * @param itemModel The item model to set
+     */
+    public ItemBuilder setItemModel(NamespacedKey itemModel) {
+        ItemMeta im = is.getItemMeta();
+        im.setItemModel(itemModel);
+        is.setItemMeta(im);
+        return this;
+    }
     // Added
 
     /**

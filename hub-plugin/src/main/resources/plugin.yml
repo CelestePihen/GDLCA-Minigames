@@ -12,4 +12,4 @@ commands:
     permission: hub.event
 permissions:
   hub.event:
-    description: Permet d'effectuer des événements
+    description: Permission qui permet d'effectuer des événements

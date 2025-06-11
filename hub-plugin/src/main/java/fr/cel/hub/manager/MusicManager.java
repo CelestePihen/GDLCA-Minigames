@@ -47,18 +47,18 @@ public class MusicManager {
     public static void stopMusic(Player player) {
         if (currentVanillaSound != null) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
-                if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) continue;
-                pl.stopSound(SoundCategory.RECORDS);
+                pl.stopSound(currentVanillaSound, SoundCategory.RECORDS);
             }
             currentVanillaSound = null;
+            player.sendMessage(GameAPI.getPrefix() + "Vous avez arrêté la musique.");
         }
 
-        else if (currentCustomSound != null)  {
+        if (currentCustomSound != null)  {
             for (Player pl : Bukkit.getOnlinePlayers()) {
-                if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) continue;
-                pl.stopSound(SoundCategory.RECORDS);
+                pl.stopSound(currentCustomSound, SoundCategory.RECORDS);
             }
             currentCustomSound = null;
+            player.sendMessage(GameAPI.getPrefix() + "Vous avez arrêté la musique.");
         }
     }
 

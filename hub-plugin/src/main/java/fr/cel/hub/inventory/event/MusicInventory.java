@@ -22,7 +22,7 @@ public class MusicInventory extends AbstractInventory {
         RPUtils.getMusics().forEach((name, customMusic) -> {
             ItemBuilder itemBuilder = new ItemBuilder(Material.JUKEBOX);
 
-            itemBuilder.setDisplayName(customMusic.getMusicName());
+            itemBuilder.setItemName(customMusic.getMusicName());
 
             if (customMusic.getAuthor() != null) {
                 itemBuilder.addLoreLine(customMusic.getAuthor());
@@ -35,7 +35,7 @@ public class MusicInventory extends AbstractInventory {
             inv.addItem(itemBuilder.toItemStack());
         });
 
-        inv.setItem(getSize() - 1, new ItemBuilder(Material.BARRIER).setDisplayName("Enlever la musique").toItemStack());
+        inv.setItem(getSize() - 1, new ItemBuilder(Material.BARRIER).setItemName("Enlever la musique").toItemStack());
     }
 
     @Override
