@@ -37,7 +37,7 @@ public final class GameAPI extends JavaPlugin {
         instance = this;
 
         // Detect if the config.yml file is properly configured
-        if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") ||
+        if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") || !getConfig().contains("database_test") ||
                 !getConfig().contains("username") || !getConfig().contains("password")) {
             getLogger().severe(ChatUtility.format("&cPlease configure the database settings in the config.yml file."));
             getServer().shutdown();

@@ -36,13 +36,13 @@ public class FriendsManager {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error while adding friend: " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("Error while closing resources: " + e.getMessage());
             }
         }
     }
@@ -65,13 +65,13 @@ public class FriendsManager {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error while removing friend: " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("Error while closing resources: " + e.getMessage());
             }
         }
     }
@@ -101,7 +101,7 @@ public class FriendsManager {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("Error while retrieving friends list: " + e.getMessage());
             return friendsList;
         } finally {
             try {
@@ -109,7 +109,7 @@ public class FriendsManager {
                 if (resultSet != null) resultSet.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("Error while closing resources: " + e.getMessage());
             }
         }
         return friendsList;
@@ -123,15 +123,6 @@ public class FriendsManager {
      */
     public boolean isFriendWith(Player player, Player target) {
         return getFriendsUUIDList(player).contains(target.getName());
-    }
-
-    /**
-     * Permet d'avoir le nombre de joueurs d'un joueur
-     * @param player Le joueur
-     * @return Retourne le nombre de joueurs
-     */
-    public int getFriendCounter(Player player) {
-        return getFriendsUUIDList(player).size();
     }
 
 }

@@ -33,13 +33,13 @@ public class PlayerData {
             preparedStatement.setString(2, uuid.toString());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("An error occurred while adding coins to player " + uuid + ": " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("An error occurred while closing resources: " + e.getMessage());
             }
         }
     }
@@ -60,13 +60,13 @@ public class PlayerData {
             preparedStatement.setString(2, uuid.toString());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("An error occurred while removing coins from player " + uuid + ": " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("An error occurred while closing resources: " + e.getMessage());
             }
         }
     }
@@ -93,14 +93,14 @@ public class PlayerData {
                 coins = resultSet.getDouble("coins");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("An error occurred while retrieving coins for player " + uuid + ": " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (resultSet != null) resultSet.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("An error occurred while closing resources: " + e.getMessage());
             }
         }
         return coins;
@@ -128,14 +128,14 @@ public class PlayerData {
                 allow = resultSet.getBoolean("allowFriends");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("An error occurred while checking if player " + uuid + " allows friend requests: " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (resultSet != null) resultSet.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("An error occurred while closing resources: " + e.getMessage());
             }
         }
         return allow;
@@ -158,13 +158,13 @@ public class PlayerData {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            GameAPI.getInstance().getLogger().severe("An error occurred while updating friend request settings for player " + uuid + ": " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null && !connection.isClosed()) connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                GameAPI.getInstance().getLogger().severe("An error occurred while closing resources: " + e.getMessage());
             }
         }
     }
