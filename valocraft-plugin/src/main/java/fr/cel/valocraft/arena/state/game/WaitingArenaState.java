@@ -87,7 +87,11 @@ public class WaitingArenaState extends ArenaState {
             player.getInventory().addItem(bow, crossBow);
             player.getInventory().setItem(16, arrow);
         }
-        Bukkit.getPlayer(String.valueOf(arena.getAttackers().getTeam().getPlayers().stream().findFirst())).getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).setDisplayName("Spike").toItemStack());
+
+        Player firstAttacker = Bukkit.getPlayer(arena.getAttackers().getTeam().getPlayers().stream().findFirst().get());
+
+        if (firstAttacker == null) return;
+        firstAttacker.getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).setItemName("Spike").toItemStack());
     }
 
     private void showGlobalRound() {
