@@ -1,11 +1,12 @@
 package fr.cel.valocraft.arena.state.provider.pregame;
 
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -13,10 +14,6 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.ValoArena;
 
 public class StartingListenerProvider extends StateListenerProvider {
 

@@ -6,7 +6,7 @@ import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.gameapi.utils.RPUtils;
 import fr.cel.gameapi.utils.RPUtils.CustomMusic;
 import fr.cel.hub.manager.MusicManager;
-import org.bukkit.*;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

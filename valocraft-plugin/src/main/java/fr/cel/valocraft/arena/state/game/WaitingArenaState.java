@@ -1,7 +1,13 @@
 package fr.cel.valocraft.arena.state.game;
 
-import java.util.UUID;
-
+import fr.cel.gameapi.utils.ItemBuilder;
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
+import fr.cel.valocraft.arena.state.ArenaState;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.arena.state.provider.game.WaitingListenerProvider;
+import fr.cel.valocraft.arena.timer.game.WaitingArenaTask;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -9,14 +15,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.state.provider.game.WaitingListenerProvider;
-import fr.cel.valocraft.arena.ValoArena;
-import fr.cel.valocraft.arena.state.ArenaState;
-import fr.cel.valocraft.arena.timer.game.WaitingArenaTask;
-import fr.cel.gameapi.utils.ItemBuilder;
-import lombok.Getter;
+import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 public class WaitingArenaState extends ArenaState {
@@ -31,13 +31,9 @@ public class WaitingArenaState extends ArenaState {
     public void onEnable(ValoCraft main) {
         super.onEnable(main);
 
-        if (arena.getGlobalRound() == 1) {
-            addPlayersToBossBar();
-        }
+        if (arena.getGlobalRound() == 1) addPlayersToBossBar();
 
-        if (arena.getGlobalRound() == 13) {
-            arena.inverseTeam();
-        }
+        if (arena.getGlobalRound() == 13) arena.inverseTeam();
 
         removeSpike();
         arena.clearPlayers();
@@ -88,10 +84,11 @@ public class WaitingArenaState extends ArenaState {
             player.getInventory().setItem(16, arrow);
         }
 
-        Player firstAttacker = Bukkit.getPlayer(arena.getAttackers().getTeam().getPlayers().stream().findFirst().get());
-
-        if (firstAttacker == null) return;
-        firstAttacker.getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).setItemName("Spike").toItemStack());
+        Optional<String> player = arena.getAttackers().getTeam().getPlayers().stream().findFirst();
+        if (player.isPresent()) {
+            Player firstAttacker = Bukkit.getPlayer(player.get());
+            if (firstAttacker != null) firstAttacker.getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).setItemName("Spike").toItemStack());
+        }
     }
 
     private void showGlobalRound() {

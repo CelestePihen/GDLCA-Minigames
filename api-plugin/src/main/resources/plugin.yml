@@ -30,3 +30,7 @@ commands:
   statistics:
     description: Commande qui permet de voir les statistiques du joueur
     aliases: [stat, stats]
+  npc:
+    description: Commande qui permet de gérer les PNJ
+    permission: gameapi.npc
+    aliases: [pnj]

@@ -1,6 +1,5 @@
 package fr.cel.essentials.commands.other;
 
-import fr.cel.essentials.Essentials;
 import fr.cel.gameapi.command.AbstractCommand;
 import lombok.Getter;
 import org.bukkit.Bukkit;

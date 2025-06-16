@@ -1,6 +1,6 @@
 package fr.cel.halloween;
 
-import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.CommandsManager;
 import fr.cel.halloween.commands.HalloweenCommands;
 import fr.cel.halloween.manager.GameManager;
 import fr.cel.halloween.manager.HalloweenMapManager;
@@ -19,7 +19,7 @@ public final class HalloweenEvent extends JavaPlugin {
         this.gameManager = new GameManager(this);
         this.halloweenMapManager = new HalloweenMapManager(this);
 
-        GameAPI.getInstance().getCommandsManager().addCommand("halloween", new HalloweenCommands(gameManager), this);
+        new CommandsManager(this).addCommand("halloween", new HalloweenCommands(gameManager));
     }
 
     @Override

@@ -26,8 +26,6 @@ public class NPCManager implements Listener {
 
     @Getter private final Map<String, NPC> npcs = new HashMap<>();
 
-    // TODO ajouter une map avec le nom du NPC et le nom du plugin qui l'a créé
-
     private final JavaPlugin main;
 
     /**
@@ -38,7 +36,7 @@ public class NPCManager implements Listener {
      */
     public NPCManager(JavaPlugin main) {
         this.main = main;
-        Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[" + main.getName() + "] &rLe Manager des NPCs a été initialisé pour le plugin " + main.getName() + "&r."));
+        GameAPI.getInstance().getNpcCommand().getNpcsPlugin().put(main, this);
     }
 
     /**
@@ -47,8 +45,6 @@ public class NPCManager implements Listener {
      */
     public void loadNPCs() {
         this.npcs.clear();
-
-        Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[" + main.getName() + "] &rChargement des NPCs pour le plugin " + main.getName() + "&r..."));
 
         File npcsFolder = new File(this.main.getDataFolder(), "npcs");
         if (npcsFolder.exists() || npcsFolder.mkdirs()) {
@@ -64,13 +60,13 @@ public class NPCManager implements Listener {
                         continue;
                     }
 
-                    Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[" + main.getName() + "] &rChargement du NPC-" + name));
-
                     this.npcs.put(name, npc);
                     npc.create();
                     npc.showToAll();
                 }
             }
+
+            Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[" + main.getName() + "] &fChargement de " + npcs.size() + " NPCs pour le plugin " + main.getName() + "&r..."));
         }
 
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
@@ -127,7 +123,6 @@ public class NPCManager implements Listener {
     private void playerJoin(PlayerJoinEvent event) {
         this.getNpcs().values().forEach(npc -> npc.spawn(event.getPlayer()));
     }
-
 
     /**
      * Gère l'événement de déplacement d'un joueur pour faire regarder les NPCs vers le joueur.

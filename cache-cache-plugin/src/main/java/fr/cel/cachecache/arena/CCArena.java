@@ -10,7 +10,9 @@ import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.utils.CheckAdvancements;
 import fr.cel.cachecache.utils.Config;
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
+import fr.cel.gameapi.manager.database.StatisticsManager.PlayerStatistics;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -186,13 +188,12 @@ public class CCArena {
             startingArenaState.getStartingArenaTask().cancel();
             sendMessage("Démarrage annulé... Un joueur a quitté la partie.");
             setArenaState(new PreGameArenaState(this));
-            Bukkit.getPlayer(owner).getInventory().addItem(new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
+            Bukkit.getPlayer(owner).getInventory().addItem(new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
             return;
         }
 
         if (players.size() < 2 || (seekers.isEmpty() || hiders.isEmpty())) {
-            if (arenaState instanceof WaitingArenaState waitingArenaState) {
-                waitingArenaState.getWaitingArenaTask().cancel();
+            if (arenaState instanceof WaitingArenaState) {
                 sendMessage("Partie annulée... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.");
             }
 
@@ -348,40 +349,39 @@ public class CCArena {
      */
     public void checkWinOrEndGame() {
         // Mode Loup Touche-Touche
-        if (this.ccMode == CCMode.LoupToucheTouche) {
-            endWolf();
-            return;
-        }
+        if (this.ccMode == CCMode.LoupToucheTouche) endWolf();
 
         // Mode normal
-        if (seekers.isEmpty() || hiders.isEmpty()) {
-            // Advancement : Le ménage des nuisibles
-            if (timer <= 480 && !seekers.isEmpty()) {
-                Player player = Bukkit.getPlayer(seekers.getFirst());
-                if (player != null) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
-            }
+        else if (seekers.isEmpty() || hiders.isEmpty()) endGame();
+    }
 
-            checkAdvancements.stopAllChecks();
-
-            clearGroundItems();
-            activateLeverAndLamps();
-
-            setArenaState(new InitArenaState(this));
-            sendWinnerMessage();
-
-            scoreboard.resetScoreboard();
-
-            for (UUID uuid : players) {
-                Player player = Bukkit.getPlayer(uuid);
-                if (player == null) continue;
-                gameManager.getPlayerManager().sendPlayerToHub(player);
-            }
-
-            players.clear();
-            hiders.clear();
-            seekers.clear();
-            timer = 0;
+    private void endGame() {
+        // Advancement : Le ménage des nuisibles
+        if (timer <= 480 && !seekers.isEmpty()) {
+            Player player = Bukkit.getPlayer(seekers.getFirst());
+            if (player != null) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
         }
+
+        checkAdvancements.stopAllChecks();
+
+        clearGroundItems();
+        activateLeverAndLamps();
+
+        setArenaState(new InitArenaState(this));
+        sendWinnerMessage();
+
+        scoreboard.resetScoreboard();
+
+        for (UUID uuid : players) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+            gameManager.getPlayerManager().sendPlayerToHub(player);
+        }
+
+        players.clear();
+        hiders.clear();
+        seekers.clear();
+        timer = 0;
     }
 
     /**
@@ -390,7 +390,7 @@ public class CCArena {
      */
     public void giveWeapon(Player player) {
         player.getInventory().addItem(new ItemBuilder(Material.STICK)
-                        .setDisplayName("Le tueur de cacheurs")
+                        .setItemName("Le tueur de cacheurs")
                         .addLoreLine("Ce bâton a déjà tué de nombreuses personnes...")
                         .toItemStack());
     }
@@ -680,7 +680,7 @@ public class CCArena {
         owner = player.getUniqueId();
         player.sendMessage(gameManager.getPrefix() + "Tu es désormais l'hôte de la partie !");
         if (arenaState instanceof PreGameArenaState) {
-            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setDisplayName("Démarrer la partie").toItemStack());
+            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
         }
     }
 

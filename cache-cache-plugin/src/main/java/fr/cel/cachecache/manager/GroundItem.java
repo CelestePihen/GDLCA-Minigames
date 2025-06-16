@@ -19,7 +19,7 @@ public abstract class GroundItem {
     public GroundItem(String name, Material material, String displayName, List<String> lores, String itemModel) {
         this.name = name;
         this.displayName = displayName;
-        this.itemStack = new ItemBuilder(material).setDisplayName(displayName).setItemModel(itemModel).setLore(lores).toItemStack();
+        this.itemStack = new ItemBuilder(material).setItemName(displayName).setItemModel(itemModel).setLore(lores).toItemStack();
     }
 
     /**

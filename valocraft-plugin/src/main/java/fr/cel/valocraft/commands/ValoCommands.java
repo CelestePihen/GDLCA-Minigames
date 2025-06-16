@@ -2,15 +2,18 @@ package fr.cel.valocraft.commands;
 
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.pregame.PreGameArenaState;
 import fr.cel.valocraft.manager.GameManager;
-import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.manager.ValoArenaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

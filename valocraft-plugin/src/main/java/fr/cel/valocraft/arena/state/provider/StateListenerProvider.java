@@ -1,5 +1,7 @@
 package fr.cel.valocraft.arena.state.provider;
 
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,9 +13,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.ValoArena;
 
 public class StateListenerProvider implements Listener {
 

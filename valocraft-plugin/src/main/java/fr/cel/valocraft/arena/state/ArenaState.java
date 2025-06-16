@@ -1,13 +1,11 @@
 package fr.cel.valocraft.arena.state;
 
-import javax.annotation.Nullable;
-
-import lombok.Getter;
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import org.bukkit.event.Listener;
 
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.ValoArena;
+import javax.annotation.Nullable;
 
 public abstract class ArenaState implements Listener {
 

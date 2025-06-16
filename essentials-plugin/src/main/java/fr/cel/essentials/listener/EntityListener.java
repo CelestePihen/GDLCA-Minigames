@@ -1,12 +1,10 @@
 package fr.cel.essentials.listener;
 
 import fr.cel.essentials.commands.other.GodCommand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import fr.cel.essentials.Essentials;
 
 public class EntityListener implements Listener {
 

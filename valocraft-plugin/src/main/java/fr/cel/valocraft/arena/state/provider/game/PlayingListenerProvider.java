@@ -1,22 +1,21 @@
 package fr.cel.valocraft.arena.state.provider.game;
 
-import org.bukkit.entity.*;
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
+import fr.cel.valocraft.arena.state.game.SpikeArenaState;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
-
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.ValoArena;
-import fr.cel.valocraft.arena.state.game.SpikeArenaState;
 
 public class PlayingListenerProvider extends StateListenerProvider {
 

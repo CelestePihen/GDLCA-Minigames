@@ -43,6 +43,24 @@ public class StatisticsManager {
     }
 
     /**
+     * Permet d'ajouter un montant à une statistique d'un joueur
+     * @param uuidPlayer L'UUID du joueur à qui modifier la statistique
+     * @param statistic La statistique à modifier
+     * @param amount Le montant à ajouter à la statistique
+     */
+    public void updatePlayerStatistic(UUID uuidPlayer, PlayerStatistics statistic, int amount) {
+        String ps = "UPDATE " + statistic.getTableName() + " SET " + statistic.getColumnName() + " = " + statistic.getColumnName() + " + ? WHERE uuid_player = ?";
+        try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+            preparedStatement.setInt(1, amount);
+            preparedStatement.setString(2, uuidPlayer.toString());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Error updating player statistic: " + e.getMessage());
+        }
+    }
+
+    /**
      * Permet d'obtenir le montant de la statistique d'un joueur
      * @param player Le joueur à qui obtenir la statistique
      * @param tableName Le nom de la table de la statistique
@@ -72,7 +90,7 @@ public class StatisticsManager {
         CC_GAMES_PLAYED("cc_statistics", "gamesplayed"),
         CC_SEEKER_COUNT("cc_statistics", "seekercount"),
         CC_HIDER_COUNT("cc_statistics", "hidercount"),
-        CC_ELIMINATIONS_CC("cc_statistics", "eliminations"),
+        CC_ELIMINATIONS("cc_statistics", "eliminations"),
         CC_BLINDNESS_USAGE("cc_statistics", "blindnessusage"),
         CC_INVISIBILITY_USAGE("cc_statistics", "invisibilityusage"),
         CC_POINT_PLAYER_USAGE("cc_statistics", "pointplayerusage"),

@@ -7,6 +7,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class DecorationInventory extends AbstractInventory {
 
     private final DecorationsManager manager;
@@ -19,7 +23,11 @@ public class DecorationInventory extends AbstractInventory {
     @Override
     protected void addItems(Inventory inventory) {
         int slot = 0;
-        for (Decoration decoration : manager.getDecorations().values()) {
+
+        List<Decoration> decorations = new ArrayList<>(manager.getDecorations().values());
+        decorations.sort(Comparator.comparing(decoration -> decoration.displayName().toLowerCase()));
+
+        for (Decoration decoration : decorations) {
             if (slot < inventory.getSize()) {
                 inventory.setItem(slot++, decoration.getDisplayItem());
             }

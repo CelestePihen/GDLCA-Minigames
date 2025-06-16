@@ -1,5 +1,6 @@
 package fr.cel.gameapi;
 
+import fr.cel.gameapi.command.*;
 import fr.cel.gameapi.listeners.PlayersListener;
 import fr.cel.gameapi.listeners.ServerListeners;
 import fr.cel.gameapi.manager.AdvancementsManager;
@@ -30,6 +31,8 @@ public final class GameAPI extends JavaPlugin {
     private CommandsManager commandsManager;
     private StatisticsManager statisticsManager;
     private AdvancementsManager advancementsManager;
+
+    private NPCCommand npcCommand;
 
     @Override
     public void onEnable() {
@@ -72,8 +75,9 @@ public final class GameAPI extends JavaPlugin {
 
         this.friendsManager = new FriendsManager(this);
 
+        this.npcCommand = new NPCCommand();
         this.commandsManager = new CommandsManager(this);
-        this.commandsManager.registerCommands();
+        registerCommands();
 
         this.inventoryManager = new InventoryManager(this);
 
@@ -84,6 +88,19 @@ public final class GameAPI extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
         getServer().getPluginManager().registerEvents(new ServerListeners(), this);
+    }
+
+    /**
+     * Register all commands
+     */
+    private void registerCommands() {
+        commandsManager.addCommand("coins", new CoinsCommand(getPlayerManager()));
+        commandsManager.addCommand("friends", new FriendsCommand(getFriendsManager()));
+        commandsManager.addCommand("gamecompass", new GameCompassComand(getPlayerManager()));
+        commandsManager.addCommand("profile", new ProfileCommand());
+        commandsManager.addCommand("welcome", new WelcomeCommand(getPlayerManager()));
+        commandsManager.addCommand("statistics", new StatisticsCommand());
+        commandsManager.addCommand("npc", getNpcCommand());
     }
 
     @Override

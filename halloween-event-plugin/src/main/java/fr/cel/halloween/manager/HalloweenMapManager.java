@@ -3,7 +3,7 @@ package fr.cel.halloween.manager;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.halloween.HalloweenEvent;
 import fr.cel.halloween.map.HalloweenMap;
-import fr.cel.halloween.utils.Config;
+import fr.cel.halloween.utils.MapConfig;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,14 +15,13 @@ import java.util.Map;
 public class HalloweenMapManager {
 
     @Getter private static HalloweenMapManager mapManager;
-
     @Getter private final Map<String, HalloweenMap> maps = new HashMap<>();
     private final HalloweenEvent main;
 
     public HalloweenMapManager(HalloweenEvent main) {
+        mapManager = this;
         this.main = main;
         loadMaps();
-        mapManager = this;
     }
 
     public HalloweenMap getMapByPlayer(Player player) {
@@ -39,15 +38,18 @@ public class HalloweenMapManager {
 
     public void loadMaps() {
         maps.clear();
+
         File folder = new File(main.getDataFolder(), "maps");
         if (!folder.exists()) folder.mkdirs();
+
         if (folder.isDirectory()) {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
-                maps.put(name, new Config(main, name).getMap());
-                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[HalloweenEvent] ", ChatUtility.GOLD) + ChatUtility.format("Chargement de la carte Halloween " + name, ChatUtility.WHITE));
+                maps.put(name, new MapConfig(main, name).getMap());
             }
         }
+
+        Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[HalloweenEvent] ", ChatUtility.GOLD) + ChatUtility.format("Chargement de " + this.maps.size() + " cartes Halloween ", ChatUtility.WHITE));
     }
 
 }

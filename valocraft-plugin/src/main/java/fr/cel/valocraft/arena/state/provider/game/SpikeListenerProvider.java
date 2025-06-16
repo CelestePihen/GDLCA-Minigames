@@ -1,21 +1,17 @@
 package fr.cel.valocraft.arena.state.provider.game;
 
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
+import fr.cel.valocraft.arena.state.game.TimeOverArenaState;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.ValoArena;
-import fr.cel.valocraft.arena.state.game.TimeOverArenaState;
 
 public class SpikeListenerProvider extends StateListenerProvider {
 

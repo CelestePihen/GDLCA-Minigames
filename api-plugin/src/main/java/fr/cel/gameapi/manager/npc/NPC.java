@@ -39,11 +39,11 @@ public class NPC {
     private final UUID uuid;
     private final String name;
     private final String displayName;
-    private final Location location;
     private final Skin skin;
 
     private ServerPlayer npc;
-    private Pose pose = Pose.STANDING;
+    private Location location;
+    private Pose pose;
 
     /**
      * Constructs a new NPC with the specified parameters.
@@ -54,11 +54,25 @@ public class NPC {
      * @param skin        The skin of the NPC.
      */
     public NPC(String name, String displayName, Location location, Skin skin) {
+        this(name, displayName, location, skin, Pose.STANDING);
+    }
+
+    /**
+     * Constructs a new NPC with the specified parameters.
+     *
+     * @param name        The name of the NPC.
+     * @param displayName The display name of the NPC.
+     * @param location    The location where the NPC will be spawned.
+     * @param skin        The skin of the NPC.
+     * @param pose        The pose of the NPC
+     */
+    public NPC(String name, String displayName, Location location, Skin skin, Pose pose) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.displayName = displayName;
         this.location = location;
         this.skin = skin;
+        this.pose = pose;
     }
 
     /**
@@ -92,33 +106,45 @@ public class NPC {
     public void spawn(Player player) {
         if (!this.location.getWorld().getName().equalsIgnoreCase(player.getWorld().getName())) return;
 
+        // Location
         this.npc.setPos(this.location.getX(), this.location.getY(), this.location.getZ());
         this.npc.setYHeadRot(this.location.getYaw());
         this.npc.setYBodyRot(this.location.getYaw());
         this.npc.setYRot(this.location.getYaw());
         this.npc.setXRot(this.location.getPitch());
 
+        // Skin Customization
         SynchedEntityData synchedEntityData = this.npc.getEntityData();
         synchedEntityData.set(new EntityDataAccessor<>(17, EntityDataSerializers.BYTE), (byte) 127);
 
+        // Latency
         if(((CraftPlayer) player).getHandle().connection == null) {
             Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> setValue(this.npc, "f", ((CraftPlayer) player).getHandle().connection),30L);
         } else {
             setValue(this.npc, "f", ((CraftPlayer) player).getHandle().connection);
         }
 
+        // Add Player
         sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, this.npc), player);
         ServerEntity serverEntity = new ServerEntity(this.npc.serverLevel(), npc, 0, false, packet -> {}, Set.of());
         Packet<?> packet = this.npc.getAddEntityPacket(serverEntity);
         sendPacket(packet, player);
         sendPacket(new ClientboundSetEntityDataPacket(this.npc.getId(), synchedEntityData.getNonDefaultValues()), player);
 
-        // retirer le NPC de la tablist après l’avoir affiché
+        // Retirer le NPC de la tablist après l’avoir affiché
         Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> {
             ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
             ClientboundPlayerInfoRemovePacket removePacket = new ClientboundPlayerInfoRemovePacket(List.of(this.uuid));
             serverPlayer.connection.send(removePacket);
         }, 20L);
+
+        // Pose
+        npc.setPose(pose);
+        SynchedEntityData dataWatcher = npc.getEntityData();
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            sendPacket(new ClientboundSetEntityDataPacket(npc.getId(), dataWatcher.getNonDefaultValues()), onlinePlayer);
+        }
     }
 
     /**
@@ -185,6 +211,24 @@ public class NPC {
     }
 
     /**
+     * Sets the location of the NPC and updates it for all online players.
+     *
+     * @param location The new location to set for the NPC.
+     */
+    public void setLocation(Location location) {
+        if (npc == null) return;
+        if (location == null) return;
+
+        this.location = location;
+
+        this.npc.setPos(location.getX(), location.getY(), location.getZ());
+        this.npc.setYHeadRot(this.location.getYaw());
+        this.npc.setYBodyRot(this.location.getYaw());
+        this.npc.setYRot(this.location.getYaw());
+        this.npc.setXRot(this.location.getPitch());
+    }
+
+    /**
      * Sets the pose of the NPC and updates it for all online players.
      *
      * @param pose The new pose to set for the NPC.
@@ -209,7 +253,7 @@ public class NPC {
      * @param message The message to send.
      */
     public void chat(String message) {
-        ClientboundSystemChatPacket packet = new ClientboundSystemChatPacket(Component.literal(ChatColor.GOLD + "[" + displayName + "] " + message), false);
+        ClientboundSystemChatPacket packet = new ClientboundSystemChatPacket(Component.literal(ChatColor.GOLD + "[" + displayName + "] " + ChatColor.RESET + message), false);
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             sendPacket(packet, onlinePlayer);
@@ -223,7 +267,7 @@ public class NPC {
      * @param player  The player to send the message to.
      */
     public void chat(String message, Player player) {
-        ClientboundSystemChatPacket packet = new ClientboundSystemChatPacket(Component.literal(ChatColor.GOLD + "[" + displayName + "] " + message), false);
+        ClientboundSystemChatPacket packet = new ClientboundSystemChatPacket(Component.literal(ChatColor.GOLD + "[" + displayName + "] " + ChatColor.RESET + message), false);
         sendPacket(packet, player);
     }
 

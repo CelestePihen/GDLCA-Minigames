@@ -1,10 +1,10 @@
 package fr.cel.valocraft.arena.state.game;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.state.provider.game.SpikeListenerProvider;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.ArenaState;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.arena.state.provider.game.SpikeListenerProvider;
 import fr.cel.valocraft.arena.timer.game.SpikeArenaTask;
 import lombok.Getter;
 

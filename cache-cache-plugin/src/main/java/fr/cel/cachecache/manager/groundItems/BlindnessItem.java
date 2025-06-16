@@ -2,6 +2,8 @@ package fr.cel.cachecache.manager.groundItems;
 
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.database.StatisticsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -26,7 +28,9 @@ public class BlindnessItem extends GroundItem {
             Player pl = Bukkit.getPlayer(uuid);
             if (pl == null) continue;
             if (pl == player || pl.getGameMode() == GameMode.SPECTATOR) continue;
+
             pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1, false, false, true));
+            GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_BLINDNESS_USAGE, 1);
 
             super.onInteract(player, arena);
         }

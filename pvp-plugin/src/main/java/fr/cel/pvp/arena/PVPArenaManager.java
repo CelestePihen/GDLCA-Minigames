@@ -17,6 +17,8 @@ public class PVPArenaManager {
     @Getter private final List<PVPArena> arenas = new ArrayList<>();
     private final PVP main;
 
+    // TODO: le mettre dans le répertoire manager
+
     public PVPArenaManager(PVP main) {
         arenaManager = this;
         this.main = main;
@@ -46,15 +48,18 @@ public class PVPArenaManager {
 
     public void loadArenas() {
         arenas.clear();
+
         File folder = new File(main.getDataFolder(), "arenas");
         if (!folder.exists()) folder.mkdirs();
+
         if (folder.isDirectory()) {
             for (File file : folder.listFiles()) {
                 Config config = new Config(main, file.getName().replace(".yml", ""));
                 arenas.add(config.getArena());
-                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[PVP] &fChargement de l'arène PVP ") + file.getName().replace(".yml", ""));
             }
         }
+
+        Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[PVP] &fChargement de " + arenas.size() + " arènes PVP "));
     }
 
 }

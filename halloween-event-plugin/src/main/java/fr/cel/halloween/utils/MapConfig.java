@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Config {
+public class MapConfig {
 
     private YamlConfiguration config;
     private File file;
@@ -21,7 +21,7 @@ public class Config {
     private final HalloweenEvent main;
     private final String mapName;
 
-    public Config(HalloweenEvent main, String mapName) {
+    public MapConfig(HalloweenEvent main, String mapName) {
         this.main = main;
         this.mapName = mapName;
     }
@@ -56,7 +56,7 @@ public class Config {
                         main.getGameManager()
                 );
 
-                map.setConfig(this);
+                map.setMapConfig(this);
 
                 if (!config.contains("lastTracker")) {
                     main.getLogger().severe("[HalloweenEvent] Attention ! La valeur lastTracker n'est pas contenue dans la carte " + mapName);

@@ -2,6 +2,8 @@ package fr.cel.cachecache.manager.groundItems;
 
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.manager.GroundItem;
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.database.StatisticsManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -35,6 +37,7 @@ public class InvisibilityItem extends GroundItem {
                 }
             }
         }
+        GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_INVISIBILITY_USAGE, 1);
         super.onInteract(player, arena);
     }
 

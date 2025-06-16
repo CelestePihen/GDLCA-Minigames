@@ -1,6 +1,6 @@
 package fr.cel.parkour;
 
-import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.CommandsManager;
 import fr.cel.parkour.commands.ParkourCommands;
 import fr.cel.parkour.manager.GameManager;
 import fr.cel.parkour.map.ParkourMapManager;
@@ -16,10 +16,10 @@ public class Parkour extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        gameManager = new GameManager(this);
-        parkourMapManager = new ParkourMapManager(this);
+        this.gameManager = new GameManager(this);
+        this.parkourMapManager = new ParkourMapManager(this);
 
-        GameAPI.getInstance().getCommandsManager().addCommand("parkour", new ParkourCommands(gameManager), this);
+       new CommandsManager(this).addCommand("parkour", new ParkourCommands(gameManager));
     }
 
     @Override

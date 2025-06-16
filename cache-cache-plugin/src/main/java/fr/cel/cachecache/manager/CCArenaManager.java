@@ -18,6 +18,7 @@ public class CCArenaManager {
 
     @Getter private static CCArenaManager arenaManager;
 
+    // TODO: arenas -> maps
     @Getter private final Map<String, CCArena> arenas = new HashMap<>();
     private final CacheCache main;
 
@@ -45,13 +46,15 @@ public class CCArenaManager {
         arenas.clear();
         File folder = new File(main.getDataFolder(), "arenas");
         if (!folder.exists()) folder.mkdirs();
+
         if (folder.isDirectory()) {
             for (File file : folder.listFiles()) {
                 String name = file.getName().replace(".yml", "");
                 arenas.put(name, new Config(main, name).getArena());
-                Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[Cache-Cache] ", ChatUtility.GOLD) + ChatUtility.format("Chargement de la map Cache-Cache " + name, ChatUtility.WHITE));
             }
         }
+
+        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix() + ChatUtility.format("Chargement de " + this.arenas.size() + " maps Cache-Cache ", ChatUtility.WHITE));
     }
 
 }

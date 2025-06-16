@@ -1,7 +1,9 @@
 package fr.cel.cachecache.manager.groundItems.inventory;
 
 import fr.cel.cachecache.arena.CCArena;
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
+import fr.cel.gameapi.manager.database.StatisticsManager;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -61,6 +63,7 @@ public class PointPlayerInventory extends AbstractInventory {
                 }
             }.runTaskTimer(arena.getGameManager().getMain(), 0, 1);
 
+            GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_POINT_PLAYER_USAGE, 1);
             removeItem(player);
         } else {
             player.sendMessage(arena.getGameManager().getPrefix() + "Ce joueur n'est plus dans la carte ou s'est déconnecté(e). Merci de réouvrir le menu.");

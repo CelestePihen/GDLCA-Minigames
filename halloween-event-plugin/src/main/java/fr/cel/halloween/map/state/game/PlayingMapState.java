@@ -7,7 +7,6 @@ import fr.cel.halloween.map.providers.game.PlayingListenerProvider;
 import fr.cel.halloween.map.state.MapState;
 import fr.cel.halloween.map.timer.game.ChestMapTask;
 import fr.cel.halloween.map.timer.game.PlayingMapTask;
-import fr.cel.halloween.map.timer.game.RemoveBlindnessTask;
 import fr.cel.halloween.map.timer.game.SoulsMapTask;
 import lombok.Getter;
 
