@@ -4,10 +4,7 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.state.game.PlayingArenaState;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -72,7 +69,7 @@ public abstract class StateListenerProvider implements Listener {
         Player player = event.getPlayer();
         if (!arena.isPlayerInArena(player)) return;
 
-        if (event.getAction() == Action.PHYSICAL && event.getMaterial().equals(Material.FARMLAND)) {
+        if (event.getAction() == Action.PHYSICAL) {
             event.setCancelled(true);
         }
 
@@ -108,7 +105,8 @@ public abstract class StateListenerProvider implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player damager && arena.isPlayerInArena(damager) && event.getEntity() instanceof ArmorStand) event.setCancelled(true);
+        if (event.getDamager() instanceof Player damager && arena.isPlayerInArena(damager) &&
+                (event.getEntity() instanceof Llama || event.getEntity() instanceof ArmorStand)) event.setCancelled(true);
     }
 
     @EventHandler
