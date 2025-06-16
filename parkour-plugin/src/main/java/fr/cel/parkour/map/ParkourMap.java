@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.HashSet;
@@ -63,7 +64,7 @@ public class ParkourMap implements Listener {
     }
 
     @EventHandler
-    public void quit(PlayerCommandPreprocessEvent event) {
+    private void quit(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (event.getMessage().contains("/hub")) {
             if (!this.isPlayerInArena(player)) return;
@@ -72,10 +73,17 @@ public class ParkourMap implements Listener {
     }
 
     @EventHandler
-    public void fallDamage(EntityDamageEvent event) {
+    private void fallDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!this.isPlayerInArena(player)) return;
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
+    }
+
+    @EventHandler
+    private void onFood(FoodLevelChangeEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!this.isPlayerInArena(player)) return;
+        event.setCancelled(true);
     }
 
     private void sendMessage(String message) {
