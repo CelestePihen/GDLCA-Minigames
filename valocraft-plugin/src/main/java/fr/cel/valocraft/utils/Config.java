@@ -1,17 +1,15 @@
 package fr.cel.valocraft.utils;
 
-import java.io.File;
-import java.io.IOException;
-
 import fr.cel.gameapi.utils.LocationUtility;
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.manager.GameManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.ValoArena;
+import java.io.File;
+import java.io.IOException;
 
 public class Config {
 

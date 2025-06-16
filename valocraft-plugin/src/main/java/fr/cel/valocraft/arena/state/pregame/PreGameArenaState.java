@@ -1,12 +1,12 @@
 package fr.cel.valocraft.arena.state.pregame;
 
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.manager.Role;
-import fr.cel.valocraft.manager.ValoTeam;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.state.provider.pregame.PreGameListenerProvider;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.ArenaState;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.arena.state.provider.pregame.PreGameListenerProvider;
+import fr.cel.valocraft.manager.Role;
+import fr.cel.valocraft.manager.ValoTeam;
 import org.bukkit.ChatColor;
 
 public class PreGameArenaState extends ArenaState {

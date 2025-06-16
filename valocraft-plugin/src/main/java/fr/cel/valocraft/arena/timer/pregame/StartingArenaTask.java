@@ -1,10 +1,9 @@
 package fr.cel.valocraft.arena.timer.pregame;
 
-import org.bukkit.Sound;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.game.WaitingArenaState;
+import org.bukkit.Sound;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class StartingArenaTask extends BukkitRunnable {
 

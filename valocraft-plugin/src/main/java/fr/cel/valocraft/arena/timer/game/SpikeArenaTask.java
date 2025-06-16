@@ -1,9 +1,7 @@
 package fr.cel.valocraft.arena.timer.game;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
 import fr.cel.valocraft.arena.ValoArena;
-import fr.cel.valocraft.arena.state.game.TimeOverArenaState;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SpikeArenaTask extends BukkitRunnable {
 

@@ -12,7 +12,7 @@ import fr.cel.halloween.map.state.game.WaitingMapState;
 import fr.cel.halloween.map.state.pregame.InitMapState;
 import fr.cel.halloween.map.state.pregame.PreGameMapState;
 import fr.cel.halloween.map.state.pregame.StartingMapState;
-import fr.cel.halloween.utils.Config;
+import fr.cel.halloween.utils.MapConfig;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
@@ -58,7 +58,7 @@ public class HalloweenMap {
 
     private final GameManager gameManager;
 
-    @Setter private Config config;
+    @Setter private MapConfig mapConfig;
     private final FileConfiguration soulConfig;
     private final FileConfiguration spawnPlayerConfig;
 
@@ -291,7 +291,7 @@ public class HalloweenMap {
 
     public void setLastTracker(String playerName) {
         this.lastTracker = playerName;
-        config.setValue("lastTracker", lastTracker);
+        mapConfig.setValue("lastTracker", lastTracker);
     }
 
     public void sendMessage(String message) {

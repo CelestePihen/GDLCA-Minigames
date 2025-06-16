@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class EventCommands extends AbstractCommand {
+public class EventCommand extends AbstractCommand {
 
-    public EventCommands() {
+    public EventCommand() {
         super("hub:event", true, true);
     }
 

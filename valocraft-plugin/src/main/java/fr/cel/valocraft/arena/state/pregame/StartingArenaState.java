@@ -1,20 +1,16 @@
 package fr.cel.valocraft.arena.state.pregame;
 
-import java.util.UUID;
-
-import fr.cel.valocraft.manager.Role;
-import fr.cel.valocraft.manager.ValoTeam;
-import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.state.provider.pregame.StartingListenerProvider;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.ArenaState;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import fr.cel.valocraft.arena.state.provider.pregame.StartingListenerProvider;
 import fr.cel.valocraft.arena.timer.pregame.StartingArenaTask;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 @Getter
 public class StartingArenaState extends ArenaState {

@@ -1,6 +1,9 @@
 package fr.cel.valocraft.arena.state.provider.pregame;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.arena.ValoArena;
+import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import fr.cel.valocraft.inventory.SelectTeam;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -12,10 +15,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-
-import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
-import fr.cel.valocraft.arena.ValoArena;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -74,7 +73,7 @@ public class PreGameListenerProvider extends StateListenerProvider {
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
             if (itemStack.getItemMeta().getDisplayName().equals("Sélecteur d'équipes")) {
-                GameAPI.getInstance().getInventoryManager().openInventory(new SelectTeam(), player);
+                GameAPI.getInstance().getInventoryManager().openInventory(new SelectTeam(arena.getGameManager()), player);
             }
         }
 

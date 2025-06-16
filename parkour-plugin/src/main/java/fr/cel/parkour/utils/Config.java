@@ -1,13 +1,12 @@
 package fr.cel.parkour.utils;
 
-import java.io.File;
-
 import fr.cel.gameapi.utils.LocationUtility;
+import fr.cel.parkour.Parkour;
 import fr.cel.parkour.map.ParkourMap;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import fr.cel.parkour.Parkour;
+import java.io.File;
 
 public class Config {
 

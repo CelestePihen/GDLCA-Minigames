@@ -33,7 +33,7 @@ public class CCStatsInventory extends AbstractInventory {
                 StatisticsManager.PlayerStatistics.CC_GAMES_PLAYED,
                 StatisticsManager.PlayerStatistics.CC_SEEKER_COUNT,
                 StatisticsManager.PlayerStatistics.CC_HIDER_COUNT,
-                StatisticsManager.PlayerStatistics.CC_ELIMINATIONS_CC,
+                StatisticsManager.PlayerStatistics.CC_ELIMINATIONS,
                 StatisticsManager.PlayerStatistics.CC_BLINDNESS_USAGE,
                 StatisticsManager.PlayerStatistics.CC_INVISIBILITY_USAGE,
                 StatisticsManager.PlayerStatistics.CC_POINT_PLAYER_USAGE,
@@ -65,7 +65,7 @@ public class CCStatsInventory extends AbstractInventory {
 
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
-        if (item.getType() == Material.BARRIER) GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(), player);
+        if (item.getType() == Material.BARRIER) GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(this.player), player);
     }
 
 }

@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HubCommands extends AbstractCommand {
+public class HubCommand extends AbstractCommand {
 
-    public HubCommands() {
+    public HubCommand() {
         super("hub:hub", false, false);
     }
 

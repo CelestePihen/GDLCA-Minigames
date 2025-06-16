@@ -1,6 +1,7 @@
 package fr.cel.decorationsplugin.manager;
 
 import fr.cel.decorationsplugin.DecorationsPlugin;
+import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -13,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class DecorationsManager {
+public final class DecorationsManager {
 
-    private final DecorationsPlugin main;
+    private final fr.cel.decorationsplugin.DecorationsPlugin main;
     private final Map<String, Decoration> decorations = new HashMap<>();
 
-    public DecorationsManager(DecorationsPlugin main) {
+    public DecorationsManager(fr.cel.decorationsplugin.DecorationsPlugin main) {
         this.main = main;
         loadAll();
     }
@@ -35,6 +36,8 @@ public class DecorationsManager {
         for (File file : files) {
             loadDecoration(file);
         }
+
+        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix() + ChatUtility.format(decorations.size() + " décorations chargées", ChatUtility.WHITE));
     }
 
     private void loadDecoration(File file) {
@@ -45,9 +48,9 @@ public class DecorationsManager {
             int sizeX = config.getInt("size.x");
             int sizeY = config.getInt("size.y");
             int sizeZ = config.getInt("size.z");
+            boolean sittable = config.getBoolean("sittable");
 
-            decorations.put(name, new Decoration(name, displayName, sizeX, sizeY, sizeZ));
-            Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix() + "Décoration chargée : " + displayName + " (" + name + ")");
+            decorations.put(name, new Decoration(name, displayName, sizeX, sizeY, sizeZ, sittable));
         } catch (Exception e) {
             Bukkit.getLogger().warning("Erreur dans le fichier de décoration " + file.getName() + " : " + e.getMessage());
         }

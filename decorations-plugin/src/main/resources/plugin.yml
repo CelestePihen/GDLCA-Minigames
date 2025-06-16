@@ -10,6 +10,12 @@ commands:
         description: Gérer les décorations dans le jeu
         aliases: [ deco ]
         permission: decorations.command
+    chairs:
+        description: Gérer les chaises dans le jeu
+        aliases: [ chaises ]
+        permission: decorations.chairs
 permissions:
     decorations:
-        description: Permet au joueur d'utiliser la commande
+        description: Permet au joueur d'utiliser la commande decorations
+    chairs:
+        description: Permet au joueur d'utiliser la commande chairs

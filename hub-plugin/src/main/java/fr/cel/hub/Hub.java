@@ -1,10 +1,9 @@
 package fr.cel.hub;
 
-import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.CommandsManager;
 import fr.cel.gameapi.manager.npc.NPCManager;
-import fr.cel.hub.commands.EventCommands;
-import fr.cel.hub.commands.HubCommands;
+import fr.cel.hub.commands.EventCommand;
+import fr.cel.hub.commands.HubCommand;
 import fr.cel.hub.listener.ChatListener;
 import fr.cel.hub.listener.ItemListener;
 import fr.cel.hub.listener.PlayerListener;
@@ -53,10 +52,10 @@ public final class Hub extends JavaPlugin {
      * Fonction qui permet d'enregistrer les commandes
      */
     private void registerCommands() {
-        CommandsManager commandsManager = GameAPI.getInstance().getCommandsManager();
+        CommandsManager commandsManager = new CommandsManager(this);
 
-        commandsManager.addCommand("hub", new HubCommands(), this);
-        commandsManager.addCommand("event", new EventCommands(), this);
+        commandsManager.addCommand("hub", new HubCommand());
+        commandsManager.addCommand("event", new EventCommand());
     }
 
 }

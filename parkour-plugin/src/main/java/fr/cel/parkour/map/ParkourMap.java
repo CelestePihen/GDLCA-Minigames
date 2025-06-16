@@ -1,9 +1,9 @@
 package fr.cel.parkour.map;
 
-import java.util.*;
-
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.parkour.manager.GameManager;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -13,8 +13,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import fr.cel.parkour.manager.GameManager;
-import lombok.Getter;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class ParkourMap implements Listener {
     

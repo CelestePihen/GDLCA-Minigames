@@ -4,6 +4,8 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.listeners.StateListenerProvider;
 import fr.cel.cachecache.manager.GroundItem;
+import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.database.StatisticsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -72,6 +74,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
             event.setCancelled(true);
 
             if (arena.getSeekers().contains(damager.getUniqueId())) {
+                GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(damager, StatisticsManager.PlayerStatistics.CC_ELIMINATIONS, 1);
                 arena.eliminate(damaged);
             }
             else if (arena.getHiders().contains(damager.getUniqueId())) {
@@ -123,16 +126,23 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
+        if (itemStack.getItemMeta() == null) return;
 
         for (GroundItem groundItem : arena.getAvailableGroundItems()) {
-            if (groundItem != null && itemStack.getType() == groundItem.getItemStack().getType()
-                    && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            if (groundItem == null) continue;
+            if (groundItem.getItemStack().getItemMeta() == null) continue;
+            if (!itemStack.getItemMeta().getItemName().equals(groundItem.getItemStack().getItemMeta().getItemName())) continue;
+
+            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
                 // Succès Pas besoin
                 if (arena.getTimer() <= 420 && arena.getHiders().contains(player.getUniqueId())) {
                     // s'il a utilisé un objet et que le timer est en dessous de 7min alors, on ajoute l'ID du joueur
                     // dans la liste des joueurs qui n'ont pas le droit d'avoir le succès
                     arena.getCheckAdvancements().getPlayersPasBesoin().add(player.getUniqueId());
                 }
+                // Succès Pas besoin
+
                 groundItem.onInteract(player, arena);
             }
         }
@@ -154,8 +164,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onEntityDamageEvent(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)) return;
 
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
             event.setCancelled(!arena.isFallDamage());
@@ -166,7 +175,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     /**
-     * Sert que pour la map Bunker
+     * Permet de détecter si un joueur a activé un levier sur la Carte Bunker
      */
     @EventHandler
     public void onLeverAction(BlockRedstoneEvent event) {

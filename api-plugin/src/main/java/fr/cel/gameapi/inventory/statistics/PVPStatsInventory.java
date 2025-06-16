@@ -55,7 +55,7 @@ public class PVPStatsInventory extends AbstractInventory {
 
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
-        if (item.getType() == Material.BARRIER) GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(), player);
+        if (item.getType() == Material.BARRIER) GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(this.player), player);
     }
 
 }

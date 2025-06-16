@@ -2,7 +2,9 @@ package fr.cel.cachecache.manager.groundItems.inventory;
 
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.manager.groundItems.tasks.SoundCatTimer;
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
+import fr.cel.gameapi.manager.database.StatisticsManager;
 import fr.cel.gameapi.utils.ItemBuilder;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -27,8 +29,8 @@ public class SoundInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inventory) {
-        ItemStack goat_horn = new ItemBuilder(Material.GOAT_HORN).setDisplayName("Corne de chèvres").toItemStack();
-        ItemStack cat = new ItemBuilder(Material.STRING).setDisplayName("Chats").toItemStack();
+        ItemStack goat_horn = new ItemBuilder(Material.GOAT_HORN).setItemName("Corne de chèvres").toItemStack();
+        ItemStack cat = new ItemBuilder(Material.STRING).setItemName("Chats").toItemStack();
         inventory.addItem(goat_horn, cat);
     }
 
@@ -43,6 +45,7 @@ public class SoundInventory extends AbstractInventory {
                 arena.getCheckAdvancements().giveMiaou(player);
             }
 
+            GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_SOUND_USAGE, 1);
             new SoundCatTimer(arena).runTaskTimer(arena.getGameManager().getMain(), 0, 20);
         }
 
@@ -59,6 +62,8 @@ public class SoundInventory extends AbstractInventory {
             if (arena.getArenaName().equalsIgnoreCase("sp") || arena.getArenaName().equalsIgnoreCase("sp2")) {
                 arena.getCheckAdvancements().giveRaidChateau(player);
             }
+
+            GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_SOUND_USAGE, 1);
         }
     }
 

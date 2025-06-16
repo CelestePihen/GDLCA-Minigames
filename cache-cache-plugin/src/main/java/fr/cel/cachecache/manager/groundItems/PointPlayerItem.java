@@ -14,7 +14,7 @@ public class PointPlayerItem extends GroundItem {
     private static final List<String> lores = List.of("Cet objet vous permet de pointer la direction d'un joueur.");
 
     public PointPlayerItem() {
-        super("seePlayerItem", Material.FEATHER, "Pointer un joueur", lores, "cc_position");
+        super("pointPlayerItem", Material.FEATHER, "Pointer un joueur", lores, "cc_position");
     }
 
     @Override

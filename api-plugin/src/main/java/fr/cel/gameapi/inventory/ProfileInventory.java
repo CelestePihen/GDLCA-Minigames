@@ -42,7 +42,7 @@ public class ProfileInventory extends AbstractInventory {
 
             case CANDLE -> GameAPI.getInstance().getInventoryManager().openInventory(new FriendsInventory(player), player);
 
-            case PAPER -> GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(), player);
+            case PAPER -> GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(player), player);
 
             case ENDER_PEARL -> player.sendMessage(GameAPI.getPrefix() + "Bientôt");
 

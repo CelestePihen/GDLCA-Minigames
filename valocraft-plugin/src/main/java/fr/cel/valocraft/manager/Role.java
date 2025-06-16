@@ -1,13 +1,9 @@
 package fr.cel.valocraft.manager;
 
 import fr.cel.gameapi.scoreboard.GameTeam;
-import org.bukkit.Location;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
-import org.bukkit.scoreboard.Team.Option;
-import org.bukkit.scoreboard.Team.OptionStatus;
-
 import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.scoreboard.Team.OptionStatus;
 
 @Getter
 public class Role {

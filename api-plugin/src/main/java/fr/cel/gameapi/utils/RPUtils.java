@@ -12,9 +12,7 @@ public final class RPUtils {
 
     public static void registerMusics() {
         for (CustomMusic customMusic : CustomMusic.values()) {
-            if (customMusic.customSound == null) {
-                musics.put(customMusic.musicName, customMusic);
-            }
+            if (customMusic.customSound == null) musics.put(customMusic.getMusicName(), customMusic);
         }
     }
 
@@ -29,14 +27,13 @@ public final class RPUtils {
         SPOOKY_SCARY_SKELETONS("Spooky Scary Skeletons (Remix)", "The Living Tombstone", "Original Music: Andrew Gold", "gdlca:music_disc.spookyscaryskeketonsremix"),
         STUCK_INSIDE("Stuck Inside", "Living Tombstone - CG5 - Black Gryph0n - Baasik - Kevin Foster", "gdlca:music_disc.stuckinside"),
 
-        // Minecraft Music (Unmodified Music)
-        PIGSTEP("Pigstep", "Lena Raine", Sound.MUSIC_DISC_PIGSTEP),
-        OTHERSIDE("otherside", "Lena Raine", Sound.MUSIC_DISC_OTHERSIDE),
-        RELIC("Relic", "Aaron Cherof", Sound.MUSIC_DISC_RELIC),
-        CREATOR("Creator", "Lena Raine", Sound.MUSIC_DISC_CREATOR),
-        CREATOR_MUSIC_BOX("Creator Music Box", "Lena Raine", Sound.MUSIC_DISC_CREATOR_MUSIC_BOX),
-        PRECIPICE("Precipice", "Aaron Cherof", Sound.MUSIC_DISC_PRECIPICE)
-        ;
+        // Minecraft Music
+        PIGSTEP("Pigstep", "Lena Raine", "minecraft:music_disc.pigstep"),
+        OTHERSIDE("otherside", "Lena Raine", "minecraft:music_disc.otherside"),
+        RELIC("Relic", "Aaron Cherof", "minecraft:music_disc.relic"),
+        CREATOR("Creator", "Lena Raine", "minecraft:music_disc.creator"),
+        CREATOR_MUSIC_BOX("Creator Music Box", "Lena Raine", "minecraft:music_disc.creator_music_box"),
+        PRECIPICE("Precipice", "Aaron Cherof", "minecraft:music_disc.precipice");
 
         private final String musicName;
         private final String author;
@@ -44,20 +41,8 @@ public final class RPUtils {
         private final Sound vanillaSound;
         private final String customSound;
 
-        CustomMusic(String musicName, String author, Sound sound) {
-            this(musicName, author, null, sound);
-        }
-
         CustomMusic(String musicName, String author, String sound) {
             this(musicName, author, null, sound);
-        }
-
-        CustomMusic(String musicName, String author, String description, Sound sound) {
-            this.musicName = musicName;
-            this.author = author;
-            this.description = description;
-            this.vanillaSound = sound;
-            this.customSound = null;
         }
 
         CustomMusic(String musicName, String author, String description, String sound) {

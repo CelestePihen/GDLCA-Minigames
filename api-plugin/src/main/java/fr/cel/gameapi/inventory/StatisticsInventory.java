@@ -10,8 +10,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class StatisticsInventory extends AbstractInventory {
 
-    public StatisticsInventory() {
+    private final Player player;
+
+    public StatisticsInventory(Player player) {
         super("Statistiques", 27);
+        this.player = player;
     }
 
     @Override
@@ -26,15 +29,15 @@ public class StatisticsInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case COMPASS -> GameAPI.getInstance().getInventoryManager().openInventory(new HubStatsInventory(player), player);
+            case COMPASS -> GameAPI.getInstance().getInventoryManager().openInventory(new HubStatsInventory(this.player), player);
 
-            case SPYGLASS -> GameAPI.getInstance().getInventoryManager().openInventory(new CCStatsInventory(player), player);
+            case SPYGLASS -> GameAPI.getInstance().getInventoryManager().openInventory(new CCStatsInventory(this.player), player);
 
-            case BOW -> GameAPI.getInstance().getInventoryManager().openInventory(new ValoStatsInventory(player), player);
+            case BOW -> GameAPI.getInstance().getInventoryManager().openInventory(new ValoStatsInventory(this.player), player);
 
-            case NETHERITE_SWORD -> GameAPI.getInstance().getInventoryManager().openInventory(new PVPStatsInventory(player), player);
+            case NETHERITE_SWORD -> GameAPI.getInstance().getInventoryManager().openInventory(new PVPStatsInventory(this.player), player);
 
-            case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourStatsInventory(player), player);
+            case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourStatsInventory(this.player), player);
 
             default -> {}
         }

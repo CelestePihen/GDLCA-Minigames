@@ -1,36 +1,34 @@
 package fr.cel.valocraft.arena;
 
-import java.util.*;
-
 import fr.cel.gameapi.scoreboard.GameScoreboard;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import fr.cel.gameapi.utils.ChatUtility;
+import fr.cel.gameapi.utils.ItemBuilder;
+import fr.cel.valocraft.arena.state.ArenaState;
+import fr.cel.valocraft.arena.state.game.PlayingArenaState;
+import fr.cel.valocraft.arena.state.game.SpikeArenaState;
+import fr.cel.valocraft.arena.state.game.TimeOverArenaState;
+import fr.cel.valocraft.arena.state.game.WaitingArenaState;
+import fr.cel.valocraft.arena.state.pregame.InitArenaState;
+import fr.cel.valocraft.arena.state.pregame.PreGameArenaState;
+import fr.cel.valocraft.arena.state.pregame.StartingArenaState;
+import fr.cel.valocraft.manager.GameManager;
+import fr.cel.valocraft.manager.Role;
+import fr.cel.valocraft.manager.ValoTeam;
+import lombok.Getter;
+import lombok.Setter;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import fr.cel.valocraft.manager.GameManager;
-import fr.cel.valocraft.manager.Role;
-import fr.cel.valocraft.manager.ValoTeam;
-import fr.cel.valocraft.arena.state.pregame.InitArenaState;
-import fr.cel.valocraft.arena.state.pregame.PreGameArenaState;
-import fr.cel.valocraft.arena.state.pregame.StartingArenaState;
-import fr.cel.valocraft.arena.state.ArenaState;
-import fr.cel.valocraft.arena.state.game.PlayingArenaState;
-import fr.cel.valocraft.arena.state.game.SpikeArenaState;
-import fr.cel.valocraft.arena.state.game.TimeOverArenaState;
-import fr.cel.valocraft.arena.state.game.WaitingArenaState;
-import fr.cel.gameapi.utils.ChatUtility;
-import fr.cel.gameapi.utils.ItemBuilder;
-import lombok.Getter;
-import lombok.Setter;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Getter
 public class ValoArena {
@@ -226,6 +224,7 @@ public class ValoArena {
 
             if (getBlueTeam().getPlayers().isEmpty()) getRedTeam().setRoundWin(13);
             else if (getRedTeam().getPlayers().isEmpty()) getBlueTeam().setRoundWin(13);
+
             checkWin();
         }
     }
@@ -239,6 +238,8 @@ public class ValoArena {
     }
 
     private void checkRound() {
+        if (this.arenaState instanceof TimeOverArenaState) return;
+
         if (getBlueTeam().isAllTeamInSpec()) {
             getRedTeam().setRoundWin(getRedTeam().getRoundWin() + 1);
         } else if (getRedTeam().isAllTeamInSpec()) {
@@ -247,9 +248,7 @@ public class ValoArena {
             return;
         }
 
-        if (arenaState instanceof SpikeArenaState && getTeamByRole(attackers).isAllTeamInSpec()) {
-            return;
-        }
+        if (arenaState instanceof SpikeArenaState && getTeamByRole(attackers).isAllTeamInSpec()) return;
 
         showTeamRound();
         globalRound += 1;
@@ -259,13 +258,11 @@ public class ValoArena {
     private void checkWin() {
         if (blueTeam.getRoundWin() >= 13 || redTeam.getRoundWin() >= 13) {
             // TODO mettre un GameState de Win entre la fin et le renvoi au Hub genre avec les vainqueurs affichés / classements
-            Bukkit.getScheduler().runTaskLater(gameManager.getMain(), this::endGame, 20);
+            endGame();
             return;
         }
 
-        if (arenaState instanceof SpikeArenaState spikeArenaState) {
-            spikeArenaState.getSpikeArenaTask().cancel();
-        }
+        if (arenaState instanceof SpikeArenaState spikeArenaState) spikeArenaState.getSpikeArenaTask().cancel();
 
         setArenaState(new TimeOverArenaState(this));
     }
@@ -345,13 +342,6 @@ public class ValoArena {
         }
     }
 
-    public ValoTeam getTeamByRole(Role role) {
-        for (ValoTeam team : Arrays.asList(redTeam, blueTeam)) {
-            if (team.getRole() == role) return team;
-        }
-        return null;
-    }
-
     public Role getRoleByPlayer(Player player) {
         for (Role role : Arrays.asList(attackers, defenders)) {
             if (role.getTeam().getPlayers().contains(player.getName())) return role;
@@ -377,6 +367,13 @@ public class ValoArena {
             if (player == null) continue;
             getBossBar().removePlayer(player);
         }
+    }
+
+    private ValoTeam getTeamByRole(Role role) {
+        for (ValoTeam team : Arrays.asList(redTeam, blueTeam)) {
+            if (team.getRole() == role) return team;
+        }
+        return null;
     }
 
     private void addGlobalRoundEndRound() {
