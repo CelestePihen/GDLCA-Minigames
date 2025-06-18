@@ -5,10 +5,7 @@ import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.state.game.PlayingArenaState;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -91,7 +88,6 @@ public abstract class StateListenerProvider implements Listener {
                 event.setCancelled(true);
             }
         }
-
     }
 
     @EventHandler
@@ -102,7 +98,7 @@ public abstract class StateListenerProvider implements Listener {
         Material type = event.getCurrentItem().getType();
         if (type == Material.AIR) return;
 
-        if (type == Material.CARVED_PUMPKIN || (type == Material.AMETHYST_SHARD)) event.setCancelled(true);
+        if (type == Material.CARVED_PUMPKIN || (type == Material.AMETHYST_SHARD && !player.isOp())) event.setCancelled(true);
     }
 
     @EventHandler
@@ -112,7 +108,8 @@ public abstract class StateListenerProvider implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player damager && arena.isPlayerInArena(damager) && event.getEntity() instanceof ArmorStand) event.setCancelled(true);
+        if (event.getDamager() instanceof Player damager && arena.isPlayerInArena(damager) &&
+                (event.getEntity() instanceof Llama || event.getEntity() instanceof ArmorStand)) event.setCancelled(true);
     }
 
     @EventHandler
