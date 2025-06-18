@@ -20,8 +20,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -124,6 +126,8 @@ public class PlayingListenerProvider extends StateListenerProvider {
         }
         // Traversée musicale
 
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
         if (itemStack.getItemMeta() == null) return;
@@ -149,6 +153,12 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
+    public void onPlayerDrop(PlayerDropItemEvent event) {
+        if (!arena.isPlayerInArena(event.getPlayer())) return;
+        if (event.getItemDrop().getItemStack().getType() == Material.STICK) event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onPlayerPickup(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)) return;
 
@@ -158,7 +168,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         if (arena.getSpawnedGroundItems().contains(item)) {
             arena.getSpawnedGroundItems().remove(item);
-            player.sendMessage(arena.getGameManager().getPrefix() + "Vous avez récupéré " + itemMeta.getDisplayName());
+            player.sendMessage(arena.getGameManager().getPrefix() + "Vous avez récupéré " + itemMeta.getItemName());
         }
     }
 

@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GroundItemsArenaTask extends BukkitRunnable {
 
@@ -18,18 +18,17 @@ public class GroundItemsArenaTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (arena.getCcMode() == CCArena.CCMode.Normal) {
+        if (arena.getCcMode() == CCArena.CCMode.PluieDeBonus) {
+            spawnItem().setGlowing(true);
+            spawnItem().setGlowing(true);
+        } else {
             spawnItem();
-        } else if (arena.getCcMode() == CCArena.CCMode.PluieDeBonus) {
-            spawnItem().setGlowing(true);
-            spawnItem().setGlowing(true);
         }
     }
 
     private Item spawnItem() {
-        Random r = new Random();
-        Location randomLocation = arena.getLocationGroundItems().get(r.nextInt(arena.getLocationGroundItems().size()));
-        GroundItem rGroundItem = arena.getAvailableGroundItems().get(r.nextInt(arena.getAvailableGroundItems().size()));
+        Location randomLocation = arena.getLocationGroundItems().get(ThreadLocalRandom.current().nextInt(arena.getLocationGroundItems().size()));
+        GroundItem rGroundItem = arena.getAvailableGroundItems().get(ThreadLocalRandom.current().nextInt(arena.getLocationGroundItems().size()));
 
         Item droppedItem = randomLocation.getWorld().dropItem(randomLocation, rGroundItem.getItemStack());
         droppedItem.setUnlimitedLifetime(true);

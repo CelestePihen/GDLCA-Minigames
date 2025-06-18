@@ -24,7 +24,7 @@ public class PlayerData {
     public void addCoins(double amount) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "UPDATE players SET coins = coins + ? WHERE uuid_player = ?";
+        String ps = "UPDATE players SET coins = coins + ? WHERE uuid_player = ?;";
         try {
             connection = GameAPI.getInstance().getDatabase().getConnection();
             preparedStatement = connection.prepareStatement(ps);
@@ -51,7 +51,7 @@ public class PlayerData {
     public void removeCoins(double amount) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "UPDATE players SET coins = coins - ? WHERE uuid_player = ?";
+        String ps = "UPDATE players SET coins = coins - ? WHERE uuid_player = ?;";
         try {
             connection = GameAPI.getInstance().getDatabase().getConnection();
             preparedStatement = connection.prepareStatement(ps);
@@ -78,7 +78,7 @@ public class PlayerData {
     public double getCoins() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "SELECT coins FROM players WHERE uuid_player = ?";
+        String ps = "SELECT coins FROM players WHERE uuid_player = ?;";
         ResultSet resultSet = null;
         double coins = 0.0D;
         try {
@@ -113,7 +113,7 @@ public class PlayerData {
     public boolean isAllowingFriends() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "SELECT allowFriends FROM players WHERE uuid_player = ?";
+        String ps = "SELECT allowFriends FROM players WHERE uuid_player = ?;";
         ResultSet resultSet = null;
         boolean allow = true;
         try {
@@ -148,7 +148,7 @@ public class PlayerData {
     public void setAllowFriends(boolean isAllowing) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "UPDATE players SET allowFriends = ? WHERE uuid_player = ?";
+        String ps = "UPDATE players SET allowFriends = ? WHERE uuid_player = ?;";
         try {
             connection = GameAPI.getInstance().getDatabase().getConnection();
             preparedStatement = connection.prepareStatement(ps);

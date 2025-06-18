@@ -48,6 +48,7 @@ public class PlayerManager {
         return playersData.get(player.getUniqueId());
     }
 
+    // TODO faire un Event
     /**
      * Permet d'envoyer le joueur au Hub
      * @param player Le joueur à envoyer

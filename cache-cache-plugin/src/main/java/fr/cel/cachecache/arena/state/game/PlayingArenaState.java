@@ -16,11 +16,11 @@ import lombok.Setter;
 public class PlayingArenaState extends ArenaState {
 
     private PlayingArenaTask playingArenaTask;
+    private GroundItemsArenaTask groundItemsArenaTask;
 
     private PlayingWolfArenaTask playingWolfArenaTask;
     @Setter private PlayingBecomeWolfArenaTask playingBecomeWolfArenaTask;
 
-    private GroundItemsArenaTask groundItemsArenaTask;
 
     public PlayingArenaState(CCArena arena) {
         super("En partie", arena);

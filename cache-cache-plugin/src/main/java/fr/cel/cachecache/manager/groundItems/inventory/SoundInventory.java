@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SoundInventory extends AbstractInventory {
 
@@ -41,7 +41,7 @@ public class SoundInventory extends AbstractInventory {
         if (item.getType() == Material.STRING) {
             removeItem(player);
 
-            if (arena.getCheckAdvancements().getMiaou().getPlayerInside().get(player.getUniqueId())) {
+            if (arena.getArenaName().equalsIgnoreCase("moulin") && arena.getCheckAdvancements().getMiaou().getPlayerInside().get(player.getUniqueId())) {
                 arena.getCheckAdvancements().giveMiaou(player);
             }
 
@@ -52,7 +52,7 @@ public class SoundInventory extends AbstractInventory {
         else if (item.getType() == Material.GOAT_HORN) {
             removeItem(player);
 
-            Sound sound = goatHornSounds.get(new Random().nextInt(goatHornSounds.size()));
+            Sound sound = goatHornSounds.get(ThreadLocalRandom.current().nextInt(goatHornSounds.size()));
             for (UUID uuid : arena.getPlayers()) {
                 Player pl = Bukkit.getPlayer(uuid);
                 if (pl == null || pl.getGameMode() == GameMode.SPECTATOR) continue;

@@ -26,7 +26,7 @@ public class FriendsManager {
     public void addFriend(Player player, Player friend) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "INSERT INTO friends (uuid_player, uuid_friend) VALUES (?, ?)";
+        String ps = "INSERT INTO friends (uuid_player, uuid_friend) VALUES (?, ?);";
         try {
             connection = main.getDatabase().getConnection();
             preparedStatement = connection.prepareStatement(ps);
@@ -55,7 +55,7 @@ public class FriendsManager {
     public void removeFriend(Player player, Player friend) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "DELETE FROM friends WHERE uuid_player = ? and uuid_friend = ?";
+        String ps = "DELETE FROM friends WHERE uuid_player = ? and uuid_friend = ?;";
         try {
             connection = main.getDatabase().getConnection();
             preparedStatement = connection.prepareStatement(ps);
@@ -86,7 +86,7 @@ public class FriendsManager {
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String ps = "SELECT uuid_friend FROM friends WHERE uuid_player = ?";
+        String ps = "SELECT uuid_friend FROM friends WHERE uuid_player = ?;";
         ResultSet resultSet = null;
         try {
             connection = main.getDatabase().getConnection();

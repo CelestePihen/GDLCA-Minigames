@@ -29,8 +29,7 @@ public abstract class GroundItem {
      */
     public void onInteract(Player player, CCArena arena) {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        if (itemInHand.getAmount() == 1) player.getInventory().setItemInMainHand(null);
-        else itemInHand.setAmount(itemInHand.getAmount() - 1);
+        itemInHand.setAmount(itemInHand.getAmount() - 1);
     }
 
 }
