@@ -72,8 +72,8 @@ public class DatabaseManager {
      */
     public void createAccount(Player player) {
         if (!hasAccount(player)) {
-            String ps = "INSERT INTO players (uuid_player, coins, allowFriends, name_player) VALUES (?, ?, ?, ?)";
-            try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps);) {
+            String ps = "INSERT INTO players (uuid_player, coins, allowFriends, name_player) VALUES (?, ?, ?, ?);";
+            try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
                 preparedStatement.setString(1, player.getUniqueId().toString());
                 preparedStatement.setDouble(2, 0.0D);
                 preparedStatement.setBoolean(3, true);
@@ -84,6 +84,46 @@ public class DatabaseManager {
             } catch (SQLException e) {
                 GameAPI.getInstance().getLogger().severe("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage());
             }
+
+            createStatistics(player);
+        }
+    }
+
+    private void createStatistics(Player player) {
+        String ps = "INSERT INTO cc_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Cache-Cache pour " + player.getName() + ": " + e.getMessage());
+        }
+
+        String ps2 = "INSERT INTO valo_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps2)) {
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Valocraft pour " + player.getName() + ": " + e.getMessage());
+        }
+
+        String ps3 = "INSERT INTO pvp_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps3)) {
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du PVP pour " + player.getName() + ": " + e.getMessage());
+        }
+
+        String ps4 = "INSERT INTO parkour_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps4)) {
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Parkour pour " + player.getName() + ": " + e.getMessage());
         }
     }
 
@@ -93,7 +133,7 @@ public class DatabaseManager {
      * @return Retourne true si le joueur a déjà un compte et false s'il n'en a pas
      */
     public boolean hasAccount(Player player) {
-        String ps = "SELECT uuid_player FROM players WHERE uuid_player = ?";
+        String ps = "SELECT uuid_player FROM players WHERE uuid_player = ?;";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
 

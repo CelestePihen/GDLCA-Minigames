@@ -10,9 +10,7 @@ import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.utils.CheckAdvancements;
 import fr.cel.cachecache.utils.Config;
-import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
-import fr.cel.gameapi.manager.database.StatisticsManager.PlayerStatistics;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -162,6 +160,7 @@ public class CCArena {
      */
     public void removePlayer(Player player) {
         if (!isPlayerInArena(player)) return;
+
         players.remove(player.getUniqueId());
         scoreboard.removePlayer(player);
         wolfTimer.remove(player.getUniqueId());
@@ -188,7 +187,8 @@ public class CCArena {
             startingArenaState.getStartingArenaTask().cancel();
             sendMessage("Démarrage annulé... Un joueur a quitté la partie.");
             setArenaState(new PreGameArenaState(this));
-            Bukkit.getPlayer(owner).getInventory().addItem(new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
+            setLevel(0);
+            Bukkit.getPlayer(owner).getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
             return;
         }
 
@@ -250,18 +250,21 @@ public class CCArena {
                 message += "Tu es mort(e). Tu deviens spectateur !";
                 subtitle = "Tu es spectateur !";
                 becomeSpectator(victim);
+                sendMessage(victim.getName() + " est mort(e) !");
             }
 
             case LoupToucheTouche -> {
                 message += "Tu es le loup ! Touche vite un autre joueur, sinon tu vas perdre !";
                 subtitle = "Tu deviens le loup !";
                 becomeWolf(victim);
+                sendMessage(victim.getName() + " est le loup !");
             }
 
             default -> {
                 message += "Tu es mort(e). Tu passes du côté des chercheurs !";
                 subtitle = "Tu es devenu(e) chercheur.";
                 becomeSeeker(victim);
+                sendMessage(victim.getName() + " est mort(e) !");
             }
         }
 

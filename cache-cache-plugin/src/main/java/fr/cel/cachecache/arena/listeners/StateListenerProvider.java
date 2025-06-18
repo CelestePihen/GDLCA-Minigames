@@ -4,6 +4,7 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.arena.CCArena;
 import fr.cel.cachecache.arena.state.game.PlayingArenaState;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -13,6 +14,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -30,7 +32,6 @@ public abstract class StateListenerProvider implements Listener {
     }
 
     public void onEnable(CacheCache main) {
-        main = arena.getGameManager().getMain();
         main.getServer().getPluginManager().registerEvents(this, main);
     }
    
@@ -52,7 +53,7 @@ public abstract class StateListenerProvider implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (arena.isPlayerInArena(player) && event.getMessage().contains("/hub")) arena.removePlayer(player);
+        if (arena.isPlayerInArena(player) && event.getMessage().startsWith("/hub")) arena.removePlayer(player);
     }
 
     @EventHandler
@@ -61,10 +62,11 @@ public abstract class StateListenerProvider implements Listener {
     }
 
     @EventHandler
-    public void onDropItem(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        if (arena.isPlayerInArena(player) && !player.isOp()
-                && event.getItemDrop().getItemStack().getType() == Material.AMETHYST_SHARD) event.setCancelled(true);
+    public void onEntityInteract(EntityInteractEvent event) {
+        Block block = event.getBlock();
+        if (block.getType() == Material.FARMLAND) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -72,22 +74,24 @@ public abstract class StateListenerProvider implements Listener {
         Player player = event.getPlayer();
         if (!arena.isPlayerInArena(player)) return;
 
-        if (event.getAction() == Action.PHYSICAL && event.getMaterial().equals(Material.FARMLAND)) {
+        if (event.getAction() == Action.PHYSICAL && event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.FARMLAND)) {
             event.setCancelled(true);
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (arena.getArenaState() instanceof PlayingArenaState) {
+            if (event.getItem() != null && event.getItem().getType() == Material.AMETHYST_SHARD) {
+                arena.startGame(player);
+            }
+
+            if (event.getClickedBlock() != null && !(arena.getArenaState() instanceof PlayingArenaState) && !player.isOp()) {
                 event.setCancelled(true);
             }
-            else if (!player.isOp()) {
+
+            if (event.getClickedBlock() != null && arena.getArenaState() instanceof PlayingArenaState) {
                 event.setCancelled(true);
             }
         }
 
-        if (event.getItem() != null && event.getItem().getType() == Material.AMETHYST_SHARD) {
-            arena.startGame(player);
-        }
     }
 
     @EventHandler
@@ -98,7 +102,7 @@ public abstract class StateListenerProvider implements Listener {
         Material type = event.getCurrentItem().getType();
         if (type == Material.AIR) return;
 
-        if (type == Material.CARVED_PUMPKIN || (type == Material.AMETHYST_SHARD && !player.isOp())) event.setCancelled(true);
+        if (type == Material.CARVED_PUMPKIN || (type == Material.AMETHYST_SHARD)) event.setCancelled(true);
     }
 
     @EventHandler

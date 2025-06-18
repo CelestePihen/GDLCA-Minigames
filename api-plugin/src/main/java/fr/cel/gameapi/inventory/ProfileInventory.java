@@ -22,8 +22,16 @@ public class ProfileInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
+        double coins = playerData.getCoins();
+        String coinsStr;
+        if (coins <= 1) {
+            coinsStr = coins + " pièce";
+        } else {
+            coinsStr = coins + " pièces";
+        }
+
         inv.setItem(4, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getPlayerProfile()).setDisplayName(player.getName())
-                .addLoreLine(ChatUtility.format(playerData.getCoins() + " pièces", ChatUtility.GOLD)).toItemStack());
+                .addLoreLine(ChatUtility.format(coinsStr, ChatUtility.GOLD)).toItemStack());
 
         inv.setItem(10, new ItemBuilder(Material.CANDLE).setDisplayName(ChatUtility.GRAY + "Amis").toItemStack());
 
