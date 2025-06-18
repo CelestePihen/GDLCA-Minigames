@@ -69,10 +69,18 @@ public class WaitingArenaState extends ArenaState {
             Player player = Bukkit.getPlayer(playerName);
             if (player != null) player.teleport(arena.getDefendersSpawn());
         }
+
+        for (UUID uuid : arena.getSpectators()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+            player.teleport(arena.getSpawnLoc());
+        }
     }
 
     private void giveWeapons() {
         for (UUID uuid : arena.getPlayers()) {
+            if (arena.getSpectators().contains(uuid)) continue;
+
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) return;
 

@@ -140,6 +140,10 @@ public class ValoCommands extends AbstractCommand {
         sender.sendMessage("/valo setround <blue/red> <number> : Permet de changer le nombre de manches gagnées pour l'équipe choisie (sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
     }
 
+    private List<String> getPlayerNames(List<UUID> playerUUIDs) {
+        return playerUUIDs.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).map(Player::getName).collect(Collectors.toList());
+    }
+
     private List<String> getPlayerNames(Set<UUID> playerUUIDs) {
         return playerUUIDs.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).map(Player::getName).collect(Collectors.toList());
     }

@@ -25,10 +25,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class ValoArena {
@@ -44,8 +41,8 @@ public class ValoArena {
     private final Location attackersSpawn;
     private final Location defendersSpawn;
 
-    private final Set<UUID> players;
-    private final Set<UUID> spectators;
+    private final List<UUID> players;
+    private final List<UUID> spectators;
 
     @Setter private Role attackers;
     @Setter private Role defenders;
@@ -69,10 +66,10 @@ public class ValoArena {
         this.attackersSpawn = attackersSpawn;
         this.defendersSpawn = defenderSpawn;
 
-        this.scoreboard = new GameScoreboard("Valocraft");
+        this.scoreboard = new GameScoreboard("valo" + nameArena.substring(0, 2));
 
-        this.players = new HashSet<>();
-        this.spectators = new HashSet<>();
+        this.players = new ArrayList<>();
+        this.spectators = new ArrayList<>();
 
         this.bossBar = Bukkit.createBossBar(ChatUtility.format("&10 " + "&r| 1 " + "&r| &c 0"), BarColor.PURPLE, BarStyle.SOLID);
 
@@ -131,6 +128,7 @@ public class ValoArena {
 
         if (gameMode == GameMode.SPECTATOR) {
             spectators.add(player.getUniqueId());
+            player.sendMessage(gameManager.getPrefix() + "La partie est déjà lancée.");
         } else {
             sendMessage(player.getDisplayName() + " a rejoint la partie !");
             player.getInventory().setItem(4, new ItemBuilder(Material.WHITE_WOOL).setDisplayName("Sélecteur d'équipes").addLoreLine("§aSélectionner votre équipe.").toItemStack());
@@ -201,24 +199,24 @@ public class ValoArena {
                 sendMessage("Démarrage annulé... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour lancer.");
                 setArenaState(new PreGameArenaState(this));
             }
-            
+
             else if (arenaState instanceof WaitingArenaState waitingArenaState) {
                 waitingArenaState.getWaitingArenaTask().cancel();
                 sendMessage(gameCancelled);
             }
-            
+
             else if (arenaState instanceof PlayingArenaState playingArenaState) {
                 playingArenaState.getPlayingArenaTask().cancel();
                 sendMessage(gameCancelled);
             }
-            
-            else if (arenaState instanceof TimeOverArenaState timeOverArenaState) {
-                timeOverArenaState.getTimeOverArenaTask().cancel();
-                sendMessage(gameCancelled);
-            }
-            
+
             else if (arenaState instanceof SpikeArenaState spikeArenaState) {
                 spikeArenaState.getSpikeArenaTask().cancel();
+                sendMessage(gameCancelled);
+            }
+
+            else if (arenaState instanceof TimeOverArenaState timeOverArenaState) {
+                timeOverArenaState.getTimeOverArenaTask().cancel();
                 sendMessage(gameCancelled);
             }
 
@@ -240,6 +238,8 @@ public class ValoArena {
     private void checkRound() {
         if (this.arenaState instanceof TimeOverArenaState) return;
 
+        if (arenaState instanceof SpikeArenaState && getTeamByRole(attackers).isAllTeamInSpec()) return;
+
         if (getBlueTeam().isAllTeamInSpec()) {
             getRedTeam().setRoundWin(getRedTeam().getRoundWin() + 1);
         } else if (getRedTeam().isAllTeamInSpec()) {
@@ -247,8 +247,6 @@ public class ValoArena {
         } else {
             return;
         }
-
-        if (arenaState instanceof SpikeArenaState && getTeamByRole(attackers).isAllTeamInSpec()) return;
 
         showTeamRound();
         globalRound += 1;
@@ -338,7 +336,12 @@ public class ValoArena {
         for (UUID pls : getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
             if (player == null) continue;
-            player.setGameMode(gameMode);
+
+            if (spectators.contains(pls)) {
+                player.setGameMode(GameMode.SPECTATOR);
+            } else {
+                player.setGameMode(gameMode);
+            }
         }
     }
 
