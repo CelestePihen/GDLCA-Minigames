@@ -54,6 +54,7 @@ public class ValoCommands extends AbstractCommand {
         }
 
         if (!(sender instanceof Player player)) {
+            sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
             return;
         }
 
