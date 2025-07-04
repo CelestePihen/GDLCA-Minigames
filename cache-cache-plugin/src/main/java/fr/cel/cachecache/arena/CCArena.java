@@ -21,7 +21,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -80,7 +80,7 @@ public class CCArena {
 
     // Bunker
     @Getter private final Location leverLocation = new Location(Bukkit.getWorld("world"), 54, 52, -217);
-    private final FileConfiguration lampsConfig;
+    private final YamlConfiguration lampsConfig;
 
     private UUID owner = null;
 

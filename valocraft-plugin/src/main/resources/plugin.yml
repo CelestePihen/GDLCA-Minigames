@@ -1,7 +1,7 @@
 name: Valocraft
 version: '${project.version}'
 main: fr.cel.valocraft.ValoCraft
-api-version: 1.20
+api-version: 1.21
 authors: [ Cel, Deadsky ]
 depend: [ GameAPI ]
 commands:

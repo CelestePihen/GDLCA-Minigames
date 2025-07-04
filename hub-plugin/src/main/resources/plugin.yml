@@ -1,7 +1,7 @@
 name: Hub
 version: '${project.version}'
 main: fr.cel.hub.Hub
-api-version: 1.20
+api-version: 1.21
 author: Cel
 depend: [GameAPI]
 commands:

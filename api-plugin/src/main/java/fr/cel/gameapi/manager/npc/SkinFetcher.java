@@ -13,15 +13,13 @@ public class SkinFetcher {
     public static Skin fetchSkin(String username) {
         try {
             // Get UUID from username
-            String uuidJson = getJson("https://api.mojang.com/users/profiles/minecraft/" + username);
-            if (uuidJson == null) return null;
-            JsonObject uuidObject = JsonParser.parseString(uuidJson).getAsJsonObject();
+            JsonObject uuidObject = getJson("https://api.mojang.com/users/profiles/minecraft/" + username);
+            if (uuidObject == null) return null;
             String uuid = uuidObject.get("id").getAsString();
 
             // Get skin data
-            String profileJson = getJson("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-            if (profileJson == null) return null;
-            JsonObject profileObject = JsonParser.parseString(profileJson).getAsJsonObject();
+            JsonObject profileObject = getJson("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+            if (profileObject == null) return null;
             JsonObject properties = profileObject.getAsJsonArray("properties").get(0).getAsJsonObject();
 
             String skinValue = properties.get("value").getAsString();
@@ -33,17 +31,17 @@ public class SkinFetcher {
         }
     }
 
-    private static String getJson(String urlString) {
+    private static JsonObject getJson(String urlString) {
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setReadTimeout(5000);
-            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(2000);
+            conn.setConnectTimeout(2000);
             InputStreamReader reader = new InputStreamReader(conn.getInputStream());
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             reader.close();
-            return json.toString();
+            return json;
         } catch (Exception e) {
             return null;
         }

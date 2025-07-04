@@ -7,13 +7,14 @@ import fr.cel.valocraft.arena.state.pregame.PreGameArenaState;
 import fr.cel.valocraft.manager.GameManager;
 import fr.cel.valocraft.manager.ValoArenaManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -36,29 +37,28 @@ public class ValoCommands extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            sendMessageWithPrefix(sender, "Les fichiers de configuration des arènes ValoCraft ont été rechargées.");
+            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des arènes ValoCraft ont été rechargées.");
             gameManager.reloadArenaManager();
             return;
         }
 
         if (args[0].equalsIgnoreCase("list")) {
             if (arenaManager.getArenas().isEmpty()) {
-                sendMessageWithPrefix(sender, "Aucune arène a été installée.");
+                sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
                 return;
             }
-            arenaManager.getArenas().forEach(arena ->
+            arenaManager.getArenas().forEach((arenaName, arena) ->
                     sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName())
             );
             return;
         }
 
         if (!(sender instanceof Player player)) {
-            sendMessageWithPrefix(sender, "Vous devez etre un joueur pour effectuer cette commande.");
             return;
         }
 
         if (!arenaManager.isPlayerInArena(player)) {
-            sendMessageWithPrefix(player, "Vous n'êtes pas dans une carte.");
+            player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
             return;
         }
 
@@ -66,14 +66,14 @@ public class ValoCommands extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("start")) {
             if (arena == null) {
-                sendMessageWithPrefix(player, "Vous n'êtes pas dans une arène.");
+                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
                 return;
             }
 
             if (arena.startGame()) {
-                sendMessageWithPrefix(player, "La partie a été lancée !");
+                player.sendMessage(gameManager.getPrefix() + "La partie a été lancée !");
             } else {
-                sendMessageWithPrefix(player, "La partie ne peut pas être lancée.");
+                player.sendMessage(gameManager.getPrefix() + "La partie ne peut pas être lancée.");
             }
         }
 
@@ -83,7 +83,7 @@ public class ValoCommands extends AbstractCommand {
             List<String> redTeam = getPlayerNames(arena.getRedTeam().getPlayers());
             List<String> spectators = getPlayerNames(arena.getSpectators());
 
-            sendMessageWithPrefix(player,
+            player.sendMessage(gameManager.getPrefix() +
                     "Joueurs :" + players +
                     "\nTeam Bleu : " + blueTeam +
                     "\nTeam Rouge : " + redTeam +
@@ -93,7 +93,7 @@ public class ValoCommands extends AbstractCommand {
 
         else if (args[0].equalsIgnoreCase("setround")) {
             if (arena.getArenaState() instanceof PreGameArenaState) {
-                sendMessageWithPrefix(player, "La partie n'est pas lancée.");
+                player.sendMessage(gameManager.getPrefix() + "La partie n'est pas lancée.");
                 return;
             }
 
@@ -103,10 +103,10 @@ public class ValoCommands extends AbstractCommand {
                 } else if (args[1].equalsIgnoreCase("red")) {
                     arena.getRedTeam().setRoundWin(Integer.parseInt(args[2]));
                 } else {
-                    sendMessageWithPrefix(player, "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
+                    player.sendMessage(gameManager.getPrefix() + "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
                 }
             } else {
-                sendMessageWithPrefix(player, "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
+                player.sendMessage(gameManager.getPrefix() + "La commande est : /valocraft setround <blue/red> <nombre>\n(sachant que si vous mettez un nombre supérieur ou égal à 13, cela finit la partie)");
             }
 
         }
@@ -146,6 +146,60 @@ public class ValoCommands extends AbstractCommand {
 
     private List<String> getPlayerNames(Set<UUID> playerUUIDs) {
         return playerUUIDs.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).map(Player::getName).collect(Collectors.toList());
+    }
+
+    private void calculateInvisibleBlocks(Player player, String[] args) {
+        // TODO
+//        if (args.length != 8) {
+//            player.sendMessage(gameManager.getPrefix() + "Usage : /cc calcul <mapName> <x1> <y1> <z1> <x2> <y2> <z2>");
+//            return;
+//        }
+//
+//        String mapName = args[1];
+//        ValoArena arena = gameManager.getValoArenaManager().getArenas().get(mapName);
+//
+//        if (arena == null) {
+//            player.sendMessage(gameManager.getPrefix() + "Rentrer un nom d'arène valide.");
+//            return;
+//        }
+//
+//        int x1 = Integer.parseInt(args[2]);
+//        int y1 = Integer.parseInt(args[3]);
+//        int z1 = Integer.parseInt(args[4]);
+//        int x2 = Integer.parseInt(args[5]);
+//        int y2 = Integer.parseInt(args[6]);
+//        int z2 = Integer.parseInt(args[7]);
+//
+//        // Assurer que x1 <= x2, y1 <= y2, z1 <= z2
+//        int minX = Math.min(x1, x2);
+//        int maxX = Math.max(x1, x2);
+//        int minY = Math.min(y1, y2);
+//        int maxY = Math.max(y1, y2);
+//        int minZ = Math.min(z1, z2);
+//        int maxZ = Math.max(z1, z2);
+//
+//        World world = player.getWorld();
+//
+//        int count = 0;
+//        for (int x = minX; x <= maxX; x++) {
+//            for (int y = minY; y <= maxY; y++) {
+//                for (int z = minZ; z <= maxZ; z++) {
+//                    Block block = world.getBlockAt(x, y, z);
+//                    if (block.getType() == Material.STRUCTURE_VOID) {
+//                        arena.getConfig().setValue("invisible." + count, lampData);
+//                        count++;
+//                    }
+//                }
+//            }
+//        }
+//
+//        try {
+//            gameManager.getLampsConfig().save(gameManager.getLampsFile());
+//            player.sendMessage("§a" + count + " lampes de redstone trouvées et sauvegardées dans lamps.yml !");
+//        } catch (IOException e) {
+//            player.sendMessage("§cErreur lors de la sauvegarde du fichier lamps.yml !");
+//            e.printStackTrace();
+//        }
     }
 
 }

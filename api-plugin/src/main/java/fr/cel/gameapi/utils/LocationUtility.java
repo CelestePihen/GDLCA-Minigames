@@ -43,4 +43,27 @@ public class LocationUtility {
         return new Location(Bukkit.getWorld("world"), x, y, z);
     }
 
+    /**
+     * Convertit une Location en chaîne de caractères.
+     *
+     * @param loc La Location contenant les coordonnées
+     * @return Une chaîne de caractères correspondant aux coordonnées spécifiées.
+     */
+    public static String parseLocToString(Location loc) {
+        return loc.getX() + "," + loc.getY() + "," + loc.getZ();
+    }
+
+    /**
+     * Met une Location en chaîne de caractères dans une configuration.
+     *
+     * @param config La configuration où vous voulez mettre la Location
+     * @param path Le chemin où vous voulez mettre la Location
+     * @param loc La Location contenant les coordonnées
+     */
+    public static void parseLocToConfig(YamlConfiguration config, String path, Location loc) {
+        config.set(path + ".x", loc.getX());
+        config.set(path + ".y", loc.getY());
+        config.set(path + ".z", loc.getZ());
+    }
+
 }

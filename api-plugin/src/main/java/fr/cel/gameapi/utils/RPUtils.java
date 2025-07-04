@@ -33,7 +33,8 @@ public final class RPUtils {
         RELIC("Relic", "Aaron Cherof", "minecraft:music_disc.relic"),
         CREATOR("Creator", "Lena Raine", "minecraft:music_disc.creator"),
         CREATOR_MUSIC_BOX("Creator Music Box", "Lena Raine", "minecraft:music_disc.creator_music_box"),
-        PRECIPICE("Precipice", "Aaron Cherof", "minecraft:music_disc.precipice");
+        PRECIPICE("Precipice", "Aaron Cherof", "minecraft:music_disc.precipice"),
+        LAVA_CHICKEN("Lava Chicken", "Hyper Potions", "minecraft:music_disc.lava_chicken");
 
         private final String musicName;
         private final String author;

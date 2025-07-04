@@ -4,8 +4,6 @@ main: fr.cel.gameapi.GameAPI
 api-version: '1.21'
 author: Cel
 prefix: GameAPI
-depend:
-  - ProtocolLib
 libraries:
   - com.zaxxer:HikariCP:6.3.0
   - org.postgresql:postgresql:42.7.7

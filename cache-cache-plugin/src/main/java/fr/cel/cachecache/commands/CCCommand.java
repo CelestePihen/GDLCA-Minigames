@@ -136,7 +136,7 @@ public class CCCommand extends AbstractCommand {
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
         if (args.length == 1) {
-            return List.of("start", "temphub", "enabletemporary", "list", "listplayer", "reload", "reloadtemporary", "grounditems", "owner", "join");
+            return List.of("start", "temphub", "enabletemporary", "list", "listplayer", "reload", "reloadtemporary", "grounditems", "owner", "join", "calcul");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("join")) {

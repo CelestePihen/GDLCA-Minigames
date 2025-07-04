@@ -1,7 +1,7 @@
 name: PVP
 version: ${project.version}
 main: fr.cel.pvp.PVP
-api-version: 1.20
+api-version: 1.21
 author: Cel
 depend: [GameAPI]
 commands:
