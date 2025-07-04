@@ -6,8 +6,6 @@ import fr.cel.cachecache.manager.GameManager;
 import fr.cel.gameapi.manager.CommandsManager;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter

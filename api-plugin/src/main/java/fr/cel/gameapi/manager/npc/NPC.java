@@ -1,18 +1,17 @@
 package fr.cel.gameapi.manager.npc;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import fr.cel.gameapi.GameAPI;
 import lombok.Getter;
+import net.minecraft.Optionull;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
@@ -21,20 +20,16 @@ import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class NPC {
-
-    // https://github.com/Circuit-board/DecorativeNPCs/blob/main/src/main/java/cool/circuit/decorativeNPCS/NPC.java#L297
 
     private final UUID uuid;
     private final String name;
@@ -82,20 +77,12 @@ public class NPC {
     public void create() {
         if (npc != null) return;
 
-        ServerLevel level = ((CraftWorld) this.location.getWorld()).getHandle();
-
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        ServerLevel level = ((CraftWorld) this.location.getWorld()).getHandle();
         GameProfile gameProfile = new GameProfile(this.uuid, this.displayName);
-        this.npc = new ServerPlayer(server, level, gameProfile, ClientInformation.createDefault());
 
-        if (this.skin.value().isEmpty() || this.skin.signature().isEmpty()) {
-            Skin skin = SkinFetcher.fetchSkin(this.displayName);
-            if (skin != null) {
-                gameProfile.getProperties().put("textures", new Property("textures", skin.value(), skin.signature()));
-            }
-        } else {
-            gameProfile.getProperties().put("textures", new Property("textures", this.skin.value(), this.skin.signature()));
-        }
+        this.npc = new ServerPlayer(server, level, new GameProfile(uuid, ""), ClientInformation.createDefault());
+        npc.gameProfile = gameProfile;
     }
 
     /**
@@ -106,45 +93,75 @@ public class NPC {
     public void spawn(Player player) {
         if (!this.location.getWorld().getName().equalsIgnoreCase(player.getWorld().getName())) return;
 
-        // Location
-        this.npc.setPos(this.location.getX(), this.location.getY(), this.location.getZ());
-        this.npc.setYHeadRot(this.location.getYaw());
-        this.npc.setYBodyRot(this.location.getYaw());
-        this.npc.setYRot(this.location.getYaw());
-        this.npc.setXRot(this.location.getPitch());
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        // Skin Customization
-        SynchedEntityData synchedEntityData = this.npc.getEntityData();
-        synchedEntityData.set(new EntityDataAccessor<>(17, EntityDataSerializers.BYTE), (byte) 127);
-
-        // Latency
-        if(((CraftPlayer) player).getHandle().connection == null) {
-            Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> setValue(this.npc, "f", ((CraftPlayer) player).getHandle().connection),30L);
+        if (this.skin.value().isEmpty() || this.skin.signature().isEmpty()) {
+            Skin skin = SkinFetcher.fetchSkin(this.displayName);
+            if (skin != null) {
+                npc.getGameProfile().getProperties().replaceValues(
+                        "textures",
+                        ImmutableList.of(new Property("textures", skin.value(), skin.signature()))
+                );
+            }
         } else {
-            setValue(this.npc, "f", ((CraftPlayer) player).getHandle().connection);
+            npc.getGameProfile().getProperties().replaceValues(
+                    "textures",
+                    ImmutableList.of(new Property("textures", this.skin.value(), this.skin.signature()))
+            );
         }
 
-        // Add Player
-        sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, this.npc), player);
-        ServerEntity serverEntity = new ServerEntity(this.npc.serverLevel(), npc, 0, false, packet -> {}, Set.of());
-        Packet<?> packet = this.npc.getAddEntityPacket(serverEntity);
-        sendPacket(packet, player);
-        sendPacket(new ClientboundSetEntityDataPacket(this.npc.getId(), synchedEntityData.getNonDefaultValues()), player);
+        EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.noneOf(ClientboundPlayerInfoUpdatePacket.Action.class);
+        actions.add(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER);
+        actions.add(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME);
 
-        // Retirer le NPC de la tablist après l’avoir affiché
-        Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> {
-            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-            ClientboundPlayerInfoRemovePacket removePacket = new ClientboundPlayerInfoRemovePacket(List.of(this.uuid));
-            serverPlayer.connection.send(removePacket);
-        }, 20L);
+        ClientboundPlayerInfoUpdatePacket playerInfoPacket = new ClientboundPlayerInfoUpdatePacket(actions, getEntry(npc, serverPlayer));
+        serverPlayer.connection.send(playerInfoPacket);
 
-        // Pose
-        npc.setPose(pose);
-        SynchedEntityData dataWatcher = npc.getEntityData();
+        npc.setPos(getLocation().x(), getLocation().y(), getLocation().z());
 
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            sendPacket(new ClientboundSetEntityDataPacket(npc.getId(), dataWatcher.getNonDefaultValues()), onlinePlayer);
+        ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(
+                npc.getId(),
+                npc.getUUID(),
+                getLocation().x(),
+                getLocation().y(),
+                getLocation().z(),
+                getLocation().getPitch(),
+                getLocation().getYaw(),
+                npc.getType(),
+                0,
+                Vec3.ZERO,
+                getLocation().getYaw()
+        );
+        serverPlayer.connection.send(addEntityPacket);
+
+        setPose(pose);
+
+        ClientboundPlayerInfoRemovePacket playerInfoRemovePacket = new ClientboundPlayerInfoRemovePacket(List.of(npc.getUUID()));
+        serverPlayer.connection.send(playerInfoRemovePacket);
+
+        update(player);
+    }
+
+    public void update(Player player) {
+        if (npc == null) return;
+
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+
+        npc.getEntityData().set(net.minecraft.world.entity.player.Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) (0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40));
+
+        refreshEntityData(player);
+    }
+
+    private void refreshEntityData(Player player) {
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+
+        SynchedEntityData.DataItem<?>[] itemsById = (SynchedEntityData.DataItem<?>[]) getValue(npc.getEntityData(), "itemsById"); // itemsById
+        List<SynchedEntityData.DataValue<?>> entityData = new ArrayList<>();
+        for (SynchedEntityData.DataItem<?> dataItem : itemsById) {
+            entityData.add(dataItem.value());
         }
+        ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(npc.getId(), entityData);
+        serverPlayer.connection.send(setEntityDataPacket);
     }
 
     /**
@@ -222,10 +239,6 @@ public class NPC {
         this.location = location;
 
         this.npc.setPos(location.getX(), location.getY(), location.getZ());
-        this.npc.setYHeadRot(this.location.getYaw());
-        this.npc.setYBodyRot(this.location.getYaw());
-        this.npc.setYRot(this.location.getYaw());
-        this.npc.setXRot(this.location.getPitch());
     }
 
     /**
@@ -238,8 +251,8 @@ public class NPC {
         if (pose == null) return;
 
         npc.setPose(pose);
-        SynchedEntityData dataWatcher = npc.getEntityData();
 
+        SynchedEntityData dataWatcher = npc.getEntityData();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             sendPacket(new ClientboundSetEntityDataPacket(npc.getId(), dataWatcher.getNonDefaultValues()), onlinePlayer);
         }
@@ -292,8 +305,7 @@ public class NPC {
 
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        // remplace this.npc.setRot(float yaw, float pitch) qui est en protected
-        this.setRot(location.getYaw(), location.getPitch());
+        npc.setRot(location.getYaw(), location.getPitch());
 
         this.npc.setYHeadRot(location.getYaw());
         this.npc.setXRot(location.getPitch());
@@ -316,50 +328,40 @@ public class NPC {
         serverPlayer.connection.send(rotateHeadPacket);
     }
 
-    private void setRot(float f, float f1) {
-        if (Float.isNaN(f)) {
-            f = 0.0F;
-        }
-
-        if (f == Float.POSITIVE_INFINITY || f == Float.NEGATIVE_INFINITY) {
-            f = 0.0F;
-        }
-
-        if (Float.isNaN(f1)) {
-            f1 = 0.0F;
-        }
-
-        if (f1 == Float.POSITIVE_INFINITY || f1 == Float.NEGATIVE_INFINITY) {
-            f1 = 0.0F;
-        }
-
-        this.npc.setYRot(f % 360.0F);
-        this.npc.setXRot(f1 % 360.0F);
-    }
-
     private void sendPacket(Packet<?> packet, Player player) {
-        // Ensure the player has a valid connection before sending the packet
-        if (((CraftPlayer) player).getHandle().connection == null) {
-            Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> {
-                // Double-check if the player's connection is available before sending the packet
-                if (((CraftPlayer) player).getHandle().connection != null) {
-                    ((CraftPlayer) player).getHandle().connection.sendPacket(packet);
-                }
-            }, 25L);
-        } else {
-            // If the connection is already available, send the packet immediately
-            ((CraftPlayer) player).getHandle().connection.sendPacket(packet);
-        }
+        ((CraftPlayer) player).getHandle().connection.send(packet);
     }
 
-    private void setValue(Object packet, String fieldName, Object value) {
+    private ClientboundPlayerInfoUpdatePacket.Entry getEntry(ServerPlayer npcPlayer, ServerPlayer viewer) {
+        GameProfile profile = npcPlayer.getGameProfile();
+        return new ClientboundPlayerInfoUpdatePacket.Entry(
+                npcPlayer.getUUID(),
+                profile,
+                false,
+                69,
+                npcPlayer.gameMode.getGameModeForPlayer(),
+                npcPlayer.getTabListDisplayName(),
+                true,
+                -1,
+                Optionull.map(npcPlayer.getChatSession(), RemoteChatSession::asData)
+        );
+    }
+
+    private Object getValue(Object instance, String name) {
+        Object result = null;
+
         try {
-            Field field = packet.getClass().getDeclaredField(fieldName);
+            Field field = instance.getClass().getDeclaredField(name);
+
             field.setAccessible(true);
-            field.set(packet, value);
+            result = field.get(instance);
+            field.setAccessible(false);
+
         } catch (Exception e) {
-            GameAPI.getInstance().getLogger().severe("Failed to set value for field " + fieldName + " in packet " + packet.getClass().getSimpleName() + ": " + e.getMessage());
+            e.printStackTrace();
         }
+
+        return result;
     }
 
 }

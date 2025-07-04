@@ -95,12 +95,10 @@ public class ChairListener implements Listener {
         Block block = chairLocation.getBlock();
 
         Location exitLocation = null;
-        float yaw = 0.0f;
 
         if (block.getBlockData() instanceof Stairs stairData) {
             BlockFace facing = stairData.getFacing();
             exitLocation = getExitLocationFromDirection(chairLocation, facing);
-            yaw = getPlayerYawFromStairFacing(facing);
         }
 
         else if (block.getType() == Material.BARRIER) {
@@ -112,7 +110,6 @@ public class ChairListener implements Listener {
                     if (itemFrame.getFacing() == BlockFace.UP) {
                         Rotation rotation = itemFrame.getRotation();
                         exitLocation = getExitLocationFromRotation(chairLocation, rotation);
-                        yaw = getPlayerYawFromRotation(rotation);
                         break;
                     }
                 }
@@ -123,43 +120,7 @@ public class ChairListener implements Listener {
 
         if (exitLocation != null) {
             player.teleport(exitLocation);
-            player.getLocation().setYaw(yaw);
         }
-    }
-
-    /**
-     * Convertit un BlockFace d'escalier en Yaw pour le joueur
-     * @param stairFacing La direction vers laquelle l'escalier fait face
-     * @return Le Yaw en degrés pour orienter le joueur
-     */
-    private float getPlayerYawFromStairFacing(BlockFace stairFacing) {
-        return switch (stairFacing) {
-            case NORTH -> 0.0f;    // Joueur regarde vers le sud
-            case EAST -> 90.0f;  // Joueur regarde vers l'ouest
-            case SOUTH -> 180.0f;  // Joueur regarde vers le nord
-            case WEST -> -90.0f;   // Joueur regarde vers l'est
-            default -> 0.0f;    // Par défaut, regarde vers le sud
-        };
-    }
-
-    /**
-     * Convertit une Rotation d'Item Frame en Yaw pour le joueur
-     * @param itemFrameRotation La rotation vers laquelle l'item frame regarde
-     * @return Le Yaw en degrés pour orienter le joueur
-     */
-    private float getPlayerYawFromRotation(Rotation itemFrameRotation) {
-        BlockFace exitDirection = switch (itemFrameRotation) {
-            case NONE -> BlockFace.NORTH;
-            case CLOCKWISE_45 -> BlockFace.NORTH_EAST;
-            case CLOCKWISE -> BlockFace.EAST;
-            case CLOCKWISE_135 -> BlockFace.SOUTH_EAST;
-            case FLIPPED -> BlockFace.SOUTH;
-            case FLIPPED_45 -> BlockFace.SOUTH_WEST;
-            case COUNTER_CLOCKWISE -> BlockFace.WEST;
-            case COUNTER_CLOCKWISE_45 -> BlockFace.NORTH_WEST;
-        };
-
-        return getPlayerYawFromStairFacing(exitDirection);
     }
 
     /**
@@ -207,7 +168,6 @@ public class ChairListener implements Listener {
 
         Location exitLoc = chairLocation.clone().add(offsetX + 0.5, 0, offsetZ + 0.5);
         exitLoc.setY(chairLocation.getY());
-        exitLoc.setYaw(getPlayerYawFromStairFacing(stairDirection));
         return exitLoc;
     }
 

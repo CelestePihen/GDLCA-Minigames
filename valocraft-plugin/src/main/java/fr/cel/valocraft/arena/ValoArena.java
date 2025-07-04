@@ -14,6 +14,7 @@ import fr.cel.valocraft.arena.state.pregame.StartingArenaState;
 import fr.cel.valocraft.manager.GameManager;
 import fr.cel.valocraft.manager.Role;
 import fr.cel.valocraft.manager.ValoTeam;
+import fr.cel.valocraft.utils.Config;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatMessageType;
@@ -25,7 +26,10 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 public class ValoArena {
@@ -35,14 +39,23 @@ public class ValoArena {
     private final String nameArena;
     private final String displayName;
 
-    private ArenaState arenaState;
-
     private final Location spawnLoc;
     private final Location attackersSpawn;
     private final Location defendersSpawn;
 
     private final List<UUID> players;
     private final List<UUID> spectators;
+
+    private ArenaState arenaState;
+
+    private final GameScoreboard scoreboard;
+
+    private final BossBar bossBar;
+
+    // TODO
+    private final List<Location> invisibleBarriersLocations;
+
+    @Setter private Config config;
 
     @Setter private Role attackers;
     @Setter private Role defenders;
@@ -54,11 +67,7 @@ public class ValoArena {
 
     @Setter private Block spike;
 
-    private final GameScoreboard scoreboard;
-
-    private final BossBar bossBar;
-
-    public ValoArena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, GameManager gameManager) {
+    public ValoArena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, List<Location> invisibleBarriersLocations, GameManager gameManager) {
         this.nameArena = nameArena;
         this.displayName = displayName;
 
@@ -75,6 +84,8 @@ public class ValoArena {
 
         this.arenaState = new InitArenaState(this);
         this.globalRound = 1;
+
+        this.invisibleBarriersLocations = invisibleBarriersLocations;
 
         this.gameManager = gameManager;
     }

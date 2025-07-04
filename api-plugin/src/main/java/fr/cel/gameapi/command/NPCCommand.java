@@ -33,14 +33,16 @@ public class NPCCommand extends AbstractCommand {
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-
+        if (args.length == 1) {
+            return List.of("reload", "rl");
+        }
         return List.of();
     }
 
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(" ");
         sender.sendMessage(ChatUtility.format("[Aide pour les commandes de PNJ]", ChatUtility.GOLD));
-        sender.sendMessage("/npc reload|rl : Recharge les PNJ");
+        sender.sendMessage("/npc reload|rl : Recharge tous les PNJ de tous les plugins");
     }
 
 }

@@ -2,7 +2,7 @@ name: Essentials
 version: 1.0
 main: fr.cel.essentials.Essentials
 author: Cel
-api-version: 1.19
+api-version: 1.21
 commands:
   heal:
     description: Permet de se soigner les joueurs

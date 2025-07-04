@@ -3,8 +3,9 @@ package fr.cel.gameapi.manager.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import fr.cel.gameapi.GameAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -80,7 +81,7 @@ public class DatabaseManager {
                 preparedStatement.setString(4, player.getName());
                 preparedStatement.executeUpdate();
 
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Création d'un nouveau compte pour " + player.getName());
+                Bukkit.getConsoleSender().sendMessage(Component.text("Création d'un nouveau compte pour " + player.getName()).color(NamedTextColor.GREEN));
             } catch (SQLException e) {
                 GameAPI.getInstance().getLogger().severe("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage());
             }

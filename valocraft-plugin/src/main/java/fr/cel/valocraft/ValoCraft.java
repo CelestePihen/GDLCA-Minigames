@@ -21,7 +21,7 @@ public class ValoCraft extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (ValoArena arena : gameManager.getValoArenaManager().getArenas()) {
+        for (ValoArena arena : gameManager.getValoArenaManager().getArenas().values()) {
             arena.removePlayersToBossBar();
         }
     }
