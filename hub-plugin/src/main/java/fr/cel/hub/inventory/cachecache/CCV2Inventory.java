@@ -1,6 +1,6 @@
 package fr.cel.hub.inventory.cachecache;
 
-import fr.cel.cachecache.manager.CCArenaManager;
+import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -39,9 +39,9 @@ public class CCV2Inventory extends AbstractInventory {
         }
 
         if (ChatUtility.stripColor(itemName).equals(nameV1)) {
-            CCArenaManager.getArenaManager().getArenaByDisplayName(nameV1).addPlayer(player, false);
+            CCMapManager.getMapManager().getMapByDisplayName(nameV1).addPlayer(player, false);
         } else if (ChatUtility.stripColor(itemName).equals(nameV2)) {
-            CCArenaManager.getArenaManager().getArenaByDisplayName(nameV2).addPlayer(player, false);
+            CCMapManager.getMapManager().getMapByDisplayName(nameV2).addPlayer(player, false);
         }
     }
 

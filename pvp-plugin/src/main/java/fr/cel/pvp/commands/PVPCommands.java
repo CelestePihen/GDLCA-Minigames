@@ -4,6 +4,7 @@ import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.pvp.arena.PVPArena;
 import fr.cel.pvp.manager.GameManager;
+import fr.cel.pvp.manager.PVPArenaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,10 +15,12 @@ import java.util.UUID;
 public class PVPCommands extends AbstractCommand {
 
     private final GameManager gameManager;
+    private final PVPArenaManager arenaManager;
 
     public PVPCommands(GameManager gameManager) {
         super("pvp:pvp", false, true);
         this.gameManager = gameManager;
+        this.arenaManager = gameManager.getMain().getPvpArenaManager();
     }
 
     @Override
@@ -28,14 +31,17 @@ public class PVPCommands extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("list")) {
-            if (gameManager.getMain().getPvpArenaManager().getArenas().isEmpty()) {
+            if (arenaManager.getArenas().isEmpty()) {
                 sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
                 return;
             }
-            gameManager.getMain().getPvpArenaManager().getArenas().forEach(arena -> sender.sendMessage(gameManager.getPrefix() + "Map " + arena.getDisplayName()));
+
+            arenaManager.getArenas().values().forEach(arena -> 
+                    sender.sendMessage(gameManager.getPrefix() + "Arène " + arena.getDisplayName()));
+            return;
         }
 
-        else if (args[0].equalsIgnoreCase("reload")) {
+        if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des arènes PVP ont été rechargées.");
             gameManager.reloadArenaManager();
             return;
@@ -46,22 +52,21 @@ public class PVPCommands extends AbstractCommand {
             return;
         }
 
+        if (!arenaManager.isPlayerInArena(player)) {
+            player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
+            return;
+        }
+
         if (args[0].equalsIgnoreCase("listplayer")) {
-
-            if (!gameManager.getMain().getPvpArenaManager().isPlayerInArena(player)) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
-                return;
-            }
-
-            PVPArena arena = gameManager.getMain().getPvpArenaManager().getArenaByPlayer(player);
+            PVPArena arena = arenaManager.getArenaByPlayer(player);
 
             StringBuilder sb = new StringBuilder();
             for (UUID pls : arena.getPlayers()) {
-                Player player1 = Bukkit.getPlayer(pls);
-                if (player1 != null) sb.append(player1.getName()).append(", ");
+                Player pl = Bukkit.getPlayer(pls);
+                if (pl != null) sb.append(pl.getName()).append(", ");
             }
 
-            sendMessageWithPrefix(player, sb.toString());
+            player.sendMessage(gameManager.getPrefix() + "Joueurs : " + sb);
         }
     }
 

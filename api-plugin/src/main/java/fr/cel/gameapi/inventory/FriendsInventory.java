@@ -1,5 +1,6 @@
 package fr.cel.gameapi.inventory;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
@@ -26,17 +27,18 @@ public class FriendsInventory extends AbstractInventory {
         for (String friendUUIDStr : GameAPI.getInstance().getFriendsManager().getFriendsUUIDList(player)) {
             UUID friendUUID = UUID.fromString(friendUUIDStr);
 
-            Player friend = Bukkit.getPlayer(friendUUID);
-            boolean isOnline = (friend != null);
+            OfflinePlayer friend = Bukkit.getOfflinePlayer(friendUUID);
+            String friendName = friend.getName() != null ? friend.getName() : "Ce joueur doit se (re)connecter pour avoir son pseudo";
+
+            boolean isOnline = friend.isOnline();
             String statusColor = isOnline ? "&aEn ligne" : "&cHors-ligne";
 
-            OfflinePlayer offlineFriend = Bukkit.getOfflinePlayer(friendUUID);
-            String friendName = (friend != null) ? offlineFriend.getName() : "???";
+            PlayerProfile playerProfile = Bukkit.createProfile(friendUUID);
 
             ItemStack skull = new ItemBuilder(Material.PLAYER_HEAD)
                     .setLore(ChatUtility.format(statusColor))
-                    .setSkullOwner(Bukkit.createPlayerProfile(friendUUID))
-                    .setItemName(friendName)
+                    .setSkullOwner(playerProfile)
+                    .setDisplayName("&f" + friendName)
                     .toItemStack();
 
             inv.addItem(skull);
@@ -45,7 +47,7 @@ public class FriendsInventory extends AbstractInventory {
 
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
-        // TODO afficher le "profil" de l'ami
+        // TODO afficher le "profil" de l'ami ?
     }
 
     @Override

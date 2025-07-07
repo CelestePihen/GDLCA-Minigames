@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.Rotation;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
@@ -96,8 +97,8 @@ public class ChairListener implements Listener {
 
         Location exitLocation = null;
 
-        if (block.getBlockData() instanceof Stairs stairData) {
-            BlockFace facing = stairData.getFacing();
+        if (block.getBlockData() instanceof Directional directionalBlock) {
+            BlockFace facing = directionalBlock.getFacing();
             exitLocation = getExitLocationFromDirection(chairLocation, facing);
         }
 
@@ -126,44 +127,17 @@ public class ChairListener implements Listener {
     /**
      * Permet d'obtenir l'emplacement selon la direction de l'escalier
      * @param chairLocation L'emplacement de la chaise
-     * @param stairDirection La direction de l'escalier
+     * @param direction La direction de la chaise
      * @return Retourne l'emplacement où le joueur devra être téléporté
      */
-    private Location getExitLocationFromDirection(Location chairLocation, BlockFace stairDirection) {
-        double offsetX = 0;
-        double offsetZ = 0;
+    private Location getExitLocationFromDirection(Location chairLocation, BlockFace direction) {
+        double offsetX = -direction.getModX();
+        double offsetZ = -direction.getModZ();
 
-        switch (stairDirection) {
-            case NORTH:
-                offsetZ = 1;
-                break;
-            case SOUTH:
-                offsetZ = -1;
-                break;
-            case EAST:
-                offsetX = -1;
-                break;
-            case WEST:
-                offsetX = 1;
-                break;
-
-            // mouais
-            case NORTH_EAST:
-                offsetX = -0.7;
-                offsetZ = 0.7;
-                break;
-            case NORTH_WEST:
-                offsetX = 0.7;
-                offsetZ = 0.7;
-                break;
-            case SOUTH_EAST:
-                offsetX = -0.7;
-                offsetZ = -0.7;
-                break;
-            case SOUTH_WEST:
-                offsetX = 0.7;
-                offsetZ = -0.7;
-                break;
+        // Pour les diagonales, normalise la distance pour éviter d'aller trop loin
+        if (offsetX != 0 && offsetZ != 0) {
+            offsetX *= 0.8;
+            offsetZ *= 0.8;
         }
 
         Location exitLoc = chairLocation.clone().add(offsetX + 0.5, 0, offsetZ + 0.5);

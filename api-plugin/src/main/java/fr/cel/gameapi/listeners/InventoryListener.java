@@ -30,7 +30,7 @@ public final class InventoryListener implements Listener {
         ItemStack item = event.getCurrentItem();
         if (item == null || item.getItemMeta() == null || item.getType() == Material.AIR) return;
 
-        abstractInventory.interact(player, item.getItemMeta().getDisplayName(), item);
+        abstractInventory.interact(player, item.getItemMeta().getItemName(), item);
         event.setCancelled(true);
     }
 

@@ -1,8 +1,8 @@
 package fr.cel.cachecache.utils;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.TemporaryHub;
+import fr.cel.cachecache.map.CCMap;
+import fr.cel.cachecache.map.TemporaryHub;
 import fr.cel.gameapi.utils.LocationUtility;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,8 +31,8 @@ public class TempHubConfig {
                 return new TemporaryHub(
                         config.getBoolean("isActivated"),
                         LocationUtility.parseConfigToLoc(config, "location"),
-                        getTemporaryArenas(),
-                        CCArena.CCMode.valueOf(config.getString("chosenHunterMode")),
+                        getTemporaryMaps(),
+                        CCMap.CCMode.valueOf(config.getString("chosenHunterMode")),
                         config.getString("lastMap"),
                         this,
                         main.getGameManager()
@@ -44,11 +44,11 @@ public class TempHubConfig {
         return null;
     }
 
-    private List<CCArena> getTemporaryArenas() {
-        List<CCArena> list = new ArrayList<>();
+    private List<CCMap> getTemporaryMaps() {
+        List<CCMap> list = new ArrayList<>();
 
         for (String str : config.getStringList("temporaryMaps")) {
-            list.add(main.getCcArenaManager().getArenas().get(str));
+            list.add(main.getCcMapManager().getMaps().get(str));
         }
 
         return list;

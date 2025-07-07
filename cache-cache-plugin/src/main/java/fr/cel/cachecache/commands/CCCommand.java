@@ -1,8 +1,8 @@
 package fr.cel.cachecache.commands;
 
-import fr.cel.cachecache.arena.CCArena;
-import fr.cel.cachecache.arena.TemporaryHub;
-import fr.cel.cachecache.manager.CCArenaManager;
+import fr.cel.cachecache.map.CCMap;
+import fr.cel.cachecache.map.TemporaryHub;
+import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -19,12 +19,12 @@ import java.util.*;
 public class CCCommand extends AbstractCommand {
 
     private final GameManager gameManager;
-    private final CCArenaManager arenaManager;
+    private final CCMapManager mapManager;
 
     public CCCommand(GameManager gameManager) {
         super("cachecache:cachecache", false, true);
         this.gameManager = gameManager;
-        this.arenaManager = gameManager.getMain().getCcArenaManager();
+        this.mapManager = gameManager.getMain().getCcMapManager();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CCCommand extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps Cache-Cache ont été rechargés.");
-            gameManager.reloadArenaManager();
+            gameManager.reloadMapManager();
             return;
         }
 
@@ -47,18 +47,18 @@ public class CCCommand extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("list")) {
-            if (arenaManager.getArenas().isEmpty()) {
+            if (mapManager.getMaps().isEmpty()) {
                 sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installée.");
                 return;
             }
 
-            arenaManager.getArenas().values().forEach(arena ->
-                    sender.sendMessage(gameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getArenaState().getClass().getSimpleName()));
+            mapManager.getMaps().values().forEach(map ->
+                    sender.sendMessage(gameManager.getPrefix() + "Carte " + map.getDisplayName() + " | " + map.getMapState().getClass().getSimpleName()));
             return;
         }
 
         if (args[0].equalsIgnoreCase("enableTemporary")) {
-            TemporaryHub temporaryHub = arenaManager.getTemporaryHub();
+            TemporaryHub temporaryHub = mapManager.getTemporaryHub();
             temporaryHub.setActivated(!temporaryHub.isActivated());
 
             if (temporaryHub.isActivated()) {
@@ -75,11 +75,11 @@ public class CCCommand extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("join")) {
-            if (arenaManager.getArenas().containsKey(args[1])) {
+            if (mapManager.getMaps().containsKey(args[1])) {
                 if (args.length == 3) {
-                    arenaManager.getArenas().get(args[1]).addPlayer(Bukkit.getPlayer(args[2]), false);
+                    mapManager.getMaps().get(args[1]).addPlayer(Bukkit.getPlayer(args[2]), false);
                 } else {
-                    arenaManager.getArenas().get(args[1]).addPlayer(player, false);
+                    mapManager.getMaps().get(args[1]).addPlayer(player, false);
                 }
             } else {
                 sendMessageWithPrefix(player, "Merci de sélectionner une carte valide.");
@@ -88,7 +88,7 @@ public class CCCommand extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("tempHub")) {
-            final TemporaryHub temporaryHub = arenaManager.getTemporaryHub();
+            final TemporaryHub temporaryHub = mapManager.getTemporaryHub();
 
             if (!temporaryHub.isPlayerInTempHub(player)) {
                 player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans le Hub Temporaire.");
@@ -99,34 +99,39 @@ public class CCCommand extends AbstractCommand {
             return;
         }
 
-        if (!arenaManager.isPlayerInArena(player)) {
+        if (!mapManager.isPlayerInMap(player)) {
             player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
             return;
         }
 
-        final CCArena arena = arenaManager.getArenaByPlayer(player);
+        CCMap map = mapManager.getMapByPlayer(player);
 
         if (args[0].equalsIgnoreCase("calcul")) {
             calculRedstoneLamps(player, args);
         }
 
         if (args[0].equalsIgnoreCase("owner")) {
-            sender.sendMessage(gameManager.getPrefix() + "Le \"créateur\" de la partie est " + Bukkit.getPlayer(arena.getOwner()).getName());
+            sender.sendMessage(gameManager.getPrefix() + "Le \"créateur\" de la partie est " + Bukkit.getPlayer(map.getOwner()).getName());
         }
 
         if (args[0].equalsIgnoreCase("start")) {
-            arena.startGame(player);
+            map.startGame(player);
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
-            List<String> playersName = new ArrayList<>();
-            arena.getPlayers().forEach(pls -> playersName.add(Objects.requireNonNull(Bukkit.getPlayer(pls)).getName()));
-            player.sendMessage(gameManager.getPrefix() + "Joueurs : " + playersName);
+            StringBuilder sb = new StringBuilder();
+
+            for (UUID uuidPlayer : map.getPlayers()) {
+                Player pl = Bukkit.getPlayer(uuidPlayer);
+                if (pl != null) sb.append(pl.getName()).append(", ");
+            }
+
+            player.sendMessage(gameManager.getPrefix() + "Joueurs : " + sb);
         }
 
         if (args[0].equalsIgnoreCase("grounditems")) {
             StringBuilder messageBuilder = new StringBuilder(gameManager.getPrefix() + "Les Items disponibles sont :\n");
-            arenaManager.getArenaByPlayer(player).getAvailableGroundItems().forEach(groundItem ->
+            mapManager.getMapByPlayer(player).getAvailableGroundItems().forEach(groundItem ->
                     messageBuilder.append(groundItem.getDisplayName()).append("\n"));
 
             player.sendMessage(messageBuilder.toString());
@@ -140,7 +145,7 @@ public class CCCommand extends AbstractCommand {
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
-            return new ArrayList<>(arenaManager.getArenas().keySet());
+            return new ArrayList<>(mapManager.getMaps().keySet());
         }
 
         return null;

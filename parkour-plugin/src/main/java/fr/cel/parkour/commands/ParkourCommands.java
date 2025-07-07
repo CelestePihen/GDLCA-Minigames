@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +38,7 @@ public class ParkourCommands extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps Parkour ont été rechargees.");
-            gameManager.reloadArenaManager();
+            gameManager.reloadMapManager();
             return;
         }
 
@@ -48,21 +47,21 @@ public class ParkourCommands extends AbstractCommand {
             return;
         }
 
+        if (!gameManager.getMain().getParkourMapManager().isPlayerInMap(player)) {
+            player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une map Parkour.");
+            return;
+        }
+
         if (args[0].equalsIgnoreCase("listplayer")) {
-            if (!gameManager.getMain().getParkourMapManager().isPlayerInArena(player)) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une map Parkour.");
-                return;
-            }
+            ParkourMap map = gameManager.getMain().getParkourMapManager().getMapByPlayer(player);
 
-            ParkourMap arena = gameManager.getMain().getParkourMapManager().getArenaByPlayer(player);
-
-            List<String> playersName = new ArrayList<>();
-            for (UUID pls : arena.getPlayers()) {
+            StringBuilder sb = new StringBuilder();
+            for (UUID pls : map.getPlayers()) {
                 Player pl = Bukkit.getPlayer(pls);
-                if (pl != null) playersName.add(pl.getName());
+                if (pl != null) sb.append(pl.getName()).append(", ");
             }
 
-            player.sendMessage(gameManager.getPrefix() + playersName);
+            player.sendMessage(gameManager.getPrefix() + "Joueurs : " + sb);
         }
     }
 

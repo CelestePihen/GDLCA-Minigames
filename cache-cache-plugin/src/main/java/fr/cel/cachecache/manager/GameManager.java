@@ -43,15 +43,15 @@ public class GameManager {
     /**
      * Reload the map files of the Cache-Cache
      */
-    public void reloadArenaManager() {
-        main.setCcArenaManager(new CCArenaManager(main));
+    public void reloadMapManager() {
+        main.setCcMapManager(new CCMapManager(main));
     }
 
     /**
      * Reload the Temporary Hub file
      */
     public void reloadTemporaryHub() {
-        main.getCcArenaManager().setTemporaryHub(new TempHubConfig(main).getTemporaryHub());
+        main.getCcMapManager().setTemporaryHub(new TempHubConfig(main).getTemporaryHub());
     }
 
     /**

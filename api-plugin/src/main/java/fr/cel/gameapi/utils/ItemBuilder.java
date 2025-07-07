@@ -1,5 +1,6 @@
 package fr.cel.gameapi.utils;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -10,7 +11,6 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,7 +132,7 @@ public final class ItemBuilder {
      */
     public ItemBuilder setSkullOwner(PlayerProfile playerProfile) {
         if (is.getItemMeta() instanceof SkullMeta im) {
-            im.setOwnerProfile(playerProfile);
+            im.setPlayerProfile(playerProfile);
             is.setItemMeta(im);
         }
         return this;

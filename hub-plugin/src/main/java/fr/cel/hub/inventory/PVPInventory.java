@@ -3,7 +3,7 @@ package fr.cel.hub.inventory;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
-import fr.cel.pvp.arena.PVPArenaManager;
+import fr.cel.pvp.manager.PVPArenaManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

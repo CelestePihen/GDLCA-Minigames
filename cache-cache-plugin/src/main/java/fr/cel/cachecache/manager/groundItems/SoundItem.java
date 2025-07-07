@@ -1,6 +1,6 @@
 package fr.cel.cachecache.manager.groundItems;
 
-import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.manager.groundItems.inventory.SoundInventory;
 import fr.cel.gameapi.GameAPI;
@@ -18,8 +18,8 @@ public class SoundItem extends GroundItem {
     }
 
     @Override
-    public void onInteract(Player player, CCArena arena) {
-        GameAPI.getInstance().getInventoryManager().openInventory(new SoundInventory(arena), player);
+    public void onInteract(Player player, CCMap map) {
+        GameAPI.getInstance().getInventoryManager().openInventory(new SoundInventory(map), player);
     }
 
 }

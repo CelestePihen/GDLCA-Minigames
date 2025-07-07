@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+
 public class MusicInventory extends AbstractInventory {
 
     public MusicInventory() {
@@ -19,21 +21,24 @@ public class MusicInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        RPUtils.getMusics().forEach((name, customMusic) -> {
-            ItemBuilder itemBuilder = new ItemBuilder(Material.JUKEBOX);
+        RPUtils.getMusics().entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(String::compareToIgnoreCase)).forEach(entry -> {
+                    String name = entry.getKey();
+                    CustomMusic customMusic = entry.getValue();
+                    ItemBuilder itemBuilder = new ItemBuilder(Material.JUKEBOX);
 
-            itemBuilder.setItemName(customMusic.getMusicName());
+                    itemBuilder.setItemName(name);
 
-            if (customMusic.getAuthor() != null) {
-                itemBuilder.addLoreLine(customMusic.getAuthor());
-            }
+                    if (customMusic.getAuthor() != null) {
+                        itemBuilder.addLoreLine(customMusic.getAuthor());
+                    }
 
-            if (customMusic.getDescription() != null) {
-                itemBuilder.addLoreLine(customMusic.getDescription());
-            }
+                    if (customMusic.getDescription() != null) {
+                        itemBuilder.addLoreLine(customMusic.getDescription());
+                    }
 
-            inv.addItem(itemBuilder.toItemStack());
-        });
+                    inv.addItem(itemBuilder.toItemStack());
+                });
 
         inv.setItem(getSize() - 1, new ItemBuilder(Material.BARRIER).setItemName("Enlever la musique").toItemStack());
     }
@@ -48,14 +53,9 @@ public class MusicInventory extends AbstractInventory {
         CustomMusic customMusic = RPUtils.getMusics().get(itemName);
         if (customMusic == null) return;
 
-        if (customMusic.getCustomSound() == null) {
-            MusicManager.startMusic(customMusic.getVanillaSound(), player);
-        } else {
-            MusicManager.startMusic(customMusic.getCustomSound(), player);
-        }
+        MusicManager.startMusic(customMusic.getCustomSound(), player);
 
         player.sendMessage(GameAPI.getPrefix() + "Vous avez mis la musique " + customMusic.getMusicName());
-        player.closeInventory();
     }
 
     @Override

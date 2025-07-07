@@ -60,35 +60,35 @@ public class ParkourMap implements Listener {
         GameAPI.getInstance().getPlayerManager().sendPlayerToHub(player);
     }
 
-    public boolean isPlayerInArena(Player player) {
+    public boolean isPlayerInMap(Player player) {
         return players.contains(player.getUniqueId());
     }
 
     @EventHandler
     private void onLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        if (this.isPlayerInArena(player)) this.removePlayer(player);
+        if (this.isPlayerInMap(player)) this.removePlayer(player);
     }
 
     @EventHandler
     private void quit(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (event.getMessage().contains("/hub")) {
-            if (!this.isPlayerInArena(player)) this.removePlayer(player);
+            if (!this.isPlayerInMap(player)) this.removePlayer(player);
         }
     }
 
     @EventHandler
     private void fallDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!this.isPlayerInArena(player)) return;
+        if (!this.isPlayerInMap(player)) return;
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
     }
 
     @EventHandler
     private void onFood(FoodLevelChangeEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (this.isPlayerInArena(player)) event.setCancelled(true);
+        if (this.isPlayerInMap(player)) event.setCancelled(true);
     }
 
     private void sendMessage(String message) {

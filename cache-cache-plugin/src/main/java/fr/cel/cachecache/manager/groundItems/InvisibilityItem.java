@@ -1,6 +1,6 @@
 package fr.cel.cachecache.manager.groundItems;
 
-import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
@@ -24,21 +24,21 @@ public class InvisibilityItem extends GroundItem {
      * @author Deadsky
      */
     @Override
-    public void onInteract(Player player, CCArena arena) {
+    public void onInteract(Player player, CCMap map) {
         List<Entity> nearbyEntities = player.getNearbyEntities(12, 12, 12);
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*7, 1, false, false));
         for (Entity entityNear : nearbyEntities){
             if (entityNear instanceof Player pl) {
-                if (arena.getHiders().contains(player.getUniqueId()) && arena.getHiders().contains(pl.getUniqueId())) {
+                if (map.getHiders().contains(player.getUniqueId()) && map.getHiders().contains(pl.getUniqueId())) {
                     pl.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*4, 1, false, false));
                 }
-                else if (arena.getSeekers().contains(player.getUniqueId()) && arena.getSeekers().contains(pl.getUniqueId())) {
+                else if (map.getSeekers().contains(player.getUniqueId()) && map.getSeekers().contains(pl.getUniqueId())) {
                     pl.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*4, 1, false, false));
                 }
             }
         }
         GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_INVISIBILITY_USAGE, 1);
-        super.onInteract(player, arena);
+        super.onInteract(player, map);
     }
 
 }

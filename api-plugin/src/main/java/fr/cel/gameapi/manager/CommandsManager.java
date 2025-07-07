@@ -18,7 +18,6 @@ public class CommandsManager {
      * Permet de créer une nouvelle commande
      * @param commandName Le nom de la commande
      * @param abstractCommand La classe de la commande
-     * @param plugin Le plugin correspondant
      */
     public void addCommand(String commandName, AbstractCommand abstractCommand) {
         PluginCommand pluginCommand = main.getCommand(commandName);

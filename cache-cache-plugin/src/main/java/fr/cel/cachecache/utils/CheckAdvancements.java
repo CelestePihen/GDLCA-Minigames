@@ -1,6 +1,6 @@
 package fr.cel.cachecache.utils;
 
-import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.manager.AdvancementsManager;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
@@ -16,7 +16,7 @@ import java.util.*;
 
 public class CheckAdvancements {
 
-    private final CCArena arena;
+    private final CCMap map;
     private final AdvancementsManager advancementsManager;
 
     @Getter private final List<UUID> playersPasBesoin = new ArrayList<>();
@@ -37,57 +37,57 @@ public class CheckAdvancements {
     // Succès sans nom
     @Getter private final Set<UUID> playerWhoRun = new HashSet<>();
 
-    public CheckAdvancements(CCArena arena) {
-        this.arena = arena;
-        this.advancementsManager = arena.getGameManager().getAdvancementsManager();
+    public CheckAdvancements(CCMap map) {
+        this.map = map;
+        this.advancementsManager = map.getGameManager().getAdvancementsManager();
 
-        if (this.arena.getArenaName().equalsIgnoreCase("chalet")) {
+        if (this.map.getMapName().equalsIgnoreCase("chalet")) {
             this.aimezFaireMal = new ZoneMultiplePassage(
                     corner(-2769, 54, -1819),
                     corner(-2766, 51, -1820),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
         }
 
-        if (this.arena.getArenaName().equalsIgnoreCase("moulin")) {
+        if (this.map.getMapName().equalsIgnoreCase("moulin")) {
             this.miaou = new ZoneDetection(
                     corner(-54, 56, -59),
                     corner(-52, 53, -57),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
         }
 
-        if (this.arena.getArenaName().equalsIgnoreCase("bunker")) {
+        if (this.map.getMapName().equalsIgnoreCase("bunker")) {
             // côté gauche
             scpPicNic = new ZoneStay(
                     corner(-7, 60, -278),
                     corner(-26, 50, -266),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
 
             scpSnow = new ZoneStay(
                     corner(13, 60, -278),
                     corner(-5, 50, -266),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
 
             scpWarden = new ZoneStay(
                     corner(32, 60, -278),
                     corner(16, 49, -266),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
 
             scpJungle = new ZoneStay(corner(54, 60, -278),
                     corner(35, 48, -266),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
 
             // côté droit
             scpAmethyst = new ZoneStay(corner(35, 60, -232),
                     corner(54, 44, -243),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
 
             scpRed = new ZoneStay(corner(15, 60, -232),
                     corner(33, 44, -244),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
 
             scpBlue = new ZoneStay(corner(-5, 60, -232),
                     corner(13, 49, -244),
-                    this.arena.getGameManager().getMain());
+                    this.map.getGameManager().getMain());
         }
     }
 
@@ -107,21 +107,21 @@ public class CheckAdvancements {
      * Active toutes les vérifications des Zones
      */
     public void startAllChecks() {
-        if (aimezFaireMal != null) aimezFaireMal.startChecking(arena.getPlayers());
-        if (miaou != null) miaou.startChecking(arena.getPlayers());
+        if (aimezFaireMal != null) aimezFaireMal.startChecking(map.getPlayers());
+        if (miaou != null) miaou.startChecking(map.getPlayers());
 
         if (scpPicNic != null && scpSnow != null && scpWarden != null && scpJungle != null && scpAmethyst != null && scpRed != null && scpBlue != null) {
-            scpPicNic.startChecking(arena.getPlayers());
-            scpSnow.startChecking(arena.getPlayers());
-            scpWarden.startChecking(arena.getPlayers());
-            scpJungle.startChecking(arena.getPlayers());
-            scpAmethyst.startChecking(arena.getPlayers());
-            scpRed.startChecking(arena.getPlayers());
-            scpBlue.startChecking(arena.getPlayers());
+            scpPicNic.startChecking(map.getPlayers());
+            scpSnow.startChecking(map.getPlayers());
+            scpWarden.startChecking(map.getPlayers());
+            scpJungle.startChecking(map.getPlayers());
+            scpAmethyst.startChecking(map.getPlayers());
+            scpRed.startChecking(map.getPlayers());
+            scpBlue.startChecking(map.getPlayers());
         }
 
         // ajoute tous les UUIDs des joueurs dans le dictionnaire
-        for (UUID uuid : arena.getPlayers()) {
+        for (UUID uuid : map.getPlayers()) {
             piedPouvoir.putIfAbsent(uuid, new ArrayList<>());
         }
     }
@@ -153,7 +153,7 @@ public class CheckAdvancements {
      */
     public void giveAudacieux(Player player) {
         if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.AUDACIEUX, arena.getPlayers());
+        advancementsManager.giveAdvancement(player, Advancements.AUDACIEUX, map.getPlayers());
     }
 
     /**
@@ -161,13 +161,13 @@ public class CheckAdvancements {
      * <br> Donne le succès Rat de laboratoire si un ou plusieurs joueurs sont restés plus de 15 secondes dans toutes les boîtes SCPs sur la carte Bunker
      */
     public void checkCollectionPersonnelleAndRatLabo() {
-        for (UUID uuid : arena.getPlayers()) {
+        for (UUID uuid : map.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (checkItemCollectionPersonnelle(player)) advancementsManager.giveAdvancement(player, Advancements.COLLECTION_PERSONNELLE, arena.getPlayers());
+            if (checkItemCollectionPersonnelle(player)) advancementsManager.giveAdvancement(player, Advancements.COLLECTION_PERSONNELLE, map.getPlayers());
 
-            if (arena.getArenaName().equalsIgnoreCase("bunker") && hasStaySCPs(uuid)) advancementsManager.giveAdvancement(player, Advancements.RAT_LABORATOIRE, arena.getPlayers());
+            if (map.getMapName().equalsIgnoreCase("bunker") && hasStaySCPs(uuid)) advancementsManager.giveAdvancement(player, Advancements.RAT_LABORATOIRE, map.getPlayers());
         }
     }
 
@@ -194,7 +194,7 @@ public class CheckAdvancements {
     private boolean checkItemCollectionPersonnelle(Player player) {
         if (player == null) return false;
 
-        for (GroundItem groundItem : arena.getAvailableGroundItems()) {
+        for (GroundItem groundItem : map.getAvailableGroundItems()) {
             if (!player.getInventory().contains(groundItem.getItemStack().getType())) {
                 return false;
             }
@@ -213,7 +213,7 @@ public class CheckAdvancements {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (aimezFaireMal.getPlayersPassCount().get(uuid) >= 10) advancementsManager.giveAdvancement(player, Advancements.AIMEZ_FAIRE_MAL, arena.getPlayers());
+            if (aimezFaireMal.getPlayersPassCount().get(uuid) >= 10) advancementsManager.giveAdvancement(player, Advancements.AIMEZ_FAIRE_MAL, map.getPlayers());
         }
     }
 
@@ -223,7 +223,7 @@ public class CheckAdvancements {
      */
     public void giveMiaou(Player player) {
         if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.MIAOU, arena.getPlayers());
+        advancementsManager.giveAdvancement(player, Advancements.MIAOU, map.getPlayers());
     }
 
     /**
@@ -231,18 +231,18 @@ public class CheckAdvancements {
      */
     public void giveMontagneSable(Player player) {
         if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.MONTAGNE_SABLE, arena.getPlayers());
+        advancementsManager.giveAdvancement(player, Advancements.MONTAGNE_SABLE, map.getPlayers());
     }
 
     /**
      * Donne le succès Pas besoin de ça à tous les cacheurs n'ayant pas utilisé d'objets avant 7 minutes
      */
     public void checkPasBesoin() {
-        for (UUID uuid : arena.getHiders()) {
+        for (UUID uuid : map.getHiders()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
             if (playersPasBesoin.contains(uuid)) continue;
-            advancementsManager.giveAdvancement(player, Advancements.PAS_BESOIN, arena.getPlayers());
+            advancementsManager.giveAdvancement(player, Advancements.PAS_BESOIN, map.getPlayers());
         }
     }
 
@@ -252,16 +252,16 @@ public class CheckAdvancements {
      */
     public void giveRaidChateau(Player player) {
         if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.RAID_CHATEAU, arena.getPlayers());
+        advancementsManager.giveAdvancement(player, Advancements.RAID_CHATEAU, map.getPlayers());
     }
 
     /**
      * Donne le succès Toujours vivant au dernier cacheur restant dans la partie
      */
     public void giveToujoursVivant() {
-        Player player = Bukkit.getPlayer(arena.getHiders().getFirst());
+        Player player = Bukkit.getPlayer(map.getHiders().getFirst());
         if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.TOUJOURS_VIVANT, arena.getPlayers());
+        advancementsManager.giveAdvancement(player, Advancements.TOUJOURS_VIVANT, map.getPlayers());
     }
 
     /**
@@ -270,18 +270,18 @@ public class CheckAdvancements {
      */
     public void giveTraverseeMusicale(Player player) {
         if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.TRAVERSEE_MUSICALE, arena.getPlayers());
+        advancementsManager.giveAdvancement(player, Advancements.TRAVERSEE_MUSICALE, map.getPlayers());
     }
 
     /**
      * Vérifie et donne le succès Le pied sur le pouvoir aux joueurs ayant marché sur tous les emplacements de GroundItems
      */
     public void checkPiedPouvoir() {
-        for (UUID uuid : arena.getPlayers()) {
+        for (UUID uuid : map.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
-            if (piedPouvoir.get(uuid).size() == arena.getLocationGroundItems().size()) {
-                advancementsManager.giveAdvancement(player, Advancements.PIED_POUVOIR, arena.getPlayers());
+            if (piedPouvoir.get(uuid).size() == map.getLocationGroundItems().size()) {
+                advancementsManager.giveAdvancement(player, Advancements.PIED_POUVOIR, map.getPlayers());
             }
         }
     }
@@ -290,10 +290,10 @@ public class CheckAdvancements {
      * Donne le succès L'heure du pique-nique aux joueurs au bout de 20 minutes
      */
     public void givePiqueNique() {
-        for (UUID uuid : arena.getHiders()) {
+        for (UUID uuid : map.getHiders()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
-            advancementsManager.giveAdvancement(player, Advancements.PIQUE_NIQUE, arena.getPlayers());
+            advancementsManager.giveAdvancement(player, Advancements.PIQUE_NIQUE, map.getPlayers());
         }
     }
 
@@ -301,7 +301,7 @@ public class CheckAdvancements {
      * Donne le succès "T'es pas essoufflé" aux cacheurs n'ayant pas couru avant 8 minutes
      */
     public void checkPasEssouffle() {
-        for (UUID uuid : arena.getHiders()) {
+        for (UUID uuid : map.getHiders()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
             // TODO: advancementsManager.giveAdvancement(player, Advancements.PAS_ESSOUFFLE);

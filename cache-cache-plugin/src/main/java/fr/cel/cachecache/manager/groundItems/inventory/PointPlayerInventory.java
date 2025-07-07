@@ -1,6 +1,6 @@
 package fr.cel.cachecache.manager.groundItems.inventory;
 
-import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.map.CCMap;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.database.StatisticsManager;
@@ -21,22 +21,22 @@ import java.util.UUID;
 
 public class PointPlayerInventory extends AbstractInventory {
 
-    private final CCArena arena;
+    private final CCMap map;
 
-    public PointPlayerInventory(CCArena arena) {
+    public PointPlayerInventory(CCMap map) {
         super("Joueurs", 18);
-        this.arena = arena;
+        this.map = map;
     }
 
     @Override
     protected void addItems(Inventory inventory) {
-        for (UUID uuid : arena.getPlayers()) {
+        for (UUID uuid : map.getPlayers()) {
             Player pl = Bukkit.getPlayer(uuid);
 
             if (pl == null) continue;
             if (pl.getGameMode() == GameMode.SPECTATOR) continue;
 
-            inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName(pl.getDisplayName()).setSkullOwner(Bukkit.createPlayerProfile(pl.getUniqueId())).toItemStack());
+            inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName(pl.getDisplayName()).setSkullOwner(Bukkit.createProfile(pl.getUniqueId())).toItemStack());
         }
     }
 
@@ -45,11 +45,11 @@ public class PointPlayerInventory extends AbstractInventory {
      */
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
-        if (!arena.isPlayerInArena(player)) return;
+        if (!map.isPlayerInMap(player)) return;
         if (item.getType() == Material.AIR) return;
 
         Player target = Bukkit.getPlayer(itemName);
-        if (target != null && arena.getPlayers().contains(target.getUniqueId())) {
+        if (target != null && map.getPlayers().contains(target.getUniqueId())) {
             new BukkitRunnable() {
                 int timer = 200;
                 @Override
@@ -61,12 +61,12 @@ public class PointPlayerInventory extends AbstractInventory {
                         cancel();
                     }
                 }
-            }.runTaskTimer(arena.getGameManager().getMain(), 0, 1);
+            }.runTaskTimer(map.getGameManager().getMain(), 0, 1);
 
             GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_POINT_PLAYER_USAGE, 1);
             removeItem(player);
         } else {
-            player.sendMessage(arena.getGameManager().getPrefix() + "Ce joueur n'est plus dans la carte ou s'est déconnecté(e). Merci de réouvrir le menu.");
+            player.sendMessage(map.getGameManager().getPrefix() + "Ce joueur n'est plus dans la carte ou s'est déconnecté(e). Merci de réouvrir le menu.");
         }
 
     }

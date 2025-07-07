@@ -3,6 +3,7 @@ package fr.cel.gameapi.manager.npc;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import fr.cel.gameapi.GameAPI;
 import lombok.Getter;
 import net.minecraft.Optionull;
 import net.minecraft.network.chat.Component;
@@ -35,6 +36,7 @@ public class NPC {
     private final String name;
     private final String displayName;
     private final Skin skin;
+    private final boolean lookAtPlayer;
 
     private ServerPlayer npc;
     private Location location;
@@ -48,8 +50,8 @@ public class NPC {
      * @param location    The location where the NPC will be spawned.
      * @param skin        The skin of the NPC.
      */
-    public NPC(String name, String displayName, Location location, Skin skin) {
-        this(name, displayName, location, skin, Pose.STANDING);
+    public NPC(String name, String displayName, Location location, boolean lookAtPlayer, Skin skin) {
+        this(name, displayName, location, lookAtPlayer, skin, Pose.STANDING);
     }
 
     /**
@@ -61,11 +63,12 @@ public class NPC {
      * @param skin        The skin of the NPC.
      * @param pose        The pose of the NPC
      */
-    public NPC(String name, String displayName, Location location, Skin skin, Pose pose) {
+    public NPC(String name, String displayName, Location location, boolean lookAtPlayer, Skin skin, Pose pose) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.displayName = displayName;
         this.location = location;
+        this.lookAtPlayer = lookAtPlayer;
         this.skin = skin;
         this.pose = pose;
     }
@@ -91,9 +94,11 @@ public class NPC {
      * @param player The player to spawn the NPC for.
      */
     public void spawn(Player player) {
-        if (!this.location.getWorld().getName().equalsIgnoreCase(player.getWorld().getName())) return;
-
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+
+        if (npc == null) return;
+
+        if (!this.location.getWorld().getName().equalsIgnoreCase(serverPlayer.level().getWorld().getName())) return;
 
         if (this.skin.value().isEmpty() || this.skin.signature().isEmpty()) {
             Skin skin = SkinFetcher.fetchSkin(this.displayName);
@@ -134,21 +139,20 @@ public class NPC {
         );
         serverPlayer.connection.send(addEntityPacket);
 
-        setPose(pose);
-
-        ClientboundPlayerInfoRemovePacket playerInfoRemovePacket = new ClientboundPlayerInfoRemovePacket(List.of(npc.getUUID()));
-        serverPlayer.connection.send(playerInfoRemovePacket);
+//        setPose(pose);
 
         update(player);
+
+        Bukkit.getScheduler().runTaskTimer(GameAPI.getInstance(), () -> {
+            ClientboundPlayerInfoRemovePacket playerInfoRemovePacket = new ClientboundPlayerInfoRemovePacket(List.of(npc.getUUID()));
+            serverPlayer.connection.send(playerInfoRemovePacket);
+        }, 0L, 20L);
     }
 
     public void update(Player player) {
         if (npc == null) return;
 
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-
         npc.getEntityData().set(net.minecraft.world.entity.player.Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) (0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40));
-
         refreshEntityData(player);
     }
 
@@ -160,6 +164,7 @@ public class NPC {
         for (SynchedEntityData.DataItem<?> dataItem : itemsById) {
             entityData.add(dataItem.value());
         }
+
         ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(npc.getId(), entityData);
         serverPlayer.connection.send(setEntityDataPacket);
     }
@@ -193,7 +198,7 @@ public class NPC {
 
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        ClientboundPlayerInfoRemovePacket playerInfoRemovePacket = new ClientboundPlayerInfoRemovePacket(List.of(this.uuid));
+        ClientboundPlayerInfoRemovePacket playerInfoRemovePacket = new ClientboundPlayerInfoRemovePacket(List.of(this.npc.getUUID()));
         serverPlayer.connection.send(playerInfoRemovePacket);
 
         ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(this.npc.getId());
@@ -305,8 +310,7 @@ public class NPC {
 
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        npc.setRot(location.getYaw(), location.getPitch());
-
+        this.npc.setRot(location.getYaw(), location.getPitch());
         this.npc.setYHeadRot(location.getYaw());
         this.npc.setXRot(location.getPitch());
         this.npc.setYRot(location.getYaw());

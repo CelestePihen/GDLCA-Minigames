@@ -2,7 +2,6 @@ package fr.cel.parkour.manager;
 
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.parkour.Parkour;
-import fr.cel.parkour.map.ParkourMapManager;
 import lombok.Getter;
 
 @Getter
@@ -16,7 +15,7 @@ public class GameManager {
         this.prefix = ChatUtility.format("&6[Parkour] &r");
     }
 
-    public void reloadArenaManager() {
+    public void reloadMapManager() {
         main.setParkourMapManager(new ParkourMapManager(main));
     }
 

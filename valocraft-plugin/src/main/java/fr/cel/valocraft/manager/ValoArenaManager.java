@@ -3,15 +3,13 @@ package fr.cel.valocraft.manager;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.valocraft.ValoCraft;
 import fr.cel.valocraft.arena.ValoArena;
-import fr.cel.valocraft.utils.Config;
+import fr.cel.valocraft.arena.ArenaConfig;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ValoArenaManager {
@@ -51,10 +49,13 @@ public class ValoArenaManager {
         if (!folder.exists()) folder.mkdirs();
 
         if (folder.isDirectory()) {
-            for (File file : folder.listFiles()) {
-                String name = file.getName().replace(".yml", "");
-                Config config = new Config(main, name);
-                arenas.put(name, config.getArena(gameManager));
+            for (File file : folder.listFiles((dir, name) -> name.endsWith(".yml"))) {
+                String arenaName = file.getName().replace(".yml", "");
+
+                ArenaConfig arenaConfig = new ArenaConfig(main, arenaName);
+                ValoArena arena = arenaConfig.getArena();
+
+                if (arena != null) arenas.put(arenaName, arena);
             }
         }
 

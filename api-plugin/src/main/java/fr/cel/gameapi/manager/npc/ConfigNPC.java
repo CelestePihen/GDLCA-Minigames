@@ -30,6 +30,7 @@ public class ConfigNPC {
                         name,
                         config.getString("displayName"),
                         loadLocation(config),
+                        config.getBoolean("lookAtPlayer"),
                         new Skin(config.getString("skin.value"), config.getString("skin.signature"))
                 );
             } catch (IOException | InvalidConfigurationException e) {
