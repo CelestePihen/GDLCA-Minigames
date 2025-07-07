@@ -1,7 +1,7 @@
 package fr.cel.cachecache;
 
 import fr.cel.cachecache.commands.CCCommand;
-import fr.cel.cachecache.manager.CCArenaManager;
+import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.gameapi.manager.CommandsManager;
 import lombok.Getter;
@@ -12,13 +12,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class CacheCache extends JavaPlugin {
 
     private GameManager gameManager;
-    @Setter private CCArenaManager ccArenaManager;
+    @Setter private CCMapManager ccMapManager;
 
     @Override
     public void onEnable() {
         this.gameManager = new GameManager(this);
 
-        gameManager.reloadArenaManager();
+        gameManager.reloadMapManager();
         gameManager.reloadTemporaryHub();
 
         new CommandsManager(this).addCommand("cachecache", new CCCommand(gameManager));

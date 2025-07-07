@@ -1,38 +1,30 @@
 package fr.cel.hub.manager;
 
 import fr.cel.gameapi.GameAPI;
-import org.bukkit.*;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.SoundCategory;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
+@UtilityClass
 public class MusicManager {
 
-    private final static World world = Objects.requireNonNull(Bukkit.getWorld("world"));
-    private final static Location location = new Location(world, 270.5, 64, 59.5);
+    private final World world = Objects.requireNonNull(Bukkit.getWorld("world"));
+    private final Location location = new Location(world, 270.5, 64, 59.5);
 
-    private static Sound currentVanillaSound = null;
-    private static String currentCustomSound = null;
-
-    /**
-     * Lance une musique vanilla du choix du DJ
-     * @param sound La musique vanilla à lancer
-     * @param player Le DJ
-     */
-    public static void startMusic(Sound sound, Player player) {
-        stopMusic(player);
-
-        currentVanillaSound = sound;
-
-        world.playSound(location, currentVanillaSound, SoundCategory.RECORDS, 1.0f, 1.0f);
-    }
+    @Getter private String currentCustomSound = null;
 
     /**
      * Lance une musique custom du choix du DJ
      * @param sound La musique custom à lancer
      * @param player Le DJ
      */
-    public static void startMusic(String sound, Player player) {
+    public void startMusic(String sound, Player player) {
         stopMusic(player);
 
         currentCustomSound = sound;
@@ -44,15 +36,7 @@ public class MusicManager {
      * Arrête la musique en cours
      * @param player Le DJ
      */
-    public static void stopMusic(Player player) {
-        if (currentVanillaSound != null) {
-            for (Player pl : Bukkit.getOnlinePlayers()) {
-                pl.stopSound(currentVanillaSound, SoundCategory.RECORDS);
-            }
-            currentVanillaSound = null;
-            player.sendMessage(GameAPI.getPrefix() + "Vous avez arrêté la musique.");
-        }
-
+    public void stopMusic(Player player) {
         if (currentCustomSound != null)  {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.stopSound(currentCustomSound, SoundCategory.RECORDS);

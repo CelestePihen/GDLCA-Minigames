@@ -1,6 +1,6 @@
 package fr.cel.cachecache.manager.groundItems.tasks;
 
-import fr.cel.cachecache.arena.CCArena;
+import fr.cel.cachecache.map.CCMap;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -12,17 +12,17 @@ import java.util.UUID;
 
 public class SoundCatTimer extends BukkitRunnable {
     
-    private final CCArena arena;
+    private final CCMap map;
     private int secondes = 10;
 
-    public SoundCatTimer(CCArena arena) {
-        this.arena = arena;
+    public SoundCatTimer(CCMap map) {
+        this.map = map;
     }
 
     @Override
     public void run() {
         if (secondes > 0) {
-            for (UUID uuid : arena.getPlayers()) {
+            for (UUID uuid : map.getPlayers()) {
                 Player pl = Bukkit.getPlayer(uuid);
                 if (pl == null || pl.getGameMode() == GameMode.SPECTATOR) continue;
                 pl.playSound(pl, Sound.ENTITY_CAT_AMBIENT, SoundCategory.AMBIENT, 3.0f, 1.0f);

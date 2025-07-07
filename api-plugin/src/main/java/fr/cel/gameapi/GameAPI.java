@@ -13,8 +13,6 @@ import fr.cel.gameapi.manager.database.StatisticsManager;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.RPUtils;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
@@ -39,7 +37,7 @@ public final class GameAPI extends JavaPlugin {
         saveDefaultConfig();
         instance = this;
 
-        // Detect if the config.yml file is properly configured
+        // détecte si le config.yml est proprement configuré
         if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") || !getConfig().contains("database_test") ||
                 !getConfig().contains("username") || !getConfig().contains("password")) {
             getLogger().severe(ChatUtility.format("&cPlease configure the database settings in the config.yml file."));
@@ -47,7 +45,7 @@ public final class GameAPI extends JavaPlugin {
             return;
         }
 
-        // Detect if the server is running in online mode or not
+        // détecte si le serveur est en online mode ou pas
         if (getServer().getOnlineMode()) {
             this.database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
         } else {
@@ -62,16 +60,6 @@ public final class GameAPI extends JavaPlugin {
         }
 
         this.playerManager = new PlayerManager();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            this.playerManager.addPlayerData(player);
-
-            if (!player.isOp()) continue;
-
-            player.sendMessage("\n\n\n\n");
-            player.sendMessage(ChatUtility.format(ChatUtility.RED + "Attention !" + ChatUtility.WHITE +
-                    " Un reload a été effectué. Faites /hub si vous êtes buggé(e)."));
-        }
 
         this.friendsManager = new FriendsManager(this);
 

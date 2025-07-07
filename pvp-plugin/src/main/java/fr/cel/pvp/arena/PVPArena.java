@@ -9,11 +9,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
@@ -30,25 +31,26 @@ public class PVPArena implements Listener {
     @Getter private final String displayName;
 
     @Getter private final Location spawnLoc;
+    @Getter private final boolean fallDamage;
 
     @Getter private final List<UUID> players;
 
-    public PVPArena(String nameArena, String displayName, Location spawnLoc, GameManager gameManager) {
+    public PVPArena(String nameArena, String displayName, Location spawnLoc, boolean fallDamage, GameManager gameManager) {
         this.nameArena = nameArena;
         this.displayName = displayName;
         this.spawnLoc = spawnLoc;
-        this.players = new ArrayList<>();
+        this.fallDamage = fallDamage;
 
+        this.players = new ArrayList<>();
         this.gameManager = gameManager;
         gameManager.getMain().getServer().getPluginManager().registerEvents(this, gameManager.getMain());
     }
 
     public void addPlayer(Player player) {
-        if (players.contains(player.getUniqueId())) return;
+        if (isPlayerInArena(player)) return;
 
         GameAPI.getInstance().getPlayerManager().removePlayerInHub(player);
         players.add(player.getUniqueId());
-        sendMessage(player.getDisplayName() + " a rejoint l'arène !");
 
         player.setRespawnLocation(spawnLoc, true);
         player.teleport(this.getSpawnLoc());
@@ -56,12 +58,13 @@ public class PVPArena implements Listener {
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
         giveWeapons(player);
+
+        sendMessage(player.getDisplayName() + " a rejoint l'arène !");
     }
 
     public void removePlayer(Player player) {
         if (!players.contains(player.getUniqueId())) return;
-        this.getPlayers().remove(player.getUniqueId());
-        GameAPI.getInstance().getPlayerManager().sendPlayerToHub(player);
+        getPlayers().remove(player.getUniqueId());
     }
 
     public boolean isPlayerInArena(Player player) {
@@ -70,21 +73,19 @@ public class PVPArena implements Listener {
 
     private void sendMessage(String message) {
         message = gameManager.getPrefix() + ChatUtility.format(message);
-        for (UUID pls : this.getPlayers()) {
+        for (UUID pls : getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.sendMessage(message);
+            if (player != null) player.sendMessage(message);
         }
     }
 
     public void giveWeapons(Player player) {
-        ItemStack diamond_sword = new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("La Lame Sacrée de Ludwig").toItemStack();
-        ItemStack bow = new ItemBuilder(Material.BOW).setDisplayName("Arc Long").addEnchant(Enchantment.INFINITY, 1).setUnbreakable().toItemStack();
+        ItemStack diamond_sword = new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("Lame sacrée de Ludwig").setUnbreakable().toItemStack();
+        ItemStack bow = new ItemBuilder(Material.BOW).addEnchant(Enchantment.INFINITY, 1).setUnbreakable().toItemStack();
         ItemStack arrow = new ItemBuilder(Material.ARROW).toItemStack();
-        ItemStack golden_carrot = new ItemBuilder(Material.GOLDEN_CARROT, 64).toItemStack();
 
         player.getInventory().setItem(17, arrow);
-        player.getInventory().addItem(diamond_sword, bow, golden_carrot);
+        player.getInventory().addItem(diamond_sword, bow);
 
         player.getInventory().setHelmet(new ItemBuilder(Material.DIAMOND_HELMET).setUnbreakable().toItemStack());
         player.getInventory().setChestplate(new ItemBuilder(Material.DIAMOND_CHESTPLATE).setUnbreakable().toItemStack());
@@ -94,25 +95,33 @@ public class PVPArena implements Listener {
     }
 
     @EventHandler
-    public void playerCommand(PlayerCommandPreprocessEvent event) {
+    public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (!this.isPlayerInArena(player)) return;
-        if (!event.getMessage().contains("/hub")) return;
-        this.removePlayer(player);
+        if (!this.isPlayerInArena(player) || !event.getMessage().contains("/hub")) return;
+        removePlayer(player);
     }
 
     @EventHandler
-    public void entityDamageByEntity(PlayerDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         Player damager = player.getKiller();
 
-        if (damager == null) return;
+        if (damager == null || !isPlayerInArena(player) || !isPlayerInArena(damager)) return;
 
-        if (!isPlayerInArena(player)) return;
-        if (!isPlayerInArena(damager)) return;
+        // Donne une pomme dorée pour se régénérer
+        damager.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE));
+    }
 
-        damager.setHealth(damager.getAttribute(Attribute.MAX_HEALTH).getValue());
-        damager.setFoodLevel(20);
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player) || !isPlayerInArena(player)) return;
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(!isFallDamage());
+    }
+
+    @EventHandler
+    public void onFoodChanged(FoodLevelChangeEvent event) {
+        if (!(event.getEntity() instanceof Player player) || !isPlayerInArena(player)) return;
+        event.setCancelled(true);
     }
 
 }

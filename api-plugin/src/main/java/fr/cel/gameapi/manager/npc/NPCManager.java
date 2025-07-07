@@ -19,12 +19,14 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NPCManager implements Listener {
 
-    @Getter private final Map<String, NPC> npcs = new HashMap<>();
+    @Getter private final Map<String, NPC> npcs = new ConcurrentHashMap<>();
+
+    private ProtocolManager protocolManager;
 
     private final JavaPlugin main;
 
@@ -49,7 +51,9 @@ public class NPCManager implements Listener {
         File npcsFolder = new File(this.main.getDataFolder(), "npcs");
         if (npcsFolder.exists() || npcsFolder.mkdirs()) {
             if (npcsFolder.isDirectory()) {
-                for (File file : npcsFolder.listFiles()) {
+                File[] files = npcsFolder.listFiles();
+                if (files == null) return;
+                for (File file : files) {
                     String name = file.getName().replace(".yml", "");
 
                     ConfigNPC config = new ConfigNPC(main, name);
@@ -69,31 +73,34 @@ public class NPCManager implements Listener {
             Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[" + main.getName() + "] &fChargement de " + npcs.size() + " NPCs pour le plugin " + main.getName() + "&r..."));
         }
 
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        protocolManager.addPacketListener(new PacketAdapter(GameAPI.getInstance(), PacketType.Play.Client.USE_ENTITY) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
-                int entityId = event.getPacket().getIntegers().read(0);
-                EnumWrappers.EntityUseAction action = event.getPacket().getEnumEntityUseActions().read(0).getAction();
+        if (protocolManager == null) {
+            this.protocolManager = ProtocolLibrary.getProtocolManager();
 
-                if (action == EnumWrappers.EntityUseAction.ATTACK) {
-                    npcs.values().stream()
-                            .filter(npc -> npc.getNpc().getId() == entityId)
-                            .findFirst()
-                            .ifPresent(npc -> Bukkit.getScheduler().runTask(main, () -> npc.interact(event.getPlayer())));
-                }
+            protocolManager.addPacketListener(new PacketAdapter(main, PacketType.Play.Client.USE_ENTITY) {
+                @Override
+                public void onPacketReceiving(PacketEvent event) {
+                    int entityId = event.getPacket().getIntegers().read(0);
+                    EnumWrappers.EntityUseAction action = event.getPacket().getEnumEntityUseActions().read(0).getAction();
 
-                if (action == EnumWrappers.EntityUseAction.INTERACT) {
-                    EnumWrappers.Hand hand = event.getPacket().getEnumEntityUseActions().read(0).getHand();
-                    if (hand == EnumWrappers.Hand.MAIN_HAND) {
+                    if (action == EnumWrappers.EntityUseAction.ATTACK) {
                         npcs.values().stream()
                                 .filter(npc -> npc.getNpc().getId() == entityId)
                                 .findFirst()
                                 .ifPresent(npc -> Bukkit.getScheduler().runTask(main, () -> npc.interact(event.getPlayer())));
                     }
+
+                    if (action == EnumWrappers.EntityUseAction.INTERACT) {
+                        EnumWrappers.Hand hand = event.getPacket().getEnumEntityUseActions().read(0).getHand();
+                        if (hand == EnumWrappers.Hand.MAIN_HAND) {
+                            npcs.values().stream()
+                                    .filter(npc -> npc.getNpc().getId() == entityId)
+                                    .findFirst()
+                                    .ifPresent(npc -> Bukkit.getScheduler().runTask(main, () -> npc.interact(event.getPlayer())));
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -134,7 +141,6 @@ public class NPCManager implements Listener {
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {
         Location loc = event.getTo();
-        if (loc == null) return;
 
         for (NPC npc : this.getNpcs().values()) {
             if (loc.getWorld() != npc.getLocation().getWorld()) continue;

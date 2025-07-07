@@ -1,6 +1,7 @@
 plugins {
   `java-library`
   id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
+  `maven-publish`
 }
 
 group = "fr.cel"
@@ -13,9 +14,6 @@ java {
 
 repositories {
   mavenCentral()
-  maven {
-    url = uri("https://repo.dmulloy2.net/repository/public/")
-  }
   flatDir {
     dirs("libs")
   }
@@ -33,7 +31,11 @@ dependencies {
   implementation("com.zaxxer:HikariCP:6.3.0")
   implementation("org.postgresql:postgresql:42.7.7")
 
-  compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
+  compileOnly("com.comphenix.protocol:ProtocolLib:5.4.0")
+}
+
+tasks.assemble {
+  dependsOn(tasks.reobfJar)
 }
 
 tasks {
@@ -44,5 +46,16 @@ tasks {
   }
   javadoc {
     options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+  }
+}
+
+publishing {
+  publications {
+    create<MavenPublication>("mavenJava") {
+      from(components["java"])
+    }
+  }
+  repositories {
+    mavenLocal()
   }
 }

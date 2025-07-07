@@ -1,6 +1,6 @@
 package fr.cel.hub.inventory.cachecache;
 
-import fr.cel.cachecache.manager.CCArenaManager;
+import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ChatUtility;
@@ -39,16 +39,16 @@ public class CacheCacheInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case SCULK_CATALYST -> CCArenaManager.getArenaManager().getArenas().get("warden").addPlayer(player, false);
-            case MINECART -> CCArenaManager.getArenaManager().getArenas().get("mine").addPlayer(player, false);
-            case STONE_BRICKS -> CCArenaManager.getArenaManager().getArenas().get("bunker").addPlayer(player, false);
+            case SCULK_CATALYST -> CCMapManager.getMapManager().getMaps().get("warden").addPlayer(player, false);
+            case MINECART -> CCMapManager.getMapManager().getMaps().get("mine").addPlayer(player, false);
+            case STONE_BRICKS -> CCMapManager.getMapManager().getMaps().get("bunker").addPlayer(player, false);
             case WHEAT -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Moulin", Material.WHEAT), player);
-            case BRICKS -> CCArenaManager.getArenaManager().getArenas().get("ville").addPlayer(player, false);
+            case BRICKS -> CCMapManager.getMapManager().getMaps().get("ville").addPlayer(player, false);
             case WAXED_COPPER_BLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Steampunk", Material.WAXED_COPPER_BLOCK), player);
-            case SAND -> CCArenaManager.getArenaManager().getArenas().get("desert").addPlayer(player, false);
-            case SNOW_BLOCK -> CCArenaManager.getArenaManager().getArenas().get("chalet").addPlayer(player, false);
+            case SAND -> CCMapManager.getMapManager().getMaps().get("desert").addPlayer(player, false);
+            case SNOW_BLOCK -> CCMapManager.getMapManager().getMaps().get("chalet").addPlayer(player, false);
 
-            case COMMAND_BLOCK -> CCArenaManager.getArenaManager().getTemporaryHub().addPlayer(player);
+            case COMMAND_BLOCK -> CCMapManager.getMapManager().getTemporaryHub().addPlayer(player);
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
 

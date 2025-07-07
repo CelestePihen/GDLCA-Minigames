@@ -14,7 +14,6 @@ import fr.cel.valocraft.arena.state.pregame.StartingArenaState;
 import fr.cel.valocraft.manager.GameManager;
 import fr.cel.valocraft.manager.Role;
 import fr.cel.valocraft.manager.ValoTeam;
-import fr.cel.valocraft.utils.Config;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatMessageType;
@@ -55,7 +54,7 @@ public class ValoArena {
     // TODO
     private final List<Location> invisibleBarriersLocations;
 
-    @Setter private Config config;
+    @Setter private ArenaConfig arenaConfig;
 
     @Setter private Role attackers;
     @Setter private Role defenders;

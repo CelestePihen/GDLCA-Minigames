@@ -2,7 +2,6 @@ package fr.cel.pvp.manager;
 
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.pvp.PVP;
-import fr.cel.pvp.arena.PVPArenaManager;
 import lombok.Getter;
 
 @Getter

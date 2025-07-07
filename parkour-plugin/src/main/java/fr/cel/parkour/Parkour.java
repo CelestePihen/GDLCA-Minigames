@@ -3,7 +3,7 @@ package fr.cel.parkour;
 import fr.cel.gameapi.manager.CommandsManager;
 import fr.cel.parkour.commands.ParkourCommands;
 import fr.cel.parkour.manager.GameManager;
-import fr.cel.parkour.map.ParkourMapManager;
+import fr.cel.parkour.manager.ParkourMapManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;

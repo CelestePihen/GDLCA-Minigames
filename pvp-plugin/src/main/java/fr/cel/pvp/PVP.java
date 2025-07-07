@@ -1,9 +1,9 @@
 package fr.cel.pvp;
 
 import fr.cel.gameapi.manager.CommandsManager;
-import fr.cel.pvp.arena.PVPArenaManager;
 import fr.cel.pvp.commands.PVPCommands;
 import fr.cel.pvp.manager.GameManager;
+import fr.cel.pvp.manager.PVPArenaManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
