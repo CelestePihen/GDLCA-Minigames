@@ -19,21 +19,21 @@ public class CacheCacheInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(1, new ItemBuilder(Material.SCULK_CATALYST).setDisplayName(ChatUtility.format("&dWarden")).toItemStack());
-        inv.setItem(3, new ItemBuilder(Material.MINECART).setDisplayName(ChatUtility.format("&dMine")).toItemStack());
-        inv.setItem(5, new ItemBuilder(Material.STONE_BRICKS).setDisplayName(ChatUtility.format("&dBunker")).toItemStack());
-        inv.setItem(7, new ItemBuilder(Material.WHEAT).setDisplayName(ChatUtility.format("&dMoulin")).toItemStack());
+        inv.setItem(1, new ItemBuilder(Material.SCULK_CATALYST).setItemName(ChatUtility.format("&dWarden")).toItemStack());
+        inv.setItem(3, new ItemBuilder(Material.MINECART).setItemName(ChatUtility.format("&dMine")).toItemStack());
+        inv.setItem(5, new ItemBuilder(Material.STONE_BRICKS).setItemName(ChatUtility.format("&dBunker")).toItemStack());
+        inv.setItem(7, new ItemBuilder(Material.WHEAT).setItemName(ChatUtility.format("&dMoulin")).toItemStack());
 
-        inv.setItem(19, new ItemBuilder(Material.BRICKS).setDisplayName(ChatUtility.format("&dVille")).toItemStack());
-        inv.setItem(21, new ItemBuilder(Material.WAXED_COPPER_BLOCK).setDisplayName(ChatUtility.format("&dSteampunk")).toItemStack());
-        inv.setItem(23, new ItemBuilder(Material.SAND).setDisplayName(ChatUtility.format("&dDésert")).toItemStack());
-        inv.setItem(25, new ItemBuilder(Material.SNOW_BLOCK).setDisplayName(ChatUtility.format("&dChalet")).toItemStack());
+        inv.setItem(19, new ItemBuilder(Material.BRICKS).setItemName(ChatUtility.format("&dVille")).toItemStack());
+        inv.setItem(21, new ItemBuilder(Material.WAXED_COPPER_BLOCK).setItemName(ChatUtility.format("&dSteampunk")).toItemStack());
+        inv.setItem(23, new ItemBuilder(Material.SAND).setItemName(ChatUtility.format("&dDésert")).toItemStack());
+        inv.setItem(25, new ItemBuilder(Material.SNOW_BLOCK).setItemName(ChatUtility.format("&dChalet")).toItemStack());
 
         for (int slot = 37; slot <= 43; slot += 2) {
-            inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName(ChatUtility.format("&eLoup Touche-Touche")).toItemStack());
+            inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setItemName(ChatUtility.format("&eLoup Touche-Touche")).toItemStack());
         }
 
-        inv.setItem(49, new ItemBuilder(Material.BARRIER).setDisplayName("Retour").toItemStack());
+        inv.setItem(49, new ItemBuilder(Material.BARRIER).setItemName("Retour").toItemStack());
     }
 
     @Override

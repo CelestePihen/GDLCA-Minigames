@@ -34,6 +34,9 @@ public class WaitingMapState extends MapState {
         displayBestTime();
         updatePlayerStatistics();
 
+        int gameId = getMap().getGameManager().getStatisticsManager().addCCGameStatistic(getMap().getDisplayName(), getMap().getHiders(), getMap().getSeekers());
+        getMap().setGameId(gameId);
+
         getMap().setMapState(new PlayingMapState(getMap()));
     }
 

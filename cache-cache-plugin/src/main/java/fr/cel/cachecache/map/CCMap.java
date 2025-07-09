@@ -1,15 +1,16 @@
 package fr.cel.cachecache.map;
 
+import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.map.state.MapState;
 import fr.cel.cachecache.map.state.game.PlayingMapState;
 import fr.cel.cachecache.map.state.game.WaitingMapState;
 import fr.cel.cachecache.map.state.pregame.InitMapState;
 import fr.cel.cachecache.map.state.pregame.PreGameMapState;
 import fr.cel.cachecache.map.state.pregame.StartingMapState;
-import fr.cel.cachecache.manager.GameManager;
-import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.utils.CheckAdvancements;
 import fr.cel.cachecache.utils.MapConfig;
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
@@ -26,63 +27,71 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
-@Getter
 public class CCMap {
 
-    private final GameManager gameManager;
+    @Getter private final GameManager gameManager;
     @Setter private MapConfig mapConfig;
 
-    private final String mapName;
-    private final String displayName;
+    @Getter private final String mapName;
+    @Getter private final String displayName;
 
-    private MapState mapState;
+    @Getter private MapState mapState;
 
-    @Setter private int timer = 0;
-    private final Map<UUID, Integer> wolfTimer = new HashMap<>();
+    @Getter @Setter private int timer = 0;
+    @Getter private final Map<UUID, Integer> wolfTimer = new HashMap<>();
 
     // Best Record
-    private int bestTimer;
-    private String bestPlayer;
+    @Getter private int bestTimer;
+    @Getter private String bestPlayer;
 
-    private String lastHunter;
+    @Getter private String lastHunter;
 
-    private final CCMode ccMode;
+    @Getter private final CCMode ccMode;
 
     // Ground Items
-    @Setter private List<GroundItem> availableGroundItems; // Items disponibles pour la map
-    @Setter private List<Location> locationGroundItems; // Position des spawners à Items
-    private final List<Item> spawnedGroundItems = new ArrayList<>(); // Items qui sont dans la map
+    @Getter @Setter private List<GroundItem> availableGroundItems; // Items disponibles pour la map
+    @Getter @Setter private List<Location> locationGroundItems; // Position des spawners à Items
+    @Getter private final List<Item> spawnedGroundItems = new ArrayList<>(); // Items qui sont dans la map
+    private final List<BukkitRunnable> itemTasks = new ArrayList<>(); // Task
 
-    private final Location spawnLoc;
-    private final Location waitingLoc;
+    @Getter private final Location spawnLoc;
+    @Getter private final Location waitingLoc;
 
     // Team Lists
-    private final List<UUID> players = new ArrayList<>();
-    private final List<UUID> hiders = new ArrayList<>();
-    private final List<UUID> seekers = new ArrayList<>();
+    @Getter private final List<UUID> players = new ArrayList<>();
+    @Getter private final List<UUID> hiders = new ArrayList<>();
+    @Getter private final List<UUID> seekers = new ArrayList<>();
 
     private final GameScoreboard scoreboard;
 
     // Minecraft Teams
-    private final GameTeam teamHiders;
-    private final GameTeam teamSeekers;
+    @Getter private final GameTeam teamHiders;
+    @Getter private final GameTeam teamSeekers;
 
-    private final boolean fallDamage;
+    @Getter private final boolean fallDamage;
 
     // Number of players there were at the start of the game
-    @Setter private int nbPlayerBeginning = 0;
+    @Getter @Setter private int nbPlayerBeginning = 0;
 
-    private final CheckAdvancements checkAdvancements;
+    @Getter private final CheckAdvancements checkAdvancements;
 
     // Bunker
     @Getter private final Location leverLocation = new Location(Bukkit.getWorld("world"), 54, 52, -217);
     private final YamlConfiguration lampsConfig;
 
-    private UUID owner = null;
+    @Getter private UUID owner = null;
+
+    @Setter private int gameId; // id de la partie dans la BDD
 
     public CCMap(String mapName, String displayName, CCMode ccMode, Location spawnLoc, Location waitingLoc, boolean fallDamage, GameManager gameManager) {
         this.gameManager = gameManager;
@@ -365,7 +374,13 @@ public class CCMap {
             if (player != null) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
         }
 
+        // Permet d'arrêter toutes les tasks en cours (PointPlayer et Sound)
+        itemTasks.forEach(bukkitRunnable -> {
+            if (!bukkitRunnable.isCancelled()) bukkitRunnable.cancel();
+        });
+
         checkAdvancements.stopAllChecks();
+        gameManager.getStatisticsManager().updateCCGameEnd(this.gameId);
 
         clearGroundItems();
         activateLeverAndLamps();
@@ -576,6 +591,14 @@ public class CCMap {
     public void setLastHunter(String playerName) {
         this.lastHunter = playerName;
         mapConfig.setValue("lastHunter", lastHunter);
+    }
+
+    /**
+     * Ajoute une task liée à un GroundItem à la liste qui devra être annulée à la fin de la partie
+     * @param task La task à ajouter
+     */
+    public void addItemTask(BukkitRunnable task) {
+        this.itemTasks.add(task);
     }
 
     /**

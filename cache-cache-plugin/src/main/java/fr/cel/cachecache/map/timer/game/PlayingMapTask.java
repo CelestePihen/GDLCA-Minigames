@@ -38,9 +38,6 @@ public class PlayingMapTask extends BukkitRunnable {
             else if (getTimer() == 420) {
                 map.getCheckAdvancements().checkPasBesoin();
             }
-            else if (getTimer() == 480) {
-                map.getCheckAdvancements().checkPasEssouffle();
-            }
             else if (getTimer() == 1200) {
                 map.getCheckAdvancements().givePiqueNique();
             }

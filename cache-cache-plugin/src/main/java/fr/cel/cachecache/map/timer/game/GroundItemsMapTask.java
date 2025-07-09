@@ -1,7 +1,7 @@
 package fr.cel.cachecache.map.timer.game;
 
-import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.manager.GroundItem;
+import fr.cel.cachecache.map.CCMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.scheduler.BukkitRunnable;

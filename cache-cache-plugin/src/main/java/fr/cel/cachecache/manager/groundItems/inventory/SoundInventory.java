@@ -1,7 +1,7 @@
 package fr.cel.cachecache.manager.groundItems.inventory;
 
+import fr.cel.cachecache.manager.groundItems.tasks.SoundCatTask;
 import fr.cel.cachecache.map.CCMap;
-import fr.cel.cachecache.manager.groundItems.tasks.SoundCatTimer;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.database.StatisticsManager;
@@ -45,8 +45,11 @@ public class SoundInventory extends AbstractInventory {
                 map.getCheckAdvancements().giveMiaou(player);
             }
 
+            SoundCatTask soundCatTask = new SoundCatTask(map);
+            soundCatTask.runTaskTimer(map.getGameManager().getMain(), 0, 20);
+            map.addItemTask(soundCatTask);
+
             GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_SOUND_USAGE, 1);
-            new SoundCatTimer(map).runTaskTimer(map.getGameManager().getMain(), 0, 20);
         }
 
         else if (item.getType() == Material.GOAT_HORN) {

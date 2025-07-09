@@ -1,7 +1,7 @@
 package fr.cel.cachecache.utils;
 
-import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.manager.GroundItem;
+import fr.cel.cachecache.map.CCMap;
 import fr.cel.gameapi.manager.AdvancementsManager;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
 import fr.cel.gameapi.utils.zone.ZoneDetection;
@@ -294,17 +294,6 @@ public class CheckAdvancements {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
             advancementsManager.giveAdvancement(player, Advancements.PIQUE_NIQUE, map.getPlayers());
-        }
-    }
-
-    /**
-     * Donne le succès "T'es pas essoufflé" aux cacheurs n'ayant pas couru avant 8 minutes
-     */
-    public void checkPasEssouffle() {
-        for (UUID uuid : map.getHiders()) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            // TODO: advancementsManager.giveAdvancement(player, Advancements.PAS_ESSOUFFLE);
         }
     }
 

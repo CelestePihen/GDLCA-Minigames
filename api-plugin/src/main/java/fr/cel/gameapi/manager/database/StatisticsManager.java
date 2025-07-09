@@ -130,71 +130,100 @@ public class StatisticsManager {
     }
 
     /**
-     * Enregistre une partie de Cache-Cache terminée dans la base de données
+     * Enregistre une partie de Cache-Cache dans la base de données
      * @param mapName Nom de la carte
-     * @param time Temps total de la partie en secondes
-     * @param playersUUID UUIDs des joueurs
-     * @param seekersUUID UUIDs des chercheurs de départ
+     * @param hiders UUIDs des joueurs
+     * @param seekers UUIDs des chercheurs de départ
      */
-    public void addCCGameStatistic(String mapName, int time, List<UUID> playersUUID, List<UUID> seekersUUID) {
-        String query = "INSERT INTO cc_game_statistics (mapName, time, playersUUID, seekersUUID) VALUES (?, ?, ?, ?)";
+    public int addCCGameStatistic(String mapName, List<UUID> hiders, List<UUID> seekers) {
+        int generatedId = -1;
+
+        String hidersUuid = hiders.stream().map(UUID::toString).collect(Collectors.joining(";"));
+        String seekersUuid = seekers.stream().map(UUID::toString).collect(Collectors.joining(";"));
+
+        String query = "INSERT INTO cc_maps_statistics (mapname, hidersuuid, seekersuuid, timestamp_start) VALUES (?, ?, ?, NOW()) RETURNING id;";
 
         try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, mapName);
-            preparedStatement.setInt(2, time);
-            preparedStatement.setString(3, playersUUID.stream().map(UUID::toString).collect(Collectors.joining(",")));
-            preparedStatement.setString(4, seekersUUID.stream().map(UUID::toString).collect(Collectors.joining(",")));
+            preparedStatement.setString(2, hidersUuid);
+            preparedStatement.setString(3, seekersUuid);
 
-            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                generatedId = rs.getInt("id");
+            }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error adding CC game statistic: " + e.getMessage());
+            GameAPI.getInstance().getLogger().severe("Error: Adding " + mapName + " to CC game statistic: " + e.getMessage());
+        }
+
+        return generatedId;
+    }
+
+    /**
+     * Met à jour le temps d'une partie terminée de Cache-Cache
+     * @param gameId Identifiant de la partie
+     */
+    public void updateCCGameEnd(int gameId) {
+        String sql = "UPDATE cc_maps_statistics SET timestamp_end = NOW() WHERE id = ?;";
+
+        try (Connection connection = GameAPI.getInstance().getDatabase().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, gameId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Error: Updating " + gameId + " to CC game statistic: " + e.getMessage());
         }
     }
 
     /**
-     * Enregistre une partie de Valocraft terminée dans la base de données
+     * Enregistre une partie de Valocraft dans la base de données
      * @param mapName Nom de la carte
-     * @param time Temps total de la partie en secondes
      * @param attackersUUID UUIDs des attaquants de départ
      * @param defendersUUID UUIDs des défenseurs de départ
      */
-    public void addValoGameStatistic(String mapName, int time, List<UUID> attackersUUID, List<UUID> defendersUUID) {
-        String query = "INSERT INTO valo_game_statistics (mapName, time, attackersUUID, defendersUUID) VALUES (?, ?, ?, ?)";
+    public int addValoGameStatistic(String mapName, List<UUID> attackersUUID, List<UUID> defendersUUID) {
+        int generatedId = -1;
+
+        String attackersUuid = attackersUUID.stream().map(UUID::toString).collect(Collectors.joining(";"));
+        String defendersUuid = defendersUUID.stream().map(UUID::toString).collect(Collectors.joining(";"));
+
+        String query = "INSERT INTO valo_game_statistics (mapName, attackersUUID, defendersUUID, timestamp_start) VALUES (?, ?, ?, NOW()) RETURNING id;";
 
         try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, mapName);
-            preparedStatement.setInt(2, time);
-            preparedStatement.setString(3, attackersUUID.stream().map(UUID::toString).collect(Collectors.joining(",")));
-            preparedStatement.setString(4, defendersUUID.stream().map(UUID::toString).collect(Collectors.joining(",")));
+            preparedStatement.setString(2, attackersUuid);
+            preparedStatement.setString(3, defendersUuid);
 
-            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                generatedId = rs.getInt("id");
+            }
         } catch (SQLException e) {
             GameAPI.getInstance().getLogger().severe("Error adding Valocraft game statistic: " + e.getMessage());
         }
+
+        return generatedId;
     }
 
-    @Getter
-    public enum GameStatistics {
-        // CACHE-CACHE
-        // Nom de la map, durée de la partie, UUIDs des joueurs, UUIDs des chercheurs de départ
-        CC_MAP_NAME("cc_game_statistics", "mapName"),
-        CC_TIME("cc_game_statistics", "totalTime"),
-        CC_PLAYERS_UUID("cc_game_statistics", "playersUUID"),
-        CC_SEEKERS_UUID("cc_game_statistics", "seekersUUID"),
+    /**
+     * Met à jour une partie terminée de Valocraft
+     * @param gameId Identifiant de la partie
+     * @param attackersScore Le score des attaquants
+     * @param defendersScore Le score des défenseurs
+     */
+    public void updateValoGameEnd(int gameId, int attackersScore, int defendersScore) {
+        String sql = "UPDATE valo_maps_statistics SET timestamp_end = NOW(), attackers_score = ?, defenders_score = ? WHERE id = ?;";
 
-        // VALOCRAFT
-        // Nom de la map, durée de la partie, UUIDs des attaquants de départ, UUIDs des défenseurs de départ
-        VALO_MAP_NAME("valo_game_statistics", "mapName"),
-        VALO_TIME("valo_game_statistics", "totalTime"),
-        VALO_ATTACKERS_UUID("valo_game_statistics", "attackersUUID"),
-        VALO_DEFENDERS_UUID("valo_game_statistics", "defendersUUID");
+        try (Connection connection = GameAPI.getInstance().getDatabase().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-        private final String tableName;
-        private final String columnName;
-
-        GameStatistics(String tableName, String columnName) {
-            this.tableName = tableName;
-            this.columnName = columnName;
+            statement.setInt(1, attackersScore);
+            statement.setInt(2, defendersScore);
+            statement.setInt(3, gameId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Error: Updating " + gameId + " to CC game statistic: " + e.getMessage());
         }
     }
 

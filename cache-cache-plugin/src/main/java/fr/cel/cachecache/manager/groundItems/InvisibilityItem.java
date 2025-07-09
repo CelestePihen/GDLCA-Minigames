@@ -1,7 +1,7 @@
 package fr.cel.cachecache.manager.groundItems;
 
-import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.manager.GroundItem;
+import fr.cel.cachecache.map.CCMap;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import org.bukkit.Material;

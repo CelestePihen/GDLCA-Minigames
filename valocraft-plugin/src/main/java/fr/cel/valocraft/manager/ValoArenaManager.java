@@ -18,10 +18,10 @@ public class ValoArenaManager {
     @Getter private final Map<String, ValoArena> arenas = new HashMap<>();
     private final ValoCraft main;
 
-    public ValoArenaManager(ValoCraft main, GameManager gameManager) {
+    public ValoArenaManager(ValoCraft main) {
         arenaManager = this;
         this.main = main;
-        this.loadArenas(gameManager);
+        this.loadArenas();
     }
 
     public ValoArena getArenaByDisplayName(String name) {
@@ -42,7 +42,7 @@ public class ValoArenaManager {
         return arenas.values().stream().anyMatch(arena -> arena.isPlayerInArena(player));
     }
 
-    public void loadArenas(GameManager gameManager) {
+    public void loadArenas() {
         arenas.clear();
 
         File folder = new File(main.getDataFolder(), "arenas");

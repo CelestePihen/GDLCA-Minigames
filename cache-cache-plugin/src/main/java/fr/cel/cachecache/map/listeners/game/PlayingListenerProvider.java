@@ -1,9 +1,9 @@
 package fr.cel.cachecache.map.listeners.game;
 
 import fr.cel.cachecache.CacheCache;
+import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.listeners.StateListenerProvider;
-import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import org.bukkit.Bukkit;
@@ -130,12 +130,16 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
-        if (itemStack.getItemMeta() == null) return;
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) return;
 
         for (GroundItem groundItem : map.getAvailableGroundItems()) {
             if (groundItem == null) continue;
-            if (groundItem.getItemStack().getItemMeta() == null) continue;
-            if (!itemStack.getItemMeta().getItemName().equals(groundItem.getItemStack().getItemMeta().getItemName())) continue;
+
+            ItemMeta itemMetaGI = groundItem.getItemStack().getItemMeta();
+            if (itemMetaGI == null) continue;
+            if (!itemMeta.getItemName().equals(itemMetaGI.getItemName())) continue;
 
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 

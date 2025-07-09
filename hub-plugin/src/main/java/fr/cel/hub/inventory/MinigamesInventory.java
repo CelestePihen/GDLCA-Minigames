@@ -24,34 +24,34 @@ public class MinigamesInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(9, new ItemBuilder(Material.SPYGLASS).setDisplayName("&aCache-Cache").toItemStack());
-        inv.setItem(11, new ItemBuilder(Material.BOW).setDisplayName("&aValocraft").toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.NETHERITE_SWORD).setDisplayName("&aPVP").addItemFlags(ItemFlag.HIDE_ATTRIBUTES).toItemStack());
-        inv.setItem(15, new ItemBuilder(Material.IRON_BOOTS).setDisplayName("&aParkour").toItemStack());
-        inv.setItem(17, new ItemBuilder(Material.BRUSH).setDisplayName("&aMusée").toItemStack());
+        inv.setItem(9, new ItemBuilder(Material.SPYGLASS).setItemName("&aCache-Cache").toItemStack());
+        inv.setItem(11, new ItemBuilder(Material.BOW).setItemName("&aValocraft").toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.NETHERITE_SWORD).setItemName("&aPVP").addItemFlags(ItemFlag.HIDE_ATTRIBUTES).toItemStack());
+        inv.setItem(15, new ItemBuilder(Material.IRON_BOOTS).setItemName("&aParkour").toItemStack());
+        inv.setItem(17, new ItemBuilder(Material.BRUSH).setItemName("&aMusée").toItemStack());
 
         // Event Halloween
         if (Hub.getInstance().getConfig().getBoolean("halloweenEvent")) {
             for (int slot = 27; slot <= 35; slot += 2) {
-                inv.setItem(slot, new ItemBuilder(Material.JACK_O_LANTERN).setDisplayName("&6Halloween").toItemStack());
+                inv.setItem(slot, new ItemBuilder(Material.JACK_O_LANTERN).setItemName("&6Halloween").toItemStack());
             }
         }
 
         // Event Noël
         else if (Hub.getInstance().getConfig().getBoolean("christmasEvent")) {
             for (int slot = 27; slot <= 35; slot += 2) {
-                inv.setItem(slot, new ItemBuilder(Material.SNOW_BLOCK).setDisplayName("&6Noël").toItemStack());
+                inv.setItem(slot, new ItemBuilder(Material.SNOW_BLOCK).setItemName("&6Noël").toItemStack());
             }
         }
 
         // Indisponible
         else {
             for (int slot = 27; slot <= 35; slot += 2) {
-                inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setDisplayName("&eIndisponible").toItemStack());
+                inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setItemName("&eIndisponible").toItemStack());
             }
         }
 
-        inv.setItem(49, new ItemBuilder(Material.BARRIER).setDisplayName("Quitter").toItemStack());
+        inv.setItem(49, new ItemBuilder(Material.BARRIER).setItemName("Quitter").toItemStack());
     }
 
     @Override

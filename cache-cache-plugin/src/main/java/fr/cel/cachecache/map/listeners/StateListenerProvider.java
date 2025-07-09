@@ -4,14 +4,12 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.state.game.PlayingMapState;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -59,20 +57,13 @@ public abstract class StateListenerProvider implements Listener {
     }
 
     @EventHandler
-    public void onEntityInteract(EntityInteractEvent event) {
-        Block block = event.getBlock();
-        if (block.getType() == Material.FARMLAND) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!map.isPlayerInMap(player)) return;
 
         if (event.getAction() == Action.PHYSICAL && event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.FARMLAND)) {
             event.setCancelled(true);
+            return;
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {

@@ -1,9 +1,10 @@
 package fr.cel.cachecache.commands;
 
-import fr.cel.cachecache.map.CCMap;
-import fr.cel.cachecache.map.TemporaryHub;
 import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.map.CCMap;
+import fr.cel.cachecache.map.TemporaryHub;
+import fr.cel.cachecache.map.state.game.PlayingMapState;
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.utils.ChatUtility;
 import org.bukkit.Bukkit;
@@ -40,24 +41,39 @@ public class CCCommand extends AbstractCommand {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("reloadTemporary")) {
-            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps temporaires Cache-Cache ont été rechargés.");
-            gameManager.reloadTemporaryHub();
-            return;
-        }
-
         if (args[0].equalsIgnoreCase("list")) {
             if (mapManager.getMaps().isEmpty()) {
                 sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installée.");
                 return;
             }
 
-            mapManager.getMaps().values().forEach(map ->
-                    sender.sendMessage(gameManager.getPrefix() + "Carte " + map.getDisplayName() + " | " + map.getMapState().getClass().getSimpleName()));
+            for (CCMap map : mapManager.getMaps().values()) {
+                String message = gameManager.getPrefix() + "Carte " + map.getDisplayName() + " | " + map.getMapState().getName();
+
+                if (map.getMapState() instanceof PlayingMapState) {
+                    message += " | Timer: " + map.getTimer();
+                }
+
+                sender.sendMessage(message);
+            }
+            return;
+        }
+
+        // TODO /cc list <map> -> donne les informations sur la map -> nom, timer, nb de joueurs, nb de cacheurs/chercheurs
+        // TODO /cc information <map> -> donne les infos de la config sur la map
+
+        if (args[0].equalsIgnoreCase("reloadTemporary")) {
+            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps temporaires Cache-Cache ont été rechargés.");
+            gameManager.reloadTemporaryHub();
             return;
         }
 
         if (args[0].equalsIgnoreCase("enableTemporary")) {
+            if (mapManager.getTemporaryHub().hasNoMaps()) {
+                sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installée.");
+                return;
+            }
+
             TemporaryHub temporaryHub = mapManager.getTemporaryHub();
             temporaryHub.setActivated(!temporaryHub.isActivated());
 

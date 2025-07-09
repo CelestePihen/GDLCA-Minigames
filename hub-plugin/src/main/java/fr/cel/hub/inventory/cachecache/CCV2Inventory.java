@@ -25,10 +25,10 @@ public class CCV2Inventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(12, new ItemBuilder(this.type).setDisplayName("&d" + nameV1).toItemStack());
-        inv.setItem(14, new ItemBuilder(this.type, 2).setDisplayName("&d" + nameV2).toItemStack());
+        inv.setItem(12, new ItemBuilder(this.type).setItemName("&d" + nameV1).toItemStack());
+        inv.setItem(14, new ItemBuilder(this.type, 2).setItemName("&d" + nameV2).toItemStack());
 
-        inv.setItem(22, new ItemBuilder(Material.BARRIER).setDisplayName("Retour").toItemStack());
+        inv.setItem(22, new ItemBuilder(Material.BARRIER).setItemName("Retour").toItemStack());
     }
 
     @Override

@@ -18,9 +18,9 @@ public class CelebrationEvent extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inventory) {
-        setItem(0, new ItemBuilder(Material.JACK_O_LANTERN).setDisplayName("&6Halloween").addLoreLine(Hub.getInstance().getConfig().getBoolean("halloweenEvent") ? ChatUtility.format("&aActivé") : ChatUtility.format("&cDésactivé")).toItemStack());
-        setItem(1, new ItemBuilder(Material.SNOW_BLOCK).setDisplayName("&6Noël").addLoreLine(Hub.getInstance().getConfig().getBoolean("christmasEvent") ? ChatUtility.format("&aActivé") : ChatUtility.format("&cDésactivé")).toItemStack());
-        setItem(8, new ItemBuilder(Material.BARRIER).setDisplayName("Quitter").toItemStack());
+        setItem(0, new ItemBuilder(Material.JACK_O_LANTERN).setItemName("&6Halloween").addLoreLine(Hub.getInstance().getConfig().getBoolean("halloweenEvent") ? ChatUtility.format("&aActivé") : ChatUtility.format("&cDésactivé")).toItemStack());
+        setItem(1, new ItemBuilder(Material.SNOW_BLOCK).setItemName("&6Noël").addLoreLine(Hub.getInstance().getConfig().getBoolean("christmasEvent") ? ChatUtility.format("&aActivé") : ChatUtility.format("&cDésactivé")).toItemStack());
+        setItem(8, new ItemBuilder(Material.BARRIER).setItemName("Quitter").toItemStack());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CelebrationEvent extends AbstractInventory {
                     player.sendMessage(GameAPI.getPrefix() + "L'événement Halloween a été activé.");
                 }
 
-                setItem(0, new ItemBuilder(Material.JACK_O_LANTERN).setDisplayName("&6Halloween").addLoreLine(Hub.getInstance().getConfig().getBoolean("halloweenEvent") ? ChatUtility.format("&aActivé") : ChatUtility.format("&cDésactivé")).toItemStack());
+                setItem(0, new ItemBuilder(Material.JACK_O_LANTERN).setItemName("&6Halloween").addLoreLine(Hub.getInstance().getConfig().getBoolean("halloweenEvent") ? ChatUtility.format("&aActivé") : ChatUtility.format("&cDésactivé")).toItemStack());
             }
 
             case SNOW_BLOCK -> player.sendMessage("Bientôt...");

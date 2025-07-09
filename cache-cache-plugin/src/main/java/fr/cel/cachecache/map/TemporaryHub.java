@@ -1,7 +1,7 @@
 package fr.cel.cachecache.map;
 
-import fr.cel.cachecache.map.state.pregame.StartingMapState;
 import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.map.state.pregame.StartingMapState;
 import fr.cel.cachecache.utils.TempHubConfig;
 import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
@@ -124,6 +124,14 @@ public class TemporaryHub implements Listener {
             if (player == null) continue;
             player.sendMessage(message);
         }
+    }
+
+    /**
+     * Retourne vrai s'il n'y a aucune map de mise
+     * @return Vrai s'il n'y a aucune map de mise, et faux s'il y en a au moins une
+     */
+    public boolean hasNoMaps() {
+        return maps.isEmpty();
     }
 
     /**

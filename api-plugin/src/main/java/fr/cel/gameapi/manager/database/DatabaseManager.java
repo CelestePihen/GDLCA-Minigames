@@ -90,39 +90,47 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Ajoute le joueur dans toutes les tables des statistiques
+     * @param player Le joueur à ajouter dans les statistiques
+     */
     private void createStatistics(Player player) {
-        String ps = "INSERT INTO cc_statistics (uuid_player) VALUES (?);";
+        String ps = "INSERT INTO hub_statistics (uuid_player) VALUES (?);";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Cache-Cache pour " + player.getName() + ": " + e.getMessage());
         }
 
-        String ps2 = "INSERT INTO valo_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps2)) {
+        ps = "INSERT INTO cc_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Cache-Cache pour " + player.getName() + ": " + e.getMessage());
+        }
 
+        ps = "INSERT INTO valo_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Valocraft pour " + player.getName() + ": " + e.getMessage());
         }
 
-        String ps3 = "INSERT INTO pvp_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps3)) {
+        ps = "INSERT INTO pvp_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du PVP pour " + player.getName() + ": " + e.getMessage());
         }
 
-        String ps4 = "INSERT INTO parkour_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps4)) {
+        ps = "INSERT INTO parkour_statistics (uuid_player) VALUES (?);";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Parkour pour " + player.getName() + ": " + e.getMessage());
         }

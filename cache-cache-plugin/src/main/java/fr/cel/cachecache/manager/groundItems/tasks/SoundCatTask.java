@@ -10,12 +10,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
-public class SoundCatTimer extends BukkitRunnable {
+public class SoundCatTask extends BukkitRunnable {
     
     private final CCMap map;
     private int secondes = 10;
 
-    public SoundCatTimer(CCMap map) {
+    public SoundCatTask(CCMap map) {
         this.map = map;
     }
 

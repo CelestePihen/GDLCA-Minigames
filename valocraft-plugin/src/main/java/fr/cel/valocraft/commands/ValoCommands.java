@@ -26,7 +26,7 @@ public class ValoCommands extends AbstractCommand {
     public ValoCommands(GameManager gameManager) {
         super("valocraft:valocraft", false, true);
         this.gameManager = gameManager;
-        this.arenaManager = gameManager.getValoArenaManager();
+        this.arenaManager = gameManager.getMain().getValoArenaManager();
     }
 
     @Override

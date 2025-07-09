@@ -29,7 +29,7 @@ public class SelectTeam extends AbstractInventory {
 
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
-        ValoArena arena = gameManager.getValoArenaManager().getArenaByPlayer(player);
+        ValoArena arena = gameManager.getMain().getValoArenaManager().getArenaByPlayer(player);
 
         if (arena.getArenaState() instanceof StartingArenaState) {
             player.sendMessage(gameManager.getPrefix() + "Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.");
@@ -40,9 +40,9 @@ public class SelectTeam extends AbstractInventory {
             case WHITE_WOOL -> {
                 arena.getBlueTeam().removePlayer(player);
                 arena.getRedTeam().removePlayer(player);
-                arena.sendMessage(player.getDisplayName() + " est maintenant dans aucune équipe.");
+                arena.sendMessage(player.getDisplayName() + " est maintenant spectateur.");
 
-                player.sendTitle(ChatUtility.format("Vous êtes maintenant dans aucune équipe."), "", 10, 70, 20);
+                player.sendTitle(ChatUtility.format("Vous êtes maintenant spectateur."), "", 10, 70, 20);
                 player.getInventory().getItemInMainHand().setType(Material.WHITE_WOOL);
                 player.closeInventory();
             }
