@@ -38,8 +38,9 @@ public class ArenaConfig {
                 String displayName = config.getString("displayName");
                 Location locationSpawn = LocationUtility.parseConfigToLoc(config, "locationSpawn");
                 boolean fallDamage = config.getBoolean("fallDamage");
+                boolean tridentActivated = config.getBoolean("tridentActivated");
 
-                return new PVPArena(arenaName, displayName, locationSpawn, fallDamage, main.getGameManager());
+                return new PVPArena(arenaName, displayName, locationSpawn, fallDamage, tridentActivated, main.getGameManager());
             } catch (IOException | InvalidConfigurationException e) {
                 main.getLogger().severe(e.getMessage());
             }
