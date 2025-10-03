@@ -1,0 +1,10 @@
+displayName: "Pomme de terre en folie"
+description: "Récoltez 30 pommes de terre"
+material: "POTATO"
+count: 30
+durationType: DAILY
+job:
+  name: "FARMER"
+  amountXp: 200
+  type: "POTATOES"
+  amount: 30

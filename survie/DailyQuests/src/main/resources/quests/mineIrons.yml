@@ -1,0 +1,10 @@
+displayName: "Richesse souterraine"
+description: "Minez 20 minerais de fer"
+material: "IRON_ORE"
+count: 20
+durationType: DAILY
+job:
+  name: "MINER"
+  amountXp: 200
+  type: "IRON_ORE"
+  amount: 20

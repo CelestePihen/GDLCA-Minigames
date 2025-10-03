@@ -1,0 +1,10 @@
+displayName: "L'or des fous"
+description: "Minez 15 minerais d'or"
+material: "GOLD_ORE"
+count: 15
+durationType: DAILY
+job:
+  name: "MINER"
+  amountXp: 200
+  type: "GOLD_ORE"
+  amount: 15

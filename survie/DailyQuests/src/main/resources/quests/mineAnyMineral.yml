@@ -1,0 +1,10 @@
+displayName: "Collection minérale"
+description: "Récoltez 200 minerais de n'importe quel type"
+material: "COAL_ORE"
+count: 64
+durationType: WEEKLY
+job:
+  name: "MINER"
+  amountXp: 700
+  type: "ANY_ORE"
+  amount: 200

@@ -31,14 +31,6 @@ public class ZoneDetection implements Listener, IZone {
         this.main = main;
     }
 
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        final Player player = event.getPlayer();
-        final UUID uuid = player.getUniqueId();
-        if (!this.playersInGame.contains(uuid)) return;
-        playerInside.put(uuid, isInZone(player.getLocation()));
-    }
-
     /**
      * Active l'événement de détection
      */
@@ -59,6 +51,14 @@ public class ZoneDetection implements Listener, IZone {
         HandlerList.unregisterAll(this);
         playerInside.clear();
         playersInGame.clear();
+    }
+
+    @EventHandler
+    private void onPlayerMove(PlayerMoveEvent event) {
+        final Player player = event.getPlayer();
+        final UUID uuid = player.getUniqueId();
+        if (!this.playersInGame.contains(uuid)) return;
+        playerInside.put(uuid, isInZone(player.getLocation()));
     }
 
     /**

@@ -1,0 +1,10 @@
+displayName: "Le jardin complet"
+description: "Récoltez 100 plantes et fleurs diverses"
+material: "FLOWER_POT"
+count: 64
+durationType: WEEKLY
+job:
+  name: "ALCHEMIST"
+  amountXp: 750
+  type: "ANY_PLANT"
+  amount: 100

@@ -2,6 +2,7 @@ package fr.cel.gameapi.listeners;
 
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.InventoryManager;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,7 @@ public final class InventoryListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    private void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         AbstractInventory abstractInventory = inventoryManager.getInventoryDataMap().getOrDefault(player.getUniqueId(), null);
@@ -30,12 +31,13 @@ public final class InventoryListener implements Listener {
         ItemStack item = event.getCurrentItem();
         if (item == null || item.getItemMeta() == null || item.getType() == Material.AIR) return;
 
-        abstractInventory.interact(player, item.getItemMeta().getItemName(), item);
+        TextComponent itemName = ((TextComponent) item.getItemMeta().itemName());
+        abstractInventory.interact(player, itemName.content(), item);
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
+    private void onInventoryClose(InventoryCloseEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
 
         if (inventoryManager.getInventoryDataMap().getOrDefault(playerUUID, null) != null)

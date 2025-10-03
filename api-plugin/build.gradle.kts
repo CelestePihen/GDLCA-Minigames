@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "fr.cel"
-version = "1.1"
+version = "1.3"
 
 java {
   // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 11 installed for example.
@@ -20,16 +20,16 @@ repositories {
 }
 
 dependencies {
-  paperweight.paperDevBundle("1.21.7-R0.1-SNAPSHOT")
+  paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
 
-  compileOnly("org.projectlombok:lombok:1.18.38")
-  annotationProcessor("org.projectlombok:lombok:1.18.38")
+  compileOnly("org.projectlombok:lombok:1.18.42")
+  annotationProcessor("org.projectlombok:lombok:1.18.42")
 
-  testCompileOnly("org.projectlombok:lombok:1.18.38")
-  testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
+  testCompileOnly("org.projectlombok:lombok:1.18.42")
+  testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
 
-  implementation("com.zaxxer:HikariCP:6.3.0")
-  implementation("org.postgresql:postgresql:42.7.7")
+  implementation("com.zaxxer:HikariCP:6.3.3")
+  implementation("org.postgresql:postgresql:42.7.8")
 
   compileOnly("com.comphenix.protocol:ProtocolLib:5.4.0")
 }

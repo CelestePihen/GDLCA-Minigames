@@ -1,7 +1,7 @@
 package fr.cel.gameapi.scoreboard;
 
 import lombok.Getter;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -14,10 +14,10 @@ public class GameTeam {
     private final String name;
     private final Team team;
 
-    public GameTeam(String name, ChatColor chatColor, Scoreboard scoreboard) {
+    public GameTeam(String name, NamedTextColor color, Scoreboard scoreboard) {
         this.name = name;
         this.team = scoreboard.registerNewTeam(name);
-        this.team.setColor(chatColor);
+        this.team.color(color);
     }
 
     /**

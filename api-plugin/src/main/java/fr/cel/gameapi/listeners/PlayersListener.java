@@ -2,7 +2,8 @@ package fr.cel.gameapi.listeners;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager;
-import fr.cel.gameapi.utils.ChatUtility;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,11 +37,11 @@ public final class PlayersListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    private void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
         if (!player.hasPlayedBefore()) {
-            event.setJoinMessage(GameAPI.getPrefix() + "Bienvenue à " + player.getName() + " sur le serveur !");
+            event.joinMessage(GameAPI.getPrefix().append(Component.text("Bienvenue à " + player.getName() + " sur le serveur !")));
 
             main.getPlayerManager().setNewPlayer(player.getUniqueId());
             main.getPlayerManager().getPlayersWhoWelcomed().clear();
@@ -48,27 +49,39 @@ public final class PlayersListener implements Listener {
             main.getDatabase().createAccount(player);
             main.getAdvancementsManager().giveAdvancement(player, AdvancementsManager.Advancements.ROOT);
         } else {
-            event.setJoinMessage(ChatUtility.format("[&a+&r] ") + player.getName());
+            event.joinMessage(Component.text("[")
+                    .append(Component.text("+", NamedTextColor.GREEN))
+                    .append(Component.text("] ", NamedTextColor.WHITE))
+                    .append(Component.text(player.getName()))
+            );
         }
 
         main.getPlayerManager().addPlayerData(player);
         main.getPlayerManager().sendPlayerToHub(player);
 
-        player.setPlayerListHeader(ChatUtility.format("&aAmusez-vous bien sur &bGDLCA Minigames !"));
-        player.setPlayerListFooter(ChatUtility.format("&3Discord &f: discord.gg/vFjPYC4Mj8"));
+        player.sendPlayerListHeader(Component.text("Amusez-vous bien sur ", NamedTextColor.GREEN)
+                .append(Component.text("GDLCA Minigames", NamedTextColor.AQUA))
+                .append(Component.text(" !", NamedTextColor.WHITE)));
+
+        player.sendPlayerListFooter(Component.text("&3Discord &f: discord.gg/vFjPYC4Mj8"));
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    private void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
-        event.setQuitMessage(ChatUtility.format("[&c-&r] ") + player.getName());
+        event.quitMessage(Component.text("[")
+                .append(Component.text("-", NamedTextColor.RED))
+                .append(Component.text("] ", NamedTextColor.WHITE))
+                .append(Component.text(player.getName()))
+        );
+
         main.getPlayerManager().removePlayerInHub(player);
         main.getPlayerManager().removePlayerData(player);
     }
 
     @EventHandler
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+    private void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         if (event.getPlayer().isOp()) return;
 
         for (String cmd : blockedCommands) {
@@ -77,9 +90,9 @@ public final class PlayersListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerCommandSend(PlayerCommandSendEvent event) {
-        if (event.getPlayer().isOp()) return;
-        event.getCommands().removeAll(blockedCommands);
+    private void onPlayerCommandSend(PlayerCommandSendEvent event) {
+        if (!event.getPlayer().isOp())
+            event.getCommands().removeAll(blockedCommands);
     }
 
 }

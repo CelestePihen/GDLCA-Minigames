@@ -2,6 +2,7 @@ package fr.cel.gameapi.manager;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.command.AbstractCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,7 +24,8 @@ public class CommandsManager {
         PluginCommand pluginCommand = main.getCommand(commandName);
 
         if (pluginCommand == null) {
-            Bukkit.getConsoleSender().sendMessage(GameAPI.getPrefix() + "La commande " + commandName + " n'a pas été mise dans le plugin.yml du plugin " + main.getName());
+            Bukkit.getConsoleSender().sendMessage(GameAPI.getPrefix()
+                    .append(Component.text("La commande " + commandName + " n'a pas été mise dans le plugin.yml du plugin " + main.getName())));
             return;
         }
 

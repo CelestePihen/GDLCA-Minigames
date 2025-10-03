@@ -1,0 +1,10 @@
+displayName: "Maître brasseur"
+description: "Fabriquez 5 potions. Attention : Restez proche (3 blocs autour) de l'alambic pour faire la quête."
+material: "BREWING_STAND"
+count: 5
+durationType: DAILY
+job:
+  name: "ALCHEMIST"
+  amountXp: 400
+  type: "POTION"
+  amount: 5

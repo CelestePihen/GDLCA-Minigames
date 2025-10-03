@@ -2,6 +2,7 @@ package fr.cel.cachecache.map.timer.game;
 
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.map.CCMap;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,7 +34,7 @@ public class GroundItemsMapTask extends BukkitRunnable {
         Item droppedItem = randomLocation.getWorld().dropItem(randomLocation, rGroundItem.getItemStack());
         droppedItem.setUnlimitedLifetime(true);
         map.getSpawnedGroundItems().add(droppedItem);
-        map.sendMessage("Un objet est apparu !");
+        map.sendMessage(Component.text("Un objet est apparu !"));
 
         return droppedItem;
     }

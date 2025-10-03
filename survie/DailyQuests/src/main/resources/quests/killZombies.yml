@@ -1,0 +1,12 @@
+displayName: "Chasseur de zombies"
+description: "Éliminez 15 zombies qui rôdent dans la nuit"
+material: "ROTTEN_FLESH"
+count: 15
+durationType: DAILY
+
+# type pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 200
+  type: "ZOMBIE"
+  amount: 15

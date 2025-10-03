@@ -4,6 +4,7 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.ProfileInventory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class ProfileCommand extends AbstractCommand {
     }
 
     @Override
-    protected void onExecute(CommandSender sender, String[] args) {
+    protected void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         Player player = (Player) sender;
         GameAPI.getInstance().getInventoryManager().openInventory(new ProfileInventory(player), player);
     }

@@ -1,0 +1,10 @@
+displayName: "L'appel du diamant"
+description: "Trouvez 5 minerais de diamant"
+material: "DIAMOND_ORE"
+count: 5
+durationType: DAILY
+job:
+  name: "MINER"
+  amountXp: 300
+  type: "DIAMOND_ORE"
+  amount: 5

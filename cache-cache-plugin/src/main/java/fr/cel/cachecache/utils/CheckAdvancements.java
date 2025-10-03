@@ -92,18 +92,6 @@ public class CheckAdvancements {
     }
 
     /**
-     * Permet de créer une Location rapidement
-     * @param x La coordonnée x du bloc
-     * @param y La coordonnée y du bloc
-     * @param z La coordonnée z du bloc
-     * @return Retourne une instance de Location
-     * @see org.bukkit.Location
-     */
-    private Location corner(int x, int y, int z) {
-        return new Location(Bukkit.getWorld("world"), x, y, z);
-    }
-
-    /**
      * Active toutes les vérifications des Zones
      */
     public void startAllChecks() {
@@ -295,6 +283,19 @@ public class CheckAdvancements {
             if (player == null) continue;
             advancementsManager.giveAdvancement(player, Advancements.PIQUE_NIQUE, map.getPlayers());
         }
+    }
+
+    /**
+     * Permet de créer une Location rapidement
+     *
+     * @param x La coordonnée x du bloc
+     * @param y La coordonnée y du bloc
+     * @param z La coordonnée z du bloc
+     * @return Retourne une instance de Location
+     * @see org.bukkit.Location
+     */
+    private Location corner(int x, int y, int z) {
+        return new Location(Bukkit.getWorld("world"), x, y, z);
     }
 
 }

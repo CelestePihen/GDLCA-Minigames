@@ -1,0 +1,17 @@
+customQuest: buildHome
+buildingLoc1:
+  x: 9
+  y: 63
+  z: 43
+buildingLoc2:
+  x: 4
+  y: 68
+  z: 48
+chestsLoc1:
+  x: 11
+  y: 64
+  z: 48
+chestsLoc2:
+  x: 11
+  y: 65
+  z: 42

@@ -3,6 +3,8 @@ package fr.cel.gameapi.inventory;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.statistics.*;
 import fr.cel.gameapi.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,17 +15,17 @@ public class StatisticsInventory extends AbstractInventory {
     private final Player player;
 
     public StatisticsInventory(Player player) {
-        super("Statistiques", 27);
+        super(Component.text("Statistiques"), 27);
         this.player = player;
     }
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(9, new ItemBuilder(Material.COMPASS).setDisplayName("&aHub").toItemStack());
-        inv.setItem(11, new ItemBuilder(Material.SPYGLASS).setDisplayName("&aCache-Cache").toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.BOW).setDisplayName("&aValocraft").toItemStack());
-        inv.setItem(15, new ItemBuilder(Material.NETHERITE_SWORD).setDisplayName("&aPVP").toItemStack());
-        inv.setItem(17, new ItemBuilder(Material.IRON_BOOTS).setDisplayName("&aParkour").toItemStack());
+        inv.setItem(9, new ItemBuilder(Material.COMPASS).displayName(Component.text("Hub", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(11, new ItemBuilder(Material.SPYGLASS).displayName(Component.text("Cache-Cache", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.BOW).displayName(Component.text("Valocraft", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(15, new ItemBuilder(Material.NETHERITE_SWORD).displayName(Component.text("PVP", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(17, new ItemBuilder(Material.IRON_BOOTS).displayName(Component.text("Parkour", NamedTextColor.GREEN)).toItemStack());
     }
 
     @Override

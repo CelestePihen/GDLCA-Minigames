@@ -1,8 +1,8 @@
 package fr.cel.cachecache.map.timer.game;
 
 import fr.cel.cachecache.map.CCMap;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,8 +25,7 @@ public class PlayingMapTask extends BukkitRunnable {
 
         for (UUID uuid : map.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(getTimerString()));
+            if (player != null)  player.sendActionBar(Component.text(getTimerString()));
         }
 
         if (map.getCcMode() == CCMap.CCMode.LoupToucheTouche && getTimer() == 5) {
@@ -56,7 +55,7 @@ public class PlayingMapTask extends BukkitRunnable {
     private void loupToucheToucheMessage() {
         Player player = Bukkit.getPlayer(map.getSeekers().getFirst());
         player.teleport(map.getSpawnLoc());
-        map.sendMessage("&cLe loup " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !");
+        map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !", NamedTextColor.RED));
     }
 
     private void normalMessage() {
@@ -66,10 +65,11 @@ public class PlayingMapTask extends BukkitRunnable {
             player.teleport(map.getSpawnLoc());
             names.add(player.getName());
         });
+
         if (names.size() == 1) {
-            map.sendMessage("&cLe chercheur " + names.getFirst() + " est libéré... Cachez-vous !");
+            map.sendMessage(Component.text("Le chercheur " + names.getFirst() + " est libéré... Cachez-vous !", NamedTextColor.RED));
         } else {
-            map.sendMessage("&cLes chercheurs " + names.getFirst() + " et " + names.get(1) + " sont libérés... Cachez-vous !");
+            map.sendMessage(Component.text("Les chercheurs " + names.getFirst() + " et " + names.get(1) + " sont libérés... Cachez-vous !", NamedTextColor.RED));
         }
     }
 

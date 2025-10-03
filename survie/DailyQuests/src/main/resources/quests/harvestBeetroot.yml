@@ -1,0 +1,10 @@
+displayName: "Une petite soupe"
+description: "Récoltez 40 betteraves"
+material: "BEETROOT"
+count: 40
+durationType: DAILY
+job:
+  name: "FARMER"
+  amountXp: 200
+  type: "BEETROOTS"
+  amount: 40

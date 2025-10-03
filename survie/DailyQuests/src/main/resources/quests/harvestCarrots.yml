@@ -1,0 +1,10 @@
+displayName: "Le potager parfait"
+description: "Récoltez 25 carottes"
+material: "CARROT"
+count: 25
+durationType: DAILY
+job:
+  name: "FARMER"
+  amountXp: 250
+  type: "CARROTS"
+  amount: 25

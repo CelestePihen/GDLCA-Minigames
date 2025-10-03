@@ -38,7 +38,7 @@ public class TempHubConfig {
                         main.getGameManager()
                 );
             } catch (IOException | InvalidConfigurationException e) {
-                e.printStackTrace();
+                main.getLogger().severe("TempHubConfig - getTemporaryHub : " + e.getMessage());
             }
         }
         return null;
@@ -60,7 +60,7 @@ public class TempHubConfig {
         try {
             config.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            main.getLogger().severe("TempHubConfig - setValue : " + e.getMessage());
         }
     }
 

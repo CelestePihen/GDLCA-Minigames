@@ -4,6 +4,8 @@ import fr.cel.gameapi.manager.database.PlayerData;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -73,8 +75,15 @@ public class PlayerManager {
 
         player.getInventory().clear();
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
-        player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setDisplayName("&rSélectionneur de mini-jeux").toItemStack());
-        player.getInventory().setItem(8, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getPlayerProfile()).setDisplayName("&fMon Profil").toItemStack());
+
+        player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS)
+                .displayName(Component.text("Sélectionneur de mini-jeux", NamedTextColor.WHITE))
+                .toItemStack());
+
+        player.getInventory().setItem(8, new ItemBuilder(Material.PLAYER_HEAD)
+                .setSkullOwner(player.getPlayerProfile())
+                .displayName(Component.text("Mon Profil", NamedTextColor.WHITE))
+                .toItemStack());
     }
 
     /**

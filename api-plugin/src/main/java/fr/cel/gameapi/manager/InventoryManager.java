@@ -25,9 +25,7 @@ public class InventoryManager {
      * @param player Le joueur à qui montrer l'inventaire
      */
     public void openInventory(AbstractInventory inventory, Player player) {
-        if (inventory == null || player == null) {
-            return;
-        }
+        if (inventory == null || player == null) return;
 
         inventory.createInventory();
         player.openInventory(inventory.getInv());

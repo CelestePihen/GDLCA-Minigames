@@ -1,0 +1,12 @@
+displayName: "Le grand nettoyage"
+description: "Éliminez 100 monstres hostiles cette semaine"
+material: "DIAMOND_SWORD"
+count: 64
+durationType: WEEKLY
+
+# type pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 700
+  type: "ANY_MONSTER"
+  amount: 100

@@ -1,11 +1,13 @@
 package fr.cel.gameapi.command;
 
 import fr.cel.gameapi.manager.npc.NPCManager;
-import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,7 @@ public class NPCCommand extends AbstractCommand {
     }
 
     @Override
-    protected void onExecute(CommandSender sender, String[] args) {
+    protected void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length == 0) {
             sendHelp(sender);
         }
@@ -41,7 +43,7 @@ public class NPCCommand extends AbstractCommand {
 
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(" ");
-        sender.sendMessage(ChatUtility.format("[Aide pour les commandes de PNJ]", ChatUtility.GOLD));
+        sender.sendMessage(Component.text("[Aide pour les commandes de PNJ]", NamedTextColor.GOLD));
         sender.sendMessage("/npc reload|rl : Recharge tous les PNJ de tous les plugins");
     }
 

@@ -6,6 +6,7 @@ import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.listeners.StateListenerProvider;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -61,7 +62,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
         event.setDeathMessage("");
 
         if (map.getTimer() < 30) {
-            map.sendMessage("Le joueur " + player.getName() + " est mort avant les 30 secondes d'attente. Il est donc ressucité.");
+            map.sendMessage(Component.text("Le joueur " + player.getName() + " est mort avant les 30 secondes d'attente. Il est donc ressucité."));
         } else {
             map.eliminate(player);
         }
@@ -172,7 +173,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         if (map.getSpawnedGroundItems().contains(item)) {
             map.getSpawnedGroundItems().remove(item);
-            player.sendMessage(map.getGameManager().getPrefix() + "Vous avez récupéré " + itemMeta.getItemName());
+            player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré ").append(itemMeta.itemName())));
         }
     }
 

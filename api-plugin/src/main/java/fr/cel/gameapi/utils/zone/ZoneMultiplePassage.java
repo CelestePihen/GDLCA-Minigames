@@ -33,28 +33,6 @@ public class ZoneMultiplePassage implements Listener, IZone {
         this.main = main;
     }
 
-    /**
-     * Vérifie en boucle si des joueurs sont dans la zone
-     */
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
-
-        if (!this.playersInGame.contains(uuid)) return;
-        if (event.getFrom().getYaw() != event.getTo().getYaw() || event.getFrom().getPitch() != event.getTo().getPitch()) return;
-
-        boolean isPlayerIn = isInZone(player.getLocation());
-
-        if (isPlayerIn && !playerInside.get(uuid)) {
-            playersPassCount.put(uuid, playersPassCount.get(uuid) + 1);
-            playerInside.put(uuid, true);
-        }
-        else if (!isPlayerIn && playerInside.get(uuid)) {
-            playerInside.put(uuid, false);
-        }
-    }
-
     @Override
     public void startChecking(List<UUID> playersInGame) {
         this.playersInGame = new ArrayList<>(playersInGame);
@@ -75,6 +53,28 @@ public class ZoneMultiplePassage implements Listener, IZone {
         playerInside.clear();
         playersPassCount.clear();
         playersInGame.clear();
+    }
+
+    /**
+     * Vérifie en boucle si des joueurs sont dans la zone
+     */
+    @EventHandler
+    private void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+
+        if (!this.playersInGame.contains(uuid)) return;
+        if (event.getFrom().getYaw() != event.getTo().getYaw() || event.getFrom().getPitch() != event.getTo().getPitch()) return;
+
+        boolean isPlayerIn = isInZone(player.getLocation());
+
+        if (isPlayerIn && !playerInside.get(uuid)) {
+            playersPassCount.put(uuid, playersPassCount.get(uuid) + 1);
+            playerInside.put(uuid, true);
+        }
+        else if (!isPlayerIn && playerInside.get(uuid)) {
+            playerInside.put(uuid, false);
+        }
     }
 
     /**

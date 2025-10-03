@@ -1,12 +1,14 @@
 package fr.cel.gameapi.command;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -24,14 +26,14 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String @NotNull [] args) {
         if (needPlayer && !(sender instanceof Player)) {
-            sender.sendMessage(GameAPI.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Vous devez etre un joueur pour effectuer cette commande.")));
             return false;
         }
 
         else if (!sender.hasPermission(permission) && isPermissionRequired()) {
-            sender.sendMessage(GameAPI.getPrefix() + "Vous n'avez pas la permission d'effectuer cette commande.");
+            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Vous n'avez pas la permission d'effectuer cette commande.")));
             return false;
         }
 
@@ -40,7 +42,7 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String @NotNull [] args) {
         if (needPlayer && !(sender instanceof Player)) {
             return null;
         } else if (!sender.hasPermission(permission) && isPermissionRequired()) {
@@ -55,7 +57,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param sender L'envoyeur qui exécute la commande
      * @param args Les arguments que l'envoyeur a mis
      */
-    protected abstract void onExecute(CommandSender sender, String[] args);
+    protected abstract void onExecute(@NotNull CommandSender sender, String @NotNull [] args);
 
     protected abstract List<String> onTabComplete(Player player, String[] args);
 
@@ -65,11 +67,12 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param sender L'envoyer
      * @return Retourne true si le joueur est présent. Si non, alors envoie un message au sender et retourne false
      */
-    protected boolean isPlayerOnline(Player player, CommandSender sender) {
+    protected boolean isPlayerOnline(@Nullable Player player, CommandSender sender) {
         if (player == null) {
-            sendMessageWithPrefix(sender, "Le joueur n'existe pas ou n'est pas connecté.");
+            sendMessageWithPrefix(sender, Component.text("Le joueur n'existe pas ou n'est pas connecté."));
             return false;
         }
+
         return true;
     }
 
@@ -78,7 +81,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param sender L'envoyeur qui va recevoir le message
      * @param message Le message (pour mettre de la couleur, vous pouvez utiliser l'énumération disponible dans ChatUtility)
      */
-    protected void sendMessageWithPrefix(CommandSender sender, String message) {
+    protected void sendMessageWithPrefix(CommandSender sender, Component message) {
         sendMessage(sender, message, true);
     }
 
@@ -88,15 +91,15 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param message Le message (pour mettre de la couleur, vous pouvez utiliser l'énumération disponible dans ChatUtility)
      * @param withPrefix Permet de préciser si l'on veut le préfixe ou pas
      */
-    protected void sendMessage(CommandSender sender, String message, boolean withPrefix) {
-        StringBuilder stringBuilder = new StringBuilder();
+    protected void sendMessage(CommandSender sender, Component message, boolean withPrefix) {
+        Component component = Component.text("");
 
         if (withPrefix) {
-            stringBuilder.append(GameAPI.getPrefix());
+            component = component.append(GameAPI.getPrefix());
         }
 
-        stringBuilder.append(message);
-        sender.sendMessage(ChatUtility.format(stringBuilder.toString()));
+        component = component.append(message);
+        sender.sendMessage(component);
     }
     
 }

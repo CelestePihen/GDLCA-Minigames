@@ -1,8 +1,8 @@
 package fr.cel.gameapi.scoreboard;
 
 import lombok.Getter;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -33,7 +33,7 @@ public class GameScoreboard {
      * @param color La couleur de l'équipe
      * @return Retourne la GameTeam
      */
-    public GameTeam registerTeam(String teamName, ChatColor color) {
+    public GameTeam registerTeam(String teamName, NamedTextColor color) {
         return new GameTeam(teamName, color, this.scoreboard);
     }
 

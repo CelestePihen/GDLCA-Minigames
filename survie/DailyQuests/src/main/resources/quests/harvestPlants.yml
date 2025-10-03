@@ -1,0 +1,10 @@
+displayName: "Herboriste amateur"
+description: "Récoltez 25 plantes diverses"
+material: "DANDELION"
+count: 25
+durationType: DAILY
+job:
+  name: "ALCHEMIST"
+  amountXp: 250
+  type: "ANY_PLANT"
+  amount: 25

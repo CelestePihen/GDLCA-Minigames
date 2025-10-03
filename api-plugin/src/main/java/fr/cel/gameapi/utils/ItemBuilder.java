@@ -1,6 +1,7 @@
 package fr.cel.gameapi.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Easily create itemstacks, without messing your hands.
@@ -75,20 +77,28 @@ public final class ItemBuilder {
     }
 
     /**
-     * Put unbreakable on the item
+     * Can put or remove the unbreakable state on the item
      */
-    public ItemBuilder setUnbreakable() {
-        ItemMeta im = is.getItemMeta();
-        im.setUnbreakable(true);
-        is.setItemMeta(im);
+    public ItemBuilder setUnbreakable(boolean unbreakable) {
+        is.editMeta(itemMeta -> itemMeta.setUnbreakable(unbreakable));
         return this;
     }
 
     /**
-     * Set the displayname of the item.
-     * @param text The name to change it to.
+     * Put the unbreakable state on the item
      */
-    public ItemBuilder setDisplayName(String text){
+    public ItemBuilder setUnbreakable() {
+        is.editMeta(itemMeta -> itemMeta.setUnbreakable(true));
+        return this;
+    }
+
+    /**
+     * Set the display name of the item.
+     * @param text The name to change it to with a String.
+     * @deprecated
+     */
+    @Deprecated( since = "1.3")
+    public ItemBuilder setDisplayName(String text) {
         ItemMeta im = is.getItemMeta();
         im.setDisplayName(ChatUtility.format(text));
         is.setItemMeta(im);
@@ -96,13 +106,33 @@ public final class ItemBuilder {
     }
 
     /**
-     * Set the itemname of the item.
-     * @param text The name to change it to.
+     * Set the display name of the item.
+     * @param text The name to change it to with a Component.
      */
-    public ItemBuilder setItemName(String text){
+    public ItemBuilder displayName(Component text) {
+        is.editMeta(itemMeta -> itemMeta.displayName(text));
+        return this;
+    }
+
+    /**
+     * Set the itemname of the item.
+     * @param text The name to change it to with a String.
+     * @deprecated
+     */
+    @Deprecated(since = "1.3")
+    public ItemBuilder setItemName(String text) {
         ItemMeta im = is.getItemMeta();
         im.setItemName(ChatUtility.format(text));
         is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Set the itemname of the item.
+     * @param text The name to change it to with a Component.
+     */
+    public ItemBuilder itemName(Component text) {
+        is.editMeta(itemMeta -> itemMeta.itemName(text));
         return this;
     }
 
@@ -111,7 +141,7 @@ public final class ItemBuilder {
      * @param enchantment The enchantment to add.
      * @param level The level to put the enchantment on.
      */
-    public ItemBuilder addUnsafeEnchantment(Enchantment enchantment, int level){
+    public ItemBuilder addUnsafeEnchantment(Enchantment enchantment, int level) {
         is.addUnsafeEnchantment(enchantment, level);
         return this;
     }
@@ -143,7 +173,7 @@ public final class ItemBuilder {
      * @param enchantment The enchantment to add
      * @param level The level
      */
-    public ItemBuilder addEnchant(Enchantment enchantment, int level){
+    public ItemBuilder addEnchant(Enchantment enchantment, int level) {
         ItemMeta im = is.getItemMeta();
         im.addEnchant(enchantment, level, true);
         is.setItemMeta(im);
@@ -154,30 +184,47 @@ public final class ItemBuilder {
      * Add multiple enchants at once.
      * @param enchantments The enchants to add.
      */
-    public ItemBuilder addEnchants(Map<Enchantment, Integer> enchantments){
+    public ItemBuilder addEnchants(Map<Enchantment, Integer> enchantments) {
         is.addEnchantments(enchantments);
         return this;
     }
 
     /**
      * Re-sets the lore.
-     * @param lore The lore to set it to.
+     * @param lores The lore to set it to.
      */
-    public ItemBuilder setLore(String... lore){
+    @Deprecated(since = "1.3")
+    public ItemBuilder setLore(String... lores) {
         ItemMeta im = is.getItemMeta();
-        im.setLore(Arrays.asList(lore));
+        im.setLore(Arrays.asList(lores));
         is.setItemMeta(im);
         return this;
     }
 
     /**
      * Re-sets the lore.
-     * @param lore The lore to set it to.
+     * @param lores The lore to set it to.
      */
-    public ItemBuilder setLore(List<String> lore) {
-        ItemMeta im = is.getItemMeta();
-        im.setLore(lore);
-        is.setItemMeta(im);
+    public ItemBuilder lore(Component... lores) {
+        is.editMeta(itemMeta -> itemMeta.lore(List.of(lores)));
+        return this;
+    }
+
+    /**
+     * Re-sets the lore.
+     * @param lores The lore to set it to.
+     */
+    public ItemBuilder setLore(List<String> lores) {
+        is.editMeta(itemMeta -> itemMeta.setLore(lores));
+        return this;
+    }
+
+    /**
+     * Re-sets the lore.
+     * @param lores The lore to set it to.
+     */
+    public ItemBuilder lore(List<Component> lores) {
+        is.editMeta(itemMeta -> itemMeta.lore(lores));
         return this;
     }
 
@@ -185,12 +232,16 @@ public final class ItemBuilder {
      * Remove a lore line.
      * @param line The line to remove.
      */
+    @Deprecated(since = "1.3")
     public ItemBuilder removeLoreLine(String line) {
         ItemMeta im = is.getItemMeta();
+
         List<String> lore = new ArrayList<>(im.getLore());
-        if(!lore.contains(line))return this;
+        if (!lore.contains(line)) return this;
+
         lore.remove(line);
         im.setLore(lore);
+
         is.setItemMeta(im);
         return this;
     }
@@ -199,6 +250,7 @@ public final class ItemBuilder {
      * Remove a lore line.
      * @param index The index of the lore line to remove.
      */
+    @Deprecated(since = "1.3")
     public ItemBuilder removeLoreLine(int index) {
         ItemMeta im = is.getItemMeta();
         List<String> lore = new ArrayList<>(im.getLore());
@@ -215,12 +267,13 @@ public final class ItemBuilder {
      * Add a lore line.
      * @param line The lore line to add.
      */
-    public ItemBuilder addLoreLine(String line){
+    @Deprecated(since = "1.3")
+    public ItemBuilder addLoreLine(String line) {
         ItemMeta im = is.getItemMeta();
 
         List<String> lore = new ArrayList<>();
+        if (im.hasLore() && im.getLore() != null) lore = new ArrayList<>(im.getLore());
 
-        if(im.hasLore() && im.getLore() != null) lore = new ArrayList<>(im.getLore());
         lore.add(line);
         im.setLore(lore);
 
@@ -231,9 +284,25 @@ public final class ItemBuilder {
     /**
      * Add a lore line.
      * @param line The lore line to add.
+     */
+    public ItemBuilder addLoreLine(Component line) {
+        is.editMeta(im -> {
+            List<Component> lore = new ArrayList<>();
+            if (im.hasLore() && im.lore() != null) lore = im.lore();
+
+            if (lore != null) lore.add(line);
+            im.lore(lore);
+        });
+        return this;
+    }
+
+    /**
+     * Add a lore line.
+     * @param line The lore line to add.
      * @param pos The index of where to put it.
      */
-    public ItemBuilder addLoreLine(String line, int pos){
+    @Deprecated(since = "1.3", forRemoval = true)
+    public ItemBuilder addLoreLine(String line, int pos) {
         ItemMeta im = is.getItemMeta();
         List<String> lore = new ArrayList<>(im.getLore());
         lore.set(pos, line);
@@ -255,7 +324,6 @@ public final class ItemBuilder {
         return this;
     }
 
-    // Added
     /**
      * Add the ItemFlag to the item
      * @param itemFlag The item flags to add
@@ -272,7 +340,14 @@ public final class ItemBuilder {
      */
     public ItemBuilder addAllItemFlags() {
         ItemMeta im = is.getItemMeta();
-        im.addItemFlags(ItemFlag.values());
+        im.addItemFlags(ItemFlag.HIDE_ENCHANTS,
+                ItemFlag.HIDE_ATTRIBUTES,
+                ItemFlag.HIDE_UNBREAKABLE,
+                ItemFlag.HIDE_DESTROYS,
+                ItemFlag.HIDE_PLACED_ON,
+                ItemFlag.HIDE_DYE,
+                ItemFlag.HIDE_ARMOR_TRIM,
+                ItemFlag.HIDE_STORED_ENCHANTS);
         is.setItemMeta(im);
         return this;
     }
@@ -308,7 +383,18 @@ public final class ItemBuilder {
         is.setItemMeta(im);
         return this;
     }
-    // Added
+
+    /**
+     * Edits the item meta with a specific meta type.
+     *
+     * @param metaClass The meta class type
+     * @param consumer The consumer to edit the meta
+     * @return The ItemBuilder instance for method chaining.
+     */
+    public <T extends ItemMeta> ItemBuilder editMeta(Class<T> metaClass, Consumer<T> consumer) {
+        is.editMeta(metaClass, consumer);
+        return this;
+    }
 
     /**
      * Get the itemstack from the ItemBuilder.

@@ -4,6 +4,8 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.gameapi.utils.LocationUtility;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -35,7 +37,8 @@ public class MapConfig {
                 config.load(file);
 
                 if (!config.contains("displayName")) {
-                    Bukkit.getConsoleSender().sendMessage("§6[Cache-Cache] §cAttention ! Un fichier n'étant pas une carte est dans le dossier maps");
+                    Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix()
+                            .append(Component.text("Attention ! Un fichier n'étant pas une carte est dans le dossier maps", NamedTextColor.RED)));
                     return null;
                 }
 
@@ -58,7 +61,7 @@ public class MapConfig {
 
                 return map;
             } catch (IOException | InvalidConfigurationException e) {
-                e.printStackTrace();
+                main.getLogger().severe("Erreur dans l'obtention de la carte CC " + this.mapName + " : " + e.getMessage());
             }
         }
         return null;
@@ -70,7 +73,7 @@ public class MapConfig {
         try {
             config.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            main.getLogger().severe("Erreur dans la sauvegarde de la carte CC " + this.mapName + " : " + e.getMessage());
         }
     }
 

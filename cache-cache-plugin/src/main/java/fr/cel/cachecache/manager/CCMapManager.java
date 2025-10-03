@@ -4,15 +4,16 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.TemporaryHub;
 import fr.cel.cachecache.utils.MapConfig;
-import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CCMapManager {
 
@@ -48,7 +49,7 @@ public class CCMapManager {
         if (!folder.exists()) folder.mkdirs();
 
         if (folder.isDirectory()) {
-            for (File file : folder.listFiles((dir, name) -> name.endsWith(".yml"))) {
+            for (File file : Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".yml")))) {
                 String mapName = file.getName().replace(".yml", "");
                 MapConfig config = new MapConfig(main, mapName);
                 CCMap map = config.getMap();
@@ -56,7 +57,7 @@ public class CCMapManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix() + ChatUtility.format("Chargement de " + this.maps.size() + " maps Cache-Cache ", ChatUtility.WHITE));
+        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix().append(Component.text("Chargement de " + this.maps.size() + " maps Cache-Cache ")));
     }
 
 }

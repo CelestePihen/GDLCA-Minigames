@@ -2,6 +2,7 @@ package fr.cel.gameapi.inventory;
 
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 @Getter
 public abstract class AbstractInventory {
 
-    private final String inventoryName;
+    private final Component inventoryName;
     private final int size;
     private Inventory inv;
 
@@ -20,7 +21,7 @@ public abstract class AbstractInventory {
      * @param inventoryName Le nom de l'inventaire
      * @param size La taille de l'inventaire
      */
-    public AbstractInventory(String inventoryName, int size) {
+    public AbstractInventory(Component inventoryName, int size) {
         this.inventoryName = inventoryName;
         this.size = size;
     }

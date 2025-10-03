@@ -1,0 +1,10 @@
+displayName: "À la recherche du rouge"
+description: "Récoltez 64 minerais de redstone"
+material: "REDSTONE_ORE"
+count: 64
+durationType: DAILY
+job:
+  name: "MINER"
+  amountXp: 300
+  type: "REDSTONE_ORE"
+  amount: 64

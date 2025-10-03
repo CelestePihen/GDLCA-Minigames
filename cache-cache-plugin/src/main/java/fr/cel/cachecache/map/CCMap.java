@@ -10,14 +10,15 @@ import fr.cel.cachecache.map.state.pregame.PreGameMapState;
 import fr.cel.cachecache.map.state.pregame.StartingMapState;
 import fr.cel.cachecache.utils.CheckAdvancements;
 import fr.cel.cachecache.utils.MapConfig;
-import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Lightable;
@@ -30,12 +31,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CCMap {
 
@@ -149,7 +145,7 @@ public class CCMap {
         if (isPlayerInMap(player)) return;
 
         if (mapState instanceof StartingMapState || mapState instanceof PlayingMapState || mapState instanceof WaitingMapState) {
-            player.sendMessage("La partie a déjà été lancée !");
+            player.sendMessage(Component.text("La partie a déjà été lancée !"));
             join(player, GameMode.SPECTATOR, false, true);
         }
 
@@ -194,16 +190,29 @@ public class CCMap {
 
         if (mapState instanceof StartingMapState startingMapState) {
             startingMapState.getStartingMapTask().cancel();
-            sendMessage("Démarrage annulé... Un joueur a quitté la partie.");
+            sendMessage(Component.text("Démarrage annulé... Un joueur a quitté la partie."));
             setMapState(new PreGameMapState(this));
             setLevel(0);
-            Bukkit.getPlayer(owner).getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
+
+            Player playerOwner = Bukkit.getPlayer(this.owner);
+            if (playerOwner == null || !playerOwner.isOnline()) {
+                this.owner = this.players.getFirst();
+                playerOwner = Bukkit.getPlayer(this.owner);
+            }
+
+            if (playerOwner != null) {
+                playerOwner.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
+            } else {
+                gameManager.getMain().getLogger().severe("La carte " + this.getDisplayName() + " n'arrive pas à trouver un gérant.");
+            }
             return;
         }
 
         if (players.size() < 2 || (seekers.isEmpty() || hiders.isEmpty())) {
+            Component message = Component.text("Partie annulée... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.");
+
             if (mapState instanceof WaitingMapState) {
-                sendMessage("Partie annulée... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.");
+                sendMessage(message);
             }
 
             else if (mapState instanceof PlayingMapState playingMapState) {
@@ -212,7 +221,7 @@ public class CCMap {
                 if (playingMapState.getPlayingBecomeWolfMapTask() != null) playingMapState.getPlayingBecomeWolfMapTask().cancel();
                 if (playingMapState.getGroundItemsMapTask() != null) playingMapState.getGroundItemsMapTask().cancel();
 
-                sendMessage("Partie annulée... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.");
+                sendMessage(message);
                 getWolfTimer().remove(player.getUniqueId());
             }
 
@@ -228,21 +237,21 @@ public class CCMap {
         if (getMapState() instanceof PreGameMapState) {
             if (getCcMode() == CCMode.TwoHuntersAtStart) {
                 if (getPlayers().size() < CCMode.TwoHuntersAtStart.getRequiredPlayers()) {
-                    player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 3 joueurs) !");
+                    player.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 3 joueurs) !")));
                 } else {
                     setMapState(new StartingMapState(this));
                 }
             }
             else {
                 if (getPlayers().size() < 2) {
-                    player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 2 joueurs) !");
+                    player.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 2 joueurs) !")));
                 } else {
                     setMapState(new StartingMapState(this));
                 }
             }
         }
         else {
-            player.sendMessage(gameManager.getPrefix() + "La partie est déjà lancée.");
+            player.sendMessage(gameManager.getPrefix().append(Component.text("La partie est déjà lancée.")));
         }
     }
 
@@ -251,35 +260,35 @@ public class CCMap {
      * @param victim Le joueur qui est éliminé
      */
     public void eliminate(Player victim) {
-        String message = gameManager.getPrefix();
-        String subtitle;
+        Component message = gameManager.getPrefix();
+        Component subtitle;
 
         switch (ccMode) {
             case OneHunter -> {
-                message += "Tu es mort(e). Tu deviens spectateur !";
-                subtitle = "Tu es spectateur !";
+                message = message.append(Component.text("Tu es mort(e). Tu deviens spectateur !"));
+                subtitle = Component.text("Tu es spectateur !");
                 becomeSpectator(victim);
-                sendMessage(victim.getName() + " est mort(e) !");
+                sendMessage(Component.text(victim.getName() + " est mort(e) !"));
             }
 
             case LoupToucheTouche -> {
-                message += "Tu es le loup ! Touche vite un autre joueur, sinon tu vas perdre !";
-                subtitle = "Tu deviens le loup !";
+                message = message.append(Component.text("Tu es le loup ! Touche vite un autre joueur, sinon tu vas perdre !"));
+                subtitle = Component.text("Tu deviens le loup !");
                 becomeWolf(victim);
-                sendMessage(victim.getName() + " est le loup !");
+                sendMessage(Component.text(victim.getName() + " est le loup !"));
             }
 
             default -> {
-                message += "Tu es mort(e). Tu passes du côté des chercheurs !";
-                subtitle = "Tu es devenu(e) chercheur.";
+                message = message.append(Component.text("Tu es mort(e). Tu passes du côté des chercheurs !"));
+                subtitle = Component.text("Tu es devenu(e) chercheur.");
                 becomeSeeker(victim);
-                sendMessage(victim.getName() + " est mort(e) !");
+                sendMessage(Component.text(victim.getName() + " est mort(e) !"));
             }
         }
 
         if (hiders.size() == 1) {
             victim.sendMessage(message);
-            victim.sendTitle("Tu es mort(e).", subtitle, 10, 70, 20);
+            victim.showTitle(Title.title(Component.text("Tu es mort(e)."), subtitle, 10, 70, 20));
         }
 
         if (ccMode != CCMode.LoupToucheTouche) checkWinOrEndGame();
@@ -418,7 +427,7 @@ public class CCMap {
      */
     public void activateLeverAndLamps() {
         if (mapName.equalsIgnoreCase("bunker")) {
-            Block lever = Bukkit.getWorld("world").getBlockAt(leverLocation);
+            Block lever = Bukkit.getWorlds().getFirst().getBlockAt(leverLocation);
             if (lever.getBlockData() instanceof Powerable powerable) {
                 powerable.setPowered(true);
                 lever.setBlockData(powerable);
@@ -439,7 +448,7 @@ public class CCMap {
                 int y = lampsConfig.getInt("lamps." + key + ".y");
                 int z = lampsConfig.getInt("lamps." + key + ".z");
 
-                Block lampBlock = Bukkit.getWorld("world").getBlockAt(x, y, z);
+                Block lampBlock = Bukkit.getWorlds().getFirst().getBlockAt(x, y, z);
 
                 if (lampBlock.getType() != Material.REDSTONE_LAMP) continue;
 
@@ -455,12 +464,11 @@ public class CCMap {
      * Envoie un message à tous les joueurs dans l'arène
      * @param message Le message à envoyer
      */
-    public void sendMessage(String message) {
-        message = gameManager.getPrefix() + ChatUtility.format(message);
+    public void sendMessage(Component message) {
+        message = gameManager.getPrefix().append(message);
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.sendMessage(message);
+            if (player != null) player.sendMessage(message);
         }
     }
 
@@ -582,7 +590,7 @@ public class CCMap {
      */
     public void setBestPlayer(String playerName) {
         this.bestPlayer = playerName;
-        mapConfig.setValue("bestPlayer", playerName);
+        this.mapConfig.setValue("bestPlayer", playerName);
     }
 
     /**
@@ -590,7 +598,7 @@ public class CCMap {
      */
     public void setLastHunter(String playerName) {
         this.lastHunter = playerName;
-        mapConfig.setValue("lastHunter", lastHunter);
+        this.mapConfig.setValue("lastHunter", lastHunter);
     }
 
     /**
@@ -611,7 +619,9 @@ public class CCMap {
     private void join(Player player, GameMode gameMode, boolean joinMessage, boolean teleportSpawn) {
         gameManager.getPlayerManager().removePlayerInHub(player);
 
-        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + ccMode.getName()), displayName, 10, 70, 20);
+        player.showTitle(Title.title(gameManager.getPrefix().append(Component.text(ccMode.getName())),
+                Component.text(displayName), 10, 70, 20));
+
         player.setGameMode(gameMode);
         player.setGlowing(false);
         player.getInventory().clear();
@@ -622,7 +632,7 @@ public class CCMap {
         players.add(player.getUniqueId());
         scoreboard.addPlayer(player);
 
-        if (joinMessage) sendMessage(player.getDisplayName() + " a rejoint la partie !");
+        if (joinMessage) sendMessage(player.displayName().append(Component.text(" a rejoint la partie !")));
         if (teleportSpawn) player.teleport(spawnLoc);
 
         if (ccMode == CCMode.LoupToucheTouche) wolfTimer.put(player.getUniqueId(), 0);
@@ -658,7 +668,7 @@ public class CCMap {
         }
 
         if (getPlayerWithLowestTime() == null) {
-            sendMessage("Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps");
+            sendMessage(Component.text("Loup Touche-Touche - Erreur avec le joueur ayant le moins de temps"));
 
             String name = getPlayerWithLowestTime().getName();
             int time = wolfTimer.get(getPlayerWithLowestTime().getUniqueId());
@@ -670,7 +680,7 @@ public class CCMap {
 
             String bestTime = String.format("%02dmin%02ds", (time % 3600) / 60, time % 60);
 
-            sendMessage("Victoire de " + name + " qui a tenu " + bestTime + " en tant que coureur !");
+            sendMessage(Component.text("Victoire de " + name + " qui a tenu " + bestTime + " en tant que coureur !"));
         }
 
         setMapState(new InitMapState(this));
@@ -693,9 +703,13 @@ public class CCMap {
      * Envoie le message des gagnants aux joueurs
      */
     private void sendWinnerMessage() {
-        if (seekers.isEmpty()) sendMessage("&bL'équipe des cacheurs &rremporte la partie !");
-        else if (hiders.isEmpty()) sendMessage("&cL'équipe des chercheurs &rremporte la partie !");
-        else sendMessage("Égalité ?");
+        if (seekers.isEmpty()) sendMessage(Component.text("L'équipe des cacheurs ", NamedTextColor.AQUA)
+                .append(Component.text("remporte la partie !", NamedTextColor.WHITE)));
+
+        else if (hiders.isEmpty()) sendMessage(Component.text("L'équipe des chercheurs ", NamedTextColor.RED)
+                .append(Component.text("remporte la partie !", NamedTextColor.WHITE)));
+
+        else sendMessage(Component.text("Égalité ?"));
     }
 
     /**
@@ -704,7 +718,7 @@ public class CCMap {
      */
     private void becomeOwner(Player player) {
         owner = player.getUniqueId();
-        player.sendMessage(gameManager.getPrefix() + "Tu es désormais l'hôte de la partie !");
+        player.sendMessage(gameManager.getPrefix().append(Component.text("Tu es désormais l'hôte de la partie !")));
         if (mapState instanceof PreGameMapState) {
             player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
         }

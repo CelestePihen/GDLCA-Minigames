@@ -3,8 +3,9 @@ package fr.cel.cachecache.map;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.map.state.pregame.StartingMapState;
 import fr.cel.cachecache.utils.TempHubConfig;
-import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -66,7 +67,7 @@ public class TemporaryHub implements Listener {
 
     public void addPlayer(Player player) {
         if (!isActivated) {
-            player.sendMessage(ChatUtility.format("&6Cache-Cache &r- Il n'y a pas de mode de jeu temporaire actuellement."));
+            player.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas de mode de jeu temporaire actuellement.")));
             return;
         }
 
@@ -77,8 +78,8 @@ public class TemporaryHub implements Listener {
         player.getInventory().clear();
         player.teleport(location);
         player.setGameMode(GameMode.ADVENTURE);
-        player.sendTitle(ChatUtility.format("&6Cache-Cache &r- " + chosenHunterMode), "Map Aléatoire", 10, 70, 20);
-        sendMessage(player.getDisplayName() + " a rejoint le Cache-Cache Temporaire !");
+        player.showTitle(Title.title(gameManager.getPrefix().append(Component.text(chosenHunterMode)), Component.text("Map Aléatoire"), 10, 70, 20));
+        sendMessage(player.displayName().append(Component.text(" a rejoint le Cache-Cache Temporaire !")));
     }
 
     public void removePlayer(Player player) {
@@ -88,7 +89,7 @@ public class TemporaryHub implements Listener {
 
     public void chooseMapAndSendPlayers(Player player) {
         if (players.size() < 2) {
-            player.sendMessage(gameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 2 joueurs) !");
+            player.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 2 joueurs) !")));
             return;
         }
 
@@ -102,7 +103,7 @@ public class TemporaryHub implements Listener {
         chosenMap = map;
         setLastMap(chosenMap.getMapName());
 
-        sendMessage(gameManager.getPrefix() + "La carte a été choisie ! Démarrage de la partie.");
+        sendMessage(gameManager.getPrefix().append(Component.text("La carte a été choisie ! Démarrage de la partie.")));
         players.forEach(uuid -> chosenMap.addPlayer(Bukkit.getPlayer(uuid), true));
         players.clear();
         chosenMap.setMapState(new StartingMapState(chosenMap));
@@ -117,21 +118,20 @@ public class TemporaryHub implements Listener {
      * Envoie un message à tous les joueurs dans l'arène
      * @param message Le message à envoyer
      */
-    public void sendMessage(String message) {
-        message = ChatUtility.format(gameManager.getPrefix() + message);
+    public void sendMessage(Component message) {
+        message = gameManager.getPrefix().append(message);
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.sendMessage(message);
+            if (player != null) player.sendMessage(message);
         }
     }
 
     /**
-     * Retourne vrai s'il n'y a aucune map de mise
+     * Vrai s'il n'y a aucune map de mise, faux s'il y en a au moins une
      * @return Vrai s'il n'y a aucune map de mise, et faux s'il y en a au moins une
      */
     public boolean hasNoMaps() {
-        return maps.isEmpty();
+        return this.maps.isEmpty();
     }
 
     /**
@@ -140,26 +140,26 @@ public class TemporaryHub implements Listener {
      */
     private void setLastMap(String lastMap) {
         this.lastMap = lastMap;
-        config.setValue("lastMap", lastMap);
+        this.config.setValue("lastMap", lastMap);
     }
 
     // Listeners
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    private void onQuit(PlayerQuitEvent event) {
         Player leaver = event.getPlayer();
         if (!isPlayerInTempHub(leaver)) return;
         removePlayer(leaver);
     }
 
     @EventHandler
-    public void foodChange(FoodLevelChangeEvent event) {
+    private void foodChange(FoodLevelChangeEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!isPlayerInTempHub(player)) return;
         event.setFoodLevel(20);
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
+    private void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (!event.getMessage().contains("/hub")) return;
         if (!isPlayerInTempHub(player)) return;
@@ -167,45 +167,48 @@ public class TemporaryHub implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    private void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!isPlayerInTempHub(player)) return;
 
-        if ((event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK) || event.getAction() == Action.PHYSICAL)
+        if ((event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK)
+                || event.getAction() == Action.PHYSICAL)
             event.setCancelled(true);
     }
 
     @EventHandler
-    public void playerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+    private void playerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (!isPlayerInTempHub(event.getPlayer())) return;
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleDamage(VehicleDamageEvent event) {
+    private void onVehicleDamage(VehicleDamageEvent event) {
         if (!(event.getAttacker() instanceof Player player)) return;
         if (!isPlayerInTempHub(player)) return;
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleCollision(VehicleEntityCollisionEvent event) {
+    private void onVehicleCollision(VehicleEntityCollisionEvent event) {
         if (!(event.getEntity() instanceof Player player) || !isPlayerInTempHub(player)) return;
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleEnter(VehicleEnterEvent event) {
+    private void onVehicleEnter(VehicleEnterEvent event) {
         if (!(event.getEntered() instanceof Player player) || !isPlayerInTempHub(player)) return;
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent event) {
-        if (!(event.getPlayer() instanceof Player player) || !isPlayerInTempHub(player) || !(event.getInventory().getHolder() instanceof Entity entity)) return;
+    private void onInventoryOpen(InventoryOpenEvent event) {
+        if (!(event.getPlayer() instanceof Player player) || !isPlayerInTempHub(player)
+                || !(event.getInventory().getHolder() instanceof Entity entity)) return;
 
         EntityType type = entity.getType();
-        if (type == EntityType.CHEST_MINECART || type == EntityType.FURNACE_MINECART || type == EntityType.HOPPER_MINECART) event.setCancelled(true);
+        if (type == EntityType.CHEST_MINECART || type == EntityType.FURNACE_MINECART
+                || type == EntityType.HOPPER_MINECART) event.setCancelled(true);
     }
 
 }

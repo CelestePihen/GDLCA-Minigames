@@ -2,8 +2,9 @@ package fr.cel.gameapi.inventory;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.PlayerData;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -15,7 +16,7 @@ public class ProfileInventory extends AbstractInventory {
     private final PlayerData playerData;
 
     public ProfileInventory(Player player) {
-        super("Mon Profil", 27);
+        super(Component.text("Mon Profil"), 27);
         this.player = player;
         this.playerData = GameAPI.getInstance().getPlayerManager().getPlayerData(player);
     }
@@ -23,36 +24,47 @@ public class ProfileInventory extends AbstractInventory {
     @Override
     protected void addItems(Inventory inv) {
         double coins = playerData.getCoins();
-        String coinsStr;
+        Component coinsStr = Component.text("");
         if (coins <= 1) {
-            coinsStr = coins + " pièce";
+            coinsStr = coinsStr.append(Component.text(coins + " pièce"));
         } else {
-            coinsStr = coins + " pièces";
+            coinsStr = coinsStr.append(Component.text(coins + " pièces"));
         }
 
-        inv.setItem(4, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getPlayerProfile()).setDisplayName(player.getName())
-                .addLoreLine(ChatUtility.format(coinsStr, ChatUtility.GOLD)).toItemStack());
+        inv.setItem(4, new ItemBuilder(Material.PLAYER_HEAD)
+                .setSkullOwner(player.getPlayerProfile())
+                .displayName(Component.text(player.getName()))
+                .addLoreLine(coinsStr.color(NamedTextColor.GOLD))
+                .toItemStack());
 
-        inv.setItem(10, new ItemBuilder(Material.CANDLE).setDisplayName(ChatUtility.GRAY + "Amis").toItemStack());
+        inv.setItem(10, new ItemBuilder(Material.CANDLE)
+                .displayName(Component.text("Amis", NamedTextColor.GRAY))
+                .toItemStack());
 
-        inv.setItem(12, new ItemBuilder(Material.ENDER_PEARL).setDisplayName(ChatUtility.AQUA + "Partie").
-                setLore(ChatUtility.format("Bientôt", ChatUtility.GOLD)).toItemStack());
+        inv.setItem(12, new ItemBuilder(Material.ENDER_PEARL)
+                .displayName(Component.text("Partie", NamedTextColor.AQUA))
+                .lore(Component.text("Bientôt", NamedTextColor.GOLD))
+                .toItemStack());
 
-        inv.setItem(14, new ItemBuilder(Material.PAPER).setDisplayName(ChatUtility.GREEN + "Statistiques").toItemStack());
+        inv.setItem(14, new ItemBuilder(Material.PAPER)
+                .displayName(Component.text("Statistiques", NamedTextColor.GREEN))
+                .toItemStack());
 
-        inv.setItem(16, new ItemBuilder(Material.CLOCK).setDisplayName(ChatUtility.BLUE + "Options").toItemStack());
+        inv.setItem(16, new ItemBuilder(Material.CLOCK)
+                .displayName(Component.text("Options", NamedTextColor.BLUE))
+                .toItemStack());
     }
 
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case PLAYER_HEAD -> player.sendMessage(GameAPI.getPrefix() + ChatUtility.format("C'est moi.", ChatUtility.RED));
+            case PLAYER_HEAD -> player.sendMessage(GameAPI.getPrefix().append(Component.text("C'est moi.", NamedTextColor.RED)));
 
             case CANDLE -> GameAPI.getInstance().getInventoryManager().openInventory(new FriendsInventory(player), player);
 
             case PAPER -> GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(player), player);
 
-            case ENDER_PEARL -> player.sendMessage(GameAPI.getPrefix() + "Bientôt");
+            case ENDER_PEARL -> player.sendMessage(GameAPI.getPrefix().append(Component.text("Bientôt...")));
 
             case CLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new OptionsInventory(player), player);
 

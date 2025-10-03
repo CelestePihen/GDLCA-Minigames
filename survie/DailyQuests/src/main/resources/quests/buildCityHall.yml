@@ -1,0 +1,6 @@
+displayName: "Construire la mairie"
+description: "Il nous faudrait une mairie dans ce village. Déposez les matériaux nécessaires dans le coffre près de son emplacement pour la construire."
+material: "BRICKS"
+count: 64
+durationType: CUSTOM
+completion: CHESTS

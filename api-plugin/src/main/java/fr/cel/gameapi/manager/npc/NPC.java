@@ -30,6 +30,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 @Getter
+@Deprecated(forRemoval = true)
 public class NPC {
 
     private final UUID uuid;

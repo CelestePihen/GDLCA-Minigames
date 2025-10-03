@@ -1,0 +1,12 @@
+displayName: "Maître archer"
+description: "Éliminez 20 monstres à distance avec un arc"
+material: "BOW"
+count: 20
+durationType: DAILY
+
+# type pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 400
+  type: "ANY_MONSTER_BOW"
+  amount: 20

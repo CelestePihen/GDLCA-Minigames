@@ -6,6 +6,7 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import fr.cel.gameapi.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -56,7 +57,7 @@ public class PointPlayerInventory extends AbstractInventory {
             GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_POINT_PLAYER_USAGE, 1);
             removeItem(player);
         } else {
-            player.sendMessage(map.getGameManager().getPrefix() + "Ce joueur n'est plus dans la carte ou s'est déconnecté(e). Merci de réouvrir le menu.");
+            player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Ce joueur n'est plus dans la carte ou s'est déconnecté(e). Merci de réouvrir le menu.")));
         }
 
     }

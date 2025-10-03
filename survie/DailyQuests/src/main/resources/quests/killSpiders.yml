@@ -1,0 +1,12 @@
+displayName: "Chasse aux araignées"
+description: "Éliminez 15 araignées pour récupérer leur fil"
+material: "STRING"
+count: 15
+durationType: DAILY
+
+# type pour chasseur
+job:
+  name: "HUNTER"
+  amountXp: 250
+  type: "SPIDER"
+  amount: 15

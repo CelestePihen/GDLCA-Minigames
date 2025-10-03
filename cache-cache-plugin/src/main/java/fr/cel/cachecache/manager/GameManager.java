@@ -2,13 +2,15 @@ package fr.cel.cachecache.manager;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.groundItems.*;
+import fr.cel.cachecache.map.TemporaryHub;
 import fr.cel.cachecache.utils.TempHubConfig;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager;
 import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.manager.database.StatisticsManager;
-import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -20,7 +22,7 @@ import java.util.List;
 public class GameManager {
 
     private final CacheCache main;
-    private final String prefix = ChatUtility.format("&6[Cache-Cache] &r");
+    private final Component prefix = Component.text("[Cache-Cache]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
 
     private final List<GroundItem> groundItems = new ArrayList<>();;
 
@@ -51,7 +53,13 @@ public class GameManager {
      * Reload the Temporary Hub file
      */
     public void reloadTemporaryHub() {
-        main.getCcMapManager().setTemporaryHub(new TempHubConfig(main).getTemporaryHub());
+        TemporaryHub temporaryHub = new TempHubConfig(main).getTemporaryHub();
+        if (temporaryHub == null) {
+            main.getLogger().severe("Le Hub Temporarire du Cache-Cache n'a pas été initialisé.");
+            return;
+        }
+
+        main.getCcMapManager().setTemporaryHub(temporaryHub);
     }
 
     /**
@@ -67,7 +75,7 @@ public class GameManager {
 
     /**
      * Load the lamps file and create it if it doesn't exist <br>
-     * Only here for the Bunker map (for now)
+     * Only here for the Bunker map (for now), maybe it will arrive for other maps in the future
      */
     private void loadLampsFile() {
         File folder = new File(main.getDataFolder(), "lamps");
@@ -78,7 +86,7 @@ public class GameManager {
             try {
                 lampsFile.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                main.getLogger().severe("Le fichier de configuration lamps.yml n'a pas réussi à se créer : " + e.getMessage());
             }
         }
 

@@ -6,7 +6,8 @@ import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.TemporaryHub;
 import fr.cel.cachecache.map.state.game.PlayingMapState;
 import fr.cel.gameapi.command.AbstractCommand;
-import fr.cel.gameapi.utils.ChatUtility;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,22 +37,22 @@ public class CCCommand extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps Cache-Cache ont été rechargés.");
+            sender.sendMessage(gameManager.getPrefix().append(Component.text("Les fichiers de configuration des maps Cache-Cache ont été rechargés.")));
             gameManager.reloadMapManager();
             return;
         }
 
         if (args[0].equalsIgnoreCase("list")) {
             if (mapManager.getMaps().isEmpty()) {
-                sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installée.");
+                sender.sendMessage(gameManager.getPrefix().append(Component.text("Aucune carte a été installée.")));
                 return;
             }
 
             for (CCMap map : mapManager.getMaps().values()) {
-                String message = gameManager.getPrefix() + "Carte " + map.getDisplayName() + " | " + map.getMapState().getName();
+                Component message = gameManager.getPrefix().append(Component.text("Carte " + map.getDisplayName() + " | " + map.getMapState().getName()));
 
                 if (map.getMapState() instanceof PlayingMapState) {
-                    message += " | Timer: " + map.getTimer();
+                    message = message.append(Component.text(" | Timer: " + map.getTimer()));
                 }
 
                 sender.sendMessage(message);
@@ -63,14 +64,14 @@ public class CCCommand extends AbstractCommand {
         // TODO /cc information <map> -> donne les infos de la config sur la map
 
         if (args[0].equalsIgnoreCase("reloadTemporary")) {
-            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des maps temporaires Cache-Cache ont été rechargés.");
+            sender.sendMessage(gameManager.getPrefix().append(Component.text("Les fichiers de configuration des maps temporaires Cache-Cache ont été rechargés.")));
             gameManager.reloadTemporaryHub();
             return;
         }
 
         if (args[0].equalsIgnoreCase("enableTemporary")) {
             if (mapManager.getTemporaryHub().hasNoMaps()) {
-                sender.sendMessage(gameManager.getPrefix() + "Aucune carte a été installée.");
+                sender.sendMessage(gameManager.getPrefix().append(Component.text("Aucune carte pour le mode de jeu temporaire du Cache-Cache a été installée.")));
                 return;
             }
 
@@ -78,15 +79,15 @@ public class CCCommand extends AbstractCommand {
             temporaryHub.setActivated(!temporaryHub.isActivated());
 
             if (temporaryHub.isActivated()) {
-                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est activé !");
+                sender.sendMessage(gameManager.getPrefix().append(Component.text("Le mode de jeu temporaire du Cache-Cache est activé !")));
             } else {
-                sender.sendMessage(gameManager.getPrefix() + "Le mode de jeu temporaire du Cache-Cache est désactivé !");
+                sender.sendMessage(gameManager.getPrefix().append(Component.text("Le mode de jeu temporaire du Cache-Cache est désactivé !")));
             }
             return;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            sender.sendMessage(gameManager.getPrefix().append(Component.text("Vous devez etre un joueur pour effectuer cette commande.")));
             return;
         }
 
@@ -107,7 +108,7 @@ public class CCCommand extends AbstractCommand {
             final TemporaryHub temporaryHub = mapManager.getTemporaryHub();
 
             if (!temporaryHub.isPlayerInTempHub(player)) {
-                player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans le Hub Temporaire.");
+                player.sendMessage(gameManager.getPrefix().append(Component.text("Vous n'êtes pas dans le Hub Temporaire.")));
                 return;
             }
 
@@ -115,19 +116,19 @@ public class CCCommand extends AbstractCommand {
             return;
         }
 
+        if (args[0].equalsIgnoreCase("calcul")) {
+            calculRedstoneLamps(player, args);
+        }
+
         if (!mapManager.isPlayerInMap(player)) {
-            player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
+            player.sendMessage(gameManager.getPrefix().append(Component.text("Vous n'êtes pas dans une carte.")));
             return;
         }
 
         CCMap map = mapManager.getMapByPlayer(player);
 
-        if (args[0].equalsIgnoreCase("calcul")) {
-            calculRedstoneLamps(player, args);
-        }
-
         if (args[0].equalsIgnoreCase("owner")) {
-            sender.sendMessage(gameManager.getPrefix() + "Le \"créateur\" de la partie est " + Bukkit.getPlayer(map.getOwner()).getName());
+            sender.sendMessage(gameManager.getPrefix().append(Component.text("L'hôte de la partie est " + Bukkit.getPlayer(map.getOwner()).getName())));
         }
 
         if (args[0].equalsIgnoreCase("start")) {
@@ -142,7 +143,7 @@ public class CCCommand extends AbstractCommand {
                 if (pl != null) sb.append(pl.getName()).append(", ");
             }
 
-            player.sendMessage(gameManager.getPrefix() + "Joueurs : " + sb);
+            player.sendMessage(gameManager.getPrefix().append(Component.text("Joueurs : " + sb)));
         }
 
         if (args[0].equalsIgnoreCase("grounditems")) {
@@ -150,7 +151,7 @@ public class CCCommand extends AbstractCommand {
             mapManager.getMapByPlayer(player).getAvailableGroundItems().forEach(groundItem ->
                     messageBuilder.append(groundItem.getDisplayName()).append("\n"));
 
-            player.sendMessage(messageBuilder.toString());
+            player.sendMessage(Component.text(messageBuilder.toString()));
         }
     }
 
@@ -168,18 +169,18 @@ public class CCCommand extends AbstractCommand {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(" ");
-        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du Cache-Cache]", ChatUtility.GOLD));
-        sender.sendMessage("/cc start : Commence la partie dans laquelle vous êtes");
-        sender.sendMessage("/cc temphub : Commence la partie du mode temporaire");
-        sender.sendMessage("/cc enableTemporary : Active/Désactive le mode temporaire");
-        sender.sendMessage("/cc list : Envoie la liste des maps avec l'état du jeu actuel");
-        sender.sendMessage("/cc listplayer : Envoie la liste des joueurs dans la partie où vous êtes");
-        sender.sendMessage("/cc reload : Recharge les maps");
-        sender.sendMessage("/cc reloadTemporary : Recharge les maps temporaires");
-        sender.sendMessage("/cc groundItems : Envoie la liste des Items disponibles dans la map où vous êtes");
-        sender.sendMessage("/cc owner : Envoie le nom du \"créateur\" de la partie");
-        sender.sendMessage("/cc calcul x1 y1 z1 x2 y2 z2 : (Re-)Calcule les lampes de redstone (normalement) de la map Bunker.");
+        sender.sendMessage(Component.text(" "));
+        sender.sendMessage(Component.text("[Aide pour les commandes du Cache-Cache]", NamedTextColor.GOLD));
+        sender.sendMessage(Component.text("/cc start : Commence la partie dans laquelle vous êtes"));
+        sender.sendMessage(Component.text("/cc temphub : Commence la partie du mode temporaire"));
+        sender.sendMessage(Component.text("/cc enableTemporary : Active/Désactive le mode temporaire"));
+        sender.sendMessage(Component.text("/cc list : Envoie la liste des maps avec l'état du jeu actuel"));
+        sender.sendMessage(Component.text("/cc listplayer : Envoie la liste des joueurs dans la partie où vous êtes"));
+        sender.sendMessage(Component.text("/cc reload : Recharge les maps"));
+        sender.sendMessage(Component.text("/cc reloadTemporary : Recharge les maps temporaires"));
+        sender.sendMessage(Component.text("/cc groundItems : Envoie la liste des Items disponibles dans la map où vous êtes"));
+        sender.sendMessage(Component.text("/cc owner : Envoie le nom du gérant de la partie"));
+        sender.sendMessage(Component.text("/cc calcul x1 y1 z1 x2 y2 z2 : (Re-)Calcule les lampes de redstone (normalement) de la map Bunker."));
     }
 
     private void calculRedstoneLamps(Player player, String[] args) {
@@ -225,10 +226,10 @@ public class CCCommand extends AbstractCommand {
 
         try {
             gameManager.getLampsConfig().save(gameManager.getLampsFile());
-            player.sendMessage("§a" + count + " lampes de redstone trouvées et sauvegardées dans lamps.yml !");
+            player.sendMessage(Component.text(count + " lampes de redstone trouvées et sauvegardées dans lamps.yml !", NamedTextColor.GREEN));
         } catch (IOException e) {
-            player.sendMessage("§cErreur lors de la sauvegarde du fichier lamps.yml !");
-            e.printStackTrace();
+            player.sendMessage(Component.text("Erreur lors de la sauvegarde du fichier lamps.yml !", NamedTextColor.RED));
+            gameManager.getMain().getLogger().severe("Erreur dans la sauvegarde du fichier des lampes : " + e.getMessage());
         }
     }
 

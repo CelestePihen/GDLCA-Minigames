@@ -8,6 +8,7 @@ import fr.cel.cachecache.map.state.MapState;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -194,7 +195,7 @@ public class WaitingMapState extends MapState {
         if (bestTimer <= 0 || bestPlayer == null || bestPlayer.isEmpty()) return;
 
         String formattedTime = formatTime(bestTimer);
-        getMap().sendMessage(String.format("Le meilleur temps est de %s détenu par %s.", formattedTime, bestPlayer));
+        getMap().sendMessage(Component.text(String.format("Le meilleur temps est de %s détenu par %s.", formattedTime, bestPlayer)));
     }
 
     /**

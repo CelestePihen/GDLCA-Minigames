@@ -4,6 +4,7 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.PlayerData;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -17,7 +18,7 @@ public class OptionsInventory extends AbstractInventory {
     private final ItemStack redDye = new ItemBuilder(Material.RED_DYE).setDisplayName("Demandes d'amis").addLoreLine(ChatUtility.format("Vous n'acceptez pas les demandes d'amis.", ChatUtility.DARK_RED)).toItemStack();
 
     public OptionsInventory(Player player) {
-        super("Options", 9);
+        super(Component.text("Options"), 9);
         this.playerData = GameAPI.getInstance().getPlayerManager().getPlayerData(player);
     }
 
@@ -37,13 +38,13 @@ public class OptionsInventory extends AbstractInventory {
         if (item.getType() == Material.GREEN_DYE) {
             playerData.setAllowFriends(false);
             setItem(0, redDye);
-            player.sendMessage(GameAPI.getPrefix() + "Vous avez désactivé les demandes d'amis.");
+            player.sendMessage(GameAPI.getPrefix().append(Component.text("Vous avez désactivé les demandes d'amis.")));
         }
 
         else if (item.getType() == Material.RED_DYE) {
             playerData.setAllowFriends(true);
             setItem(0, greenDye);
-            player.sendMessage(GameAPI.getPrefix() + "Vous avez activé les demandes d'amis.");
+            player.sendMessage(GameAPI.getPrefix().append(Component.text("Vous avez activé les demandes d'amis.")));
         }
     }
 

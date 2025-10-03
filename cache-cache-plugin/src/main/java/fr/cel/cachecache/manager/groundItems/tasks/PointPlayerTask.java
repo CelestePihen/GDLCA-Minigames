@@ -1,18 +1,16 @@
 package fr.cel.cachecache.manager.groundItems.tasks;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Location;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class PointPlayerTask extends BukkitRunnable {
 
-    private int timer = 200;
-
     private final Player player;
     private final Player target;
+
+    private int timer = 200;
 
     public PointPlayerTask(Player player, Player target) {
         this.player = player;
@@ -21,8 +19,8 @@ public class PointPlayerTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (timer > 0){
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(getArrowDirection(player, target.getLocation())));
+        if (timer > 0) {
+            player.sendActionBar(Component.text(getArrowDirection(player, target)));
             timer--;
         } else {
             cancel();
@@ -36,10 +34,10 @@ public class PointPlayerTask extends BukkitRunnable {
      * @return Retourne la flèche vers la direction
      * @author Deadsky
      */
-    private String getArrowDirection(Player player, Location targetLoc) {
+    private String getArrowDirection(Player player, Player target) {
         String arrow = "?";
 
-        Vector a = targetLoc.toVector().setY(0).subtract(player.getLocation().toVector().setY(0));
+        Vector a = target.getLocation().toVector().setY(0).subtract(player.getLocation().toVector().setY(0));
         Vector b = player.getLocation().getDirection().setY(0);
 
         double angleDir = (Math.atan2(a.getZ(), a.getX()) / 2 / Math.PI * 360 + 360) % 360, angleLook = (Math.atan2(b.getZ(), b.getX()) / 2 / Math.PI * 360 + 360) % 360, angle = (angleDir - angleLook + 360) % 360;

@@ -33,14 +33,6 @@ public class ZonePassage implements Listener, IZone {
         this.main = main;
     }
 
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        final Player player = event.getPlayer();
-        final UUID uuid = player.getUniqueId();
-        if (!this.playersInGame.contains(uuid)) return;
-        if (isInZone(player.getLocation()) && !playersInGamePassed.contains(uuid)) playersInGamePassed.add(uuid);
-    }
-
     /**
      * Vérifie en boucle si des joueurs sont dans la zone
      */
@@ -56,6 +48,14 @@ public class ZonePassage implements Listener, IZone {
         HandlerList.unregisterAll(this);
         playersInGame.clear();
         playersInGamePassed.clear();
+    }
+
+    @EventHandler
+    private void onPlayerMove(PlayerMoveEvent event) {
+        final Player player = event.getPlayer();
+        final UUID uuid = player.getUniqueId();
+        if (!this.playersInGame.contains(uuid)) return;
+        if (isInZone(player.getLocation()) && !playersInGamePassed.contains(uuid)) playersInGamePassed.add(uuid);
     }
 
     /**
