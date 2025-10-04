@@ -215,8 +215,8 @@ public class CCCommand extends AbstractCommand {
         if (args[0].equalsIgnoreCase("grounditems")) {
             Component message = gameManager.getPrefix().append(Component.text("Les Items disponibles sont :").appendNewline());
 
-            mapManager.getMapByPlayer(player).getAvailableGroundItems().forEach(groundItem ->
-                    message.append(groundItem.getItemName()).appendNewline());
+            for (GroundItem groundItem : mapManager.getMapByPlayer(player).getAvailableGroundItems())
+                message = message.append(groundItem.getItemName()).appendNewline();
 
             player.sendMessage(message);
         }

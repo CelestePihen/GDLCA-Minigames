@@ -28,7 +28,6 @@ version = "1.1.1"
 description = "Cache-Cache"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
-
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
