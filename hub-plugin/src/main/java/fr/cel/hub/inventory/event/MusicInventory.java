@@ -6,6 +6,7 @@ import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.gameapi.utils.RPUtils;
 import fr.cel.gameapi.utils.RPUtils.CustomMusic;
 import fr.cel.hub.manager.MusicManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class MusicInventory extends AbstractInventory {
 
     public MusicInventory() {
-        super("Musique", 27);
+        super(Component.text("Musique"), 27);
     }
 
     @Override
@@ -27,20 +28,20 @@ public class MusicInventory extends AbstractInventory {
                     CustomMusic customMusic = entry.getValue();
                     ItemBuilder itemBuilder = new ItemBuilder(Material.JUKEBOX);
 
-                    itemBuilder.setItemName(name);
+                    itemBuilder.itemName(Component.text(name));
 
                     if (customMusic.getAuthor() != null) {
-                        itemBuilder.addLoreLine(customMusic.getAuthor());
+                        itemBuilder.addLoreLine(Component.text(customMusic.getAuthor()));
                     }
 
                     if (customMusic.getDescription() != null) {
-                        itemBuilder.addLoreLine(customMusic.getDescription());
+                        itemBuilder.addLoreLine(Component.text(customMusic.getDescription()));
                     }
 
                     inv.addItem(itemBuilder.toItemStack());
                 });
 
-        inv.setItem(getSize() - 1, new ItemBuilder(Material.BARRIER).setItemName("Enlever la musique").toItemStack());
+        inv.setItem(getSize() - 1, new ItemBuilder(Material.BARRIER).itemName(Component.text("Enlever la musique")).toItemStack());
     }
 
     @Override

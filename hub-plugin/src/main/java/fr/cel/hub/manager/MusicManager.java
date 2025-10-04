@@ -3,6 +3,7 @@ package fr.cel.hub.manager;
 import fr.cel.gameapi.GameAPI;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
@@ -42,7 +43,7 @@ public class MusicManager {
                 pl.stopSound(currentCustomSound, SoundCategory.RECORDS);
             }
             currentCustomSound = null;
-            player.sendMessage(GameAPI.getPrefix() + "Vous avez arrêté la musique.");
+            player.sendMessage(GameAPI.getPrefix().append(Component.text("Vous avez arrêté la musique.")));
         }
     }
 

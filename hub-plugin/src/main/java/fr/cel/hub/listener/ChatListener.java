@@ -1,9 +1,11 @@
 package fr.cel.hub.listener;
 
 import fr.cel.hub.Hub;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,8 +25,8 @@ public class ChatListener extends HListener {
      * Code de SamaGames
      */
     @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        String message = event.getMessage();
+    public void onPlayerChat(AsyncChatEvent event) {
+        String message = ((TextComponent) event.message()).content();
 
         if (message.startsWith("/")) return;
 
@@ -35,11 +37,11 @@ public class ChatListener extends HListener {
 
         if (last != null) {
             if (last.isTooEarly(time)) {
-                sendMessageWithPrefix(player, "Merci de ne pas envoyer de messages trop souvent.");
+                sendMessageWithPrefix(player, Component.text("Merci de ne pas envoyer de messages trop souvent."));
                 event.setCancelled(true);
                 return;
             } else if (last.isSame(message, time)) {
-                sendMessageWithPrefix(player, "Merci de ne pas envoyer plusieurs fois le même message.");
+                sendMessageWithPrefix(player, Component.text("Merci de ne pas envoyer plusieurs fois le même message."));
                 event.setCancelled(true);
                 return;
             }
@@ -55,17 +57,17 @@ public class ChatListener extends HListener {
         }
 
         if (message.matches("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)")) {
-            sendMessageWithPrefix(player, "Merci de ne pas mettre d'adresse IP dans le chat !");
+            sendMessageWithPrefix(player, Component.text("Merci de ne pas mettre d'adresse IP dans le chat !"));
             event.setCancelled(true);
         }
 
         else if (URL.matcher(message).find()) {
-            sendMessageWithPrefix(player, "Merci de ne pas mettre de lien dans le chat !");
+            sendMessageWithPrefix(player, Component.text("Merci de ne pas mettre de lien dans le chat !"));
             event.setCancelled(true);
         }
 
         else if (message.matches("[A-Z]{4,}")) {
-            sendMessageWithPrefix(player, "Merci de ne pas mettre vos messages en majuscules !");
+            sendMessageWithPrefix(player, Component.text("Merci de ne pas mettre vos messages en majuscules !"));
             event.setCancelled(true);
         }
 

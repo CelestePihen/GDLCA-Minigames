@@ -5,6 +5,8 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -17,7 +19,7 @@ public class CCV2Inventory extends AbstractInventory {
     private final Material type;
 
     public CCV2Inventory(String mapName, Material type) {
-        super("Cache-Cache - " + mapName, 27);
+        super(Component.text("Cache-Cache - " + mapName), 27);
         this.nameV1 = mapName + " V1";
         this.nameV2 = mapName + " V2";
         this.type = type;
@@ -25,10 +27,10 @@ public class CCV2Inventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(12, new ItemBuilder(this.type).setItemName("&d" + nameV1).toItemStack());
-        inv.setItem(14, new ItemBuilder(this.type, 2).setItemName("&d" + nameV2).toItemStack());
+        inv.setItem(12, new ItemBuilder(this.type).itemName(Component.text(nameV1, NamedTextColor.LIGHT_PURPLE)).toItemStack());
+        inv.setItem(14, new ItemBuilder(this.type, 2).itemName(Component.text(nameV2, NamedTextColor.LIGHT_PURPLE)).toItemStack());
 
-        inv.setItem(22, new ItemBuilder(Material.BARRIER).setItemName("Retour").toItemStack());
+        inv.setItem(22, new ItemBuilder(Material.BARRIER).itemName(Component.text("Retour")).toItemStack());
     }
 
     @Override

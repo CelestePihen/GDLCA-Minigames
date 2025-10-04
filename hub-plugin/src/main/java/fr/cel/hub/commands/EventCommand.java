@@ -4,8 +4,10 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.hub.inventory.event.CelebrationEvent;
 import fr.cel.hub.inventory.event.EventInventory;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -16,16 +18,16 @@ public class EventCommand extends AbstractCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         Player player = (Player) sender;
 
         if (!GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) {
-            sendMessageWithPrefix(player, "Vous devez être dans le Hub pour pouvoir faire cette commande.");
+            sendMessageWithPrefix(player, Component.text("Vous devez être dans le Hub pour pouvoir faire cette commande."));
             return;
         }
 
         if (args.length == 0) {
-            sendMessageWithPrefix(player, "La commande est : /event <hub|celebration>");
+            sendMessageWithPrefix(player, Component.text("La commande est : /event <hub|celebration>"));
             return;
         }
 
@@ -38,7 +40,7 @@ public class EventCommand extends AbstractCommand {
         }
 
         else {
-            sendMessageWithPrefix(player, "La commande est : /event <hub | celebration>");
+            sendMessageWithPrefix(player, Component.text("La commande est : /event <hub | celebration>"));
         }
     }
 

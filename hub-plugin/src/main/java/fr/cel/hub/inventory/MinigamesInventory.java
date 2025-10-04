@@ -6,6 +6,8 @@ import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.halloween.manager.HalloweenMapManager;
 import fr.cel.hub.Hub;
 import fr.cel.hub.inventory.cachecache.CacheCacheInventory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,42 +18,42 @@ import org.bukkit.inventory.ItemStack;
 
 public class MinigamesInventory extends AbstractInventory {
 
-    private final Location locationMuseum = new Location(Bukkit.getWorld("world"), 234.5, 95, 412.5, -90.0f, 0.0f);
+    private static final Location LOCATION_MUSEUM = new Location(Bukkit.getWorld("world"), 234.5, 95, 412.5, -90.0f, 0.0f);
 
     public MinigamesInventory() {
-        super("Sélectionneur de mini-jeux", 54);
+        super(Component.text("Sélectionneur de mini-jeux"), 54);
     }
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(9, new ItemBuilder(Material.SPYGLASS).setItemName("&aCache-Cache").toItemStack());
-        inv.setItem(11, new ItemBuilder(Material.BOW).setItemName("&aValocraft").toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.NETHERITE_SWORD).setItemName("&aPVP").addItemFlags(ItemFlag.HIDE_ATTRIBUTES).toItemStack());
-        inv.setItem(15, new ItemBuilder(Material.IRON_BOOTS).setItemName("&aParkour").toItemStack());
-        inv.setItem(17, new ItemBuilder(Material.BRUSH).setItemName("&aMusée").toItemStack());
+        inv.setItem(9, new ItemBuilder(Material.SPYGLASS).itemName(Component.text("Cache-Cache", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(11, new ItemBuilder(Material.BOW).itemName(Component.text("Valocraft", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.NETHERITE_SWORD).itemName(Component.text("PVP", NamedTextColor.GREEN)).addItemFlags(ItemFlag.HIDE_ATTRIBUTES).toItemStack());
+        inv.setItem(15, new ItemBuilder(Material.IRON_BOOTS).itemName(Component.text("Parkour", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(17, new ItemBuilder(Material.BRUSH).itemName(Component.text("Musée", NamedTextColor.GREEN)).toItemStack());
 
         // Event Halloween
         if (Hub.getInstance().getConfig().getBoolean("halloweenEvent")) {
             for (int slot = 27; slot <= 35; slot += 2) {
-                inv.setItem(slot, new ItemBuilder(Material.JACK_O_LANTERN).setItemName("&6Halloween").toItemStack());
+                inv.setItem(slot, new ItemBuilder(Material.JACK_O_LANTERN).itemName(Component.text("Halloween", NamedTextColor.GOLD)).toItemStack());
             }
         }
 
         // Event Noël
         else if (Hub.getInstance().getConfig().getBoolean("christmasEvent")) {
             for (int slot = 27; slot <= 35; slot += 2) {
-                inv.setItem(slot, new ItemBuilder(Material.SNOW_BLOCK).setItemName("&6Noël").toItemStack());
+                inv.setItem(slot, new ItemBuilder(Material.SNOW_BLOCK).itemName(Component.text("Noël", NamedTextColor.GOLD)).toItemStack());
             }
         }
 
         // Indisponible
         else {
             for (int slot = 27; slot <= 35; slot += 2) {
-                inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).setItemName("&eIndisponible").toItemStack());
+                inv.setItem(slot, new ItemBuilder(Material.COMMAND_BLOCK).itemName(Component.text("Indisponible", NamedTextColor.YELLOW)).toItemStack());
             }
         }
 
-        inv.setItem(49, new ItemBuilder(Material.BARRIER).setItemName("Quitter").toItemStack());
+        inv.setItem(49, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter", NamedTextColor.RED)).toItemStack());
     }
 
     @Override
@@ -65,7 +67,7 @@ public class MinigamesInventory extends AbstractInventory {
 
             case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourInventory(), player);
 
-            case BRUSH -> player.teleport(locationMuseum);
+            case BRUSH -> player.teleport(LOCATION_MUSEUM);
 
             case JACK_O_LANTERN -> HalloweenMapManager.getMapManager().getMaps().get("manoir").addPlayer(player);
 

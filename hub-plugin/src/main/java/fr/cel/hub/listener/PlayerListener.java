@@ -52,8 +52,8 @@ public class PlayerListener extends HListener {
 
     @EventHandler
     public void foodChange(FoodLevelChangeEvent event) {
-        if (!(event.getEntity() instanceof Player player) || !GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player)) return;
-        event.setCancelled(true);
+        if (event.getEntity() instanceof Player player && GameAPI.getInstance().getPlayerManager().containsPlayerInHub(player))
+            event.setCancelled(true);
     }
     
 }
