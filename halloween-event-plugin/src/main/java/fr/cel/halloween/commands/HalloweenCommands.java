@@ -1,19 +1,20 @@
 package fr.cel.halloween.commands;
 
 import fr.cel.gameapi.command.AbstractCommand;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.halloween.manager.GameManager;
 import fr.cel.halloween.manager.HalloweenMapManager;
 import fr.cel.halloween.map.HalloweenMap;
 import fr.cel.halloween.map.state.pregame.PreGameMapState;
 import fr.cel.halloween.map.state.pregame.StartingMapState;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,37 +31,38 @@ public class HalloweenCommands extends AbstractCommand {
     }
 
     @Override
-    protected void onExecute(CommandSender sender, String[] args) {
+    protected void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length == 0) {
             sendHelp(sender);
             return;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(GameManager.getPrefix() + "Les fichiers de configuration des cartes Halloween ont été rechargés.");
+            sender.sendMessage(GameManager.getPrefix().append(Component.text("Les fichiers de configuration des cartes Halloween ont été rechargés.")));
             gameManager.reloadMapManager();
             return;
         }
 
         if (args[0].equalsIgnoreCase("list")) {
             if (mapManager.getMaps().isEmpty()) {
-                sender.sendMessage(GameManager.getPrefix() + "Aucune carte a été installée.");
+                sender.sendMessage(GameManager.getPrefix().append(Component.text("Aucune carte a été installée.")));
                 return;
             }
 
-            mapManager.getMaps().values().forEach(arena ->
-                    sender.sendMessage(GameManager.getPrefix() + "Carte " + arena.getDisplayName() + " | " + arena.getMapState().getClass().getSimpleName())
-            );
+            for (HalloweenMap m : mapManager.getMaps().values()) {
+                sender.sendMessage(GameManager.getPrefix()
+                        .append(Component.text("Carte " + m.getDisplayName() + " | " + m.getMapState().getName())));
+            }
             return;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(GameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            sender.sendMessage(GameManager.getPrefix().append(Component.text("Vous devez etre un joueur pour effectuer cette commande.")));
             return;
         }
 
         if (!mapManager.isPlayerInMap(player)) {
-            player.sendMessage(GameManager.getPrefix() + "Vous n'êtes pas dans une carte.");
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Vous n'êtes pas dans une carte.")));
             return;
         }
 
@@ -69,20 +71,22 @@ public class HalloweenCommands extends AbstractCommand {
         if (args[0].equalsIgnoreCase("start")) {
             if (map.getMapState() instanceof PreGameMapState) {
                 if (map.getPlayers().size() < 2) {
-                    player.sendMessage(GameManager.getPrefix() + "Il n'y a pas assez de joueurs (minimum 2 joueurs) !");
+                    player.sendMessage(GameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 2 joueurs) !")));
                 } else {
                     map.setMapState(new StartingMapState(map));
                 }
             }
             else {
-                player.sendMessage(GameManager.getPrefix() + "La partie est déjà lancée.");
+                player.sendMessage(GameManager.getPrefix().append(Component.text("La partie est déjà lancée.")));
             }
+            return;
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
             List<String> playersName = new ArrayList<>();
             map.getPlayers().forEach(pls -> playersName.add(Objects.requireNonNull(Bukkit.getPlayer(pls)).getName()));
-            player.sendMessage(GameManager.getPrefix() + "Joueurs : " + playersName);
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Joueurs : " + playersName)));
+            return;
         }
 
         if (args[0].equalsIgnoreCase("spawnsoul")) {
@@ -105,19 +109,19 @@ public class HalloweenCommands extends AbstractCommand {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(" ");
-        sender.sendMessage(ChatUtility.format("[Aide pour les commandes de l'événement Halloween]", ChatUtility.GOLD));
-        sender.sendMessage("/halloween reload : Recharge les maps");
-        sender.sendMessage("/halloween list : Envoie la liste des maps avec l'état du jeu actuel");
-        sender.sendMessage("/halloween start : Commence la partie dans laquelle vous êtes");
-        sender.sendMessage("/halloween listplayer : Envoie la liste des joueurs dans la partie où vous êtes");
-        sender.sendMessage("/halloween spawnsoul x1 y1 z1 x2 y2 z2 : (Re-)Calcule les emplacements de spawn.");
-        sender.sendMessage("/halloween spawnplayer x1 y1 z1 x2 y2 z2 : (Re-)Calcule les emplacements de réapparition des joueurs.");
+        sender.sendMessage(Component.text(" "));
+        sender.sendMessage(Component.text("[Aide pour les commandes de l'événement Halloween]", NamedTextColor.GOLD));
+        sender.sendMessage(Component.text("/halloween reload : Recharge les maps"));
+        sender.sendMessage(Component.text("/halloween list : Envoie la liste des maps avec l'état du jeu actuel"));
+        sender.sendMessage(Component.text("/halloween start : Commence la partie dans laquelle vous êtes"));
+        sender.sendMessage(Component.text("/halloween listplayer : Envoie la liste des joueurs dans la partie où vous êtes"));
+        sender.sendMessage(Component.text("/halloween spawnsoul x1 y1 z1 x2 y2 z2 : (Re-)Calcule les emplacements de spawn."));
+        sender.sendMessage(Component.text("/halloween spawnplayer x1 y1 z1 x2 y2 z2 : (Re-)Calcule les emplacements de réapparition des joueurs."));
     }
 
     private void calculSpawnSouls(Player player, String[] args, HalloweenMap map) {
         if (args.length != 7) {
-            sendMessageWithPrefix(player, "Usage : /halloween calcul x1 y1 z1 x2 y2 z2");
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Usage : /halloween spawnsoul x1 y1 z1 x2 y2 z2")));
             return;
         }
 
@@ -158,24 +162,18 @@ public class HalloweenCommands extends AbstractCommand {
 
         try {
             gameManager.getSoulsConfig().save(gameManager.getSoulsFile());
-
             map.setSoulLocation();
 
-            for (Location location : map.getSoulLocations()) {
-                player.sendMessage("souls " + location.getX() + " " + location.getY() + " " + location.getZ());
-            }
-            player.sendMessage("§b" + map.getSoulLocations().size() + " spawns de vestiges d'âmes trouvés !");
-
-            player.sendMessage("§a" + count + " spawns de vestiges d'âmes trouvés et sauvegardés dans souls.yml !");
+            player.sendMessage(GameManager.getPrefix().append(Component.text(count + " spawns de vestiges d'âmes trouvés et sauvegardés dans souls.yml !", NamedTextColor.GREEN)));
         } catch (IOException e) {
-            player.sendMessage("§cErreur lors de la sauvegarde du fichier souls.yml !");
-            e.printStackTrace();
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Erreur lors de la sauvegarde du fichier souls.yml !", NamedTextColor.RED)));
+            gameManager.getMain().getLogger().severe("Error: Calcul spawn souls - " + e.getMessage());
         }
     }
 
     private void calculSpawnPlayer(Player player, String[] args, HalloweenMap map) {
         if (args.length != 7) {
-            sendMessageWithPrefix(player, "Usage : /halloween calculplayer x1 y1 z1 x2 y2 z2");
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Usage : /halloween spawnplayer x1 y1 z1 x2 y2 z2")));
             return;
         }
 
@@ -216,18 +214,12 @@ public class HalloweenCommands extends AbstractCommand {
 
         try {
             gameManager.getPlayersConfig().save(gameManager.getPlayersFile());
-
             map.setSpawnPlayerLocation();
 
-            for (Location location : map.getSpawnPlayerLocations()) {
-                player.sendMessage("souls " + location.getX() + " " + location.getY() + " " + location.getZ());
-            }
-            player.sendMessage("§b" + map.getSpawnPlayerLocations().size() + " points de réapparition trouvés dans spawnplayer.yml !");
-
-            player.sendMessage("§a" + count + " points de réapparition trouvés et sauvegardés dans spawnplayer.yml !");
+            player.sendMessage(Component.text(count + " points de réapparition trouvés et sauvegardés dans spawnplayer.yml !", NamedTextColor.GREEN));
         } catch (IOException e) {
-            player.sendMessage("§cErreur lors de la sauvegarde du fichier spawnplayer.yml !");
-            e.printStackTrace();
+            player.sendMessage(Component.text("Erreur lors de la sauvegarde du fichier spawnplayer.yml !", NamedTextColor.RED));
+            gameManager.getMain().getLogger().severe("Error: Calcul spawn players - " + e.getMessage());
         }
     }
 

@@ -1,10 +1,10 @@
 package fr.cel.halloween.manager;
 
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.halloween.HalloweenEvent;
 import fr.cel.halloween.map.HalloweenMap;
 import fr.cel.halloween.utils.MapConfig;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -49,7 +49,7 @@ public class HalloweenMapManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(ChatUtility.format("[HalloweenEvent] ", ChatUtility.GOLD) + ChatUtility.format("Chargement de " + this.maps.size() + " cartes Halloween ", ChatUtility.WHITE));
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + this.maps.size() + " cartes Halloween ")));
     }
 
 }

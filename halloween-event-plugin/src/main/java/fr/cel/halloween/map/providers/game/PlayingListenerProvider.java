@@ -3,6 +3,7 @@ package fr.cel.halloween.map.providers.game;
 import fr.cel.halloween.HalloweenEvent;
 import fr.cel.halloween.map.HalloweenMap;
 import fr.cel.halloween.map.providers.StateListenerProvider;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     public void onDeathAndKill(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (!map.isPlayerInMap(player)) return;
-        event.setDeathMessage("");
+        event.deathMessage(Component.empty());
     }
 
     @EventHandler
@@ -44,19 +45,14 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
             event.setCancelled(true);
 
-            if (map.getSouls().contains(pl.getUniqueId())) return;
-
-            map.eliminate(p);
+            if (!map.getSouls().contains(pl.getUniqueId())) map.eliminate(p);
             return;
         }
 
-        if (event instanceof ArmorStand) {
-            event.setCancelled(true);
-        }
+        if (event instanceof ArmorStand) event.setCancelled(true);
 
         if (damager instanceof Player) {
-            if (!map.isPlayerInMap((Player) damager)) return;
-            event.setCancelled(true);
+            if (map.isPlayerInMap((Player) damager)) event.setCancelled(true);
         }
     }
     

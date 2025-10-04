@@ -29,8 +29,7 @@ public class PreGameListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!map.isPlayerInMap(player)) return;
-        event.setCancelled(true);
+        if (map.isPlayerInMap(player)) event.setCancelled(true);
     }
 
     @EventHandler
@@ -41,9 +40,7 @@ public class PreGameListenerProvider extends StateListenerProvider {
         Block block = event.getClickedBlock();
         if (block == null) return;
 
-        if (block.getType() == Material.CHEST) {
-            event.setCancelled(true);
-        }
+        if (block.getType() == Material.CHEST) event.setCancelled(true);
     }
     
 }

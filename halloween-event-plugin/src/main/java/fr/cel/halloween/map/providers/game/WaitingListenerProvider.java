@@ -18,8 +18,7 @@ public class WaitingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onEntityDamageEvent(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!map.isPlayerInMap(player)) return;
-        event.setCancelled(true);
+        if (map.isPlayerInMap(player)) event.setCancelled(true);
     }
 
     @EventHandler
@@ -30,9 +29,7 @@ public class WaitingListenerProvider extends StateListenerProvider {
         Block block = event.getClickedBlock();
         if (block == null) return;
 
-        if (block.getType() == Material.CHEST) {
-            event.setCancelled(true);
-        }
+        if (block.getType() == Material.CHEST) event.setCancelled(true);
     }
 
 }

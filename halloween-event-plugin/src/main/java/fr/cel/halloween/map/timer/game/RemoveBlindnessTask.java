@@ -20,10 +20,6 @@ public class RemoveBlindnessTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (timer > 0) {
-            timer--;
-        }
-
         if (timer == 0) {
             Player player = Bukkit.getPlayer(map.getTracker().getFirst());
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 0, false, false, false));
@@ -36,6 +32,8 @@ public class RemoveBlindnessTask extends BukkitRunnable {
 
             cancel();
         }
+
+        timer--;
     }
 
 }

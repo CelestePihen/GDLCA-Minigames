@@ -2,9 +2,10 @@ package fr.cel.halloween.manager;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.PlayerManager;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.halloween.HalloweenEvent;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -14,54 +15,55 @@ import java.io.IOException;
 public class GameManager {
 
     private final HalloweenEvent main;
-    @Getter private static final String prefix = ChatUtility.format("&6[HalloweenEvent] &r");
+    @Getter private static final Component prefix = Component.text("[HalloweenEvent]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
 
-    private final File soulsFile;
-    private final YamlConfiguration soulsConfig;
+    private File soulsFile;
+    private YamlConfiguration soulsConfig;
 
-    private final File playersFile;
-    private final YamlConfiguration playersConfig;
+    private File playersFile;
+    private YamlConfiguration playersConfig;
 
     private final PlayerManager playerManager = GameAPI.getInstance().getPlayerManager();
 
     public GameManager(HalloweenEvent main) {
         this.main = main;
-
-        // Spawn Âmes
-        File soulFolder = new File(main.getDataFolder(), "souls");
-        if (!soulFolder.exists()) soulFolder.mkdirs();
-
-        soulsFile = new File(soulFolder, "souls.yml");
-        if (!soulsFile.exists()) {
-            try {
-                soulsFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        soulsConfig = YamlConfiguration.loadConfiguration(soulsFile);
-        // Spawn Âmes
-
-        // Spawn Player
-        File spawnPlayerFolder = new File(main.getDataFolder(), "spawnplayer");
-        if (!spawnPlayerFolder.exists()) spawnPlayerFolder.mkdirs();
-
-        playersFile = new File(spawnPlayerFolder, "spawnplayer.yml");
-        if (!playersFile.exists()) {
-            try {
-                playersFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        playersConfig = YamlConfiguration.loadConfiguration(playersFile);
-        // Spawn Player
+        loadConfigs();
     }
 
     public void reloadMapManager() {
         main.setHalloweenMapManager(new HalloweenMapManager(main));
+    }
+
+    private void loadConfigs() {
+        // Spawn Âmes
+        File soulFolder = new File(this.main.getDataFolder(), "souls");
+        if (!soulFolder.exists()) soulFolder.mkdirs();
+
+        this.soulsFile = new File(soulFolder, "souls.yml");
+        if (!this.soulsFile.exists()) {
+            try {
+                this.soulsFile.createNewFile();
+            } catch (IOException e) {
+                main.getLogger().severe("Error: Creating souls file - " + e.getMessage());
+            }
+        }
+
+        this.soulsConfig = YamlConfiguration.loadConfiguration(this.soulsFile);
+
+        // Spawn Player
+        File spawnPlayerFolder = new File(this.main.getDataFolder(), "spawnplayer");
+        if (!spawnPlayerFolder.exists()) spawnPlayerFolder.mkdirs();
+
+        this.playersFile = new File(spawnPlayerFolder, "spawnplayer.yml");
+        if (!this.playersFile.exists()) {
+            try {
+                this.playersFile.createNewFile();
+            } catch (IOException e) {
+                main.getLogger().severe("Error: Creating spawnplayer file - " + e.getMessage());
+            }
+        }
+
+        this.playersConfig = YamlConfiguration.loadConfiguration(this.playersFile);
     }
 
 }

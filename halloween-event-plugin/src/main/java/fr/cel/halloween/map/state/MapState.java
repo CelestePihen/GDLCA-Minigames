@@ -5,6 +5,7 @@ import fr.cel.halloween.map.HalloweenMap;
 import fr.cel.halloween.map.providers.StateListenerProvider;
 import lombok.Getter;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MapState implements Listener {
 
@@ -28,6 +29,7 @@ public abstract class MapState implements Listener {
         if (listenerProvider != null) listenerProvider.onDisable();
     }
 
+    @Nullable
     public abstract StateListenerProvider getListenerProvider();
 
 }

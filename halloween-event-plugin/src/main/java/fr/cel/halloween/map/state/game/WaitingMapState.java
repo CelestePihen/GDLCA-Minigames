@@ -5,7 +5,6 @@ import fr.cel.halloween.map.HalloweenMap;
 import fr.cel.halloween.map.providers.StateListenerProvider;
 import fr.cel.halloween.map.providers.game.WaitingListenerProvider;
 import fr.cel.halloween.map.state.MapState;
-import fr.cel.halloween.map.timer.game.WaitingMapTask;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,8 +16,6 @@ import java.util.UUID;
 
 @Getter
 public class WaitingMapState extends MapState {
-
-    private WaitingMapTask waitingArenaTask;
 
     public WaitingMapState(HalloweenMap map) {
         super("En partie - Avant l'arrivée des chercheurs", map);
@@ -54,14 +51,12 @@ public class WaitingMapState extends MapState {
 
         giveBlindness();
 
-        waitingArenaTask = new WaitingMapTask(getMap());
-        waitingArenaTask.runTaskTimer(main, 0, 20);
+        getMap().setMapState(new PlayingMapState(getMap()));
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-        if (waitingArenaTask != null) waitingArenaTask.cancel();
     }
 
     @Override
@@ -72,8 +67,8 @@ public class WaitingMapState extends MapState {
     private void giveBlindness() {
         for (UUID uuid : getMap().getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 0, false, false));
+            if (player != null)
+                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 0, false, false));
         }
     }
 
