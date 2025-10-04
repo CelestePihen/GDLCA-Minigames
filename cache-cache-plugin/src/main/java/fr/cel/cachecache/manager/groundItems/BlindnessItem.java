@@ -4,6 +4,7 @@ import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -16,10 +17,11 @@ import java.util.UUID;
 
 public class BlindnessItem extends GroundItem {
 
-    private static final List<String> lores = List.of("Cet objet vous permet de rendre aveugle tous les joueurs de la partie sauf vous pendant 5 secondes.");
+    private static final List<Component> LORES = List.of(
+            Component.text("Cet objet vous permet de rendre aveugle tous les joueurs de la partie sauf vous pendant 5 secondes."));
 
     public BlindnessItem() {
-        super("blindnessItem", Material.FERMENTED_SPIDER_EYE, "Aveuglement", lores, "cc_blindness");
+        super("blindnessItem", Material.FERMENTED_SPIDER_EYE, Component.text("Aveuglement"), LORES, "cc_blindness");
     }
 
     @Override
@@ -30,10 +32,10 @@ public class BlindnessItem extends GroundItem {
             if (pl == player || pl.getGameMode() == GameMode.SPECTATOR) continue;
 
             pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1, false, false, true));
-            GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_BLINDNESS_USAGE, 1);
-
-            super.onInteract(player, map);
         }
+
+        GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_BLINDNESS_USAGE, 1);
+        super.onInteract(player, map);
     }
     
 }

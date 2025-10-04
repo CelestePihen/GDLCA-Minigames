@@ -25,7 +25,6 @@ import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -57,7 +56,7 @@ public class CCMap {
     // Ground Items
     @Getter @Setter private List<GroundItem> availableGroundItems; // Items disponibles pour la map
     @Getter @Setter private List<Location> locationGroundItems; // Position des spawners à Items
-    @Getter private final List<Item> spawnedGroundItems = new ArrayList<>(); // Items qui sont dans la map
+    @Getter private final List<UUID> spawnedGroundItems = new ArrayList<>(); // Items qui sont dans la map
     private final List<BukkitRunnable> itemTasks = new ArrayList<>(); // Task
 
     @Getter private final Location spawnLoc;
@@ -105,11 +104,11 @@ public class CCMap {
 
         this.scoreboard = new GameScoreboard(mapName);
 
-        this.teamHiders = scoreboard.registerTeam("hiders", ChatColor.GREEN);
+        this.teamHiders = scoreboard.registerTeam("hiders", NamedTextColor.GREEN);
         this.teamHiders.setNameTagVisibility(OptionStatus.NEVER);
         this.teamHiders.setAllowFriendlyFire(false);
 
-        this.teamSeekers = scoreboard.registerTeam("seekers", ChatColor.RED);
+        this.teamSeekers = scoreboard.registerTeam("seekers", NamedTextColor.RED);
         this.teamSeekers.setNameTagVisibility(OptionStatus.NEVER);
         this.teamSeekers.setAllowFriendlyFire(false);
 
@@ -168,7 +167,6 @@ public class CCMap {
 
         players.remove(player.getUniqueId());
         scoreboard.removePlayer(player);
-        wolfTimer.remove(player.getUniqueId());
 
         if (seekers.contains(player.getUniqueId())) {
             seekers.remove(player.getUniqueId());
@@ -201,7 +199,7 @@ public class CCMap {
             }
 
             if (playerOwner != null) {
-                playerOwner.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
+                playerOwner.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).itemName(Component.text("Démarrer la partie")).toItemStack());
             } else {
                 gameManager.getMain().getLogger().severe("La carte " + this.getDisplayName() + " n'arrive pas à trouver un gérant.");
             }
@@ -348,8 +346,8 @@ public class CCMap {
      * Seulement dans le mode Loup Touche-Touche
      * @return Retourne une instance du joueur qui a le moins de temps
      */
-    public Player getPlayerWithLowestTime() {
-        UUID uuid = null;
+    public OfflinePlayer getPlayerWithLowestTime() {
+        UUID uuid = this.players.getFirst();
         int lowestTime = 12000;
 
         for (Map.Entry<UUID, Integer> entry : wolfTimer.entrySet()) {
@@ -361,8 +359,7 @@ public class CCMap {
             }
         }
 
-        if (uuid != null) return Bukkit.getPlayer(uuid);
-        return null;
+        return Bukkit.getOfflinePlayer(uuid);
     }
 
     /**
@@ -412,13 +409,13 @@ public class CCMap {
     }
 
     /**
-     * Donne le tueur de cacheurs
-     * @param player Le joueur
+     * Donne l'arme "Le tueur de cacheurs" au joueur
+     * @param player Le joueur à qui donner l'arme
      */
     public void giveWeapon(Player player) {
         player.getInventory().addItem(new ItemBuilder(Material.STICK)
-                        .setItemName("Le tueur de cacheurs")
-                        .addLoreLine("Ce bâton a déjà tué de nombreuses personnes...")
+                        .itemName(Component.text("Le tueur de cacheurs"))
+                        .lore(Component.text("Ce bâton a déjà tué de nombreuses personnes..."))
                         .toItemStack());
     }
 
@@ -479,8 +476,7 @@ public class CCMap {
     public void playSound(Sound sound) {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.playSound(player.getLocation(), sound, 1, 1);
+            if (player != null) player.playSound(player.getLocation(), sound, 1, 1);
         }
     }
 
@@ -491,8 +487,7 @@ public class CCMap {
     public void setLevel(int level) {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.setLevel(level);
+            if (player != null) player.setLevel(level);
         }
     }
 
@@ -502,8 +497,7 @@ public class CCMap {
     public void clearPlayers() {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.getInventory().clear();
+            if (player != null) player.getInventory().clear();
         }
     }
 
@@ -514,8 +508,7 @@ public class CCMap {
     public void setGameModePlayers(GameMode gameMode) {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.setGameMode(gameMode);
+            if (player != null) player.setGameMode(gameMode);
         }
     }
 
@@ -525,8 +518,7 @@ public class CCMap {
     public void setSpawnPoint() {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.setRespawnLocation(spawnLoc, true);
+            if (player != null) player.setRespawnLocation(spawnLoc, true);
         }
     }
 
@@ -536,10 +528,10 @@ public class CCMap {
     public void clearPotionEffects() {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-
-            for (PotionEffect potionEffect : player.getActivePotionEffects()) {
-                player.removePotionEffect(potionEffect.getType());
+            if (player != null) {
+                for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+                    player.removePotionEffect(potionEffect.getType());
+                }
             }
         }
     }
@@ -626,7 +618,7 @@ public class CCMap {
         player.setGlowing(false);
         player.getInventory().clear();
 
-        // s'il n'y a pas de joueurs dans la carte alors le joueur devient le gérant de la partie
+        // s'il n'y a pas de joueurs dans la carte alors le premier joueur devient l'hôte de la partie
         if (players.isEmpty()) becomeOwner(player);
 
         players.add(player.getUniqueId());
@@ -688,8 +680,8 @@ public class CCMap {
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            gameManager.getPlayerManager().sendPlayerToHub(player);
+            if (player != null)
+                gameManager.getPlayerManager().sendPlayerToHub(player);
         }
 
         scoreboard.resetScoreboard();
@@ -713,14 +705,14 @@ public class CCMap {
     }
 
     /**
-     * Fait devenir le joueur le "créateur" de la partie
-     * @param player Le joueur qui va devenir "créateur" de la partie
+     * Le joueur devient l'hôte de la partie
+     * @param player Le joueur qui va devenir l'hôte de la partie
      */
     private void becomeOwner(Player player) {
         owner = player.getUniqueId();
         player.sendMessage(gameManager.getPrefix().append(Component.text("Tu es désormais l'hôte de la partie !")));
         if (mapState instanceof PreGameMapState) {
-            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).setItemName("Démarrer la partie").toItemStack());
+            player.getInventory().setItem(4, new ItemBuilder(Material.AMETHYST_SHARD).itemName(Component.text("Démarrer la partie")).toItemStack());
         }
     }
 
@@ -728,7 +720,10 @@ public class CCMap {
      * Enlève tous les objets de la carte
      */
     private void clearGroundItems() {
-        spawnedGroundItems.stream().filter(Objects::nonNull).forEach(Entity::remove);
+        spawnedGroundItems.forEach(uuid -> {
+            Entity entity = Bukkit.getWorlds().getFirst().getEntity(uuid);
+            if (entity != null && !entity.isDead()) entity.remove();
+        });
         spawnedGroundItems.clear();
     }
 

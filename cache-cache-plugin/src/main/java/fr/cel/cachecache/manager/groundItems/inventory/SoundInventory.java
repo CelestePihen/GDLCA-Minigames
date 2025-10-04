@@ -6,6 +6,7 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import fr.cel.gameapi.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -20,17 +21,17 @@ public class SoundInventory extends AbstractInventory {
 
     private final CCMap map;
 
-    private final List<Sound> goatHornSounds = Arrays.asList(Sound.ITEM_GOAT_HORN_SOUND_4, Sound.ITEM_GOAT_HORN_SOUND_7);
+    private static final List<Sound> GOAT_HORN_SOUNDS = Arrays.asList(Sound.ITEM_GOAT_HORN_SOUND_4, Sound.ITEM_GOAT_HORN_SOUND_7);
 
     public SoundInventory(CCMap map) {
-        super("Sons", 9);
+        super(Component.text("Sons"), 9);
         this.map = map;
     }
 
     @Override
     protected void addItems(Inventory inventory) {
-        ItemStack goat_horn = new ItemBuilder(Material.GOAT_HORN).setItemName("Corne de chèvres").toItemStack();
-        ItemStack cat = new ItemBuilder(Material.STRING).setItemName("Chats").toItemStack();
+        ItemStack goat_horn = new ItemBuilder(Material.GOAT_HORN).itemName(Component.text("Corne de chèvres")).toItemStack();
+        ItemStack cat = new ItemBuilder(Material.STRING).itemName(Component.text("Chats")).toItemStack();
         inventory.addItem(goat_horn, cat);
     }
 
@@ -39,8 +40,6 @@ public class SoundInventory extends AbstractInventory {
         if (!map.isPlayerInMap(player)) return;
 
         if (item.getType() == Material.STRING) {
-            removeItem(player);
-
             if (map.getMapName().equalsIgnoreCase("moulin") && map.getCheckAdvancements().getMiaou().getPlayerInside().get(player.getUniqueId())) {
                 map.getCheckAdvancements().giveMiaou(player);
             }
@@ -49,13 +48,12 @@ public class SoundInventory extends AbstractInventory {
             soundCatTask.runTaskTimer(map.getGameManager().getMain(), 0, 20);
             map.addItemTask(soundCatTask);
 
+            removeItem(player);
             GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_SOUND_USAGE, 1);
         }
 
         else if (item.getType() == Material.GOAT_HORN) {
-            removeItem(player);
-
-            Sound sound = goatHornSounds.get(ThreadLocalRandom.current().nextInt(goatHornSounds.size()));
+            Sound sound = GOAT_HORN_SOUNDS.get(ThreadLocalRandom.current().nextInt(GOAT_HORN_SOUNDS.size()));
             for (UUID uuid : map.getPlayers()) {
                 Player pl = Bukkit.getPlayer(uuid);
                 if (pl == null || pl.getGameMode() == GameMode.SPECTATOR) continue;
@@ -66,16 +64,15 @@ public class SoundInventory extends AbstractInventory {
                 map.getCheckAdvancements().giveRaidChateau(player);
             }
 
+            removeItem(player);
             GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_SOUND_USAGE, 1);
         }
     }
 
     private void removeItem(Player player) {
         player.closeInventory();
-
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        if (itemInHand.getAmount() == 1) player.getInventory().setItemInMainHand(null);
-        else itemInHand.setAmount(itemInHand.getAmount() - 1);
+        itemInHand.setAmount(itemInHand.getAmount() - 1);
     }
 
     @Override

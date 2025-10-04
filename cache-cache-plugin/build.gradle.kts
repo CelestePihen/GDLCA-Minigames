@@ -20,7 +20,7 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.42")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
 
-    compileOnly("fr.cel:api-plugin:1.1")
+    compileOnly("fr.cel:api-plugin:1.3")
 }
 
 group = "fr.cel"
@@ -39,7 +39,7 @@ publishing {
     }
 }
 
-tasks.withType<JavaCompile>() {
+tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 

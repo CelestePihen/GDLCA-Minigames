@@ -34,7 +34,8 @@ public class CheckAdvancements {
 
     @Getter private final Map<UUID, List<Location>> piedPouvoir = new HashMap<>();
 
-    // Succès sans nom
+    // T'es pas essouflé ?
+    // TODO à implémenter pour la V2
     @Getter private final Set<UUID> playerWhoRun = new HashSet<>();
 
     public CheckAdvancements(CCMap map) {
@@ -140,8 +141,7 @@ public class CheckAdvancements {
      * @param player L'instance du joueur à qui donner le succès
      */
     public void giveAudacieux(Player player) {
-        if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.AUDACIEUX, map.getPlayers());
+        if (player != null) advancementsManager.giveAdvancement(player, Advancements.AUDACIEUX, map.getPlayers());
     }
 
     /**
@@ -180,12 +180,8 @@ public class CheckAdvancements {
      * @return Vrai si le joueur contient tous les objets sur lui, faux s'il lui en manque un
      */
     private boolean checkItemCollectionPersonnelle(Player player) {
-        if (player == null) return false;
-
         for (GroundItem groundItem : map.getAvailableGroundItems()) {
-            if (!player.getInventory().contains(groundItem.getItemStack().getType())) {
-                return false;
-            }
+            if (!player.getInventory().contains(groundItem.getItemStack().getType())) return false;
         }
 
         return true;
@@ -199,9 +195,8 @@ public class CheckAdvancements {
 
         for (UUID uuid : aimezFaireMal.getPlayersPassCount().keySet()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-
-            if (aimezFaireMal.getPlayersPassCount().get(uuid) >= 10) advancementsManager.giveAdvancement(player, Advancements.AIMEZ_FAIRE_MAL, map.getPlayers());
+            if (player != null && aimezFaireMal.getPlayersPassCount().get(uuid) >= 10)
+                advancementsManager.giveAdvancement(player, Advancements.AIMEZ_FAIRE_MAL, map.getPlayers());
         }
     }
 
@@ -210,16 +205,14 @@ public class CheckAdvancements {
      * @param player L'instance du joueur à qui donner le succès
      */
     public void giveMiaou(Player player) {
-        if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.MIAOU, map.getPlayers());
+        if (player != null) advancementsManager.giveAdvancement(player, Advancements.MIAOU, map.getPlayers());
     }
 
     /**
      * Donne le succès Monter ou descendre la montagne de sable au joueur ayant été à la plus haute et à la plus basse hauteur en moins de 30 secondes sur la carte Désert
      */
     public void giveMontagneSable(Player player) {
-        if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.MONTAGNE_SABLE, map.getPlayers());
+        if (player != null) advancementsManager.giveAdvancement(player, Advancements.MONTAGNE_SABLE, map.getPlayers());
     }
 
     /**
@@ -228,9 +221,8 @@ public class CheckAdvancements {
     public void checkPasBesoin() {
         for (UUID uuid : map.getHiders()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            if (playersPasBesoin.contains(uuid)) continue;
-            advancementsManager.giveAdvancement(player, Advancements.PAS_BESOIN, map.getPlayers());
+            if (player != null && !playersPasBesoin.contains(uuid))
+                advancementsManager.giveAdvancement(player, Advancements.PAS_BESOIN, map.getPlayers());
         }
     }
 
@@ -239,8 +231,7 @@ public class CheckAdvancements {
      * @param player L'instance du joueur à qui donner le succès
      */
     public void giveRaidChateau(Player player) {
-        if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.RAID_CHATEAU, map.getPlayers());
+        if (player != null) advancementsManager.giveAdvancement(player, Advancements.RAID_CHATEAU, map.getPlayers());
     }
 
     /**
@@ -248,8 +239,7 @@ public class CheckAdvancements {
      */
     public void giveToujoursVivant() {
         Player player = Bukkit.getPlayer(map.getHiders().getFirst());
-        if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.TOUJOURS_VIVANT, map.getPlayers());
+        if (player != null) advancementsManager.giveAdvancement(player, Advancements.TOUJOURS_VIVANT, map.getPlayers());
     }
 
     /**
@@ -257,8 +247,7 @@ public class CheckAdvancements {
      * @param player L'instance du joueur à qui donner le succès
      */
     public void giveTraverseeMusicale(Player player) {
-        if (player == null) return;
-        advancementsManager.giveAdvancement(player, Advancements.TRAVERSEE_MUSICALE, map.getPlayers());
+        if (player != null) advancementsManager.giveAdvancement(player, Advancements.TRAVERSEE_MUSICALE, map.getPlayers());
     }
 
     /**
@@ -268,9 +257,8 @@ public class CheckAdvancements {
         for (UUID uuid : map.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
-            if (piedPouvoir.get(uuid).size() == map.getLocationGroundItems().size()) {
+            if (piedPouvoir.get(uuid).size() == map.getLocationGroundItems().size())
                 advancementsManager.giveAdvancement(player, Advancements.PIED_POUVOIR, map.getPlayers());
-            }
         }
     }
 
@@ -280,8 +268,7 @@ public class CheckAdvancements {
     public void givePiqueNique() {
         for (UUID uuid : map.getHiders()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            advancementsManager.giveAdvancement(player, Advancements.PIQUE_NIQUE, map.getPlayers());
+            if (player != null) advancementsManager.giveAdvancement(player, Advancements.PIQUE_NIQUE, map.getPlayers());
         }
     }
 

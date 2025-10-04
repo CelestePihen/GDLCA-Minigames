@@ -12,10 +12,11 @@ import java.util.List;
 
 public class PointPlayerItem extends GroundItem {
 
-    private static final List<String> lores = List.of("Cet objet vous permet de pointer la direction d'un joueur.");
+    private static final List<Component> LORES = List.of(
+            Component.text("Cet objet vous permet de pointer la direction d'un joueur."));
 
     public PointPlayerItem() {
-        super("pointPlayerItem", Material.FEATHER, "Pointer un joueur", lores, "cc_position");
+        super("pointPlayerItem", Material.FEATHER, Component.text("Pointer un joueur"), LORES, "cc_position");
     }
 
     @Override

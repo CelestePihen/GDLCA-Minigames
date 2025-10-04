@@ -21,16 +21,18 @@ public class SoundCatTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (secondes > 0) {
-            for (UUID uuid : map.getPlayers()) {
-                Player pl = Bukkit.getPlayer(uuid);
-                if (pl == null || pl.getGameMode() == GameMode.SPECTATOR) continue;
-                pl.playSound(pl, Sound.ENTITY_CAT_AMBIENT, SoundCategory.AMBIENT, 3.0f, 1.0f);
-            }
-            secondes--;
-        } else {
+        if (secondes == 0) {
             cancel();
+            return;
         }
+
+        for (UUID uuid : map.getPlayers()) {
+            Player pl = Bukkit.getPlayer(uuid);
+            if (pl != null && pl.getGameMode() != GameMode.SPECTATOR)
+                pl.playSound(pl, Sound.ENTITY_CAT_AMBIENT, SoundCategory.AMBIENT, 3.0f, 1.0f);
+        }
+
+        secondes--;
     }
 
 }

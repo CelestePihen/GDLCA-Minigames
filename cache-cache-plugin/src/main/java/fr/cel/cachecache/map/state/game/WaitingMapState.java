@@ -42,25 +42,6 @@ public class WaitingMapState extends MapState {
     }
 
     /**
-     * Met à jour les statistiques de tous les joueurs
-     */
-    private void updatePlayerStatistics() {
-        StatisticsManager statsManager = GameAPI.getInstance().getStatisticsManager();
-
-        getMap().getPlayers().forEach(uuidPlayer -> {
-            statsManager.updatePlayerStatistic(uuidPlayer, StatisticsManager.PlayerStatistics.CC_GAMES_PLAYED, 1);
-
-            if (getMap().getHiders().contains(uuidPlayer)) {
-                statsManager.updatePlayerStatistic(uuidPlayer, StatisticsManager.PlayerStatistics.CC_HIDER_COUNT, 1);
-            }
-
-            if (getMap().getSeekers().contains(uuidPlayer)) {
-                statsManager.updatePlayerStatistic(uuidPlayer, StatisticsManager.PlayerStatistics.CC_SEEKER_COUNT, 1);
-            }
-        });
-    }
-
-    /**
      * Assigne les rôles selon le mode de jeu
      */
     private void assignRoles() {
@@ -196,6 +177,25 @@ public class WaitingMapState extends MapState {
 
         String formattedTime = formatTime(bestTimer);
         getMap().sendMessage(Component.text(String.format("Le meilleur temps est de %s détenu par %s.", formattedTime, bestPlayer)));
+    }
+
+    /**
+     * Met à jour les statistiques de tous les joueurs
+     */
+    private void updatePlayerStatistics() {
+        StatisticsManager statsManager = GameAPI.getInstance().getStatisticsManager();
+
+        getMap().getPlayers().forEach(uuidPlayer -> {
+            statsManager.updatePlayerStatistic(uuidPlayer, StatisticsManager.PlayerStatistics.CC_GAMES_PLAYED, 1);
+
+            if (getMap().getHiders().contains(uuidPlayer)) {
+                statsManager.updatePlayerStatistic(uuidPlayer, StatisticsManager.PlayerStatistics.CC_HIDER_COUNT, 1);
+            }
+
+            if (getMap().getSeekers().contains(uuidPlayer)) {
+                statsManager.updatePlayerStatistic(uuidPlayer, StatisticsManager.PlayerStatistics.CC_SEEKER_COUNT, 1);
+            }
+        });
     }
 
     /**

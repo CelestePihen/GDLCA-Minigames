@@ -2,8 +2,8 @@ package fr.cel.cachecache.map.timer.game.wolf;
 
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.state.game.PlayingMapState;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -37,14 +37,14 @@ public class PlayingWolfMapTask extends BukkitRunnable {
         int seconds = map.getTimer() % 60;
 
         timerString = String.format("%02dmin%02ds", minutes, seconds);
-        map.getPlayers().forEach(pls -> Objects.requireNonNull(Bukkit.getPlayer(pls)).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerString)));
+        map.getPlayers().forEach(pls -> Objects.requireNonNull(Bukkit.getPlayer(pls)).sendActionBar(Component.text(timerString)));
 
         if (map.getTimer() == 590) {
             Player player = Bukkit.getPlayer(map.getSeekers().getFirst());
             if (player == null) return;
 
             player.teleport(map.getSpawnLoc());
-            map.sendMessage("&cLe loup " + player.getName() + " est libéré... Courez vite !");
+            map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré... Courez vite !", NamedTextColor.RED));
 
             wolfFree = true;
 
@@ -53,7 +53,7 @@ public class PlayingWolfMapTask extends BukkitRunnable {
         }
 
         if (wolfFree && map.getTimer() % 120 == 0) {
-            map.sendMessage(map.getGameManager().getPrefix() + "Le joueur le plus longtemps caché actuellement est " + map.getPlayerWithLowestTime().getName() + ".");
+            map.sendMessage(map.getGameManager().getPrefix().append(Component.text("Le joueur le plus longtemps caché actuellement est " + map.getPlayerWithLowestTime().getName() + ".")));
         }
 
     }

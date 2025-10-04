@@ -33,7 +33,7 @@ public class GroundItemsMapTask extends BukkitRunnable {
 
         Item droppedItem = randomLocation.getWorld().dropItem(randomLocation, rGroundItem.getItemStack());
         droppedItem.setUnlimitedLifetime(true);
-        map.getSpawnedGroundItems().add(droppedItem);
+        map.getSpawnedGroundItems().add(droppedItem.getUniqueId());
         map.sendMessage(Component.text("Un objet est apparu !"));
 
         return droppedItem;

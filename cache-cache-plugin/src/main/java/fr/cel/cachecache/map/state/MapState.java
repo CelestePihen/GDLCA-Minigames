@@ -5,6 +5,7 @@ import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.listeners.StateListenerProvider;
 import lombok.Getter;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MapState implements Listener {
 
@@ -31,6 +32,7 @@ public abstract class MapState implements Listener {
     /**
      * Return a new instance of StateListenerProvider (or null)
      */
+    @Nullable
     public abstract StateListenerProvider getListenerProvider();
     
 }

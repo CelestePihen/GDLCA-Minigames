@@ -19,13 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/**
- * Easily create itemstacks, without messing your hands.
- * <i>Note that if you do use this in one of your projects, leave this notice.</i>
- * <i>Please do credit me if you do use this in one of your projects.</i>
- * @author NonameSL
- */
-
 public final class ItemBuilder {
 
     private final ItemStack is;
@@ -68,11 +61,7 @@ public final class ItemBuilder {
      * @param dur The durability to set it to.
      */
     public ItemBuilder setDurability(int dur) {
-        ItemMeta meta = is.getItemMeta();
-        if (meta instanceof Damageable damageable) {
-            damageable.setDamage(dur);
-            is.setItemMeta(meta);
-        }
+        is.editMeta(Damageable.class, damageable -> damageable.setDamage(dur));
         return this;
     }
 
@@ -97,7 +86,7 @@ public final class ItemBuilder {
      * @param text The name to change it to with a String.
      * @deprecated
      */
-    @Deprecated( since = "1.3")
+    @Deprecated( since = "1.3", forRemoval = true)
     public ItemBuilder setDisplayName(String text) {
         ItemMeta im = is.getItemMeta();
         im.setDisplayName(ChatUtility.format(text));
@@ -119,7 +108,7 @@ public final class ItemBuilder {
      * @param text The name to change it to with a String.
      * @deprecated
      */
-    @Deprecated(since = "1.3")
+    @Deprecated(since = "1.3", forRemoval = true)
     public ItemBuilder setItemName(String text) {
         ItemMeta im = is.getItemMeta();
         im.setItemName(ChatUtility.format(text));
@@ -161,10 +150,7 @@ public final class ItemBuilder {
      * @param playerProfile The playerProfile.
      */
     public ItemBuilder setSkullOwner(PlayerProfile playerProfile) {
-        if (is.getItemMeta() instanceof SkullMeta im) {
-            im.setPlayerProfile(playerProfile);
-            is.setItemMeta(im);
-        }
+        is.editMeta(SkullMeta.class, skullMeta -> skullMeta.setPlayerProfile(playerProfile));
         return this;
     }
 
@@ -193,7 +179,7 @@ public final class ItemBuilder {
      * Re-sets the lore.
      * @param lores The lore to set it to.
      */
-    @Deprecated(since = "1.3")
+    @Deprecated(since = "1.3", forRemoval = true)
     public ItemBuilder setLore(String... lores) {
         ItemMeta im = is.getItemMeta();
         im.setLore(Arrays.asList(lores));
@@ -214,6 +200,7 @@ public final class ItemBuilder {
      * Re-sets the lore.
      * @param lores The lore to set it to.
      */
+    @Deprecated(since = "1.3", forRemoval = true)
     public ItemBuilder setLore(List<String> lores) {
         is.editMeta(itemMeta -> itemMeta.setLore(lores));
         return this;
@@ -232,7 +219,7 @@ public final class ItemBuilder {
      * Remove a lore line.
      * @param line The line to remove.
      */
-    @Deprecated(since = "1.3")
+    @Deprecated(since = "1.3", forRemoval = true)
     public ItemBuilder removeLoreLine(String line) {
         ItemMeta im = is.getItemMeta();
 
@@ -250,7 +237,7 @@ public final class ItemBuilder {
      * Remove a lore line.
      * @param index The index of the lore line to remove.
      */
-    @Deprecated(since = "1.3")
+    @Deprecated(since = "1.3", forRemoval = true)
     public ItemBuilder removeLoreLine(int index) {
         ItemMeta im = is.getItemMeta();
         List<String> lore = new ArrayList<>(im.getLore());
@@ -267,7 +254,7 @@ public final class ItemBuilder {
      * Add a lore line.
      * @param line The lore line to add.
      */
-    @Deprecated(since = "1.3")
+    @Deprecated(since = "1.3", forRemoval = true)
     public ItemBuilder addLoreLine(String line) {
         ItemMeta im = is.getItemMeta();
 

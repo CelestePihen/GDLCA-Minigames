@@ -23,10 +23,9 @@ public class InitMapState extends MapState {
         super.onDisable();
     }
 
-    @Nullable
     @Override
-    public StateListenerProvider getListenerProvider() {
+    public @Nullable StateListenerProvider getListenerProvider() {
         return null;
     }
-    
+
 }

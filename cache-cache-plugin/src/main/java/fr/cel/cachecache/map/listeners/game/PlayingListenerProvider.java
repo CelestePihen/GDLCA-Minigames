@@ -7,6 +7,7 @@ import fr.cel.cachecache.map.listeners.StateListenerProvider;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,11 +56,11 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void onDeathAndKill(PlayerDeathEvent event) {
+    private void onDeathAndKill(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (!map.isPlayerInMap(player)) return;
 
-        event.setDeathMessage("");
+        event.deathMessage(Component.empty());
 
         if (map.getTimer() < 30) {
             map.sendMessage(Component.text("Le joueur " + player.getName() + " est mort avant les 30 secondes d'attente. Il est donc ressucité."));
@@ -69,7 +70,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+    protected void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity entityDamager = event.getDamager();
 
         if (entityDamager instanceof Player damager && event.getEntity() instanceof Player damaged) {
@@ -90,7 +91,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    protected void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!map.isPlayerInMap(player)) return;
 
@@ -125,7 +126,6 @@ public class PlayingListenerProvider extends StateListenerProvider {
                 }
             }
         }
-        // Traversée musicale
 
         if (event.getHand() != EquipmentSlot.HAND) return;
 
@@ -134,23 +134,26 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return;
+        if (!itemMeta.hasItemName()) return;
 
         for (GroundItem groundItem : map.getAvailableGroundItems()) {
             if (groundItem == null) continue;
 
             ItemMeta itemMetaGI = groundItem.getItemStack().getItemMeta();
             if (itemMetaGI == null) continue;
-            if (!itemMeta.getItemName().equals(itemMetaGI.getItemName())) continue;
+
+            String itemName = ((TextComponent) itemMeta.itemName()).content();
+            String itemNameGI = ((TextComponent) itemMetaGI.itemName()).content();
+            if (!itemName.equals(itemNameGI)) continue;
 
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
                 // Succès Pas besoin
                 if (map.getTimer() <= 420 && map.getHiders().contains(player.getUniqueId())) {
-                    // s'il a utilisé un objet et que le timer est en dessous de 7min alors, on ajoute l'ID du joueur
+                    // s'il a utilisé un objet et que le timer est en dessous de 7min alors, on ajoute le joueur
                     // dans la liste des joueurs qui n'ont pas le droit d'avoir le succès
                     map.getCheckAdvancements().getPlayersPasBesoin().add(player.getUniqueId());
                 }
-                // Succès Pas besoin
 
                 groundItem.onInteract(player, map);
             }
@@ -158,27 +161,27 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    public void onPlayerDrop(PlayerDropItemEvent event) {
+    private void onPlayerDrop(PlayerDropItemEvent event) {
         if (!map.isPlayerInMap(event.getPlayer())) return;
         if (event.getItemDrop().getItemStack().getType() == Material.STICK) event.setCancelled(true);
     }
 
     @EventHandler
-    public void onPlayerPickup(EntityPickupItemEvent event) {
+    private void onPlayerPickup(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player) || !map.isPlayerInMap(player)) return;
 
         Item item = event.getItem();
         ItemMeta itemMeta = item.getItemStack().getItemMeta();
         if (itemMeta == null) return;
 
-        if (map.getSpawnedGroundItems().contains(item)) {
-            map.getSpawnedGroundItems().remove(item);
+        if (map.getSpawnedGroundItems().contains(item.getUniqueId())) {
+            map.getSpawnedGroundItems().remove(item.getUniqueId());
             player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré ").append(itemMeta.itemName())));
         }
     }
 
     @EventHandler
-    public void onEntityDamageEvent(EntityDamageEvent event) {
+    private void onEntityDamageEvent(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player) || !map.isPlayerInMap(player)) return;
 
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
@@ -193,7 +196,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
      * Permet de détecter si un joueur a activé un levier sur la Carte Bunker
      */
     @EventHandler
-    public void onLeverAction(BlockRedstoneEvent event) {
+    private void onLeverAction(BlockRedstoneEvent event) {
         Block block = event.getBlock();
         if (block.getType() != Material.LEVER || !block.getLocation().equals(map.getLeverLocation())) return;
         boolean isPowered = event.getNewCurrent() > 0;
@@ -213,10 +216,11 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     /**
-     * Cet événement sert pour le succès Monter ou descendre la montagne de sable sur la carte Désert, le succès Le pied sur le pouvoir ainsi que le succès "T'es pas essouflé ?"
+     * Cet événement sert pour le succès Monter ou descendre la montagne de sable sur la carte Désert,
+     * le succès Le pied sur le pouvoir, ainsi que le succès "T'es pas essouflé ?"
      */
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
+    private void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (!map.isPlayerInMap(player)) return;
 

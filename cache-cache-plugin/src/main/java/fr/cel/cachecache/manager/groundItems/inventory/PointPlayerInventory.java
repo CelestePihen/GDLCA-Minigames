@@ -22,7 +22,7 @@ public class PointPlayerInventory extends AbstractInventory {
     private final Player player;
 
     public PointPlayerInventory(CCMap map, Player player) {
-        super("Joueurs", 18);
+        super(Component.text("Pointer un joueur - Joueurs"), 18);
         this.map = map;
         this.player = player;
     }
@@ -36,7 +36,7 @@ public class PointPlayerInventory extends AbstractInventory {
             if (pl.getName().equals(player.getName())) continue;
             if (pl.getGameMode() == GameMode.SPECTATOR) continue;
 
-            inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setItemName(pl.getDisplayName()).setSkullOwner(Bukkit.createProfile(pl.getUniqueId())).toItemStack());
+            inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).itemName(pl.displayName()).setSkullOwner(pl.getPlayerProfile()).toItemStack());
         }
     }
 
@@ -45,7 +45,8 @@ public class PointPlayerInventory extends AbstractInventory {
      */
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
-        if (!map.isPlayerInMap(player)) return;
+        // utile ?
+        // if (!map.isPlayerInMap(player)) return;
         if (item.getType() == Material.AIR) return;
 
         Player target = Bukkit.getPlayer(itemName);
@@ -57,16 +58,16 @@ public class PointPlayerInventory extends AbstractInventory {
             GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(player, StatisticsManager.PlayerStatistics.CC_POINT_PLAYER_USAGE, 1);
             removeItem(player);
         } else {
-            player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Ce joueur n'est plus dans la carte ou s'est déconnecté(e). Merci de réouvrir le menu.")));
+            player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Joueur déconnecté. Mise à jour des joueurs disponibles...")));
+            player.closeInventory();
+            GameAPI.getInstance().getInventoryManager().openInventory(new PointPlayerInventory(map, player), player);
         }
-
     }
 
     private void removeItem(Player player) {
         player.closeInventory();
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        if (itemInHand.getAmount() == 1) player.getInventory().setItemInMainHand(null);
-        else itemInHand.setAmount(itemInHand.getAmount() - 1);
+        itemInHand.setAmount(itemInHand.getAmount() - 1);
     }
 
     @Override

@@ -4,7 +4,9 @@ import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.state.game.PlayingMapState;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -35,29 +37,29 @@ public abstract class StateListenerProvider implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    protected void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (map.isPlayerInMap(player)) map.removePlayer(player);
     }
 
     @EventHandler
-    public void onFoodChange(FoodLevelChangeEvent event) {
+    protected void onFoodChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player player && map.isPlayerInMap(player)) event.setFoodLevel(20);
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
+    protected void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (map.isPlayerInMap(player) && event.getMessage().startsWith("/hub")) map.removePlayer(player);
     }
 
     @EventHandler
-    public void onSwappedItem(PlayerSwapHandItemsEvent event) {
+    protected void onSwappedItem(PlayerSwapHandItemsEvent event) {
         if (map.isPlayerInMap(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    protected void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!map.isPlayerInMap(player)) return;
 
@@ -82,7 +84,7 @@ public abstract class StateListenerProvider implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    protected void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player) || !map.isPlayerInMap(player)) return;
 
         if (event.getCurrentItem() == null) return;
@@ -93,33 +95,32 @@ public abstract class StateListenerProvider implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+    protected void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (map.isPlayerInMap(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player damager && map.isPlayerInMap(damager) &&
-                (event.getEntity() instanceof Llama || event.getEntity() instanceof ArmorStand)) event.setCancelled(true);
+    protected void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player damager && map.isPlayerInMap(damager)) event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleDamage(VehicleDamageEvent event) {
+    protected void onVehicleDamage(VehicleDamageEvent event) {
         if ((event.getAttacker() instanceof Player player) && map.isPlayerInMap(player)) event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleCollision(VehicleEntityCollisionEvent event) {
+    protected void onVehicleCollision(VehicleEntityCollisionEvent event) {
         if ((event.getEntity() instanceof Player player) && map.isPlayerInMap(player)) event.setCancelled(true);
     }
 
     @EventHandler
-    public void onVehicleEnter(VehicleEnterEvent event) {
+    protected void onVehicleEnter(VehicleEnterEvent event) {
         if ((event.getEntered() instanceof Player player) && map.isPlayerInMap(player)) event.setCancelled(true);
     }
 
     @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent event) {
+    protected void onInventoryOpen(InventoryOpenEvent event) {
         if (!(event.getPlayer() instanceof Player player) || !map.isPlayerInMap(player) || !(event.getInventory().getHolder() instanceof Entity entity)) return;
 
         EntityType type = entity.getType();
