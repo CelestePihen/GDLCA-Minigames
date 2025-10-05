@@ -34,23 +34,20 @@ public class StateListenerProvider implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-        arena.removePlayer(player);
+        if (arena.isPlayerInArena(player)) arena.removePlayer(player);
     }
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         final Player player = event.getPlayer();
         if (!arena.isPlayerInArena(player)) return;
-        if (!event.getMessage().contains("/hub")) return;
-        arena.removePlayer(player);
+        if (event.getMessage().contains("/hub")) arena.removePlayer(player);
     }
 
     @EventHandler
     public void foodChange(FoodLevelChangeEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
-        event.setCancelled(true);
+        if (arena.isPlayerInArena(player)) event.setCancelled(true);
     }
 
     @EventHandler

@@ -21,8 +21,7 @@ public class TimeOverArenaState extends ArenaState {
     public void onEnable(ValoCraft main) {
         super.onEnable(main);
 
-        int timer = 10;
-        timeOverArenaTask = new TimeOverArenaTask(arena, timer);
+        timeOverArenaTask = new TimeOverArenaTask(arena);
         timeOverArenaTask.runTaskTimer(main, 0, 20);
     }
 

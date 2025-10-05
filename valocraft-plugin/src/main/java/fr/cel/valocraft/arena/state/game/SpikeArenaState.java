@@ -7,6 +7,7 @@ import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import fr.cel.valocraft.arena.state.provider.game.SpikeListenerProvider;
 import fr.cel.valocraft.arena.timer.game.SpikeArenaTask;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
 @Getter
 public class SpikeArenaState extends ArenaState {
@@ -21,17 +22,16 @@ public class SpikeArenaState extends ArenaState {
     public void onEnable(ValoCraft main) {
         super.onEnable(main);
 
-        arena.sendMessage("Spike posé !");
-        arena.sendTitle("Spike posé !", "");
+        arena.sendMessage(Component.text("Spike posé !"));
+        arena.sendTitle(Component.text("Spike posé !"), Component.empty());
 
-        spikeArenaTask = new SpikeArenaTask(arena, 45);
+        spikeArenaTask = new SpikeArenaTask(arena);
         spikeArenaTask.runTaskTimer(main, 0, 20);
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-
         if (spikeArenaTask != null) spikeArenaTask.cancel();
     }
 

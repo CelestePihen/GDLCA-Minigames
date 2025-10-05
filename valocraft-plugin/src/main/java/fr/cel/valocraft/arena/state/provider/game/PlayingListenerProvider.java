@@ -4,6 +4,7 @@ import fr.cel.valocraft.ValoCraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.game.SpikeArenaState;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,15 +39,13 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!arena.isPlayerInArena(player)) return;
             
-        if (event.getCause() == DamageCause.PROJECTILE) {
-            if (player.getGameMode() == GameMode.SURVIVAL) {
-                if (arena.getAttackers().getTeam().containsPlayer(player) && player.getInventory().contains(new ItemStack(Material.BREWING_STAND))) {
-                    player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.BREWING_STAND));
-                }
-                arena.eliminate(player);
+        if (event.getCause() == DamageCause.PROJECTILE && player.getGameMode() == GameMode.SURVIVAL) {
+            if (arena.getAttackers().team().containsPlayer(player) && player.getInventory().contains(Material.BREWING_STAND)) {
+                player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.BREWING_STAND));
             }
+
+            arena.eliminate(player);
         }
-            
     }
 
     @EventHandler
@@ -56,7 +55,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (event.getBlockAgainst().getType() != Material.GREEN_WOOL) {
             event.setCancelled(true);
         } else {
-            arena.sendTitle("Spike posé !", "");
+            arena.sendTitle(Component.text("Spike posé !"), Component.empty());
             arena.setSpike(event.getBlock());
             arena.setArenaState(new SpikeArenaState(arena));
         }
@@ -95,7 +94,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!arena.isPlayerInArena(player)) return;
-        if (arena.getDefenders().getTeam().containsPlayer(player) && event.getItem().getItemStack().getType() == Material.BREWING_STAND) {
+        if (arena.getDefenders().team().containsPlayer(player) && event.getItem().getItemStack().getType() == Material.BREWING_STAND) {
             event.setCancelled(true);
         }
     }

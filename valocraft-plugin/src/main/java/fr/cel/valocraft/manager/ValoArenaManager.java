@@ -1,16 +1,17 @@
 package fr.cel.valocraft.manager;
 
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.valocraft.ValoCraft;
-import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.ArenaConfig;
+import fr.cel.valocraft.arena.ValoArena;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ValoArenaManager {
 
@@ -49,7 +50,7 @@ public class ValoArenaManager {
         if (!folder.exists()) folder.mkdirs();
 
         if (folder.isDirectory()) {
-            for (File file : folder.listFiles((dir, name) -> name.endsWith(".yml"))) {
+            for (File file : Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".yml")))) {
                 String arenaName = file.getName().replace(".yml", "");
 
                 ArenaConfig arenaConfig = new ArenaConfig(main, arenaName);
@@ -59,7 +60,7 @@ public class ValoArenaManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[Valocraft] &fChargement de " + arenas.size() + " arènes ValoCraft "));
+        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix().append(Component.text("Chargement de " + arenas.size() + " arènes ValoCraft ")));
     }
 
 }

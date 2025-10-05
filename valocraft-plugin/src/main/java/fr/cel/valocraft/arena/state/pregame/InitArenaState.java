@@ -4,6 +4,7 @@ import fr.cel.valocraft.ValoCraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.ArenaState;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
+import org.jetbrains.annotations.Nullable;
 
 public class InitArenaState extends ArenaState {
 
@@ -22,7 +23,7 @@ public class InitArenaState extends ArenaState {
     }
 
     @Override
-    public StateListenerProvider getListenerProvider() {
+    public @Nullable StateListenerProvider getListenerProvider() {
         return null;
     }
     

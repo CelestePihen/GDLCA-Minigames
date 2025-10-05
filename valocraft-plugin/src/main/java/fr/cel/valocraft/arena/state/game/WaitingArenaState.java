@@ -8,6 +8,8 @@ import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import fr.cel.valocraft.arena.state.provider.game.WaitingListenerProvider;
 import fr.cel.valocraft.arena.timer.game.WaitingArenaTask;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -60,12 +62,12 @@ public class WaitingArenaState extends ArenaState {
     }
 
     private void teleportPlayersToSpawnTeam() {
-        for (String playerName : arena.getAttackers().getTeam().getPlayers()) {
+        for (String playerName : arena.getAttackers().team().getPlayers()) {
             Player player = Bukkit.getPlayer(playerName);
             if (player != null) player.teleport(arena.getAttackersSpawn());
         }
 
-        for (String playerName : arena.getDefenders().getTeam().getPlayers()) {
+        for (String playerName : arena.getDefenders().team().getPlayers()) {
             Player player = Bukkit.getPlayer(playerName);
             if (player != null) player.teleport(arena.getDefendersSpawn());
         }
@@ -92,24 +94,24 @@ public class WaitingArenaState extends ArenaState {
             player.getInventory().setItem(16, arrow);
         }
 
-        Optional<String> player = arena.getAttackers().getTeam().getPlayers().stream().findFirst();
+        Optional<String> player = arena.getAttackers().team().getPlayers().stream().findFirst();
         if (player.isPresent()) {
             Player firstAttacker = Bukkit.getPlayer(player.get());
-            if (firstAttacker != null) firstAttacker.getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).setItemName("Spike").toItemStack());
+            if (firstAttacker != null) firstAttacker.getInventory().addItem(new ItemBuilder(Material.BREWING_STAND).itemName(Component.text("Spike")).toItemStack());
         }
     }
 
     private void showGlobalRound() {
         for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) player.sendTitle("Manche " + arena.getGlobalRound(), "", 10, 70, 20);
+            if (player != null) player.showTitle(Title.title(Component.text("Manche " + arena.getGlobalRound()), Component.empty()));
         }
     }
 
     private void addPlayersToBossBar() {
         for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) arena.getBossBar().addPlayer(player);
+            if (player != null) player.showBossBar(arena.getBossBar());
         }
     }
 

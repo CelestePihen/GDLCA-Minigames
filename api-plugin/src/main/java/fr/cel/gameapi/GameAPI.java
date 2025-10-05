@@ -70,7 +70,7 @@ public final class GameAPI extends JavaPlugin {
         if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") || !getConfig().contains("database_test") ||
                 !getConfig().contains("username") || !getConfig().contains("password")) {
             getLogger().severe(ChatUtility.format("&cPlease configure the database settings in the config.yml file."));
-            getServer().shutdown();
+            // getServer().shutdown();
             return;
         }
 

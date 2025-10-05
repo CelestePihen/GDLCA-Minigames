@@ -7,16 +7,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class PlayingAreraTask extends BukkitRunnable {
 
     private final ValoArena arena;
-    private int timer;
+    private int timer = 100;
 
-    public PlayingAreraTask(ValoArena arena, int timer) {
+    public PlayingAreraTask(ValoArena arena) {
         this.arena = arena;
-        this.timer = timer;
     }
 
     @Override
     public void run() {
-        
         if (timer <= 0) {
             cancel();
             arena.addRoundDefender();
@@ -26,7 +24,6 @@ public class PlayingAreraTask extends BukkitRunnable {
 
         timer--;
         arena.setLevel(timer);
-
     }
     
 }

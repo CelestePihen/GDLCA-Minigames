@@ -29,38 +29,35 @@ public class ValoTeam {
 
     public void addPlayer(Player player) {
         if (!players.contains(player.getUniqueId())) {
-            role.getTeam().addPlayer(player);
+            role.team().addPlayer(player);
             players.add(player.getUniqueId());
         }
     }
 
     public void removePlayer(Player player) {
         if (players.contains(player.getUniqueId())) {
-            role.getTeam().removePlayer(player);
+            role.team().removePlayer(player);
             players.remove(player.getUniqueId());
         }
     }
 
     public void clearPlayers() {
-        players.forEach(uuid -> role.getTeam().removePlayer(Bukkit.getPlayer(uuid)));
+        players.forEach(uuid -> role.team().removePlayer(Bukkit.getPlayer(uuid)));
         players.clear();
     }
 
     public void setRole(Role role) {
-        players.forEach(uuid -> this.role.getTeam().removePlayer(Bukkit.getPlayer(uuid)));
+        players.forEach(uuid -> this.role.team().removePlayer(Bukkit.getPlayer(uuid)));
         this.role = role;
-        players.forEach(uuid -> this.role.getTeam().addPlayer(Bukkit.getPlayer(uuid)));
+        players.forEach(uuid -> this.role.team().addPlayer(Bukkit.getPlayer(uuid)));
     }
 
     public boolean isAllTeamInSpec() {
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-
-            if (player.getGameMode() != GameMode.SPECTATOR) {
-                return false;
+            if (player != null) {
+                if (player.getGameMode() != GameMode.SPECTATOR) return false;
             }
-
         }
         return true;
     }

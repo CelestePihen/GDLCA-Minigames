@@ -27,8 +27,7 @@ public class StartingArenaState extends ArenaState {
 
         setSpawnPoint();
 
-        int timer = 10;
-        arenaStartingTask = new StartingArenaTask(arena, timer);
+        arenaStartingTask = new StartingArenaTask(arena);
         arenaStartingTask.runTaskTimer(main, 0, 20);
     }
 

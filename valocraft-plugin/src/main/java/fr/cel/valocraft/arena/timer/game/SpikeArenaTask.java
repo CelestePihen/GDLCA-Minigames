@@ -6,11 +6,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class SpikeArenaTask extends BukkitRunnable {
 
     private final ValoArena arena;
-    private int timer;
+    private int timer = 45;
 
-    public SpikeArenaTask(ValoArena arena, int timer) {
+    public SpikeArenaTask(ValoArena arena) {
         this.arena = arena;
-        this.timer = timer;
     }
 
     @Override
