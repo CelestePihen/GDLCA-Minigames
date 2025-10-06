@@ -1,13 +1,14 @@
 package fr.cel.decorationsplugin.manager;
 
 import fr.cel.decorationsplugin.DecorationsPlugin;
-import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import java.util.Map;
 @Getter
 public final class DecorationsManager {
 
-    private final fr.cel.decorationsplugin.DecorationsPlugin main;
+    private final DecorationsPlugin main;
     private final Map<String, Decoration> decorations = new HashMap<>();
 
     public DecorationsManager(fr.cel.decorationsplugin.DecorationsPlugin main) {
@@ -33,11 +34,9 @@ public final class DecorationsManager {
         File[] files = folder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (files == null) return;
 
-        for (File file : files) {
-            loadDecoration(file);
-        }
+        for (File file : files) loadDecoration(file);
 
-        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix() + ChatUtility.format(decorations.size() + " décorations chargées", ChatUtility.WHITE));
+        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(decorations.size() + " décorations chargées")));
     }
 
     private void loadDecoration(File file) {
@@ -52,11 +51,11 @@ public final class DecorationsManager {
 
             decorations.put(name, new Decoration(name, displayName, sizeX, sizeY, sizeZ, sittable));
         } catch (Exception e) {
-            Bukkit.getLogger().warning("Erreur dans le fichier de décoration " + file.getName() + " : " + e.getMessage());
+            main.getLogger().warning("Erreur dans le fichier de décoration " + file.getName() + " : " + e.getMessage());
         }
     }
 
-    public Decoration getFromItem(ItemStack item) {
+    public @Nullable Decoration getFromItem(ItemStack item) {
         if (item == null || item.getItemMeta() == null) return null;
 
         NamespacedKey itemModel = item.getItemMeta().getItemModel();

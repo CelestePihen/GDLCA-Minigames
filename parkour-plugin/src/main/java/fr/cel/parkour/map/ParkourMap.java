@@ -1,9 +1,11 @@
 package fr.cel.parkour.map;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.parkour.manager.GameManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,8 +23,6 @@ import java.util.UUID;
 
 public class ParkourMap implements Listener {
     
-    private final GameManager gameManager;
-
     @Getter private final String nameArea;
     @Getter private final String displayName;
 
@@ -36,7 +36,6 @@ public class ParkourMap implements Listener {
         this.spawnLoc = spawnLoc;
         this.players = new HashSet<>();
 
-        this.gameManager = gameManager;
         gameManager.getMain().getServer().getPluginManager().registerEvents(this, gameManager.getMain());
     }
 
@@ -45,11 +44,11 @@ public class ParkourMap implements Listener {
 
         GameAPI.getInstance().getPlayerManager().removePlayerInHub(player);
         players.add(player.getUniqueId());
-        sendMessage(player.getDisplayName() + " a rejoint le parkour !");
+        sendMessage(player.displayName().append(Component.text(" a rejoint le parkour !")));
 
         player.setRespawnLocation(spawnLoc, true);
         player.teleport(this.getSpawnLoc());
-        player.sendTitle(ChatUtility.format("&6Parkour"), this.getDisplayName(), 10, 70, 20);
+        player.showTitle(Title.title(Component.text("Parkour", NamedTextColor.GOLD), Component.text(this.displayName)));
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
     }
@@ -73,30 +72,26 @@ public class ParkourMap implements Listener {
     @EventHandler
     private void quit(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (event.getMessage().contains("/hub")) {
-            if (!this.isPlayerInMap(player)) this.removePlayer(player);
-        }
+        if (isPlayerInMap(player) && event.getMessage().contains("/hub")) this.removePlayer(player);
     }
 
     @EventHandler
     private void fallDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!this.isPlayerInMap(player)) return;
-        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
+        if (isPlayerInMap(player) && event.getCause() == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
     }
 
     @EventHandler
     private void onFood(FoodLevelChangeEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (this.isPlayerInMap(player)) event.setCancelled(true);
+        if (isPlayerInMap(player)) event.setCancelled(true);
     }
 
-    private void sendMessage(String message) {
-        message = gameManager.getPrefix() + ChatUtility.format(message);
+    private void sendMessage(Component message) {
+        message = GameManager.getPrefix().append(message);
         for (UUID pls : this.getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
-            if (player == null) continue;
-            player.sendMessage(message);
+            if (player != null) player.sendMessage(message);
         }
     }
 

@@ -1,14 +1,16 @@
 package fr.cel.decorationsplugin.listener;
 
+import fr.cel.decorationsplugin.DecorationsPlugin;
 import fr.cel.decorationsplugin.manager.Chair;
 import fr.cel.decorationsplugin.manager.ChairManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.type.Stairs;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -41,7 +43,7 @@ public class ChairListener implements Listener {
 
         Chair chair = chairManager.getChairAt(blockLocation);
         if (chair != null && chair.isOccupied()) {
-            player.sendMessage("§cCette chaise est déjà occupée !");
+            player.sendMessage(DecorationsPlugin.getPrefix().append(Component.text("Cette chaise est déjà occupée...", NamedTextColor.RED)));
         } else {
             chairManager.sitPlayer(player, blockLocation);
         }
@@ -134,7 +136,7 @@ public class ChairListener implements Listener {
         double offsetX = -direction.getModX();
         double offsetZ = -direction.getModZ();
 
-        // Pour les diagonales, normalise la distance pour éviter d'aller trop loin
+        // Pour les diagonales, on normalise la distance pour éviter d'aller trop loin
         if (offsetX != 0 && offsetZ != 0) {
             offsetX *= 0.8;
             offsetZ *= 0.8;

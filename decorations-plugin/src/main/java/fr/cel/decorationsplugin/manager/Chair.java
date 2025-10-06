@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.UUID;
 
-public class Chair {
+public final class Chair {
 
     @Getter private final UUID chairId;
     private final Location location;
@@ -62,7 +62,6 @@ public class Chair {
 
         armorStand.setVisible(false);
         armorStand.setGravity(false);
-        armorStand.setCanPickupItems(false);
         armorStand.setRemoveWhenFarAway(false);
         armorStand.setInvulnerable(true);
         armorStand.setCustomName("Chair_" + chairId.toString());
@@ -78,9 +77,7 @@ public class Chair {
      */
     public void removeArmorStand() {
         if (armorStand != null && armorStand.isValid()) {
-            if (seatedPlayer != null) {
-                standUp();
-            }
+            if (seatedPlayer != null) standUp();
             armorStand.remove();
             armorStand = null;
         }
@@ -108,9 +105,8 @@ public class Chair {
     public void standUp() {
         if (seatedPlayer != null) {
             Player player = Bukkit.getPlayer(seatedPlayer);
-            if (armorStand != null && armorStand.isValid() && player != null) {
-                armorStand.removePassenger(player);
-            }
+            if (armorStand != null && armorStand.isValid() && player != null) armorStand.removePassenger(player);
+
             seatedPlayer = null;
         }
     }

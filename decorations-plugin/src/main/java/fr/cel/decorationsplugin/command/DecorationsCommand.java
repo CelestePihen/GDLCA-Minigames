@@ -5,8 +5,10 @@ import fr.cel.decorationsplugin.inventory.DecorationInventory;
 import fr.cel.decorationsplugin.manager.DecorationsManager;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.command.AbstractCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class DecorationsCommand extends AbstractCommand {
     }
 
     @Override
-    protected void onExecute(CommandSender sender, String[] args) {
+    protected void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         Player player = (Player) sender;
 
         if (args.length == 0) {
@@ -30,17 +32,16 @@ public class DecorationsCommand extends AbstractCommand {
 
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             manager.loadAll();
-            player.sendMessage(DecorationsPlugin.getPrefix() + "Les décorations ont été rechargées avec succès.");
+            player.sendMessage(DecorationsPlugin.getPrefix().append(Component.text("Les décorations ont été rechargées avec succès.")));
         }
     }
 
     @Override
-    protected List<String> onTabComplete(Player player, String[] args) {
+    protected List<String> onTabComplete(Player player, String @NotNull [] args) {
         if (args.length == 1) {
             return List.of("reload");
         }
-
-        return List.of();
+        return null;
     }
 
 }

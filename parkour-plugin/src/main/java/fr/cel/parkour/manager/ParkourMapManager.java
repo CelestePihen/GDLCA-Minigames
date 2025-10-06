@@ -1,16 +1,17 @@
 package fr.cel.parkour.manager;
 
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.parkour.Parkour;
 import fr.cel.parkour.map.MapConfig;
 import fr.cel.parkour.map.ParkourMap;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ParkourMapManager {
 
@@ -44,7 +45,7 @@ public class ParkourMapManager {
         if (!folder.exists()) folder.mkdirs();
 
         if (folder.isDirectory()) {
-            for (File file : folder.listFiles((dir, name) -> name.endsWith(".yml"))) {
+            for (File file : Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".yml")))) {
                 String name = file.getName().replace(".yml", "");
 
                 MapConfig config = new MapConfig(name, main);
@@ -54,7 +55,7 @@ public class ParkourMapManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix() + ChatUtility.format("Chargement de " + maps.size() + " cartes Parkour ", ChatUtility.WHITE));
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + maps.size() + " cartes Parkour")));
     }
 
 }

@@ -2,6 +2,9 @@ package fr.cel.pvp.arena;
 
 import fr.cel.gameapi.utils.LocationUtility;
 import fr.cel.pvp.PVP;
+import fr.cel.pvp.manager.GameManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -31,7 +34,7 @@ public class ArenaConfig {
                 config.load(file);
 
                 if (!config.contains("displayName")) {
-                    Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix() + "§cAttention ! Un fichier n'étant pas une carte est dans le dossier arenas");
+                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Attention ! Un fichier n'étant pas une carte est dans le dossier arenas", NamedTextColor.RED)));
                     return null;
                 }
 

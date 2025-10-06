@@ -1,16 +1,17 @@
 package fr.cel.pvp.manager;
 
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.pvp.PVP;
 import fr.cel.pvp.arena.ArenaConfig;
 import fr.cel.pvp.arena.PVPArena;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class PVPArenaManager {
 
@@ -43,16 +44,16 @@ public class PVPArenaManager {
         if (!folder.exists()) folder.mkdirs();
 
         if (folder.isDirectory()) {
-            for (File file : folder.listFiles((dir, name) -> name.endsWith(".yml"))) {
+            for (File file : Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".yml")))) {
                 String arenaName = file.getName().replace(".yml", "");
                 ArenaConfig arenaConfig = new ArenaConfig(main, arenaName);
                 PVPArena arena = arenaConfig.getArena();
+
                 if (arena != null) arenas.put(arenaName, arena);
             }
-
         }
 
-        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix() + ChatUtility.format("Chargement de " + arenas.size() + " arènes PVP ", ChatUtility.WHITE));
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + arenas.size() + " arènes PVP ")));
     }
 
 }

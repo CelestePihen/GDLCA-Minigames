@@ -1,13 +1,15 @@
 package fr.cel.pvp.commands;
 
 import fr.cel.gameapi.command.AbstractCommand;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.pvp.arena.PVPArena;
 import fr.cel.pvp.manager.GameManager;
 import fr.cel.pvp.manager.PVPArenaManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +26,7 @@ public class PVPCommands extends AbstractCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length == 0) {
             sendHelp(sender);
             return;
@@ -32,41 +34,41 @@ public class PVPCommands extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("list")) {
             if (arenaManager.getArenas().isEmpty()) {
-                sender.sendMessage(gameManager.getPrefix() + "Aucune arène a été installée.");
+                sender.sendMessage(GameManager.getPrefix().append(Component.text("Aucune arène a été installée.")));
                 return;
             }
 
             arenaManager.getArenas().values().forEach(arena -> 
-                    sender.sendMessage(gameManager.getPrefix() + "Arène " + arena.getDisplayName()));
+                    sender.sendMessage(GameManager.getPrefix().append(Component.text("Arène " + arena.getDisplayName()))));
             return;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(gameManager.getPrefix() + "Les fichiers de configuration des arènes PVP ont été rechargées.");
+            sender.sendMessage(GameManager.getPrefix().append(Component.text("Les fichiers de configuration des arènes PVP ont été rechargées.")));
             gameManager.reloadArenaManager();
             return;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(gameManager.getPrefix() + "Vous devez etre un joueur pour effectuer cette commande.");
+            sender.sendMessage(GameManager.getPrefix().append(Component.text("Vous devez etre un joueur pour effectuer cette commande.")));
             return;
         }
 
         if (!arenaManager.isPlayerInArena(player)) {
-            player.sendMessage(gameManager.getPrefix() + "Vous n'êtes pas dans une arène.");
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Vous n'êtes pas dans une arène.")));
             return;
         }
 
         if (args[0].equalsIgnoreCase("listplayer")) {
             PVPArena arena = arenaManager.getArenaByPlayer(player);
 
-            StringBuilder sb = new StringBuilder();
+            Component message = GameManager.getPrefix().append(Component.text("Joueurs : "));
             for (UUID pls : arena.getPlayers()) {
                 Player pl = Bukkit.getPlayer(pls);
-                if (pl != null) sb.append(pl.getName()).append(", ");
+                if (pl != null) message = message.append(Component.text(pl.getName() + ", "));
             }
 
-            player.sendMessage(gameManager.getPrefix() + "Joueurs : " + sb);
+            player.sendMessage(message);
         }
     }
 
@@ -79,11 +81,11 @@ public class PVPCommands extends AbstractCommand {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(" ");
-        sender.sendMessage(ChatUtility.format("[Aide pour les commandes du PVP]", ChatUtility.GOLD));
-        sender.sendMessage("/pvp reload : Recharge la configuration (les maps)");
-        sender.sendMessage("/pvp list : Envoie la liste des maps");
-        sender.sendMessage("/pvp listplayer : Envoie la liste des joueurs dans la carte où vous êtes");
+        sender.sendMessage(Component.text(" "));
+        sender.sendMessage(Component.text("[Aide pour les commandes du PVP]", NamedTextColor.GOLD));
+        sender.sendMessage(Component.text("/pvp reload : Recharge la configuration (les maps)"));
+        sender.sendMessage(Component.text("/pvp list : Envoie la liste des maps"));
+        sender.sendMessage(Component.text("/pvp listplayer : Envoie la liste des joueurs dans la carte où vous êtes"));
     }
 
 }

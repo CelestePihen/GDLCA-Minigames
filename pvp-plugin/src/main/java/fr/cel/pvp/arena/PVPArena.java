@@ -1,10 +1,12 @@
 package fr.cel.pvp.arena;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
 import fr.cel.pvp.manager.GameManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -25,8 +27,6 @@ import java.util.UUID;
 
 public class PVPArena implements Listener {
     
-    private final GameManager gameManager;
-
     private final String nameArena;
     @Getter private final String displayName;
 
@@ -47,7 +47,6 @@ public class PVPArena implements Listener {
 
         this.players = new ArrayList<>();
 
-        this.gameManager = gameManager;
         gameManager.getMain().getServer().getPluginManager().registerEvents(this, gameManager.getMain());
     }
 
@@ -59,12 +58,12 @@ public class PVPArena implements Listener {
 
         player.setRespawnLocation(spawnLoc, true);
         player.teleport(spawnLoc);
-        player.sendTitle(ChatUtility.format("&6PVP"), displayName, 10, 70, 20);
+        player.showTitle(Title.title(Component.text("PVP", NamedTextColor.GOLD), Component.text(displayName)));
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
         giveWeapons(player);
 
-        sendMessage(player.getDisplayName() + " a rejoint l'arène !");
+        sendMessage(player.displayName().append(Component.text(" a rejoint l'arène !")));
     }
 
     public void removePlayer(Player player) {
@@ -76,8 +75,8 @@ public class PVPArena implements Listener {
         return players.contains(player.getUniqueId());
     }
 
-    private void sendMessage(String message) {
-        message = gameManager.getPrefix() + ChatUtility.format(message);
+    private void sendMessage(Component message) {
+        message = GameManager.getPrefix().append(message);
         for (UUID pls : getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
             if (player != null) player.sendMessage(message);
@@ -85,15 +84,15 @@ public class PVPArena implements Listener {
     }
 
     public void giveWeapons(Player player) {
-        ItemStack diamond_sword = new ItemBuilder(Material.DIAMOND_SWORD).setItemName("Lame sacrée de Ludwig").setUnbreakable().toItemStack();
+        ItemStack diamondSword = new ItemBuilder(Material.DIAMOND_SWORD).itemName(Component.text("Lame sacrée de Ludwig")).setUnbreakable().toItemStack();
         ItemStack bow = new ItemBuilder(Material.BOW).addEnchant(Enchantment.INFINITY, 1).setUnbreakable().toItemStack();
         ItemStack arrow = new ItemBuilder(Material.ARROW).toItemStack();
 
         player.getInventory().setItem(17, arrow);
-        player.getInventory().addItem(diamond_sword, bow);
+        player.getInventory().addItem(diamondSword, bow);
 
         if (tridentActivated) {
-            ItemStack trident = new ItemBuilder(Material.TRIDENT).setItemName("Trident de Poséidon")
+            ItemStack trident = new ItemBuilder(Material.TRIDENT).itemName(Component.text("Trident de Poséidon"))
                     .addEnchant(Enchantment.RIPTIDE, 3).setUnbreakable().toItemStack();
             player.getInventory().addItem(trident);
         }
@@ -108,8 +107,7 @@ public class PVPArena implements Listener {
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (!isPlayerInArena(player) || !event.getMessage().contains("/hub")) return;
-        removePlayer(player);
+        if (isPlayerInArena(player) && event.getMessage().contains("/hub")) removePlayer(player);
     }
 
     @EventHandler

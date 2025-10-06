@@ -2,6 +2,8 @@ package fr.cel.decorationsplugin.listener;
 
 import fr.cel.decorationsplugin.DecorationsPlugin;
 import fr.cel.decorationsplugin.manager.Decoration;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,6 +45,7 @@ public class DecorationsListener implements Listener {
                 ItemMeta itemMeta = itemFrame.getItem().getItemMeta();
                 if (itemMeta != null && itemMeta.getItemModel() != null) {
                     Decoration decoration = main.getDecorationsManager().getFromItem(itemFrame.getItem());
+                    if (decoration == null) continue;
 
                     for (double x = blockLocation.getBlockX() - decoration.sizeX(); x < blockLocation.getBlockX() + decoration.sizeX(); x++) {
                         for (double y = blockLocation.getBlockY() - decoration.sizeY(); y < blockLocation.getBlockY() + decoration.sizeY(); y++) {
@@ -80,7 +83,7 @@ public class DecorationsListener implements Listener {
         event.setCancelled(true);
 
         if (player.getGameMode() != GameMode.CREATIVE) {
-            player.sendMessage(fr.cel.decorationsplugin.DecorationsPlugin.getPrefix() + "§cVous devez être en mode créatif pour utiliser les décorations.");
+            player.sendMessage(DecorationsPlugin.getPrefix().append(Component.text("Vous devez être en mode créatif pour utiliser les décorations.", NamedTextColor.RED)));
             return;
         }
 

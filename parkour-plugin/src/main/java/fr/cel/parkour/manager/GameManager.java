@@ -1,18 +1,18 @@
 package fr.cel.parkour.manager;
 
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.parkour.Parkour;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 @Getter
 public class GameManager {
-    
+
+    @Getter private static final Component prefix = Component.text("[Parkour]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
     private final Parkour main;
-    private final String prefix;
 
     public GameManager(Parkour main) {
         this.main = main;
-        this.prefix = ChatUtility.format("&6[Parkour] &r");
     }
 
     public void reloadMapManager() {

@@ -1,7 +1,7 @@
 package fr.cel.decorationsplugin.manager;
 
 import fr.cel.decorationsplugin.DecorationsPlugin;
-import fr.cel.gameapi.utils.ChatUtility;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,15 +77,13 @@ public final class ChairManager {
      * @return Retourne vrai si la chaise a été supprimée, faux s'il n'y a aucune chaise à cet emplacement
      */
     public boolean removeChair(Location location) {
-        Location blockLoc = location.getBlock().getLocation();
-        Chair chair = chairs.remove(blockLoc);
+        Chair chair = chairs.remove(location.getBlock().getLocation());
+        if (chair == null) return false;
 
-        if (chair != null) {
-            if (chair.isOccupied()) seatedPlayers.remove(chair.getSeatedPlayer());
-            chair.removeArmorStand();
-            return true;
-        }
-        return false;
+        if (chair.isOccupied()) seatedPlayers.remove(chair.getSeatedPlayer());
+        chair.removeArmorStand();
+        saveChairs();
+        return true;
     }
 
     /**
@@ -148,7 +147,7 @@ public final class ChairManager {
      * @param player Le joueur assis
      * @return Retourne l'instance de la chaise sur laquelle est assis le joueur
      */
-    public Chair getChairAt(Player player) {
+    public @Nullable Chair getChairAt(Player player) {
         return seatedPlayers.get(player.getUniqueId());
     }
 
@@ -157,7 +156,7 @@ public final class ChairManager {
      * @param location L'emplacement de la chaise
      * @return Retourne l'instance de la chaise à l'emplacement donné
      */
-    public Chair getChairAt(Location location) {
+    public @Nullable Chair getChairAt(Location location) {
         return chairs.get(location.getBlock().getLocation());
     }
 
@@ -223,7 +222,7 @@ public final class ChairManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix() + ChatUtility.format(chairs.size() + " chaises chargées !", ChatUtility.WHITE));
+        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(chairs.size() + " chaises chargées !")));
     }
 
     /**

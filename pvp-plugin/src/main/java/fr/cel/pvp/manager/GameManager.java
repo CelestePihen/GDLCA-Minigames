@@ -1,18 +1,19 @@
 package fr.cel.pvp.manager;
 
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.pvp.PVP;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 @Getter
 public class GameManager {
-    
+
+    @Getter private static final Component prefix = Component.text("[PVP]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
+
     private final PVP main;
-    private final String prefix;
 
     public GameManager(PVP main) {
         this.main = main;
-        this.prefix = ChatUtility.format("&6[PVP] &r");
     }
 
     /**

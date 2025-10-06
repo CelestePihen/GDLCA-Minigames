@@ -1,6 +1,7 @@
 package fr.cel.decorationsplugin.manager;
 
 import fr.cel.gameapi.utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 public record Decoration(String name, String displayName, int sizeX, int sizeY, int sizeZ, boolean sittable) {
 
     public ItemStack getDisplayItem() {
-        return new ItemBuilder(Material.PAPER).setItemName(displayName()).setItemModel(name()).toItemStack();
+        return new ItemBuilder(Material.PAPER).itemName(Component.text(displayName())).setItemModel(name()).toItemStack();
     }
 
 }
