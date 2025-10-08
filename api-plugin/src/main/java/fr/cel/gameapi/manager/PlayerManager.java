@@ -26,34 +26,34 @@ public class PlayerManager {
     private final Location spawnLocation = new Location(Bukkit.getWorld("world"), 264.5, 68, 90.5, 180F, 0F);
 
     /**
-     * Ajoute le PlayerData du joueur dans la Map
-     * @param player Le joueur qui a rejoint
+     * Adds the PlayerData of a player to the map
+     * @param player The player who joined
      */
     public void addPlayerData(Player player) {
         playersData.put(player.getUniqueId(), new PlayerData(player));
     }
 
     /**
-     * Permet de retirer le PlayerData du joueur de la Map
-     * @param player Le joueur qui a quitté
+     * Removes the PlayerData of a player from the map
+     * @param player The player who left
      */
     public void removePlayerData(Player player) {
         playersData.remove(player.getUniqueId());
     }
 
     /**
-     * Permet d'obtenir le PlayerData du joueur
-     * @param player Le joueur
-     * @return Retourne le PlayerData
+     * Gets the PlayerData of a player
+     * @param player The player
+     * @return Returns the PlayerData of the player
      */
     public PlayerData getPlayerData(Player player) {
         return playersData.get(player.getUniqueId());
     }
 
-    // TODO faire un Event
+    // TODO: make an Event
     /**
-     * Permet d'envoyer le joueur au Hub
-     * @param player Le joueur à envoyer
+     * Sends a player to the Hub
+     * @param player The player to send
      */
     public void sendPlayerToHub(Player player) {
         playersInHub.add(player.getUniqueId());
@@ -87,17 +87,17 @@ public class PlayerManager {
     }
 
     /**
-     * Retire le joueur dans la liste des joueurs dans le Monde Normal
-     * @param player Le joueur à retirer
+     * Removes a player from the Hub players set
+     * @param player The player to remove
      */
     public void removePlayerInHub(Player player) {
         playersInHub.remove(player.getUniqueId());
     }
 
     /**
-     * Détecte si le joueur est dans le Hub
-     * @param player Le joueur à détecter
-     * @return Renvoie si le joueur est dans le Hub ou pas
+     * Checks if a player is currently in the Hub
+     * @param player The player to check
+     * @return Returns true if the player is in the Hub, false otherwise
      */
     public boolean containsPlayerInHub(Player player) {
         return playersInHub.contains(player.getUniqueId());

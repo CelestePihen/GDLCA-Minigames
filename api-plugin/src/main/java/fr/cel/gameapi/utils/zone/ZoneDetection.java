@@ -16,14 +16,15 @@ public class ZoneDetection implements Listener, IZone {
     private final Location minCorner, maxCorner;
     private final JavaPlugin main;
 
-    private List<UUID> playersInGame;
     @Getter private final Map<UUID, Boolean> playerInside = new HashMap<>();
 
+    private List<UUID> playersInGame;
+
     /**
-     * La Zone de détection de joueur sert à détecter si un joueur est dans une zone
-     * @param minCorner La position du 1er coin de la zone
-     * @param maxCorner La position du 2ème coin de la zone
-     * @param main L'instance  du plugin
+     * Player detection zone: detects whether a player is inside the defined area.
+     * @param minCorner The first corner of the zone
+     * @param maxCorner The opposite corner of the zone
+     * @param main The plugin instance
      */
     public ZoneDetection(Location minCorner, Location maxCorner, JavaPlugin main) {
         this.minCorner = minCorner;
@@ -32,21 +33,19 @@ public class ZoneDetection implements Listener, IZone {
     }
 
     /**
-     * Active l'événement de détection
+     * Activates the detection event for all players in the list.
      */
+    @Override
     public void startChecking(List<UUID> playersInGame) {
         this.playersInGame = new ArrayList<>(playersInGame);
-
-        for (UUID uuid : this.playersInGame) {
-            playerInside.putIfAbsent(uuid, false);
-        }
-
+        for (UUID uuid : this.playersInGame) playerInside.putIfAbsent(uuid, false);
         main.getServer().getPluginManager().registerEvents(this, main);
     }
 
     /**
-     * Arrête la vérification dans la zone
+     * Stops checking the zone and clears tracking data.
      */
+    @Override
     public void stopChecking() {
         HandlerList.unregisterAll(this);
         playerInside.clear();
@@ -57,25 +56,7 @@ public class ZoneDetection implements Listener, IZone {
     private void onPlayerMove(PlayerMoveEvent event) {
         final Player player = event.getPlayer();
         final UUID uuid = player.getUniqueId();
-        if (!this.playersInGame.contains(uuid)) return;
-        playerInside.put(uuid, isInZone(player.getLocation()));
-    }
-
-    /**
-     * Vérifie si une position (celle du joueur, un bloc, etc) est dans une zone
-     * @see Location
-     */
-    private boolean isInZone(Location loc) {
-        double minX = Math.min(minCorner.getX(), maxCorner.getX());
-        double maxX = Math.max(minCorner.getX(), maxCorner.getX());
-        double minY = Math.min(minCorner.getY(), maxCorner.getY());
-        double maxY = Math.max(minCorner.getY(), maxCorner.getY());
-        double minZ = Math.min(minCorner.getZ(), maxCorner.getZ());
-        double maxZ = Math.max(minCorner.getZ(), maxCorner.getZ());
-
-        return loc.getX() >= minX && loc.getX() <= maxX
-                && loc.getY() >= minY && loc.getY() <= maxY
-                && loc.getZ() >= minZ && loc.getZ() <= maxZ;
+        if (this.playersInGame.contains(uuid)) playerInside.put(uuid, ZoneUtils.isInZone(player.getLocation(), minCorner, maxCorner));
     }
 
 }

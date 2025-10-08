@@ -32,7 +32,7 @@ public class DatabaseManager {
     }
 
     /**
-     * Initialise la Base de Données
+     * Init the database
      */
     public void init() {
         HikariConfig config = new HikariConfig();
@@ -49,7 +49,8 @@ public class DatabaseManager {
     }
 
     /**
-     * Permet d'obtenir la Connection à la Base de Données
+     * Return the Connection to the database
+     * @return The Connection to the database
      */
     public Connection getConnection() throws SQLException {
         if (this.hikariDataSource == null) this.init();
@@ -58,18 +59,16 @@ public class DatabaseManager {
     }
 
     /**
-     * Déconnecte la Base de Données
+     * Disconnect the database
      */
     public void disconnect() {
         HikariDataSource hikariDataSource = this.hikariDataSource;
-        if (hikariDataSource != null) {
-            if (!hikariDataSource.isClosed()) hikariDataSource.close();
-        }
+        if (hikariDataSource != null && !hikariDataSource.isClosed()) hikariDataSource.close();
     }
 
     /**
-     * Créer un nouveau compte pour un joueur dans la Base de Données
-     * @param player Le joueur qui se connecte pour la première fois
+     * Create a new account for a player in the database
+     * @param player The player that connects for the first time
      */
     public void createAccount(Player player) {
         if (!hasAccount(player)) {
@@ -91,8 +90,8 @@ public class DatabaseManager {
     }
 
     /**
-     * Ajoute le joueur dans toutes les tables des statistiques
-     * @param player Le joueur à ajouter dans les statistiques
+     * Add the player to all statistics tables
+     * @param player The player to add in the statistics
      */
     private void createStatistics(Player player) {
         String ps = "INSERT INTO hub_statistics (uuid_player) VALUES (?);";
@@ -137,9 +136,9 @@ public class DatabaseManager {
     }
 
     /**
-     * Permet de vérifier si un joueur a déjà un compte dans la Base de Données
-     * @param player Le joueur à vérifier
-     * @return Retourne true si le joueur a déjà un compte et false s'il n'en a pas
+     * Verify if the player has already an account in the database
+     * @param player The player to verify
+     * @return True if the player has already an account. False if not
      */
     public boolean hasAccount(Player player) {
         String ps = "SELECT uuid_player FROM players WHERE uuid_player = ?;";

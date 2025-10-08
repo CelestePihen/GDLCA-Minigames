@@ -17,7 +17,7 @@ public final class RPUtils {
         }
     }
 
-    // TODO le transformer avec des fichiers de config
+    // TODO transform it with config files ?
     @Getter
     public enum CustomMusic {
         // Custom Music

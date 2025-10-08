@@ -12,19 +12,18 @@ import java.util.*;
 public class ZoneStay implements IZone {
 
     private final JavaPlugin main;
-
     private final Location minCorner, maxCorner;
 
-    private List<UUID> playersInGame;
     @Getter private final Map<UUID, Integer> playersInZone = new HashMap<>();
 
+    private List<UUID> playersInGame;
     private BukkitRunnable runnable;
 
     /**
-     * Cette zone sert à détecter combien de secondes un joueur est resté dans celle-ci
-     * @param minCorner La position du 1er coin de la zone
-     * @param maxCorner La position du 2ème coin de la zone
-     * @param main L'instance du plugin
+     * Stay zone: tracks how many seconds a player stays inside the area.
+     * @param minCorner The first corner of the zone
+     * @param maxCorner The opposite corner of the zone
+     * @param main The plugin instance
      */
     public ZoneStay(Location minCorner, Location maxCorner, JavaPlugin main) {
         this.minCorner = minCorner;
@@ -33,7 +32,7 @@ public class ZoneStay implements IZone {
     }
 
     /**
-     * Vérifie en boucle si des joueurs sont dans la zone
+     * Starts checking players and increments their time in the zone every second.
      */
     @Override
     public void startChecking(List<UUID> playersInGame) {
@@ -49,7 +48,8 @@ public class ZoneStay implements IZone {
                 for (UUID uuid : ZoneStay.this.playersInGame) {
                     Player player = Bukkit.getPlayer(uuid);
                     if (player == null) continue;
-                    if (isInZone(player.getLocation())) playersInZone.put(uuid, playersInZone.get(uuid) + 1);
+                    if (ZoneUtils.isInZone(player.getLocation(), minCorner, maxCorner))
+                        playersInZone.put(uuid, playersInZone.get(uuid) + 1);
                 }
             }
         };
@@ -58,29 +58,12 @@ public class ZoneStay implements IZone {
     }
 
     /**
-     * Arrête la vérification dans la zone
+     * Stops checking the zone and clears tracking data.
      */
     public void stopChecking() {
         if (runnable != null) runnable.cancel();
         if (playersInGame != null) playersInGame.clear();
         playersInZone.clear();
-    }
-
-    /**
-     * Vérifie si une position (celle du joueur, un bloc, etc) est dans une zone
-     * @see org.bukkit.Location
-     */
-    private boolean isInZone(Location loc) {
-        double minX = Math.min(minCorner.getX(), maxCorner.getX());
-        double maxX = Math.max(minCorner.getX(), maxCorner.getX());
-        double minY = Math.min(minCorner.getY(), maxCorner.getY());
-        double maxY = Math.max(minCorner.getY(), maxCorner.getY());
-        double minZ = Math.min(minCorner.getZ(), maxCorner.getZ());
-        double maxZ = Math.max(minCorner.getZ(), maxCorner.getZ());
-
-        return loc.getX() >= minX && loc.getX() <= maxX
-                && loc.getY() >= minY && loc.getY() <= maxY
-                && loc.getZ() >= minZ && loc.getZ() <= maxZ;
     }
 
 }

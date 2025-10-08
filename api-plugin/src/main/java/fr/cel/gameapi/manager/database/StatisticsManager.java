@@ -16,19 +16,15 @@ public class StatisticsManager {
 
     private final GameAPI main;
 
-    /**
-     * Constructeur pour initialiser le gestionnaire de statistiques
-     * @param main Instance principale du plugin GameAPI
-     */
     public StatisticsManager(GameAPI main) {
         this.main = main;
     }
 
     /**
-     * Permet d'ajouter un montant à une statistique d'un joueur
-     * @param player Le joueur à qui modifier la statistique
-     * @param statistic La statistique à modifier
-     * @param amount Le montant à ajouter à la statistique
+     * Adds a value to a player's statistic.
+     * @param player The player whose statistic to modify
+     * @param statistic The statistic to update
+     * @param amount The amount to add
      */
     public void updatePlayerStatistic(Player player, PlayerStatistics statistic, int amount) {
         String ps = "UPDATE " + statistic.getTableName() + " SET " + statistic.getColumnName() + " = " + statistic.getColumnName() + " + ? WHERE uuid_player = ?";
@@ -43,10 +39,10 @@ public class StatisticsManager {
     }
 
     /**
-     * Permet d'ajouter un montant à une statistique d'un joueur
-     * @param uuidPlayer L'UUID du joueur à qui modifier la statistique
-     * @param statistic La statistique à modifier
-     * @param amount Le montant à ajouter à la statistique
+     * Adds a value to a player's statistic using UUID.
+     * @param uuidPlayer The UUID of the player
+     * @param statistic The statistic to update
+     * @param amount The amount to add
      */
     public void updatePlayerStatistic(UUID uuidPlayer, PlayerStatistics statistic, int amount) {
         String ps = "UPDATE " + statistic.getTableName() + " SET " + statistic.getColumnName() + " = " + statistic.getColumnName() + " + ? WHERE uuid_player = ?";
@@ -61,9 +57,10 @@ public class StatisticsManager {
     }
 
     /**
-     * Permet d'obtenir le montant de la statistique d'un joueur
-     * @param player Le joueur à qui obtenir la statistique
-     * @param tableName Le nom de la table de la statistique
+     * Retrieves a player's statistic.
+     * @param player The player
+     * @param tableName The statistic to retrieve
+     * @return The statistic value
      */
     public int getPlayerStatistic(Player player, PlayerStatistics tableName) {
         String ps = "SELECT " + tableName.getColumnName() + " FROM " + tableName.getTableName() + " WHERE uuid_player = ?";
@@ -119,9 +116,9 @@ public class StatisticsManager {
         private final String columnName;
 
         /**
-         * Constructeur pour initialiser le nom de la table et le nom de la colonne
-         * @param tableName Nom de la table dans la base de données
-         * @param columnName Nom de la colonne dans la table
+         * Constructor to initialize table and column names.
+         * @param tableName Database table name
+         * @param columnName Column name in the table
          */
         PlayerStatistics(String tableName, String columnName) {
             this.tableName = tableName;
@@ -130,10 +127,11 @@ public class StatisticsManager {
     }
 
     /**
-     * Enregistre une partie de Cache-Cache dans la base de données
-     * @param mapName Nom de la carte
-     * @param hiders UUIDs des joueurs
-     * @param seekers UUIDs des chercheurs de départ
+     * Records a Cache-Cache game in the database.
+     * @param mapName Name of the map
+     * @param hiders UUIDs of hiders
+     * @param seekers UUIDs of seekers
+     * @return The generated game ID
      */
     public int addCCGameStatistic(String mapName, List<UUID> hiders, List<UUID> seekers) {
         int generatedId = -1;
@@ -160,8 +158,8 @@ public class StatisticsManager {
     }
 
     /**
-     * Met à jour le temps d'une partie terminée de Cache-Cache
-     * @param gameId Identifiant de la partie
+     * Updates the end time of a completed Cache-Cache game.
+     * @param gameId The ID of the game
      */
     public void updateCCGameEnd(int gameId) {
         String sql = "UPDATE cc_maps_statistics SET timestamp_end = NOW() WHERE id = ?;";
@@ -177,10 +175,11 @@ public class StatisticsManager {
     }
 
     /**
-     * Enregistre une partie de Valocraft dans la base de données
-     * @param mapName Nom de la carte
-     * @param attackersUUID UUIDs des attaquants de départ
-     * @param defendersUUID UUIDs des défenseurs de départ
+     * Records a Valocraft game in the database.
+     * @param mapName Name of the map
+     * @param attackersUUID UUIDs of attackers
+     * @param defendersUUID UUIDs of defenders
+     * @return The generated game ID
      */
     public int addValoGameStatistic(String mapName, List<UUID> attackersUUID, List<UUID> defendersUUID) {
         int generatedId = -1;
@@ -207,10 +206,10 @@ public class StatisticsManager {
     }
 
     /**
-     * Met à jour une partie terminée de Valocraft
-     * @param gameId Identifiant de la partie
-     * @param attackersScore Le score des attaquants
-     * @param defendersScore Le score des défenseurs
+     * Updates a completed Valocraft game in the database.
+     * @param gameId The ID of the game
+     * @param attackersScore Score of the attackers
+     * @param defendersScore Score of the defenders
      */
     public void updateValoGameEnd(int gameId, int attackersScore, int defendersScore) {
         String sql = "UPDATE valo_maps_statistics SET timestamp_end = NOW(), attackers_score = ?, defenders_score = ? WHERE id = ?;";

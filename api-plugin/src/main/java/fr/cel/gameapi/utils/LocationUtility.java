@@ -9,15 +9,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class LocationUtility {
 
     /**
-     * Convertit une chaîne de caractères en une instance de Location.
+     * Converts a string into a Location instance.
      *
-     * @param string La chaîne de caractères contenant les coordonnées, formatée sous la forme "x,y,z".
-     * @return Une instance de Location correspondant aux coordonnées spécifiées.
+     * @param string The string containing the coordinates, formatted as "x,y,z".
+     * @return A Location instance corresponding to the specified coordinates.
      *
-     * @throws NumberFormatException Si l'une des parties de la chaîne ne peut pas être convertie en double.
-     * @throws ArrayIndexOutOfBoundsException Si la chaîne n'a pas le bon format (moins de trois parties).
+     * @throws NumberFormatException If any part of the string cannot be converted to a double.
+     * @throws ArrayIndexOutOfBoundsException If the string is incorrectly formatted (less than three parts).
      */
-    public Location parseStringToLoc(YamlConfiguration config, String string) {
+    public Location parseStringToLoc(String string) {
         String[] parsedLoc = string.split(",");
 
         double x = Double.parseDouble(parsedLoc[0]);
@@ -28,12 +28,12 @@ public class LocationUtility {
     }
 
     /**
-     * Convertit une chaîne de caractères de configuration en une instance de Location.
+     * Converts a configuration string into a Location instance.
      *
-     * @param location La chaîne de caractères représentant la clé de configuration des coordonnées.
-     * @return Une instance de Location correspondant aux coordonnées spécifiées.
+     * @param location The string representing the configuration key for the coordinates.
+     * @return A Location instance corresponding to the specified coordinates.
      *
-     * @throws NumberFormatException Si l'une des parties de la chaîne ne peut pas être convertie en double.
+     * @throws NumberFormatException If any part of the string cannot be converted to a double.
      */
     public Location parseConfigToLoc(YamlConfiguration config, String location) {
         double x = config.getDouble(location + ".x");
@@ -44,21 +44,21 @@ public class LocationUtility {
     }
 
     /**
-     * Convertit une Location en chaîne de caractères.
+     * Converts a Location into a string.
      *
-     * @param loc La Location contenant les coordonnées
-     * @return Une chaîne de caractères correspondant aux coordonnées spécifiées.
+     * @param loc The Location containing the coordinates.
+     * @return A string representing the specified coordinates.
      */
     public static String parseLocToString(Location loc) {
         return loc.getX() + "," + loc.getY() + "," + loc.getZ();
     }
 
     /**
-     * Met une Location en chaîne de caractères dans une configuration.
+     * Stores a Location as a string in a configuration.
      *
-     * @param config La configuration où vous voulez mettre la Location
-     * @param path Le chemin où vous voulez mettre la Location
-     * @param loc La Location contenant les coordonnées
+     * @param config The configuration where the Location should be stored.
+     * @param path The path in the configuration where the Location should be stored.
+     * @param loc The Location containing the coordinates.
      */
     public static void parseLocToConfig(YamlConfiguration config, String path, Location loc) {
         config.set(path + ".x", loc.getX());

@@ -21,92 +21,92 @@ public class GameTeam {
     }
 
     /**
-     * Ajoute un joueur à l'équipe
-     * @param player Le joueur à ajouter
+     * Adds a player to the team.
+     * <p>Note: Adding a player to this team will remove them from any other team on the same scoreboard.</p>
+     * @param player The player to add. Must be online.
      */
     public void addPlayer(Player player) {
-        if (containsPlayer(player)) return;
+        if (player == null || !player.isOnline() || containsPlayer(player)) return;
         team.addPlayer(player);
     }
 
     /**
-     * Retire un joueur de l'équipe
-     * @param player Le joueur à retirer
+     * Removes a player from the team.
+     * @param player The player to remove. Must be online.
      */
     public void removePlayer(Player player) {
-        if (!containsPlayer(player)) return;
+        if (player == null || !player.isOnline() || !containsPlayer(player)) return;
         team.removeEntry(player.getName());
     }
 
     /**
-     * Enlève tous les joueurs de l'équipe
+     * Removes all players from the team
      */
     public void clearTeam() {
-        for (String entry : team.getEntries()) {
-            team.removeEntry(entry);
-        }
+        for (String entry : team.getEntries()) team.removeEntry(entry);
     }
 
     /**
-     * Vérifie si un joueur est dans l'équipe
-     * @param player Le joueur à vérifier
-     * @return Retourne true si le joueur est dans l'équipe
+     * Checks if a player is in the team
+     * @param player The player to check
+     * @return Returns true if the player is in the team
      */
     public boolean containsPlayer(Player player) {
+        if (player == null || !player.isOnline()) return false;
         return team.hasPlayer(player);
     }
 
     /**
-     * Récupère tous les noms des joueurs dans l'équipe
-     * @return Retourne tous les noms des joueurs
+     * Gets all player names in the team
+     * @return Returns a set of all player names
      */
     public Set<String> getPlayers() {
         return team.getEntries();
     }
 
     /**
-     * Change le comportement des collisions avec les joueurs
-     * @param optionStatus Le status
+     * Sets the collision behavior with players
+     * @param optionStatus The collision status
      */
     public void setCollisionRule(Team.OptionStatus optionStatus) {
         team.setOption(Team.Option.COLLISION_RULE, optionStatus);
     }
 
     /**
-     * Change la visibilité des messages de mort
-     * @param optionStatus Le status
+     * Sets the visibility of death messages
+     * @param optionStatus The status for death message visibility
      */
     public void setDeathMessageVisibility(Team.OptionStatus optionStatus) {
         team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, optionStatus);
     }
 
     /**
-     * Change la visibilité du NameTag (nom du joueur au dessus de sa tête)
-     * @param optionStatus Le status
+     * Sets the visibility of the NameTag (player name above the head)
+     * @param optionStatus The status for NameTag visibility
      */
     public void setNameTagVisibility(Team.OptionStatus optionStatus) {
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, optionStatus);
     }
 
     /**
-     * Définit si les membres de l'équipe peuvent voir les joueurs invisibles
-     * @param canSeeFriendlyInvisibles Si true, alors les joueurs d'une même équipe pourront voir leurs coéquipiers
+     * Sets whether team members can see invisible players
+     * @param canSeeFriendlyInvisibles If true, teammates can see each other while invisible
      */
     public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
         team.setCanSeeFriendlyInvisibles(canSeeFriendlyInvisibles);
     }
 
     /**
-     * Définit si les joueurs d'une même équipe peuvent se taper ou pas
-     * @param allowFriendlyFire Si true, alors les joueurs d'une même équipe pourront se taper dessus
+     * Sets whether players on the same team can hit each other
+     * @param allowFriendlyFire If true, teammates can damage each other
      */
     public void setAllowFriendlyFire(boolean allowFriendlyFire) {
         team.setAllowFriendlyFire(allowFriendlyFire);
     }
 
     /**
-     * Donne le nombre de joueurs dans l'équipe
-     * @return Retourne le nombre de joueurs
+     * Gets the number of players in the team
+     * @return Returns the number of players
      */
     public int getSize() {
         return team.getSize();

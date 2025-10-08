@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
 
 @UtilityClass
+@Deprecated(since = "1.3")
 public final class ChatUtility {
 
     public final String BLACK = "&0";

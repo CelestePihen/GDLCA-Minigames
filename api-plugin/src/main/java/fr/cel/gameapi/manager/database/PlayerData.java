@@ -18,8 +18,8 @@ public class PlayerData {
     }
 
     /**
-     * Permet d'ajouter des coins au joueur
-     * @param amount Le montant à donner au joueur
+     * Adds coins to the player.
+     * @param amount The amount of coins to add
      */
     public void addCoins(double amount) {
         Connection connection = null;
@@ -45,8 +45,8 @@ public class PlayerData {
     }
 
     /**
-     * Permet de retirer des coins au joueur
-     * @param amount Le montant à retirer au joueur
+     * Removes coins from the player.
+     * @param amount The amount of coins to remove
      */
     public void removeCoins(double amount) {
         Connection connection = null;
@@ -72,8 +72,8 @@ public class PlayerData {
     }
 
     /**
-     * Permet d'obtenir les coins au joueur
-     * @return Retourne le nombre de coins
+     * Retrieves the amount of coins the player has.
+     * @return The number of coins
      */
     public double getCoins() {
         Connection connection = null;
@@ -107,8 +107,8 @@ public class PlayerData {
     }
 
     /**
-     * Permet de savoir si le joueur accepte les demandes d'amis
-     * @return Retourne vrai si le joueur accepte les demandes d'amis et faux s'il ne les accepte pas
+     * Checks if the player allows friend requests.
+     * @return true if the player allows friend requests, false otherwise
      */
     public boolean isAllowingFriends() {
         Connection connection = null;
@@ -142,8 +142,8 @@ public class PlayerData {
     }
 
     /**
-     * Permet de changer si le joueur accepte les demandes d'amis
-     * @param isAllowing true si le joueur accepte les demandes d'amis et false si le joueur ne veut pas
+     * Sets whether the player allows friend requests.
+     * @param isAllowing true if the player allows friend requests, false otherwise
      */
     public void setAllowFriends(boolean isAllowing) {
         Connection connection = null;

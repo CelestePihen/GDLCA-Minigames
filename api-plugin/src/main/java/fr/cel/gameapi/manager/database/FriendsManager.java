@@ -19,9 +19,9 @@ public class FriendsManager {
     }
 
     /**
-     * Permet d'ajouter en ami 2 joueurs / Ne marche que si les 2 joueurs sont connectés
-     * @param player Le joueur qui a fait la demande
-     * @param friend Le joueur qui a reçu la demande
+     * Adds two players as friends. Only works if both players are online.
+     * @param player The player who sent the request
+     * @param friend The player who received the request
      */
     public void addFriend(Player player, Player friend) {
         Connection connection = null;
@@ -48,9 +48,9 @@ public class FriendsManager {
     }
 
     /**
-     * Permet de retirer un ami d'un joueur
-     * @param player Le joueur qui veut enlever de ses amis le joueur
-     * @param friend L'ami qui ne va plus être l'ami du joueur
+     * Removes a friend from a player's friends list.
+     * @param player The player who wants to remove a friend
+     * @param friend The friend to remove
      */
     public void removeFriend(Player player, Player friend) {
         Connection connection = null;
@@ -60,8 +60,8 @@ public class FriendsManager {
             connection = main.getDatabase().getConnection();
             preparedStatement = connection.prepareStatement(ps);
 
-            preparedStatement.setString(1, player.getName());
-            preparedStatement.setString(2, friend.getName());
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.setString(2, friend.getUniqueId().toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -77,9 +77,9 @@ public class FriendsManager {
     }
 
     /**
-     * Permet d'avoir la liste des UUID des amis d'un joueur
-     * @param player Le joueur
-     * @return Retourne la liste d'amis
+     * Gets the list of UUIDs of a player's friends.
+     * @param player The player
+     * @return Returns a list of friends' UUIDs
      */
     public List<String> getFriendsUUIDList(Player player) {
         List<String> friendsList = new ArrayList<>();
@@ -116,13 +116,13 @@ public class FriendsManager {
     }
 
     /**
-     * Permet de savoir si le joueur est ami avec un autre joueur
-     * @param player Le joueur à savoir s'il est ami avec un autre joueur
-     * @param target L'autre joueur à savoir s'il est ami avec ce joueur
-     * @return Retourne vrai s'ils sont amis et faux s'ils ne le sont pas
+     * Checks if a player is friends with another player.
+     * @param player The player to check
+     * @param target The other player to check
+     * @return Returns true if they are friends, false otherwise
      */
     public boolean isFriendWith(Player player, Player target) {
-        return getFriendsUUIDList(player).contains(target.getName());
+        return getFriendsUUIDList(player).contains(target.getUniqueId().toString());
     }
 
 }

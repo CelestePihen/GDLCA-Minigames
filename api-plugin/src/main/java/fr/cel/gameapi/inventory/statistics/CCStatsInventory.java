@@ -17,10 +17,6 @@ public class CCStatsInventory extends AbstractInventory {
 
     private final Player player;
 
-    /**
-     * Constructeur de l'inventaire des statistiques Cache-Cache.
-     * @param player Le joueur pour lequel les statistiques sont affichées.
-     */
     public CCStatsInventory(Player player) {
         super(Component.text("Statistiques - Cache-Cache"), 27);
         this.player = player;

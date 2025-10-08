@@ -17,9 +17,9 @@ public abstract class AbstractInventory {
     private Inventory inv;
 
     /**
-     * Constructeur de l'inventaire abstrait
-     * @param inventoryName Le nom de l'inventaire
-     * @param size La taille de l'inventaire
+     * Constructor for the abstract inventory
+     * @param inventoryName The name of the inventory
+     * @param size The size of the inventory
      */
     public AbstractInventory(Component inventoryName, int size) {
         this.inventoryName = inventoryName;
@@ -27,7 +27,7 @@ public abstract class AbstractInventory {
     }
 
     /**
-     * Permet de créer l'inventaire
+     * Creates the inventory
      */
     public void createInventory() {
         inv = Bukkit.createInventory(null, size, inventoryName);
@@ -42,35 +42,35 @@ public abstract class AbstractInventory {
     }
 
     /**
-     * Permet de mettre un item au slot spécifié
-     * @param slot Le slot où vous voulez que l'item va
-     * @param itemStack L'itemstack de l'item
+     * Sets an item in the specified slot
+     * @param slot The slot where you want to place the item
+     * @param itemStack The ItemStack to set
      */
     protected void setItem(int slot, ItemStack itemStack) {
         inv.setItem(slot, itemStack);
     }
 
     /**
-     * Permet d'ajouter ou pas des vitres dans l'inventaire
-     * @return Vrai si vous en voulez, faux si vous n'en voulez pas
+     * Determines whether to add glass panes to the inventory
+     * @return True if glass panes should be added, false otherwise
      */
     protected boolean makeGlassPane() {
         return true;
     }
 
     /**
-     * Permet d'ajouter les items dans l'inventaire
-     * Cette méthode doit être implémentée dans les classes qui étendent cette classe abstraite
-     * @param inv L'inventaire dans lequel vous voulez ajouter les items
+     * Adds items to the inventory
+     * This method must be implemented in classes extending this abstract class
+     * @param inv The inventory to add items to
      */
     protected abstract void addItems(Inventory inv);
 
     /**
-     * Permet de gérer l'interaction avec l'inventaire
-     * Cette méthode doit être implémentée dans les classes qui étendent cette classe abstraite
-     * @param player Le joueur qui interagit avec l'inventaire
-     * @param itemName Le nom de l'item sur lequel le joueur a cliqué
-     * @param item L'item sur lequel le joueur a cliqué
+     * Handles interaction with the inventory
+     * This method must be implemented in classes extending this abstract class
+     * @param player The player interacting with the inventory
+     * @param itemName The name of the item clicked
+     * @param item The ItemStack that was clicked
      */
     public abstract void interact(Player player, String itemName, ItemStack item);
 

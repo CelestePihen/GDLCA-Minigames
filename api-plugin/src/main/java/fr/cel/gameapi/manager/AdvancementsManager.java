@@ -7,19 +7,21 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class AdvancementsManager {
 
     /**
-     * Donne un succès au joueur. N'envoye le message qu'aux joueurs dans la liste uuids.
-     * @param player          L'instance du joueur à qui vous voulez donner le succès
-     * @param advancement     L'identifiant du succès à donner
-     * @param uuids UUIDs des joueurs à qui montrer le succès
+     * Gives an advancement to a player. Sends the message only to players in the given UUID list.
+     * @param player The player instance to give the advancement to
+     * @param advancement The identifier of the advancement to give
+     * @param uuids UUIDs of players to show the advancement message to
      */
-    public void giveAdvancement(Player player, Advancements advancement, List<UUID> uuids) {
+    public void giveAdvancement(@NotNull Player player, @NotNull Advancements advancement, List<UUID> uuids) {
         NamespacedKey key = NamespacedKey.fromString("gdlca:" + advancement.getCategory() + "/" + advancement.name().toLowerCase());
         if (key == null) return;
 
@@ -37,26 +39,26 @@ public class AdvancementsManager {
             for (UUID uuid : uuids) {
                 Player pl = Bukkit.getPlayer(uuid);
                 if (pl != null) pl.sendMessage(Component.text(player.getName() + " a obtenu le succès ")
-                        .append(a.getDisplay().title()));
+                        .append(Objects.requireNonNull(a.getDisplay()).title()));
             }
         }
     }
 
     /**
-     * Donne un succès au joueur
-     * @param player L'instance du joueur à qui vous voulez donner le succès
-     * @param advancement L'identifiant du succès à donner
+     * Gives an advancement to a player
+     * @param player The player instance to give the advancement to
+     * @param advancement The identifier of the advancement to give
      */
-    public void giveAdvancement(Player player, Advancements advancement) {
+    public void giveAdvancement(@NotNull Player player, @NotNull Advancements advancement) {
         giveAdvancement(player, advancement, null);
     }
 
     /**
-     * Retire le succès au joueur
-     * @param player L'instance du joueur à qui vous voulez retirer le succès
-     * @param advancement L'identifiant du succès à retirer
+     * Removes an advancement from a player
+     * @param player The player instance to remove the advancement from
+     * @param advancement The identifier of the advancement to remove
      */
-    public void removeAdvancement(Player player, Advancements advancement) {
+    public void removeAdvancement(@NotNull Player player, @NotNull Advancements advancement) {
         NamespacedKey key = NamespacedKey.fromString("gdlca:" + advancement.getCategory() + "/" + advancement.name().toLowerCase());
         if (key == null) return;
 
@@ -92,7 +94,7 @@ public class AdvancementsManager {
 
         private final String category;
 
-        Advancements(String category) {
+        Advancements(@NotNull String category) {
             this.category = category;
         }
     }

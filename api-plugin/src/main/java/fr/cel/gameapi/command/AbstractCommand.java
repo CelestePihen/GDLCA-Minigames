@@ -54,19 +54,25 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     /**
-     * Ce qui doit être exécuter quand le joueur fait la commande
-     * @param sender L'envoyeur qui exécute la commande
-     * @param args Les arguments que l'envoyeur a mis
+     * This method is executed when the sender runs the command.
+     * @param sender The sender executing the command
+     * @param args The arguments provided by the sender
      */
     protected abstract void onExecute(@NotNull CommandSender sender, String @NotNull [] args);
 
+    /**
+     * Provides possible tab-completion arguments for the player when typing the command.
+     * @param player The player requesting tab-completion
+     * @param args The current arguments typed by the player
+     * @return A list of possible arguments for tab-completion
+     */
     protected abstract List<String> onTabComplete(Player player, String[] args);
 
     /**
-     * Vérifie si un joueur est en ligne
-     * @param player Le joueur à vérifier
-     * @param sender L'envoyer
-     * @return Retourne true si le joueur est présent. Si non, alors envoie un message au sender et retourne false
+     * Checks if a player is online.
+     * @param player The player to check
+     * @param sender The sender to notify if the player is null or offline
+     * @return Returns true if the player is online; otherwise, sends a message to the sender and returns false
      */
     @Contract("null, _ -> false; !null, _ -> true")
     protected boolean isPlayerOnline(@Nullable Player player, CommandSender sender) {
@@ -78,9 +84,9 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     /**
-     * Permet d'envoyer un message à la personne qui a exécuté la commande avec le préfixe
-     * @param sender L'envoyeur qui va recevoir le message
-     * @param message Le message (pour mettre de la couleur, vous pouvez utiliser l'énumération disponible dans ChatUtility)
+     * Sends a message to the sender with the server prefix.
+     * @param sender The recipient of the message
+     * @param message The message to send
      */
     protected void sendMessageWithPrefix(CommandSender sender, Component message) {
         sender.sendMessage(GameAPI.getPrefix().append(message));

@@ -28,18 +28,18 @@ public class GameScoreboard {
     }
 
     /**
-     * Crée une nouvelle équipe pour le scoreboard (GameTeam)
-     * @param teamName Le nom de l'équipe
-     * @param color La couleur de l'équipe
-     * @return Retourne la GameTeam
+     * Creates a new team for the scoreboard (GameTeam)
+     * @param teamName The name of the team
+     * @param color The color of the team
+     * @return Returns the created GameTeam
      */
     public GameTeam registerTeam(String teamName, NamedTextColor color) {
         return new GameTeam(teamName, color, this.scoreboard);
     }
 
     /**
-     * Ajoute le joueur au scoreboard
-     * @param player Le joueur à ajouter
+     * Adds a player to the scoreboard
+     * @param player The player to add
      */
     public void addPlayer(Player player) {
         playersUUID.add(player.getUniqueId());
@@ -47,15 +47,15 @@ public class GameScoreboard {
     }
 
     /**
-     * Retire le joueur du scoreboard et le remet sur le scoreboard général
-     * @param player Le joueur à retirer
+     * Removes a player from the scoreboard and sets their scoreboard back to the main scoreboard
+     * @param player The player to remove
      */
     public void removePlayer(Player player) {
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
     /**
-     * Réinitialise le scoreboard en enlevant tous les joueurs du scoreboard (et de leur équipe)
+     * Resets the scoreboard by removing all players and clearing their teams
      */
     public void resetScoreboard() {
         for (GameTeam gameTeam : this.gameTeams) {

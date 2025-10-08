@@ -5,6 +5,7 @@ import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.listeners.InventoryListener;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +21,11 @@ public class InventoryManager {
     }
 
     /**
-     * Montre un nouvelle inventaire de type AbstractInventory à un joueur
-     * @param inventory L'inventaire de type AbstractInventory
-     * @param player Le joueur à qui montrer l'inventaire
+     * Opens a new AbstractInventory for a player
+     * @param inventory The AbstractInventory instance to open
+     * @param player The player to show the inventory to
      */
-    public void openInventory(AbstractInventory inventory, Player player) {
-        if (inventory == null || player == null) return;
-
+    public void openInventory(@NotNull AbstractInventory inventory, @NotNull Player player) {
         inventory.createInventory();
         player.openInventory(inventory.getInv());
         inventoryDataMap.put(player.getUniqueId(), inventory);

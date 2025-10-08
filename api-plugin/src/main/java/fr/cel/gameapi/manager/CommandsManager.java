@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandsManager {
 
@@ -16,11 +17,11 @@ public class CommandsManager {
     }
 
     /**
-     * Permet de créer une nouvelle commande
-     * @param commandName Le nom de la commande
-     * @param abstractCommand La classe de la commande
+     * Registers a new command
+     * @param commandName The name of the command
+     * @param abstractCommand The command class to register
      */
-    public void addCommand(String commandName, AbstractCommand abstractCommand) {
+    public void addCommand(String commandName, @NotNull AbstractCommand abstractCommand) {
         PluginCommand pluginCommand = main.getCommand(commandName);
 
         if (pluginCommand == null) {

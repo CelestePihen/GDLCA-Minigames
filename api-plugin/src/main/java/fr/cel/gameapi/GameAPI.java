@@ -11,7 +11,6 @@ import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.manager.database.DatabaseManager;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.StatisticsManager;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.RPUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -69,7 +68,7 @@ public final class GameAPI extends JavaPlugin {
         // détecte si le config.yml est proprement configuré
         if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") || !getConfig().contains("database_test") ||
                 !getConfig().contains("username") || !getConfig().contains("password")) {
-            getLogger().severe(ChatUtility.format("&cPlease configure the database settings in the config.yml file."));
+            getLogger().severe("Please configure the database settings in the config.yml file.");
             // getServer().shutdown();
             return;
         }
@@ -84,7 +83,7 @@ public final class GameAPI extends JavaPlugin {
         try {
             this.database.init();
         } catch (Exception e) {
-            getLogger().severe(ChatUtility.format("&cAn error occurred while connecting to the database. Please check your configuration." + e.getMessage()));
+            getLogger().severe("An error occurred while connecting to the database. Please check your configuration." + e.getMessage());
             getServer().shutdown();
         }
     }
