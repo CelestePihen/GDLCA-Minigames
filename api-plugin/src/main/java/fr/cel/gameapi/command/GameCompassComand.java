@@ -1,6 +1,5 @@
 package fr.cel.gameapi.command;
 
-import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -26,7 +25,7 @@ public class GameCompassComand extends AbstractCommand {
         final Player player = (Player) sender;
 
         if (!playerManager.containsPlayerInHub(player)) {
-            player.sendMessage(GameAPI.getPrefix().append(Component.text("Tu ne peux pas obtenir le Sélectionneur de mini-jeux en dehors du Hub.")));
+            sendMessageWithPrefix(player, Component.text("Tu ne peux pas obtenir le Sélectionneur de mini-jeux en dehors du Hub."));
             return;
         }
 

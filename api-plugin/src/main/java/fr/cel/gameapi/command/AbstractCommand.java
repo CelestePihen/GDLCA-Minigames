@@ -29,12 +29,12 @@ public abstract class AbstractCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String @NotNull [] args) {
         if (needPlayer && !(sender instanceof Player)) {
-            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Tu dois etre un joueur pour effectuer cette commande.")));
+            sendMessageWithPrefix(sender, Component.text("Tu dois etre un joueur pour effectuer cette commande."));
             return false;
         }
 
         else if (!sender.hasPermission(permission) && isPermissionRequired()) {
-            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Tu n'as pas la permission d'effectuer cette commande.")));
+            sendMessageWithPrefix(sender, Component.text("Tu n'as pas la permission d'effectuer cette commande."));
             return false;
         }
 
@@ -83,24 +83,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param message Le message (pour mettre de la couleur, vous pouvez utiliser l'énumération disponible dans ChatUtility)
      */
     protected void sendMessageWithPrefix(CommandSender sender, Component message) {
-        sendMessage(sender, message, true);
-    }
-
-    /**
-     * Permet d'envoyer un message à la personne qui a exécuté la commande
-     * @param sender L'envoyeur qui va recevoir le message
-     * @param message Le message (pour mettre de la couleur, vous pouvez utiliser l'énumération disponible dans ChatUtility)
-     * @param withPrefix Permet de préciser si l'on veut le préfixe ou pas
-     */
-    protected void sendMessage(CommandSender sender, Component message, boolean withPrefix) {
-        Component component = Component.text("");
-
-        if (withPrefix) {
-            component = component.append(GameAPI.getPrefix());
-        }
-
-        component = component.append(message);
-        sender.sendMessage(component);
+        sender.sendMessage(GameAPI.getPrefix().append(message));
     }
     
 }
