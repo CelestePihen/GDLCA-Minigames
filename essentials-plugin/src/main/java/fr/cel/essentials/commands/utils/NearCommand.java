@@ -1,10 +1,12 @@
 package fr.cel.essentials.commands.utils;
 
 import fr.cel.gameapi.command.AbstractCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,32 +20,27 @@ public class NearCommand extends AbstractCommand {
     }
 
     @Override
-    protected void onExecute(CommandSender sender, String[] args) {
+    protected void onExecute(@NotNull CommandSender sender, String @NotNull  [] args) {
         if (args.length == 0 || args.length > 3) {
-            sendMessageWithPrefix(sender, "La commande est : /near <radius> ou /near <radius> <joueur>");
+            sendMessageWithPrefix(sender, Component.text("La commande est : /near <radius> ou /near <radius> [player]"));
             return;
         }
 
-        if (args.length == 1 && sender instanceof Player player) {
-            searchPlayers(player, player, args);
+        if (args.length == 1) {
+            if (sender instanceof Player player) searchPlayers(player, player, args);
+            else sendMessageWithPrefix(sender, Component.text("Tu dois etre un joueur pour effectuer cette commande."));
             return;
         }
 
         if (args.length == 2) {
-            Player target = Bukkit.getPlayer(args[1]);
-
-            if (isPlayerOnline(target, sender)) {
-                searchPlayers(sender, target, args);
-            }
+            Player target = Bukkit.getPlayerExact(args[1]);
+            if (isPlayerOnline(target, sender)) searchPlayers(sender, target, args);
         }
     }
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-        if (args.length == 1) {
-            return IntStream.range(1, 10).mapToObj(Integer::toString).collect(Collectors.toList());
-        }
-
+        if (args.length == 1) return IntStream.range(1, 10).mapToObj(Integer::toString).collect(Collectors.toList());
         return null;
     }
 
@@ -52,7 +49,7 @@ public class NearCommand extends AbstractCommand {
         try {
             radius = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            sendMessageWithPrefix(sender, "Merci de mettre un nombre valide. La commande est : /near <radius> ou /near <radius> <joueur>");
+            sendMessageWithPrefix(sender, Component.text("Merci de mettre un nombre valide. La commande est : /near <radius> ou /near <radius> [player]"));
             return;
         }
 
@@ -64,7 +61,7 @@ public class NearCommand extends AbstractCommand {
             }
         }
 
-        sendMessageWithPrefix(sender, "Les joueurs proches de vous sont : " + playersName);
+        sendMessageWithPrefix(sender, Component.text("Les joueurs proches de toi sont : " + playersName));
     }
     
 }

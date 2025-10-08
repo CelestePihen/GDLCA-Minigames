@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,12 +29,12 @@ public abstract class AbstractCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String @NotNull [] args) {
         if (needPlayer && !(sender instanceof Player)) {
-            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Vous devez etre un joueur pour effectuer cette commande.")));
+            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Tu dois etre un joueur pour effectuer cette commande.")));
             return false;
         }
 
         else if (!sender.hasPermission(permission) && isPermissionRequired()) {
-            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Vous n'avez pas la permission d'effectuer cette commande.")));
+            sender.sendMessage(GameAPI.getPrefix().append(Component.text("Tu n'as pas la permission d'effectuer cette commande.")));
             return false;
         }
 
@@ -67,12 +68,12 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param sender L'envoyer
      * @return Retourne true si le joueur est présent. Si non, alors envoie un message au sender et retourne false
      */
+    @Contract("null, _ -> false; !null, _ -> true")
     protected boolean isPlayerOnline(@Nullable Player player, CommandSender sender) {
         if (player == null) {
             sendMessageWithPrefix(sender, Component.text("Le joueur n'existe pas ou n'est pas connecté."));
             return false;
         }
-
         return true;
     }
 

@@ -1,28 +1,48 @@
 package fr.cel.essentials.commands.utils;
 
 import fr.cel.gameapi.command.AbstractCommand;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class TopCommand extends AbstractCommand {
 
-    // TODO faire en sorte que ça marche côté console
     public TopCommand() {
         super("essentials:top", true, true);
     }
 
     @Override
-    protected void onExecute(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
+    protected void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
+        Player target;
 
-        int x = (int) player.getLocation().getX();
-        int z = (int) player.getLocation().getZ();
+        if (!(sender instanceof Player player)) {
+            if (args.length != 1) {
+                sendMessageWithPrefix(sender, Component.text("Usage: /nv <player>"));
+                return;
+            }
 
-        player.teleport(new Location(player.getWorld(), x + 0.5D, player.getWorld().getHighestBlockYAt(x, z) + 1, z + 0.5D));
-        sendMessageWithPrefix(player, "Vous avez été téléporté(e) à la surface.");
+            Player t = Bukkit.getPlayerExact(args[0]);
+            if (isPlayerOnline(t, sender)) target = t;
+            else return;
+        } else {
+            target = player;
+        }
+
+        int x = target.getLocation().getBlockX();
+        int z = target.getLocation().getBlockZ();
+
+        target.teleport(new Location(target.getWorld(), x, target.getWorld().getHighestBlockYAt(x, z) + 1, z));
+
+        if (target != sender) {
+            sendMessageWithPrefix(sender, Component.text(target.getName() + " a été téléporté(e) à la surface."));
+        } else {
+            sendMessageWithPrefix(sender, Component.text("Tu as été téléporté(e) à la surface."));
+        }
     }
 
     @Override

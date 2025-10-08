@@ -156,21 +156,29 @@ public class CCCommand extends AbstractCommand {
             return;
         }
 
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(gameManager.getPrefix().append(Component.text("Vous devez etre un joueur pour effectuer cette commande.")));
-            return;
-        }
-
         if (args[0].equalsIgnoreCase("join")) {
             if (mapManager.getMaps().containsKey(args[1])) {
                 if (args.length == 3) {
-                    mapManager.getMaps().get(args[1]).addPlayer(Bukkit.getPlayer(args[2]), false);
-                } else {
+                    Player target = Bukkit.getPlayerExact(args[2]);
+                    if (target == null) {
+                        sender.sendMessage(gameManager.getPrefix().append(Component.text("Ce joueur est hors-ligne ou n'existe pas...")));
+                        return;
+                    }
+
+                    mapManager.getMaps().get(args[1]).addPlayer(target, false);
+                } else if (sender instanceof Player player && args.length == 2) {
                     mapManager.getMaps().get(args[1]).addPlayer(player, false);
+                } else {
+                    sender.sendMessage(Component.text("Usage: /cc join <map> <player>"));
                 }
             } else {
-                player.sendMessage(gameManager.getPrefix().append(Component.text("Merci de sélectionner une carte valide.")));
+                sender.sendMessage(gameManager.getPrefix().append(Component.text("Merci de sélectionner une carte valide.")));
             }
+            return;
+        }
+
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(gameManager.getPrefix().append(Component.text("Vous devez etre un joueur pour effectuer cette commande.")));
             return;
         }
 

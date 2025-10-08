@@ -35,7 +35,7 @@ public class WelcomeCommand extends AbstractCommand {
         }
 
         if (playerManager.getNewPlayer().equals(player.getUniqueId())) {
-            sendMessageWithPrefix(player, Component.text("Vous ne pouvez vous souhaiter la bienvenue..."));
+            sendMessageWithPrefix(player, Component.text("Tu ne peux pas te souhaiter la bienvenue..."));
             return;
         }
 

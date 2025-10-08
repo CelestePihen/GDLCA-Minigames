@@ -43,7 +43,7 @@ public class FriendsCommand extends AbstractCommand {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("accept")) {
                 if (!(requestsFriends.containsKey(player))) {
-                    sendMessageWithPrefix(player, Component.text("Vous n'avez pas de demandes d'ami en cours."));
+                    sendMessageWithPrefix(player, Component.text("Tu n'as pas de demandes d'ami en cours."));
                     return;
                 }
 
@@ -55,8 +55,8 @@ public class FriendsCommand extends AbstractCommand {
                 friendsManager.addFriend(requestsFriends.get(player), player);
                 friendsManager.addFriend(player, requestsFriends.get(player));
 
-                sendMessageWithPrefix(player, Component.text("Vous êtes désormais ami avec " + requestsFriends.get(player).getName() + "."));
-                sendMessageWithPrefix(requestsFriends.get(player), Component.text("Vous êtes désormais ami avec " + player.getName() + "."));
+                sendMessageWithPrefix(player, Component.text("Tu es désormais ami avec " + requestsFriends.get(player).getName() + "."));
+                sendMessageWithPrefix(requestsFriends.get(player), Component.text("Tu es désormais ami avec " + player.getName() + "."));
 
                 requestsFriends.remove(player);
                 return;
@@ -64,7 +64,7 @@ public class FriendsCommand extends AbstractCommand {
 
             else if (args[0].equalsIgnoreCase("deny")) {
                 if (!(requestsFriends.containsKey(player))) {
-                    sendMessageWithPrefix(player, Component.text("Vous n'avez pas de demandes d'ami en cours."));
+                    sendMessageWithPrefix(player, Component.text("Tu n'as pas de demandes d'ami en cours."));
                     return;
                 }
 
@@ -73,7 +73,7 @@ public class FriendsCommand extends AbstractCommand {
                     return;
                 }
 
-                sendMessageWithPrefix(player, Component.text("Vous avez refusé la demande d'ami de " + requestsFriends.get(player).getName() + "."));
+                sendMessageWithPrefix(player, Component.text("Tu as refusé la demande d'ami de " + requestsFriends.get(player).getName() + "."));
                 sendMessageWithPrefix(requestsFriends.get(player), Component.text(player.getName() + "a refusé votre demande d'ami..."));
 
                 requestsFriends.remove(player);
@@ -88,7 +88,7 @@ public class FriendsCommand extends AbstractCommand {
             else if (args[0].equalsIgnoreCase("status")) {
                 boolean allowFriends = playerData.isAllowingFriends();
                 playerData.setAllowFriends(!allowFriends);
-                sendMessageWithPrefix(player, allowFriends ? Component.text("Vous avez désactivé les demandes d'amis.") : Component.text("Vous avez activé les demandes d'amis."));
+                sendMessageWithPrefix(player, allowFriends ? Component.text("Tu as désactivé les demandes d'amis.") : Component.text("Tu as activé les demandes d'amis."));
                 return;
             }
         }
@@ -96,7 +96,7 @@ public class FriendsCommand extends AbstractCommand {
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("add")) {
                 if (args[1].equals(player.getName())) {
-                    sendMessageWithPrefix(player, Component.text("Vous ne pouvez pas vous ajouter en ami..."));
+                    sendMessageWithPrefix(player, Component.text("Tu ne peux pas vous ajouter en ami..."));
                     return;
                 }
 
@@ -104,12 +104,12 @@ public class FriendsCommand extends AbstractCommand {
 
                 if (isPlayerOnline(target, player)) {
                     if (friendsManager.isFriendWith(player, target)) {
-                        sendMessageWithPrefix(player, Component.text("Vous êtes déjà ami avec cette personne."));
+                        sendMessageWithPrefix(player, Component.text("Tu es déjà ami avec cette personne."));
                         return;
                     }
 
                     if (requestsFriends.containsValue(player)) {
-                        sendMessageWithPrefix(player, Component.text("Vous avez déjà une demande d'ami en cours."));
+                        sendMessageWithPrefix(player, Component.text("Tu as déjà une demande d'ami en cours."));
                         return;
                     }
 
@@ -120,7 +120,7 @@ public class FriendsCommand extends AbstractCommand {
                     }
 
                     if (!playerData.isAllowingFriends()) {
-                        sendMessageWithPrefix(player, Component.text("Vous n'acceptez pas les demandes d'amis."));
+                        sendMessageWithPrefix(player, Component.text("Tu n'acceptes pas les demandes d'amis."));
                     }
 
                     if (!friendData.isAllowingFriends()) {
@@ -128,14 +128,14 @@ public class FriendsCommand extends AbstractCommand {
                     }
 
                     requestsFriends.put(target, player);
-                    sendMessageWithPrefix(player, Component.text("Vous avez demandé en ami " + args[1]));
+                    sendMessageWithPrefix(player, Component.text("Tu as demandé en ami " + args[1]));
                     sendMessageWithPrefix(target, Component.text(player.getName() + " vous a demandé en ami."));
                 }
             }
 
             else if (args[0].equalsIgnoreCase("remove")) {
                 if (args[1].equals(player.getName())) {
-                    sendMessageWithPrefix(player, Component.text("Vous ne pouvez pas vous retirer..."));
+                    sendMessageWithPrefix(player, Component.text("Tu ne peux pas vous retirer..."));
                     return;
                 }
 
@@ -143,11 +143,11 @@ public class FriendsCommand extends AbstractCommand {
 
                 if (isPlayerOnline(target, player)) {
                     if (!friendsManager.isFriendWith(player, target)) {
-                        sendMessageWithPrefix(player, Component.text("Vous n'êtes pas ami avec cette personne."));
+                        sendMessageWithPrefix(player, Component.text("Tu n'es pas ami avec cette personne."));
                         return;
                     }
 
-                    sendMessageWithPrefix(player, Component.text("Vous n'êtes désormais plus ami avec " + target.getName()));
+                    sendMessageWithPrefix(player, Component.text("Tu n'es désormais plus ami avec " + target.getName()));
                     friendsManager.removeFriend(player, target);
                     friendsManager.removeFriend(target, player);
                 }

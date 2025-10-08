@@ -1,33 +1,42 @@
 package fr.cel.essentials.commands.utils;
 
 import fr.cel.gameapi.command.AbstractCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class HatCommand extends AbstractCommand {
 
-    // TODO faire en sorte que ça marche côté console
     public HatCommand() {
         super("essentials:hat", true, true);
     }
 
     @Override
-    protected void onExecute(CommandSender sender, String[] args) {
+    protected void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         Player player = (Player) sender;
 
-        ItemStack it = player.getInventory().getItemInMainHand();
-        if (it.getType() == Material.AIR) {
-            sendMessageWithPrefix(player, "Vous ne pouvez pas ne rien mettre sur votre tête...");
-            return;
-        }
-
+        ItemStack it = player.getInventory().getItemInMainHand().clone();
         it.setAmount(1);
+
         player.getInventory().setHelmet(it);
-        sendMessageWithPrefix(player, "Tu as mis sur ta tête : " + it.getType().name());
+
+        String itemTranslationKey = it.getType().getItemTranslationKey();
+        String blockTranslationKey = it.getType().getBlockTranslationKey();
+
+        if (it.getType() == Material.AIR) {
+            sendMessageWithPrefix(player, Component.text("Tu n'as plus rien sur ta tête."));
+        } else if (itemTranslationKey != null) {
+            sendMessageWithPrefix(player, Component.text("Tu as mis sur ta tête : ").append(Component.translatable(itemTranslationKey)));
+        } else if (blockTranslationKey != null) {
+            sendMessageWithPrefix(player, Component.text("Tu as mis sur ta tête : ").append(Component.translatable(blockTranslationKey)));
+        } else {
+            sendMessageWithPrefix(player, Component.text("Tu as mis sur ta tête : " + it.getType().name()));
+        }
     }
 
     @Override

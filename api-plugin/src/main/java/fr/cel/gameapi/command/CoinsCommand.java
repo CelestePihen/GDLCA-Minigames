@@ -33,7 +33,7 @@ public class CoinsCommand extends AbstractCommand {
                 if (sender instanceof Player player) {
                     sendCoinsMessage(player, player);
                 } else {
-                    sender.sendMessage(GameAPI.getPrefix().append(Component.text("Vous n'êtes pas un joueur...")));
+                    sender.sendMessage(GameAPI.getPrefix().append(Component.text("Tu n'es pas un joueur...")));
                 }
                 return;
             }
@@ -62,7 +62,7 @@ public class CoinsCommand extends AbstractCommand {
                         return;
                     }
                     playerManager.getPlayerData(target).addCoins(amount);
-                    sendMessageWithPrefix(sender, Component.text("Vous avez donné " + amount + " pièce(s) à " + target.getName()));
+                    sendMessageWithPrefix(sender, Component.text("Tu as donné " + amount + " pièce(s) à " + target.getName()));
                 }
                 return;
             }
@@ -82,7 +82,7 @@ public class CoinsCommand extends AbstractCommand {
                         return;
                     }
                     playerManager.getPlayerData(target).removeCoins(amount);
-                    sendMessageWithPrefix(sender, Component.text("Vous avez retiré " + amount + " pièce(s) à " + target.getName()));
+                    sendMessageWithPrefix(sender, Component.text("Tu as retiré " + amount + " pièce(s) à " + target.getName()));
                 }
                 return;
             }

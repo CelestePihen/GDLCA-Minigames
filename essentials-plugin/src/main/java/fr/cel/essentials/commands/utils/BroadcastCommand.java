@@ -1,10 +1,12 @@
 package fr.cel.essentials.commands.utils;
 
 import fr.cel.gameapi.command.AbstractCommand;
-import fr.cel.gameapi.utils.ChatUtility;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -15,13 +17,12 @@ public class BroadcastCommand extends AbstractCommand {
     }
 
     @Override
-    public void onExecute(CommandSender sender, String[] args) {
+    public void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length >= 1) {
-            StringBuilder bc = new StringBuilder();
-            for (String part : args) bc.append(part).append(" ");
-            Bukkit.broadcastMessage(ChatUtility.format("&c[Broadcast]&r&d " + bc));
+            String message = String.join(" ", args);
+            Bukkit.broadcast(Component.text("[Broadcast] ", NamedTextColor.RED).append(Component.text(message)));
         } else {
-            sendMessageWithPrefix(sender, "La commande est : /broadcast <message>");
+            sendMessageWithPrefix(sender, Component.text("Usage: /broadcast <message>"));
         }
     }
 

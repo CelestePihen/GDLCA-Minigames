@@ -14,8 +14,8 @@ public class OptionsInventory extends AbstractInventory {
 
     private final PlayerData playerData;
 
-    private static final ItemStack ALLOW_FRIENDS_GREEN = new ItemBuilder(Material.GREEN_DYE).itemName(Component.text("Demandes d'amis")).addLoreLine(Component.text("Vous acceptez les demandes d'amis.", NamedTextColor.GREEN)).toItemStack();
-    private static final ItemStack ALLOW_FRIENDS_RED = new ItemBuilder(Material.RED_DYE).itemName(Component.text("Demandes d'amis")).addLoreLine(Component.text("Vous n'acceptez pas les demandes d'amis.", NamedTextColor.DARK_RED)).toItemStack();
+    private static final ItemStack ALLOW_FRIENDS_GREEN = new ItemBuilder(Material.GREEN_DYE).itemName(Component.text("Demandes d'amis")).addLoreLine(Component.text("Tu acceptes les demandes d'amis.", NamedTextColor.GREEN)).toItemStack();
+    private static final ItemStack ALLOW_FRIENDS_RED = new ItemBuilder(Material.RED_DYE).itemName(Component.text("Demandes d'amis")).addLoreLine(Component.text("Tu n'acceptes pas les demandes d'amis.", NamedTextColor.DARK_RED)).toItemStack();
 
     public OptionsInventory(Player player) {
         super(Component.text("Options"), 9);
@@ -38,13 +38,13 @@ public class OptionsInventory extends AbstractInventory {
         if (item.getType() == Material.GREEN_DYE) {
             playerData.setAllowFriends(false);
             setItem(0, ALLOW_FRIENDS_RED);
-            player.sendMessage(GameAPI.getPrefix().append(Component.text("Vous avez désactivé les demandes d'amis.")));
+            player.sendMessage(GameAPI.getPrefix().append(Component.text("Tu as désactivé les demandes d'amis.")));
         }
 
         else if (item.getType() == Material.RED_DYE) {
             playerData.setAllowFriends(true);
             setItem(0, ALLOW_FRIENDS_GREEN);
-            player.sendMessage(GameAPI.getPrefix().append(Component.text("Vous avez activé les demandes d'amis.")));
+            player.sendMessage(GameAPI.getPrefix().append(Component.text("Tu as activé les demandes d'amis.")));
         }
     }
 

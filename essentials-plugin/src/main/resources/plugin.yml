@@ -5,53 +5,42 @@ author: Cel
 api-version: 1.21
 commands:
   heal:
-    description: Permet de se soigner les joueurs
+    description: Permet de se soigner
     permission: essentials.heal
   feed:
-    description: Permet de se rassasier les joueurs
+    description: Permet de se rassasier
     permission: essentials.feed
-  craft:
-    description: Permet d'ouvrir un établi
-    aliases: [workbench]
-    permission: essentials.craft
   gm:
-    description: Permet de changer le mode de jeu des joueurs
+    description: Permet de changer de mode de jeu
     permission: essentials.gm
   top:
     description: Permet de se téléporter à la surface
     permission: essentials.top
   nv:
-    description: Permet de se donner l'effet Vision Nocturne
+    description: Permet de donner l'effet Vision Nocturne
     aliases: [nightvision]
     permission: essentials.nv
   bc:
-    description: Permet d'envoyer un message que tous les joueurs verront
+    description: Permet d'envoyer un message sur tout le serveur que tous les joueurs verront
     aliases: [broadcast]
     permission: essentials.bc
   speed:
-    description: Permet de changer la vitesse des joueurs
+    description: Permet de changer la vitesse de marche/vol
     permission: essentials.speed
-  ec:
-    description: Permet d'ouvrir le coffre de l'end des joueurs
-    aliases: [enderchest]
-    permission: essentials.ec
-  anvil:
-    description: Permet d'ouvrir une enclume
-    permission: essentials.anvil
   hat:
-    description: Permet de mettre l'objet qu'il a dans sa main sur sa tête
+    description: Permet de mettre n'importe quel objet que l'on a en main sur sa tête
     permission: essentials.hat
   near:
-    description: Permet de savoir quels sont les joueurs autour du joueur
+    description: Permet de savoir quels sont les joueurs à proximité
     permission: essentials.near
   god:
-    description: Permet de mettre le mode invulnérable sur les joueurs
+    description: Permet d'être invulnérable
     permission: essentials.god
   discord:
-    description: Donne le lien discord aux joueurs
+    description: Donne le lien Discord
   fly:
-    description: Permet de mettre le vol au joueur
+    description: Permet le vol
     permission: essentials.fly
   barrier:
-    description: Commande qui donne un bloc de barrièer à un joueur
+    description: Donne un bloc de barrière invisible
     permission: gameapi.barrier
