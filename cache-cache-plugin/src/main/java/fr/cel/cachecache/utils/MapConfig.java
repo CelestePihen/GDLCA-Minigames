@@ -100,7 +100,7 @@ public class MapConfig {
         List<Location> locations = new ArrayList<>();
 
         for (String str : config.getStringList("locationGroundItems")) {
-            locations.add(LocationUtility.parseStringToLoc(config, str));
+            locations.add(LocationUtility.parseStringToLoc(str));
         }
 
         return locations;

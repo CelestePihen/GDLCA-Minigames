@@ -31,11 +31,11 @@ public class CelebrationEvent extends AbstractInventory {
                 if (Hub.getInstance().getConfig().getBoolean("halloweenEvent")) {
                     Hub.getInstance().getConfig().set("halloweenEvent", false);
                     Hub.getInstance().saveConfig();
-                    player.sendMessage(GameAPI.getPrefix() + "L'événement Halloween a été désactivé.");
+                    player.sendMessage(GameAPI.getPrefix().append(Component.text("L'événement Halloween a été désactivé.")));
                 } else {
                     Hub.getInstance().getConfig().set("halloweenEvent", true);
                     Hub.getInstance().saveConfig();
-                    player.sendMessage(GameAPI.getPrefix() + "L'événement Halloween a été activé.");
+                    player.sendMessage(GameAPI.getPrefix().append(Component.text("L'événement Halloween a été activé.")));
                 }
 
                 setItem(0, new ItemBuilder(Material.JACK_O_LANTERN).itemName(Component.text("Halloween", NamedTextColor.GOLD)).addLoreLine(Hub.getInstance().getConfig().getBoolean("halloweenEvent") ? Component.text("Activé", NamedTextColor.GREEN) : Component.text("Désactivé", NamedTextColor.RED)).toItemStack());

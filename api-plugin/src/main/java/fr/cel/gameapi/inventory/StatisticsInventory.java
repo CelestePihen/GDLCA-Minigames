@@ -21,11 +21,11 @@ public class StatisticsInventory extends AbstractInventory {
 
     @Override
     protected void addItems(Inventory inv) {
-        inv.setItem(9, new ItemBuilder(Material.COMPASS).displayName(Component.text("Hub", NamedTextColor.GREEN)).toItemStack());
-        inv.setItem(11, new ItemBuilder(Material.SPYGLASS).displayName(Component.text("Cache-Cache", NamedTextColor.GREEN)).toItemStack());
-        inv.setItem(13, new ItemBuilder(Material.BOW).displayName(Component.text("Valocraft", NamedTextColor.GREEN)).toItemStack());
-        inv.setItem(15, new ItemBuilder(Material.NETHERITE_SWORD).displayName(Component.text("PVP", NamedTextColor.GREEN)).toItemStack());
-        inv.setItem(17, new ItemBuilder(Material.IRON_BOOTS).displayName(Component.text("Parkour", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(9, new ItemBuilder(Material.COMPASS).itemName(Component.text("Hub", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(11, new ItemBuilder(Material.SPYGLASS).itemName(Component.text("Cache-Cache", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.BOW).itemName(Component.text("Valocraft", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(15, new ItemBuilder(Material.NETHERITE_SWORD).itemName(Component.text("PVP", NamedTextColor.GREEN)).toItemStack());
+        inv.setItem(17, new ItemBuilder(Material.IRON_BOOTS).itemName(Component.text("Parkour", NamedTextColor.GREEN)).toItemStack());
     }
 
     @Override

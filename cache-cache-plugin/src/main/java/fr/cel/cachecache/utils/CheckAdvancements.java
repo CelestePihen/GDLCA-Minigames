@@ -34,10 +34,6 @@ public class CheckAdvancements {
 
     @Getter private final Map<UUID, List<Location>> piedPouvoir = new HashMap<>();
 
-    // T'es pas essouflé ?
-    // TODO à implémenter pour la V2
-    @Getter private final Set<UUID> playerWhoRun = new HashSet<>();
-
     public CheckAdvancements(CCMap map) {
         this.map = map;
         this.advancementsManager = map.getGameManager().getAdvancementsManager();

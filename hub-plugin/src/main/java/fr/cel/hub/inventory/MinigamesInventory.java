@@ -71,11 +71,11 @@ public class MinigamesInventory extends AbstractInventory {
 
             case JACK_O_LANTERN -> HalloweenMapManager.getMapManager().getMaps().get("manoir").addPlayer(player);
 
-            case SNOW_BLOCK -> player.sendMessage(GameAPI.getPrefix() + "Cet événement n'est pas encore prêt...");
+            case SNOW_BLOCK -> player.sendMessage(GameAPI.getPrefix().append(Component.text("Cet événement n'est pas encore prêt...")));
             /*ChristmasMapManager.getMapManager().getMaps().get("atelier").addPlayer(player);*/
 
             case COMMAND_BLOCK -> {
-                player.sendMessage(GameAPI.getPrefix() + "Indisponible pour le moment.");
+                player.sendMessage(GameAPI.getPrefix().append(Component.text("Indisponible pour le moment.")));
                 player.closeInventory();
             }
 

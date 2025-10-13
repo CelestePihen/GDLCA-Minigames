@@ -2,6 +2,7 @@ package fr.cel.gameapi.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -277,7 +278,7 @@ public final class ItemBuilder {
             List<Component> lore = new ArrayList<>();
             if (im.hasLore() && im.lore() != null) lore = im.lore();
 
-            if (lore != null) lore.add(line);
+            if (lore != null) lore.add(line.decoration(TextDecoration.ITALIC, false));
             im.lore(lore);
         });
         return this;

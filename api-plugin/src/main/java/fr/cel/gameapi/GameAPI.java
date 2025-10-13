@@ -11,7 +11,6 @@ import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.manager.database.DatabaseManager;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.StatisticsManager;
-import fr.cel.gameapi.utils.RPUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,7 +21,7 @@ public final class GameAPI extends JavaPlugin {
 
     @Getter private static GameAPI instance;
 
-    @Getter private static final Component prefix = Component.text("[GDLCA Minigames] ", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
+    @Getter private static final Component prefix = Component.empty().append(Component.text("[GDLCA Minigames]", NamedTextColor.GOLD)).append(Component.text(" "));
 
     private InventoryManager inventoryManager;
     private FriendsManager friendsManager;
@@ -50,8 +49,6 @@ public final class GameAPI extends JavaPlugin {
         registerCommands();
 
         this.inventoryManager = new InventoryManager(this);
-
-        RPUtils.registerMusics();
 
         this.statisticsManager = new StatisticsManager(this);
         this.advancementsManager = new AdvancementsManager();

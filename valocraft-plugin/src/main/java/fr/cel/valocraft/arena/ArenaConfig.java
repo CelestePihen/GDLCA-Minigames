@@ -68,7 +68,7 @@ public class ArenaConfig {
         List<Location> locations = new ArrayList<>();
 
         for (String str : config.getStringList("invisibleBarriersLocation")) {
-            locations.add(LocationUtility.parseStringToLoc(config, str));
+            locations.add(LocationUtility.parseStringToLoc( str));
         }
 
         return locations;

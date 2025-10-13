@@ -3,6 +3,7 @@ package fr.cel.gameapi.command;
 import fr.cel.gameapi.GameAPI;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -89,7 +90,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param message The message to send
      */
     protected void sendMessageWithPrefix(CommandSender sender, Component message) {
-        sender.sendMessage(GameAPI.getPrefix().append(message));
+        sender.sendMessage(GameAPI.getPrefix().append(message.colorIfAbsent(NamedTextColor.WHITE)));
     }
     
 }

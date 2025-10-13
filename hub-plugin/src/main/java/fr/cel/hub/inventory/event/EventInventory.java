@@ -29,7 +29,7 @@ public class EventInventory extends AbstractInventory {
 
             case FIREWORK_ROCKET, PLAYER_HEAD ->
                 // TODO à (re)faire
-                player.sendMessage(GameAPI.getPrefix() + "Bientôt disponible...");
+                player.sendMessage(GameAPI.getPrefix().append(Component.text("Bientôt disponible...")));
 
             default -> {}
         }

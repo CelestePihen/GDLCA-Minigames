@@ -5,6 +5,7 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -29,17 +30,16 @@ public class FriendsInventory extends AbstractInventory {
             UUID friendUUID = UUID.fromString(friendUUIDStr);
 
             OfflinePlayer friend = Bukkit.getOfflinePlayer(friendUUID);
-            Component friendName = friend.getName() != null ? Component.text(friend.getName(), NamedTextColor.WHITE) : Component.text("Ce joueur doit se (re)connecter pour avoir son pseudo");
+            PlayerProfile playerProfile = friend.getPlayerProfile();
 
-            boolean isOnline = friend.isOnline();
-            Component statusColor = isOnline ? Component.text("En ligne", NamedTextColor.GREEN) : Component.text("Hors-ligne", NamedTextColor.RED);
+            Component statusColor = friend.isOnline() ? Component.text("En ligne", NamedTextColor.GREEN) : Component.text("Hors-ligne", NamedTextColor.RED);
 
-            PlayerProfile playerProfile = Bukkit.createProfile(friendUUID);
+            Component friendName = playerProfile.getName() != null ? Component.text(playerProfile.getName(), NamedTextColor.WHITE) : Component.text("Ce joueur doit se (re)connecter pour avoir son pseudo");
 
             ItemStack skull = new ItemBuilder(Material.PLAYER_HEAD)
                     .addLoreLine(statusColor)
                     .setSkullOwner(playerProfile)
-                    .displayName(friendName)
+                    .displayName(friendName.decoration(TextDecoration.ITALIC, false))
                     .toItemStack();
 
             inv.addItem(skull);

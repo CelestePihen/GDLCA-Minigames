@@ -225,12 +225,6 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (!map.isPlayerInMap(player)) return;
 
         UUID playerUUID = player.getUniqueId();
-
-        // on s'en fout de vérifier s'il est déjà dedans, car un Set ne peut contenir qu'une seule fois le même objet
-        if (map.getTimer() <= 480 && player.isSprinting()) {
-            map.getCheckAdvancements().getPlayerWhoRun().add(playerUUID);
-        }
-
         Location loc = player.getLocation();
 
         // Monter ou descendre la montagne de sable (Désert)

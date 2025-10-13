@@ -3,7 +3,6 @@ package fr.cel.hub.inventory.cachecache;
 import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
-import fr.cel.gameapi.utils.ChatUtility;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -40,9 +39,9 @@ public class CCV2Inventory extends AbstractInventory {
             return;
         }
 
-        if (ChatUtility.stripColor(itemName).equals(nameV1)) {
+        if (itemName.equals(nameV1)) {
             CCMapManager.getMapManager().getMapByDisplayName(nameV1).addPlayer(player, false);
-        } else if (ChatUtility.stripColor(itemName).equals(nameV2)) {
+        } else if (itemName.equals(nameV2)) {
             CCMapManager.getMapManager().getMapByDisplayName(nameV2).addPlayer(player, false);
         }
     }

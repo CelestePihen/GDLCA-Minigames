@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -77,12 +78,12 @@ public class PlayerManager {
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
 
         player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS)
-                .displayName(Component.text("Sélectionneur de mini-jeux", NamedTextColor.WHITE))
+                .itemName(Component.text("Sélectionneur de mini-jeux", NamedTextColor.WHITE))
                 .toItemStack());
 
         player.getInventory().setItem(8, new ItemBuilder(Material.PLAYER_HEAD)
                 .setSkullOwner(player.getPlayerProfile())
-                .displayName(Component.text("Mon Profil", NamedTextColor.WHITE))
+                .displayName(Component.text("Mon Profil", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
                 .toItemStack());
     }
 

@@ -5,6 +5,7 @@ import fr.cel.gameapi.manager.database.PlayerData;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -33,25 +34,25 @@ public class ProfileInventory extends AbstractInventory {
 
         inv.setItem(4, new ItemBuilder(Material.PLAYER_HEAD)
                 .setSkullOwner(player.getPlayerProfile())
-                .displayName(Component.text(player.getName()))
+                .displayName(Component.text(player.getName()).decoration(TextDecoration.ITALIC, false))
                 .addLoreLine(coinsStr.color(NamedTextColor.GOLD))
                 .toItemStack());
 
         inv.setItem(10, new ItemBuilder(Material.CANDLE)
-                .displayName(Component.text("Amis", NamedTextColor.GRAY))
+                .itemName(Component.text("Amis", NamedTextColor.GRAY))
                 .toItemStack());
 
         inv.setItem(12, new ItemBuilder(Material.ENDER_PEARL)
-                .displayName(Component.text("Partie", NamedTextColor.AQUA))
+                .itemName(Component.text("Partie", NamedTextColor.AQUA))
                 .lore(Component.text("Bientôt", NamedTextColor.GOLD))
                 .toItemStack());
 
         inv.setItem(14, new ItemBuilder(Material.PAPER)
-                .displayName(Component.text("Statistiques", NamedTextColor.GREEN))
+                .itemName(Component.text("Statistiques", NamedTextColor.GREEN))
                 .toItemStack());
 
         inv.setItem(16, new ItemBuilder(Material.CLOCK)
-                .displayName(Component.text("Options", NamedTextColor.BLUE))
+                .itemName(Component.text("Options", NamedTextColor.BLUE))
                 .toItemStack());
     }
 

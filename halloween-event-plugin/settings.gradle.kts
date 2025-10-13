@@ -4,4 +4,4 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 
-rootProject.name = "halloween-event"
+rootProject.name = "halloween-event-plugin"

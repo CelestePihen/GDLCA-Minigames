@@ -196,6 +196,7 @@ public class CCCommand extends AbstractCommand {
 
         if (args[0].equalsIgnoreCase("calcul")) {
             calculRedstoneLamps(player, args);
+            return;
         }
 
         if (!mapManager.isPlayerInMap(player)) {
