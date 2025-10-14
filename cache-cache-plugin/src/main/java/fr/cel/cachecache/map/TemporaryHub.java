@@ -127,7 +127,7 @@ public class TemporaryHub implements Listener {
     }
 
     /**
-     * Vrai s'il n'y a aucune map de mise, faux s'il y en a au moins une
+     * Retourne s'il n'y a pas de map d'installer ou pas
      * @return Vrai s'il n'y a aucune map de mise, et faux s'il y en a au moins une
      */
     public boolean hasNoMaps() {

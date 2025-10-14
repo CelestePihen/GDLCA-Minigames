@@ -22,9 +22,9 @@ import java.util.List;
 public class GameManager {
 
     private final CacheCache main;
-    private final Component prefix = Component.text("[Cache-Cache]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
+    private final Component prefix = Component.empty().append(Component.text("[Cache-Cache]", NamedTextColor.GOLD)).append(Component.text(" "));
 
-    private final List<GroundItem> groundItems = new ArrayList<>();;
+    private final List<GroundItem> groundItems = new ArrayList<>();
 
     // Bunker map
     private File lampsFile;

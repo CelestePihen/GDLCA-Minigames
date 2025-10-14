@@ -1,6 +1,7 @@
-package fr.cel.gameapi.command;
+package fr.cel.gameapi.command.api;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.inventory.ProfileInventory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ public class ProfileCommand extends AbstractCommand {
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-        return null;
+        return List.of();
     }
 
 }

@@ -1,6 +1,7 @@
-package fr.cel.gameapi.command;
+package fr.cel.gameapi.command.api;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.inventory.StatisticsInventory;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -21,21 +22,19 @@ public class StatisticsCommand extends AbstractCommand {
         Player player = (Player) sender;
 
         if (args.length == 0) {
+            sendMessageWithPrefix(player, Component.text("Vos statistiques sont affichées."));
             GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(player), player);
             return;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
-        if (target == null) {
-            sendMessageWithPrefix(sender, Component.text("Le joueur n'existe pas ou n'est pas connecté."));
-        } else {
+        if (isPlayerOnline(target, sender))
             GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(target), player);
-        }
     }
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-        return null;
+        return List.of();
     }
 
 }

@@ -1,6 +1,7 @@
-package fr.cel.gameapi.command;
+package fr.cel.gameapi.command.api;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.inventory.FriendsInventory;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.PlayerData;

@@ -34,6 +34,9 @@ dependencies {
   compileOnly("com.comphenix.protocol:ProtocolLib:5.4.0")
 }
 
+paperweight.reobfArtifactConfiguration =
+  io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+
 tasks.assemble {
   dependsOn(tasks.reobfJar)
 }

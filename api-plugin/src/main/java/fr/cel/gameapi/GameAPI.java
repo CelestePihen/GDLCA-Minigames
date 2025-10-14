@@ -1,6 +1,6 @@
 package fr.cel.gameapi;
 
-import fr.cel.gameapi.command.*;
+import fr.cel.gameapi.command.api.*;
 import fr.cel.gameapi.listeners.OtherListeners;
 import fr.cel.gameapi.listeners.PlayersListener;
 import fr.cel.gameapi.listeners.ServerListeners;

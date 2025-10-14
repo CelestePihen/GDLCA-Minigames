@@ -23,6 +23,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -229,27 +230,27 @@ public class CCMap {
 
     /**
      * Lance la partie
-     * @param player Le joueur qui lance
+     * @param sender La personne qui lance la partie
      */
-    public void startGame(Player player) {
+    public void startGame(CommandSender sender) {
         if (getMapState() instanceof PreGameMapState) {
             if (getCcMode() == CCMode.TwoHuntersAtStart) {
                 if (getPlayers().size() < CCMode.TwoHuntersAtStart.getRequiredPlayers()) {
-                    player.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 3 joueurs) !")));
+                    sender.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 3 joueurs) !")));
                 } else {
                     setMapState(new StartingMapState(this));
                 }
             }
             else {
                 if (getPlayers().size() < 2) {
-                    player.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 2 joueurs) !")));
+                    sender.sendMessage(gameManager.getPrefix().append(Component.text("Il n'y a pas assez de joueurs (minimum 2 joueurs) !")));
                 } else {
                     setMapState(new StartingMapState(this));
                 }
             }
         }
         else {
-            player.sendMessage(gameManager.getPrefix().append(Component.text("La partie est déjà lancée.")));
+            sender.sendMessage(gameManager.getPrefix().append(Component.text("La partie est déjà lancée.")));
         }
     }
 

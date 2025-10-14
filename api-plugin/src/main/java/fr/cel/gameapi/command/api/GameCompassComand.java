@@ -1,5 +1,6 @@
-package fr.cel.gameapi.command;
+package fr.cel.gameapi.command.api;
 
+import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;

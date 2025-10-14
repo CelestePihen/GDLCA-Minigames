@@ -1,5 +1,5 @@
 name: Cache-Cache
-version: '${project.version}'
+version: '1.2'
 main: fr.cel.cachecache.CacheCache
 api-version: 1.21
 authors: [Cel, Deadsky]

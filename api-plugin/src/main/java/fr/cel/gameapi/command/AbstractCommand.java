@@ -21,6 +21,13 @@ public abstract class AbstractCommand implements TabExecutor {
     private final boolean needPlayer;
     private final boolean permissionRequired;
 
+    /**
+     * Recommended if you want to create a command with no sub commands
+     * @param permission The permission the player has to have to execute the command
+     * @param needPlayer If true, the console can't do this command. Otherwise false
+     * @param permissionRequired If true, then the permission is required for the player who executes the command.
+     *                           Otherwise false and every player can execute this command
+     */
     public AbstractCommand(String permission, boolean needPlayer, boolean permissionRequired) {
         this.permission = permission;
         this.needPlayer = needPlayer;
@@ -28,7 +35,7 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
         if (needPlayer && !(sender instanceof Player)) {
             sendMessageWithPrefix(sender, Component.text("Tu dois etre un joueur pour effectuer cette commande."));
             return false;
@@ -44,11 +51,11 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String @NotNull [] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
         if (needPlayer && !(sender instanceof Player)) {
-            return null;
+            return List.of();
         } else if (!sender.hasPermission(permission) && isPermissionRequired()) {
-            return null;
+            return List.of();
         }
 
         return onTabComplete((Player) sender, args);
@@ -59,7 +66,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param sender The sender executing the command
      * @param args The arguments provided by the sender
      */
-    protected abstract void onExecute(@NotNull CommandSender sender, String @NotNull [] args);
+    protected abstract void onExecute(@NotNull CommandSender sender, @NotNull String @NotNull [] args);
 
     /**
      * Provides possible tab-completion arguments for the player when typing the command.
@@ -67,7 +74,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param args The current arguments typed by the player
      * @return A list of possible arguments for tab-completion
      */
-    protected abstract List<String> onTabComplete(Player player, String[] args);
+    protected abstract List<String> onTabComplete(Player player, @NotNull String[] args);
 
     /**
      * Checks if a player is online.
@@ -76,7 +83,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @return Returns true if the player is online; otherwise, sends a message to the sender and returns false
      */
     @Contract("null, _ -> false; !null, _ -> true")
-    protected boolean isPlayerOnline(@Nullable Player player, CommandSender sender) {
+    protected boolean isPlayerOnline(@Nullable Player player, @NotNull CommandSender sender) {
         if (player == null) {
             sendMessageWithPrefix(sender, Component.text("Le joueur n'existe pas ou n'est pas connecté."));
             return false;
@@ -89,7 +96,7 @@ public abstract class AbstractCommand implements TabExecutor {
      * @param sender The recipient of the message
      * @param message The message to send
      */
-    protected void sendMessageWithPrefix(CommandSender sender, Component message) {
+    protected void sendMessageWithPrefix(@NotNull CommandSender sender, @NotNull Component message) {
         sender.sendMessage(GameAPI.getPrefix().append(message.colorIfAbsent(NamedTextColor.WHITE)));
     }
     
