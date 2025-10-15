@@ -22,15 +22,15 @@ dependencies {
 
     compileOnly("fr.cel:api-plugin:1.3")
 
-    compileOnly("fr.cel:cache-cache:1.1.1")
-    compileOnly("fr.cel:valocraft:1.0.1")
-    compileOnly("fr.cel:PVP:1.0.3")
-    compileOnly("fr.cel:parkour:1.0.1")
-    compileOnly("fr.cel:halloween-event:1.0.0")
+    compileOnly("fr.cel:cache-cache-plugin:1.2")
+    compileOnly("fr.cel:valocraft-plugin:1.0.1")
+    compileOnly("fr.cel:pvp-plugin:1.0.3")
+    compileOnly("fr.cel:parkour-plugin:1.0.1")
+    compileOnly("fr.cel:halloween-event-plugin:1.0.0")
 }
 
 group = "fr.cel.hub"
-version = "1.0.3"
+version = "1.1"
 description = "Hub"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -48,6 +48,6 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<Javadoc>() {
+tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }

@@ -63,7 +63,7 @@ public final class PlayersListener implements Listener {
                 .append(Component.text("GDLCA Minigames", NamedTextColor.AQUA))
                 .append(Component.text(" !", NamedTextColor.WHITE)));
 
-        player.sendPlayerListFooter(Component.text("&3Discord &f: discord.gg/vFjPYC4Mj8"));
+        player.sendPlayerListFooter(Component.text("Discord", NamedTextColor.DARK_AQUA).append(Component.text(": discord.gg/vFjPYC4Mj8", NamedTextColor.WHITE)));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

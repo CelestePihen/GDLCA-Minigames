@@ -5,6 +5,7 @@ import fr.cel.pvp.arena.ArenaConfig;
 import fr.cel.pvp.arena.PVPArena;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -53,7 +54,7 @@ public class PVPArenaManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + arenas.size() + " arènes PVP ")));
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + arenas.size() + " arènes PVP ", NamedTextColor.YELLOW)));
     }
 
 }

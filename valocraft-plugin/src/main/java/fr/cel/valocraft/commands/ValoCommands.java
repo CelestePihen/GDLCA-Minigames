@@ -39,7 +39,7 @@ public class ValoCommands extends AbstractCommand {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            sender.sendMessage(gameManager.getPrefix().append(Component.text("Les fichiers de configuration des arènes ValoCraft ont été rechargées.")));
+            sender.sendMessage(gameManager.getPrefix().append(Component.text("Les fichiers de configuration des arènes Valocraft ont été rechargées.")));
             gameManager.reloadArenaManager();
             return;
         }

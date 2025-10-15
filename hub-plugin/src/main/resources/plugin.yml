@@ -1,5 +1,5 @@
 name: Hub
-version: '${project.version}'
+version: 1.1
 main: fr.cel.hub.Hub
 api-version: 1.21
 author: Cel
@@ -8,7 +8,7 @@ commands:
   hub:
     description: Besoin d'expliquer ? Bon. Permet d'aller au hub
   event:
-    description: Permet d'effectuer des événements
+    description: Permet d'effectuer des événements au Hub
     permission: hub.event
 permissions:
   hub.event:

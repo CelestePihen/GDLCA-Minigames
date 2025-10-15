@@ -14,8 +14,9 @@ import java.io.IOException;
 @Getter
 public class GameManager {
 
+    @Getter private static final Component prefix = Component.empty().append(Component.text("[Halloween Event]", NamedTextColor.GOLD)).append(Component.text(" "));
+
     private final HalloweenEvent main;
-    @Getter private static final Component prefix = Component.text("[HalloweenEvent]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
 
     private File soulsFile;
     private YamlConfiguration soulsConfig;

@@ -56,7 +56,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    private void onDeathAndKill(PlayerDeathEvent event) {
+    public void onDeathAndKill(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (!map.isPlayerInMap(player)) return;
 
@@ -70,7 +70,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    protected void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity entityDamager = event.getDamager();
 
         if (entityDamager instanceof Player damager && event.getEntity() instanceof Player damaged) {
@@ -91,7 +91,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    protected void onPlayerInteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!map.isPlayerInMap(player)) return;
 
@@ -161,13 +161,13 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    private void onPlayerDrop(PlayerDropItemEvent event) {
+    public void onPlayerDrop(PlayerDropItemEvent event) {
         if (!map.isPlayerInMap(event.getPlayer())) return;
         if (event.getItemDrop().getItemStack().getType() == Material.STICK) event.setCancelled(true);
     }
 
     @EventHandler
-    private void onPlayerPickup(EntityPickupItemEvent event) {
+    public void onPlayerPickup(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player) || !map.isPlayerInMap(player)) return;
 
         Item item = event.getItem();
@@ -181,7 +181,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     @EventHandler
-    private void onEntityDamageEvent(EntityDamageEvent event) {
+    public void onEntityDamageEvent(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player) || !map.isPlayerInMap(player)) return;
 
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
@@ -196,7 +196,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
      * Permet de détecter si un joueur a activé un levier sur la Carte Bunker
      */
     @EventHandler
-    private void onLeverAction(BlockRedstoneEvent event) {
+    public void onLeverAction(BlockRedstoneEvent event) {
         Block block = event.getBlock();
         if (block.getType() != Material.LEVER || !block.getLocation().equals(map.getLeverLocation())) return;
         boolean isPowered = event.getNewCurrent() > 0;
@@ -220,7 +220,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
      * le succès Le pied sur le pouvoir, ainsi que le succès "T'es pas essouflé ?"
      */
     @EventHandler
-    private void onPlayerMove(PlayerMoveEvent event) {
+    public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (!map.isPlayerInMap(player)) return;
 

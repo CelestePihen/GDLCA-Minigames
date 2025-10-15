@@ -7,6 +7,7 @@ import fr.cel.cachecache.utils.MapConfig;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -57,7 +58,7 @@ public class CCMapManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix().append(Component.text("Chargement de " + this.maps.size() + " maps Cache-Cache ")));
+        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix().append(Component.text("Chargement de " + this.maps.size() + " maps Cache-Cache ", NamedTextColor.YELLOW)));
     }
 
 }

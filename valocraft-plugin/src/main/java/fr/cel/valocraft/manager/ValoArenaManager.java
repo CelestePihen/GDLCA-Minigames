@@ -1,10 +1,11 @@
 package fr.cel.valocraft.manager;
 
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ArenaConfig;
 import fr.cel.valocraft.arena.ValoArena;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,9 +18,9 @@ public class ValoArenaManager {
 
     @Getter private static ValoArenaManager arenaManager;
     @Getter private final Map<String, ValoArena> arenas = new HashMap<>();
-    private final ValoCraft main;
+    private final Valocraft main;
 
-    public ValoArenaManager(ValoCraft main) {
+    public ValoArenaManager(Valocraft main) {
         arenaManager = this;
         this.main = main;
         this.loadArenas();
@@ -60,7 +61,7 @@ public class ValoArenaManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix().append(Component.text("Chargement de " + arenas.size() + " arènes ValoCraft ")));
+        Bukkit.getConsoleSender().sendMessage(main.getGameManager().getPrefix().append(Component.text("Chargement de " + arenas.size() + " arènes Valocraft ", NamedTextColor.YELLOW)));
     }
 
 }

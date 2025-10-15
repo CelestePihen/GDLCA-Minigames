@@ -1,5 +1,5 @@
 name: Parkour
-version: ${project.version}
+version: 1.0.1
 main: fr.cel.parkour.Parkour
 api-version: 1.21
 author: Cel

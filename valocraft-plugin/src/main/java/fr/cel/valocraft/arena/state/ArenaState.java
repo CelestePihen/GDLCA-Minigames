@@ -1,6 +1,6 @@
 package fr.cel.valocraft.arena.state;
 
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import org.bukkit.event.Listener;
@@ -16,7 +16,7 @@ public abstract class ArenaState implements Listener {
         this.arena = arena;
     }
 
-    public void onEnable(ValoCraft main) {
+    public void onEnable(Valocraft main) {
         listenerProvider = getListenerProvider();
         if (listenerProvider != null) listenerProvider.onEnable(main);
     }

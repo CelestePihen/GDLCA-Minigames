@@ -1,7 +1,7 @@
 package fr.cel.valocraft.arena.state.game;
 
 import fr.cel.gameapi.utils.ItemBuilder;
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.ArenaState;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
@@ -30,7 +30,7 @@ public class WaitingArenaState extends ArenaState {
     }
 
     @Override
-    public void onEnable(ValoCraft main) {
+    public void onEnable(Valocraft main) {
         super.onEnable(main);
 
         if (arena.getGlobalRound() == 1) addPlayersToBossBar();

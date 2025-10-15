@@ -7,8 +7,9 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.utils.ChatUtility;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -60,7 +61,7 @@ public class NPCManager implements Listener {
 
                     NPC npc = config.getNPC();
                     if (npc == null) {
-                        Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&c[" + main.getName() + "] &rLe NPC-" + name + " n'a pas pu être chargé."));
+                        Bukkit.getConsoleSender().sendMessage(Component.empty().append(Component.text("[" + main.getName() + "] ")).append(Component.text("Le NPC-" + name + " n'a pas pu être chargé.", NamedTextColor.RED)));
                         continue;
                     }
 
@@ -70,7 +71,7 @@ public class NPCManager implements Listener {
                 }
             }
 
-            Bukkit.getConsoleSender().sendMessage(ChatUtility.format("&6[" + main.getName() + "] &fChargement de " + npcs.size() + " NPCs pour le plugin " + main.getName() + "&r..."));
+            Bukkit.getConsoleSender().sendMessage(Component.empty().append(Component.text("[" + main.getName() + "] ", NamedTextColor.GOLD)).append(Component.text("Chargement de " + npcs.size() + " NPCs pour le plugin " + main.getName(), NamedTextColor.YELLOW)));
         }
 
         if (protocolManager == null) {

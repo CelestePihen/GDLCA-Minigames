@@ -3,6 +3,7 @@ package fr.cel.decorationsplugin.manager;
 import fr.cel.decorationsplugin.DecorationsPlugin;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,7 +37,7 @@ public final class DecorationsManager {
 
         for (File file : files) loadDecoration(file);
 
-        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(decorations.size() + " décorations chargées")));
+        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(decorations.size() + " décorations chargées", NamedTextColor.YELLOW)));
     }
 
     private void loadDecoration(File file) {

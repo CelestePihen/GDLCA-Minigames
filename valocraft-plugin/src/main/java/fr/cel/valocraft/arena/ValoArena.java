@@ -131,7 +131,7 @@ public class ValoArena {
         scoreboard.addPlayer(player);
 
         player.teleport(getSpawnLoc());
-        player.showTitle(Title.title(Component.text("ValoCraft", NamedTextColor.GOLD), Component.text(getDisplayName())));
+        player.showTitle(Title.title(Component.text("Valocraft", NamedTextColor.GOLD), Component.text(getDisplayName())));
         player.getInventory().clear();
         player.setGameMode(gameMode);
 

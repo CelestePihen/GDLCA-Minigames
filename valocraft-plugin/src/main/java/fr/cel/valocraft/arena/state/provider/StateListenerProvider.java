@@ -1,6 +1,6 @@
 package fr.cel.valocraft.arena.state.provider;
 
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,7 +22,7 @@ public class StateListenerProvider implements Listener {
         this.arena = arena;
     }
 
-    public void onEnable(ValoCraft main) {
+    public void onEnable(Valocraft main) {
         main = arena.getGameManager().getMain();
         main.getServer().getPluginManager().registerEvents(this, main);
     }

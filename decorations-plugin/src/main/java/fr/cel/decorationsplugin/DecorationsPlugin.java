@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 @Getter
 public final class DecorationsPlugin extends JavaPlugin {
 
-    @Getter private static final Component prefix = Component.text("[Decorations]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
+    @Getter private static final Component prefix = Component.empty().append(Component.text("[Decorations]", NamedTextColor.GOLD)).append(Component.text(" "));
     @Getter private static DecorationsPlugin instance;
 
     private DecorationsManager decorationsManager;

@@ -5,6 +5,7 @@ import fr.cel.parkour.map.MapConfig;
 import fr.cel.parkour.map.ParkourMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -55,7 +56,7 @@ public class ParkourMapManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + maps.size() + " cartes Parkour")));
+        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + maps.size() + " cartes Parkour", NamedTextColor.YELLOW)));
     }
 
 }

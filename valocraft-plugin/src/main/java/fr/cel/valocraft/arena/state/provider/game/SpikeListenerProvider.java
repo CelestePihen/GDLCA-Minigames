@@ -1,6 +1,6 @@
 package fr.cel.valocraft.arena.state.provider.game;
 
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.game.TimeOverArenaState;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
@@ -21,7 +21,7 @@ public class SpikeListenerProvider extends StateListenerProvider {
     }
 
     @Override
-    public void onEnable(ValoCraft main) {
+    public void onEnable(Valocraft main) {
         super.onEnable(main);
     }
 

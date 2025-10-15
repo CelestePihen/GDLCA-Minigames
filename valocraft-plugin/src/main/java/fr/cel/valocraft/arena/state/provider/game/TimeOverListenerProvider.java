@@ -1,6 +1,6 @@
 package fr.cel.valocraft.arena.state.provider.game;
 
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import org.bukkit.Material;
@@ -22,7 +22,7 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     }
 
     @Override
-    public void onEnable(ValoCraft main) {
+    public void onEnable(Valocraft main) {
         super.onEnable(main);
     }
 

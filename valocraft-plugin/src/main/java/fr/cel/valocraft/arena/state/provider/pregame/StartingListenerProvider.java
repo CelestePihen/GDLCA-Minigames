@@ -1,6 +1,6 @@
 package fr.cel.valocraft.arena.state.provider.pregame;
 
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import net.kyori.adventure.text.Component;
@@ -24,7 +24,7 @@ public class StartingListenerProvider extends StateListenerProvider {
     }
 
     @Override
-    public void onEnable(ValoCraft main) {
+    public void onEnable(Valocraft main) {
         super.onEnable(main);
     }
 

@@ -2,6 +2,7 @@ package fr.cel.decorationsplugin.manager;
 
 import fr.cel.decorationsplugin.DecorationsPlugin;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -222,7 +223,7 @@ public final class ChairManager {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(chairs.size() + " chaises chargées !")));
+        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(chairs.size() + " chaises chargées !", NamedTextColor.YELLOW)));
     }
 
     /**

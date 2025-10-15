@@ -1,7 +1,7 @@
 package fr.cel.valocraft.arena;
 
 import fr.cel.gameapi.utils.LocationUtility;
-import fr.cel.valocraft.ValoCraft;
+import fr.cel.valocraft.Valocraft;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -14,13 +14,13 @@ import java.util.List;
 
 public class ArenaConfig {
 
-    private final ValoCraft main;
+    private final Valocraft main;
     private final String arenaName;
 
     private final File file;
     private final YamlConfiguration config;
 
-    public ArenaConfig(ValoCraft main, String arenaName) {
+    public ArenaConfig(Valocraft main, String arenaName) {
         this.main = main;
         this.arenaName = arenaName;
         this.file = new File(main.getDataFolder() + File.separator + "arenas", arenaName + ".yml");

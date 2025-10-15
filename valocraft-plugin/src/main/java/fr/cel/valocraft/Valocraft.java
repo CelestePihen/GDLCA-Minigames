@@ -10,7 +10,7 @@ import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
-public class ValoCraft extends JavaPlugin {
+public class Valocraft extends JavaPlugin {
 
     private GameManager gameManager;
     @Setter private ValoArenaManager valoArenaManager;

@@ -57,7 +57,6 @@ public class StartSubCommand implements SubCommand {
         }
 
         map.startGame(sender);
-        sender.sendMessage(gameManager.getPrefix().append(Component.text("La partie sur la carte " + map.getDisplayName() + " a été démarrée !", NamedTextColor.GREEN)));
     }
 
     @Override

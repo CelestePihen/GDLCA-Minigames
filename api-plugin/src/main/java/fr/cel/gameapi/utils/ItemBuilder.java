@@ -384,6 +384,18 @@ public final class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setGlow() {
+        setGlow(true);
+        return this;
+    }
+
+    public ItemBuilder setGlow(boolean glow) {
+        is.editMeta(itemMeta -> {
+            itemMeta.setEnchantmentGlintOverride(glow);
+        });
+        return this;
+    }
+
     /**
      * Get the itemstack from the ItemBuilder.
      * @return The itemstack created/modified by the ItemBuilder instance.

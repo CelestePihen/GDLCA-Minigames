@@ -1,5 +1,5 @@
 name: PVP
-version: ${project.version}
+version: 1.0.3
 main: fr.cel.pvp.PVP
 api-version: 1.21
 author: Cel

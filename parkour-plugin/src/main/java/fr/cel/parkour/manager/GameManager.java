@@ -8,7 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 @Getter
 public class GameManager {
 
-    @Getter private static final Component prefix = Component.text("[Parkour]", NamedTextColor.GOLD).append(Component.text(" ", NamedTextColor.WHITE));
+    @Getter private static final Component prefix = Component.empty().append(Component.text("[Parkour]", NamedTextColor.GOLD)).append(Component.text(" "));
     private final Parkour main;
 
     public GameManager(Parkour main) {
