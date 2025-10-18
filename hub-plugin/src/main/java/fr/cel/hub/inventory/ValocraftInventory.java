@@ -20,8 +20,7 @@ public class ValocraftInventory extends AbstractInventory {
     @Override
     protected void addItems(Inventory inv) {
         inv.setItem(10, new ItemBuilder(Material.SAND).itemName(Component.text("Désert", NamedTextColor.LIGHT_PURPLE)).toItemStack());
-        inv.setItem(12, new ItemBuilder(Material.SNOW_BLOCK).itemName(Component.text("Neige", NamedTextColor.LIGHT_PURPLE)).toItemStack());
-        inv.setItem(14, new ItemBuilder(Material.CHERRY_LEAVES).itemName(Component.text("Temple", NamedTextColor.LIGHT_PURPLE)).toItemStack());
+        inv.setItem(13, new ItemBuilder(Material.SNOW_BLOCK).itemName(Component.text("Neige", NamedTextColor.LIGHT_PURPLE)).toItemStack());
         inv.setItem(16, new ItemBuilder(Material.ANDESITE).itemName(Component.text("Complex", NamedTextColor.LIGHT_PURPLE)).toItemStack());
 
         inv.setItem(22, new ItemBuilder(Material.BARRIER).itemName(Component.text("Retour", NamedTextColor.RED)).toItemStack());
@@ -32,7 +31,6 @@ public class ValocraftInventory extends AbstractInventory {
         switch (item.getType()) {
             case SAND -> ValoArenaManager.getArenaManager().getArenaByDisplayName("Désert").addPlayer(player);
             case SNOW_BLOCK -> ValoArenaManager.getArenaManager().getArenaByDisplayName("Neige").addPlayer(player);
-            case CHERRY_LEAVES -> ValoArenaManager.getArenaManager().getArenaByDisplayName("Temple").addPlayer(player);
             case ANDESITE -> ValoArenaManager.getArenaManager().getArenaByDisplayName("Complex").addPlayer(player);
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
