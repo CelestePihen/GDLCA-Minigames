@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ValoArenaManager {
+public final class ValoArenaManager {
 
     @Getter private static ValoArenaManager arenaManager;
     @Getter private final Map<String, ValoArena> arenas = new HashMap<>();

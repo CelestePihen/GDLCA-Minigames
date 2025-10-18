@@ -33,12 +33,10 @@ public class WaitingArenaState extends ArenaState {
     public void onEnable(Valocraft main) {
         super.onEnable(main);
 
-        if (arena.getGlobalRound() == 1) addPlayersToBossBar();
-
         if (arena.getGlobalRound() == 13) arena.inverseTeam();
 
         removeSpike();
-        arena.clearPlayers();
+        arena.clearPlayerInventories();
         arena.setGameModePlayers(GameMode.SURVIVAL);
         arena.showTeamRound();
         teleportPlayersToSpawnTeam();
@@ -63,19 +61,18 @@ public class WaitingArenaState extends ArenaState {
 
     private void teleportPlayersToSpawnTeam() {
         for (String playerName : arena.getAttackers().team().getPlayers()) {
-            Player player = Bukkit.getPlayer(playerName);
+            Player player = Bukkit.getPlayerExact(playerName);
             if (player != null) player.teleport(arena.getAttackersSpawn());
         }
 
         for (String playerName : arena.getDefenders().team().getPlayers()) {
-            Player player = Bukkit.getPlayer(playerName);
+            Player player = Bukkit.getPlayerExact(playerName);
             if (player != null) player.teleport(arena.getDefendersSpawn());
         }
 
         for (UUID uuid : arena.getSpectators()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            player.teleport(arena.getSpawnLoc());
+            if (player != null) player.teleport(arena.getSpawnLoc());
         }
     }
 
@@ -84,7 +81,7 @@ public class WaitingArenaState extends ArenaState {
             if (arena.getSpectators().contains(uuid)) continue;
 
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) return;
+            if (player == null) continue;
 
             ItemStack bow = new ItemBuilder(Material.BOW).addEnchant(Enchantment.INFINITY, 1).toItemStack();
             ItemStack crossBow = new ItemBuilder(Material.CROSSBOW).toItemStack();
@@ -105,13 +102,6 @@ public class WaitingArenaState extends ArenaState {
         for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) player.showTitle(Title.title(Component.text("Manche " + arena.getGlobalRound()), Component.empty()));
-        }
-    }
-
-    private void addPlayersToBossBar() {
-        for (UUID uuid : arena.getPlayers()) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null) player.showBossBar(arena.getBossBar());
         }
     }
 

@@ -23,7 +23,10 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 public class ValoArena {
@@ -47,21 +50,20 @@ public class ValoArena {
     private final BossBar bossBar;
 
     // TODO
+    private final ArenaConfig arenaConfig;
     private final List<Location> invisibleBarriersLocations;
 
-    @Setter private ArenaConfig arenaConfig;
+    private Role attackers;
+    private Role defenders;
 
-    @Setter private Role attackers;
-    @Setter private Role defenders;
-
-    @Setter private ValoTeam redTeam;
-    @Setter private ValoTeam blueTeam;
+    private ValoTeam redTeam;
+    private ValoTeam blueTeam;
 
     private int globalRound;
 
     @Setter private Block spike;
 
-    public ValoArena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, List<Location> invisibleBarriersLocations, GameManager gameManager) {
+    public ValoArena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, ArenaConfig arenaConfig, GameManager gameManager) {
         this.nameArena = nameArena;
         this.displayName = displayName;
 
@@ -83,7 +85,8 @@ public class ValoArena {
         this.arenaState = new InitArenaState(this);
         this.globalRound = 1;
 
-        this.invisibleBarriersLocations = invisibleBarriersLocations;
+        this.arenaConfig = arenaConfig;
+        this.invisibleBarriersLocations = arenaConfig.getLocationInvisibleBarrier();
 
         this.gameManager = gameManager;
     }
@@ -130,8 +133,8 @@ public class ValoArena {
         players.add(player.getUniqueId());
         scoreboard.addPlayer(player);
 
-        player.teleport(getSpawnLoc());
-        player.showTitle(Title.title(Component.text("Valocraft", NamedTextColor.GOLD), Component.text(getDisplayName())));
+        player.teleport(spawnLoc);
+        player.showTitle(Title.title(Component.text("Valocraft", NamedTextColor.GOLD), Component.text(displayName)));
         player.getInventory().clear();
         player.setGameMode(gameMode);
 
@@ -150,7 +153,7 @@ public class ValoArena {
      */
     public boolean startGame() {
         // on regarde s'il y a au moins 2 joueurs dans la partie, qu'il y a au moins 1 joueur dans les 2 teams et on regarde si la partie est prête à se lancer
-        if (getPlayers().size() >= 2 && (!getBlueTeam().getPlayers().isEmpty() || !getRedTeam().getPlayers().isEmpty()) && getArenaState() instanceof PreGameArenaState) {
+        if (players.size() >= 2 && (!blueTeam.getPlayers().isEmpty() || !redTeam.getPlayers().isEmpty()) && getArenaState() instanceof PreGameArenaState) {
             setArenaState(new StartingArenaState(this));
             return true;
         }
@@ -161,28 +164,30 @@ public class ValoArena {
      * Permet de finir la partie
       */
     public void endGame() {
-        // on envoie un message avec les vainqueurs
         sendWinnerMessage();
 
-        // on nettoie les teams
-        getBlueTeam().clearPlayers();
-        getRedTeam().clearPlayers();
+        blueTeam.resetTeam();
+        redTeam.resetTeam();
 
-        // on enlève les joueurs du scoreboard
         players.forEach(uuid -> scoreboard.removePlayer(Bukkit.getPlayer(uuid)));
 
-
-        // on leur enlève la bossbar
+        // Reset Bossbar
         removePlayersToBossBar();
+        bossBar.name(Component.text("0", NamedTextColor.BLUE)
+                .append(Component.text(" | 1 | ", NamedTextColor.WHITE))
+                .append(Component.text("0", NamedTextColor.RED))).progress(1.0F);
 
-        // on les envoie au hub
         sendPlayersToHub();
 
-        // on enlève tous les joueurs et les spectateurs de l'arène
         players.clear();
         spectators.clear();
 
-        // on remet l'état de l'arène en Init
+        attackers = new Role("attackers", "Attaquants", attackersSpawn, scoreboard.registerTeam("a" + nameArena, NamedTextColor.RED));
+        defenders = new Role("defenders", "Défenseurs", defendersSpawn, scoreboard.registerTeam("d" + nameArena, NamedTextColor.BLUE));
+
+        redTeam = new ValoTeam("redTeam", "Équipe Rouge", attackers);
+        blueTeam = new ValoTeam("blueTeam", "Équipe Bleue", defenders);
+
         setArenaState(new InitArenaState(this));
     }
 
@@ -199,7 +204,7 @@ public class ValoArena {
 
         if (getPlayers().size() < 2 || (getBlueTeam().getPlayers().isEmpty() || getRedTeam().getPlayers().isEmpty())) {
 
-            String gameCancelled = "Partie annulé... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.";
+            Component gameCancelled = Component.text("Partie annulé... Vous avez besoin d'au moins 2 joueurs et d'au moins 1 joueur dans chaque équipe pour jouer.");
 
             if (arenaState instanceof PreGameArenaState) return;
 
@@ -211,22 +216,22 @@ public class ValoArena {
 
             else if (arenaState instanceof WaitingArenaState waitingArenaState) {
                 waitingArenaState.getWaitingArenaTask().cancel();
-                sendMessage(Component.text(gameCancelled));
+                sendMessage(gameCancelled);
             }
 
             else if (arenaState instanceof PlayingArenaState playingArenaState) {
                 playingArenaState.getPlayingArenaTask().cancel();
-                sendMessage(Component.text(gameCancelled));
+                sendMessage(gameCancelled);
             }
 
             else if (arenaState instanceof SpikeArenaState spikeArenaState) {
                 spikeArenaState.getSpikeArenaTask().cancel();
-                sendMessage(Component.text(gameCancelled));
+                sendMessage(gameCancelled);
             }
 
             else if (arenaState instanceof TimeOverArenaState timeOverArenaState) {
                 timeOverArenaState.getTimeOverArenaTask().cancel();
-                sendMessage(Component.text(gameCancelled));
+                sendMessage(gameCancelled);
             }
 
             if (getBlueTeam().getPlayers().isEmpty()) getRedTeam().setRoundWin(13);
@@ -239,15 +244,24 @@ public class ValoArena {
     public void eliminate(Player player) {
         player.teleport(getSpawnLoc());
         player.setGameMode(GameMode.SPECTATOR);
+        // TODO mettre le joueur en spectateur sur un allié et ne lui permettre d'aller que sur ses alliés
+        // player.setSpectatorTarget();
         player.sendMessage(gameManager.getPrefix().append(Component.text("Vous êtes mort(e).")));
 
         checkRound();
     }
 
+    /**
+     * Permet de vérifier si une équipe a gagné le round.
+     * Si on est en TimeOver (entre deux manches), on ne fait rien.
+     * Si on est en SpikeArenaState et que les attaquants sont tous en spectateur, on ne fait rien (évite de donner un round aux défenseurs si le spike a explosé et que les attaquants sont tous morts).
+     * Si une équipe est toute en spectateur, l'autre équipe gagne le round.
+     * On affiche le score, on incrémente le round global et on vérifie si une équipe a gagné la partie
+     */
     private void checkRound() {
         if (this.arenaState instanceof TimeOverArenaState) return;
 
-        if (arenaState instanceof SpikeArenaState && Objects.requireNonNull(getTeamByRole(attackers)).isAllTeamInSpec()) return;
+        if (arenaState instanceof SpikeArenaState && getTeamByRole(attackers).isAllTeamInSpec()) return;
 
         if (getBlueTeam().isAllTeamInSpec()) {
             getRedTeam().setRoundWin(getRedTeam().getRoundWin() + 1);
@@ -262,6 +276,12 @@ public class ValoArena {
         checkWin();
     }
 
+    /**
+     * Permet de vérifier si une équipe a gagné la partie (13 rounds gagnés).
+     * Si oui, on termine la partie.
+     * Sinon, on passe en TimeOverArenaState.
+     * Si les attaquants ont posé le spike ET ont tué les défenseurs, on annule la tâche du spike
+     */
     private void checkWin() {
         if (blueTeam.getRoundWin() >= 13 || redTeam.getRoundWin() >= 13) {
             // TODO mettre un GameState de Win entre la fin et le renvoi au Hub genre avec les vainqueurs affichés / classements avec kills, etc.
@@ -274,6 +294,9 @@ public class ValoArena {
         setArenaState(new TimeOverArenaState(this));
     }
 
+    /**
+     * Permet d'inverser les équipes attaquantes et défenseuses quand on atteint la manche 13 (global)
+     */
     public void inverseTeam() {
         if (getBlueTeam().getRole() == getAttackers()) {
             getBlueTeam().setRole(defenders);
@@ -284,18 +307,24 @@ public class ValoArena {
         }
     }
 
-    public void addRoundSpike() {
+    /**
+     * Permet d'ajouter un round aux attaquants (quand le spike a explosé)
+     */
+    public void addSpikeRoundSpike() {
         ValoTeam valoTeam = getTeamByRole(attackers);
-        if (valoTeam != null) valoTeam.setRoundWin(valoTeam.getRoundWin() + 1);
+        valoTeam.setRoundWin(valoTeam.getRoundWin() + 1);
 
         addGlobalRoundEndRound();
         setArenaState(new TimeOverArenaState(this));
     }
 
-    // Spike Defused / End of Time (when PlayingState)
+    /**
+     * Permet d'ajouter un round aux défenseurs.
+     * Peut arriver quand les défenseurs désamorcent le spike ou que le temps est écoulé (en mode playing)
+     */
     public void addRoundDefender() {
         ValoTeam valoTeam = getTeamByRole(defenders);
-        if (valoTeam != null) valoTeam.setRoundWin(valoTeam.getRoundWin() + 1);
+        valoTeam.setRoundWin(valoTeam.getRoundWin() + 1);
 
         addGlobalRoundEndRound();
     }
@@ -329,7 +358,7 @@ public class ValoArena {
         }
     }
 
-    public void clearPlayers() {
+    public void clearPlayerInventories() {
         for (UUID pls : getPlayers()) {
             Player player = Bukkit.getPlayer(pls);
             if (player != null) player.getInventory().clear();
@@ -356,16 +385,16 @@ public class ValoArena {
     public void showTeamRound() {
         for (UUID uuid : getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-
-            player.sendActionBar(Component.text(getBlueTeam().getRoundWin(), NamedTextColor.BLUE)
-                    .append(Component.text(" | ", NamedTextColor.WHITE))
-                    .append(Component.text(getRedTeam().getRoundWin(), NamedTextColor.RED)));
-
-            bossBar.name(Component.text(getBlueTeam().getRoundWin(), NamedTextColor.BLUE)
-                    .append(Component.text(" | " + getGlobalRound() + " | ", NamedTextColor.WHITE))
-                    .append(Component.text(getRedTeam().getRoundWin(), NamedTextColor.RED)));
+            if (player != null) {
+                player.sendActionBar(Component.text(getBlueTeam().getRoundWin(), NamedTextColor.BLUE)
+                        .append(Component.text(" | ", NamedTextColor.WHITE))
+                        .append(Component.text(getRedTeam().getRoundWin(), NamedTextColor.RED)));
+            }
         }
+
+        bossBar.name(Component.text(getBlueTeam().getRoundWin(), NamedTextColor.BLUE)
+                .append(Component.text(" | " + getGlobalRound() + " | ", NamedTextColor.WHITE))
+                .append(Component.text(getRedTeam().getRoundWin(), NamedTextColor.RED)));
     }
 
     public void removePlayersToBossBar() {
@@ -379,7 +408,7 @@ public class ValoArena {
         for (ValoTeam team : Arrays.asList(redTeam, blueTeam)) {
             if (team.getRole() == role) return team;
         }
-        return null;
+        return redTeam;
     }
 
     private void addGlobalRoundEndRound() {
@@ -391,8 +420,7 @@ public class ValoArena {
     private void sendPlayersToHub() {
         for (UUID uuid : getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            gameManager.getPlayerManager().sendPlayerToHub(player);
+            if (player != null) gameManager.getPlayerManager().sendPlayerToHub(player);
         }
     }
 

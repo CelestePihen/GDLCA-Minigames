@@ -42,10 +42,7 @@ public class ArenaConfig {
                 Location locationBlue = LocationUtility.parseConfigToLoc(config, "locationBlue");
                 Location locationRed = LocationUtility.parseConfigToLoc(config, "locationRed");
 
-                ValoArena arena = new ValoArena(arenaName, displayName, locationSpawn, locationBlue, locationRed, getLocationInvisibleBarrier(), main.getGameManager());
-                arena.setArenaConfig(this);
-
-                return arena;
+                return new ValoArena(arenaName, displayName, locationSpawn, locationBlue, locationRed, this, main.getGameManager());
             } catch (IOException | InvalidConfigurationException e) {
                 main.getLogger().severe(e.getMessage());
             }
@@ -64,7 +61,7 @@ public class ArenaConfig {
         }
     }
 
-    private List<Location> getLocationInvisibleBarrier() {
+    public List<Location> getLocationInvisibleBarrier() {
         List<Location> locations = new ArrayList<>();
 
         for (String str : config.getStringList("invisibleBarriersLocation")) {

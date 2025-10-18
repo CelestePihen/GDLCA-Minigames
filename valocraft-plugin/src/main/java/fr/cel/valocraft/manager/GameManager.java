@@ -7,11 +7,12 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class GameManager {
+public final class GameManager {
 
     @Getter private final Valocraft main;
-    @Getter private final PlayerManager playerManager = GameAPI.getInstance().getPlayerManager();
     @Getter private final Component prefix = Component.empty().append(Component.text("[Valocraft]", NamedTextColor.GOLD)).append(Component.text(" "));
+
+    @Getter private final PlayerManager playerManager = GameAPI.getInstance().getPlayerManager();
 
     public GameManager(Valocraft main) {
         this.main = main;

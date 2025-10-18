@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Getter
-public class ValoTeam {
+public final class ValoTeam {
     
     private final String name;
     private final String displayName;
@@ -41,9 +41,11 @@ public class ValoTeam {
         }
     }
 
-    public void clearPlayers() {
+    public void resetTeam() {
         players.forEach(uuid -> role.team().removePlayer(Bukkit.getPlayer(uuid)));
         players.clear();
+
+        roundWin = 0;
     }
 
     public void setRole(Role role) {

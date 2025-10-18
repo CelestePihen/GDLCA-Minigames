@@ -37,15 +37,19 @@ public class SelectTeam extends AbstractInventory {
     public void interact(Player player, String itemName, ItemStack item) {
         ValoArena arena = gameManager.getMain().getValoArenaManager().getArenaByPlayer(player);
 
+        if (arena == null) return;
+
         if (arena.getArenaState() instanceof StartingArenaState) {
             player.sendMessage(gameManager.getPrefix().append(Component.text("Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.")));
             player.closeInventory();
+            return;
         }
 
         switch (item.getType()) {
             case WHITE_WOOL -> {
                 arena.getBlueTeam().removePlayer(player);
                 arena.getRedTeam().removePlayer(player);
+                arena.getSpectators().add(player.getUniqueId());
                 arena.sendMessage(player.displayName().append(Component.text(" est maintenant spectateur.")));
 
                 player.showTitle(Title.title(Component.text("Vous êtes maintenant spectateur."), Component.empty()));

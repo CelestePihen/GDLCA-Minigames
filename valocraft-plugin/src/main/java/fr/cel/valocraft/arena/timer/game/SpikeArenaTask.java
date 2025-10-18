@@ -16,7 +16,7 @@ public class SpikeArenaTask extends BukkitRunnable {
     public void run() {
         if (timer <= 0) {
             cancel();
-            arena.addRoundSpike();
+            arena.addSpikeRoundSpike();
             // TODO faire explosion
             return;
         }
