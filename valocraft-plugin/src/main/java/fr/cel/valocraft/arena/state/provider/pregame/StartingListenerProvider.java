@@ -4,7 +4,6 @@ import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,8 +34,7 @@ public class StartingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (arena.isPlayerInArena(player)) event.setCancelled(true);
+        if (event.getEntity() instanceof Player player && arena.isPlayerInArena(player)) event.setCancelled(true);
     }
 
     @EventHandler
@@ -56,11 +54,10 @@ public class StartingListenerProvider extends StateListenerProvider {
         
         if (!arena.isPlayerInArena(player)) return;
         if (itemStack == null) return;
-        if (itemStack.getItemMeta() == null) return;
 
-        String itemName = ((TextComponent) itemStack.getItemMeta().itemName()).content();
-        if (itemName.equals("Sélecteur d'équipes"))
-            player.sendMessage(arena.getGameManager().getPrefix().append(Component.text("Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.")));
+        if (itemStack.getType().name().contains("WOOL"))
+            player.sendMessage(arena.getGameManager().getPrefix()
+                    .append(Component.text("Vous n'avez pas le droit de changer d'équipe quand la partie est lancée.")));
     }
 
     @EventHandler
@@ -73,8 +70,7 @@ public class StartingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)) return;
 
         Material type = event.getItem().getItemStack().getType();
         if (type == Material.WHITE_WOOL || type == Material.RED_WOOL || type == Material.BLUE_WOOL) event.setCancelled(true);
@@ -82,6 +78,8 @@ public class StartingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     private void onPlayerSwapItem(PlayerSwapHandItemsEvent event) {
+        if (!arena.isPlayerInArena(event.getPlayer())) return;
+
         Material type = event.getMainHandItem().getType();
         if (type == Material.WHITE_WOOL || type == Material.RED_WOOL || type == Material.BLUE_WOOL) event.setCancelled(true);
     }

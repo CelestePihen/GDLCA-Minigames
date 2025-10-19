@@ -35,9 +35,10 @@ public class WaitingArenaState extends ArenaState {
 
         if (arena.getGlobalRound() == 13) arena.inverseTeam();
 
-        removeSpike();
+        arena.showInvisibleBarriers();
+        arena.removeSpike();
         arena.clearPlayerInventories();
-        arena.setGameModePlayers(GameMode.SURVIVAL);
+        arena.setGameModePlayers(GameMode.ADVENTURE);
         arena.showTeamRound();
         teleportPlayersToSpawnTeam();
         giveWeapons();
@@ -102,13 +103,6 @@ public class WaitingArenaState extends ArenaState {
         for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) player.showTitle(Title.title(Component.text("Manche " + arena.getGlobalRound()), Component.empty()));
-        }
-    }
-
-    private void removeSpike() {
-        if (arena.getSpike() != null) {
-            arena.getSpike().setType(Material.AIR);
-            arena.setSpike(null);
         }
     }
 

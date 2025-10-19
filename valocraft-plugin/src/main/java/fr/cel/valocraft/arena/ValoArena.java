@@ -49,9 +49,8 @@ public class ValoArena {
 
     private final BossBar bossBar;
 
-    // TODO
     private final ArenaConfig arenaConfig;
-    private final List<Location> invisibleBarriersLocations;
+    @Setter private List<Location> invisibleBarriersLocations;
 
     private Role attackers;
     private Role defenders;
@@ -88,6 +87,12 @@ public class ValoArena {
         this.arenaConfig = arenaConfig;
         this.invisibleBarriersLocations = arenaConfig.getLocationInvisibleBarrier();
 
+        this.attackers = new Role("attackers", "Attaquants", attackersSpawn, scoreboard.registerTeam("a" + nameArena, NamedTextColor.RED));
+        this.defenders = new Role("defenders", "Défenseurs", defendersSpawn, scoreboard.registerTeam("d" + nameArena, NamedTextColor.BLUE));
+
+        this.redTeam = new ValoTeam("redTeam", "Équipe Rouge", attackers);
+        this.blueTeam = new ValoTeam("blueTeam", "Équipe Bleue", defenders);
+
         this.gameManager = gameManager;
     }
 
@@ -120,30 +125,6 @@ public class ValoArena {
         else {
             setArenaState(new PreGameArenaState(this));
             join(player, GameMode.ADVENTURE);
-        }
-    }
-
-    /**
-     * Permet de faire rejoindre le joueur à l'arène
-     * @param player Le joueur à faire rejoindre
-     * @param gameMode Le mode de jeu à mettre au joueur
-     */
-    private void join(Player player, GameMode gameMode) {
-        gameManager.getPlayerManager().removePlayerInHub(player);
-        players.add(player.getUniqueId());
-        scoreboard.addPlayer(player);
-
-        player.teleport(spawnLoc);
-        player.showTitle(Title.title(Component.text("Valocraft", NamedTextColor.GOLD), Component.text(displayName)));
-        player.getInventory().clear();
-        player.setGameMode(gameMode);
-
-        if (gameMode == GameMode.SPECTATOR) {
-            spectators.add(player.getUniqueId());
-            player.sendMessage(gameManager.getPrefix().append(Component.text("La partie est déjà lancée.")));
-        } else {
-            sendMessage(player.displayName().append(Component.text(" a rejoint la partie !")));
-            player.getInventory().setItem(4, new ItemBuilder(Material.WHITE_WOOL).itemName(Component.text("Sélecteur d'équipes")).addLoreLine(Component.text("Sélectionner votre équipe.", NamedTextColor.GREEN)).toItemStack());
         }
     }
 
@@ -252,49 +233,6 @@ public class ValoArena {
     }
 
     /**
-     * Permet de vérifier si une équipe a gagné le round.
-     * Si on est en TimeOver (entre deux manches), on ne fait rien.
-     * Si on est en SpikeArenaState et que les attaquants sont tous en spectateur, on ne fait rien (évite de donner un round aux défenseurs si le spike a explosé et que les attaquants sont tous morts).
-     * Si une équipe est toute en spectateur, l'autre équipe gagne le round.
-     * On affiche le score, on incrémente le round global et on vérifie si une équipe a gagné la partie
-     */
-    private void checkRound() {
-        if (this.arenaState instanceof TimeOverArenaState) return;
-
-        if (arenaState instanceof SpikeArenaState && getTeamByRole(attackers).isAllTeamInSpec()) return;
-
-        if (getBlueTeam().isAllTeamInSpec()) {
-            getRedTeam().setRoundWin(getRedTeam().getRoundWin() + 1);
-        } else if (getRedTeam().isAllTeamInSpec()) {
-            getBlueTeam().setRoundWin(getBlueTeam().getRoundWin() + 1);
-        } else {
-            return;
-        }
-
-        showTeamRound();
-        globalRound += 1;
-        checkWin();
-    }
-
-    /**
-     * Permet de vérifier si une équipe a gagné la partie (13 rounds gagnés).
-     * Si oui, on termine la partie.
-     * Sinon, on passe en TimeOverArenaState.
-     * Si les attaquants ont posé le spike ET ont tué les défenseurs, on annule la tâche du spike
-     */
-    private void checkWin() {
-        if (blueTeam.getRoundWin() >= 13 || redTeam.getRoundWin() >= 13) {
-            // TODO mettre un GameState de Win entre la fin et le renvoi au Hub genre avec les vainqueurs affichés / classements avec kills, etc.
-            endGame();
-            return;
-        }
-
-        if (arenaState instanceof SpikeArenaState spikeArenaState) spikeArenaState.getSpikeArenaTask().cancel();
-
-        setArenaState(new TimeOverArenaState(this));
-    }
-
-    /**
      * Permet d'inverser les équipes attaquantes et défenseuses quand on atteint la manche 13 (global)
      */
     public void inverseTeam() {
@@ -327,6 +265,26 @@ public class ValoArena {
         valoTeam.setRoundWin(valoTeam.getRoundWin() + 1);
 
         addGlobalRoundEndRound();
+    }
+
+    /**
+     * Makes all invisible barriers appear in the world by placing BARRIER blocks.
+     */
+    public void showInvisibleBarriers() {
+        for (Location loc : invisibleBarriersLocations) {
+            if (loc == null || loc.getWorld() == null) continue;
+            loc.getBlock().setType(Material.BARRIER, false);
+        }
+    }
+
+    /**
+     * Makes all invisible barriers disappear from the world by setting them to AIR.
+     */
+    public void hideInvisibleBarriers() {
+        for (Location loc : invisibleBarriersLocations) {
+            if (loc == null || loc.getWorld() == null || loc.getBlock().getType() != Material.BARRIER) continue;
+            loc.getBlock().setType(Material.AIR, false);
+        }
     }
 
     public void sendMessage(Component message) {
@@ -382,6 +340,13 @@ public class ValoArena {
         return null;
     }
 
+    public void removeSpike() {
+        if (spike != null) {
+            spike.setType(Material.AIR);
+            spike = null;
+        }
+    }
+
     public void showTeamRound() {
         for (UUID uuid : getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
@@ -402,6 +367,73 @@ public class ValoArena {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) player.hideBossBar(this.bossBar);
         }
+    }
+
+    /**
+     * Permet de vérifier si une équipe a gagné le round.
+     * Si on est en TimeOver (entre deux manches), on ne fait rien.
+     * Si on est en SpikeArenaState et que les attaquants sont tous en spectateur, on ne fait rien (évite de donner un round aux défenseurs si le spike a explosé et que les attaquants sont tous morts).
+     * Si une équipe est toute en spectateur, l'autre équipe gagne le round.
+     * On affiche le score, on incrémente le round global et on vérifie si une équipe a gagné la partie
+     */
+    private void checkRound() {
+        if (this.arenaState instanceof TimeOverArenaState) return;
+
+        if (arenaState instanceof SpikeArenaState && getTeamByRole(attackers).isAllTeamInSpec()) return;
+
+        if (getBlueTeam().isAllTeamInSpec()) {
+            getRedTeam().setRoundWin(getRedTeam().getRoundWin() + 1);
+        } else if (getRedTeam().isAllTeamInSpec()) {
+            getBlueTeam().setRoundWin(getBlueTeam().getRoundWin() + 1);
+        } else {
+            return;
+        }
+
+        showTeamRound();
+        globalRound += 1;
+        checkWin();
+    }
+
+    /**
+     * Permet de faire rejoindre le joueur à l'arène
+     * @param player Le joueur à faire rejoindre
+     * @param gameMode Le mode de jeu à mettre au joueur
+     */
+    private void join(Player player, GameMode gameMode) {
+        gameManager.getPlayerManager().removePlayerInHub(player);
+        players.add(player.getUniqueId());
+        scoreboard.addPlayer(player);
+
+        player.teleport(spawnLoc);
+        player.showTitle(Title.title(Component.text("Valocraft", NamedTextColor.GOLD), Component.text(displayName)));
+        player.getInventory().clear();
+        player.setGameMode(gameMode);
+
+        if (gameMode == GameMode.SPECTATOR) {
+            spectators.add(player.getUniqueId());
+            player.sendMessage(gameManager.getPrefix().append(Component.text("La partie est déjà lancée.")));
+        } else {
+            sendMessage(player.displayName().append(Component.text(" a rejoint la partie !")));
+            player.getInventory().setItem(4, new ItemBuilder(Material.WHITE_WOOL).itemName(Component.text("Sélecteur d'équipes")).addLoreLine(Component.text("Sélectionner votre équipe.", NamedTextColor.GREEN)).toItemStack());
+        }
+    }
+
+    /**
+     * Permet de vérifier si une équipe a gagné la partie (13 rounds gagnés).
+     * Si oui, on termine la partie.
+     * Sinon, on passe en TimeOverArenaState.
+     * Si les attaquants ont posé le spike ET ont tué les défenseurs, on annule la tâche du spike
+     */
+    private void checkWin() {
+        if (blueTeam.getRoundWin() >= 13 || redTeam.getRoundWin() >= 13) {
+            // TODO mettre un GameState de Win entre la fin et le renvoi au Hub genre avec les vainqueurs affichés / classements avec kills, etc.
+            endGame();
+            return;
+        }
+
+        if (arenaState instanceof SpikeArenaState spikeArenaState) spikeArenaState.getSpikeArenaTask().cancel();
+
+        setArenaState(new TimeOverArenaState(this));
     }
 
     private ValoTeam getTeamByRole(Role role) {

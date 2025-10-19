@@ -10,7 +10,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class WaitingListenerProvider extends StateListenerProvider {
 
@@ -20,8 +19,7 @@ public class WaitingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (arena.isPlayerInArena(player)) event.setCancelled(true);
+        if (event.getEntity() instanceof Player player && arena.isPlayerInArena(player)) event.setCancelled(true);
     }
 
     @EventHandler
@@ -37,27 +35,17 @@ public class WaitingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         final Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-        if (!arena.getAttackers().team().containsPlayer(player)) return;
+        if (!arena.isPlayerInArena(player) || !arena.getAttackers().team().containsPlayer(player)) return;
+
         if (event.getItemDrop().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
-        if (!arena.getAttackers().team().containsPlayer(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)
+                || !arena.getAttackers().team().containsPlayer(player)) return;
 
         if (event.getItem().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        final Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-
-        if (event.getTo().getBlock().getType() == Material.STRUCTURE_VOID)
-            player.teleport(arena.getRoleByPlayer(player).spawn());
     }
 
 }

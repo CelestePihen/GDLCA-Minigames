@@ -52,8 +52,7 @@ public class SpikeListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)) return;
             
         if (event.getCause() == DamageCause.PROJECTILE && player.getGameMode() == GameMode.SURVIVAL)
             arena.eliminate(player);

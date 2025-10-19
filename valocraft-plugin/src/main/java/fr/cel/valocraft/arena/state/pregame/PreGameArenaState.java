@@ -15,6 +15,7 @@ public class PreGameArenaState extends ArenaState {
     @Override
     public void onEnable(Valocraft main) {
         super.onEnable(main);
+        arena.hideInvisibleBarriers();
     }
 
     @Override

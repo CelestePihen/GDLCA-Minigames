@@ -4,7 +4,6 @@ import fr.cel.valocraft.Valocraft;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -33,8 +32,7 @@ public class TimeOverListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)) return;
         if (event.getCause() == DamageCause.PROJECTILE) arena.eliminate(player);
     }
 
@@ -68,17 +66,16 @@ public class TimeOverListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         final Player player = event.getPlayer();
-        if (!arena.isPlayerInArena(player)) return;
-        if (!arena.getAttackers().team().containsPlayer(player)) return;
+        if (!arena.isPlayerInArena(player) || !arena.getAttackers().team().containsPlayer(player)) return;
+
         if (event.getItemDrop().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
-        final Entity entity = event.getEntity();
-        if (!(entity instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
-        if (!arena.getAttackers().team().containsPlayer(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)
+                || !arena.getAttackers().team().containsPlayer(player)) return;
+
         if (event.getItem().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
     

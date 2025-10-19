@@ -4,6 +4,7 @@ import fr.cel.gameapi.utils.LocationUtility;
 import fr.cel.valocraft.Valocraft;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -64,8 +65,18 @@ public class ArenaConfig {
     public List<Location> getLocationInvisibleBarrier() {
         List<Location> locations = new ArrayList<>();
 
-        for (String str : config.getStringList("invisibleBarriersLocation")) {
-            locations.add(LocationUtility.parseStringToLoc( str));
+        for (String str : config.getStringList("invisibleblocks")) {
+            String[] parts = str.split(",");
+            if (parts.length < 4) continue;
+
+            World world = Bukkit.getWorld(parts[0]);
+            if (world == null) continue;
+
+            double x = Double.parseDouble(parts[1]);
+            double y = Double.parseDouble(parts[2]);
+            double z = Double.parseDouble(parts[3]);
+
+            locations.add(new Location(world, x, y, z));
         }
 
         return locations;

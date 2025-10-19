@@ -36,12 +36,11 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)) return;
             
         if (event.getCause() == DamageCause.PROJECTILE && player.getGameMode() == GameMode.SURVIVAL) {
             if (arena.getAttackers().team().containsPlayer(player) && player.getInventory().contains(Material.BREWING_STAND)) {
-                player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.BREWING_STAND));
+                player.getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.BREWING_STAND));
             }
 
             arena.eliminate(player);
@@ -52,19 +51,19 @@ public class PlayingListenerProvider extends StateListenerProvider {
     public void onBlockPlace(BlockPlaceEvent event) {
         if (!arena.isPlayerInArena(event.getPlayer())) return;
 
-        if (event.getBlockAgainst().getType() != Material.GREEN_WOOL) {
-            event.setCancelled(true);
-        } else {
+        if (event.getBlockAgainst().getType() == Material.GREEN_WOOL) {
             arena.sendTitle(Component.text("Spike posé !"), Component.empty());
             arena.setSpike(event.getBlock());
             arena.setArenaState(new SpikeArenaState(arena));
+            return;
         }
+
+        event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!arena.isPlayerInArena(event.getPlayer())) return;
-        event.setCancelled(true);
+        if (arena.isPlayerInArena(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler
@@ -86,14 +85,14 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (!arena.isPlayerInArena(event.getPlayer())) return;
-        if (event.getItemDrop().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
+        if (arena.isPlayerInArena(event.getPlayer())
+                && event.getItemDrop().getItemStack().getType() != Material.BREWING_STAND) event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!arena.isPlayerInArena(player)) return;
+        if (!(event.getEntity() instanceof Player player) || !arena.isPlayerInArena(player)) return;
+
         if (arena.getDefenders().team().containsPlayer(player) && event.getItem().getItemStack().getType() == Material.BREWING_STAND) {
             event.setCancelled(true);
         }

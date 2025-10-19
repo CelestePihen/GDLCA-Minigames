@@ -6,6 +6,7 @@ import fr.cel.valocraft.arena.state.ArenaState;
 import fr.cel.valocraft.arena.state.provider.StateListenerProvider;
 import fr.cel.valocraft.arena.state.provider.game.PlayingListenerProvider;
 import fr.cel.valocraft.arena.timer.game.PlayingAreraTask;
+import org.bukkit.GameMode;
 
 public class PlayingArenaState extends ArenaState {
 
@@ -18,6 +19,9 @@ public class PlayingArenaState extends ArenaState {
     @Override
     public void onEnable(Valocraft main) {
         super.onEnable(main);
+
+        arena.setGameModePlayers(GameMode.SURVIVAL);
+        arena.hideInvisibleBarriers();
 
         playingAreraTask = new PlayingAreraTask(arena);
         playingAreraTask.runTaskTimer(main, 0, 20);
