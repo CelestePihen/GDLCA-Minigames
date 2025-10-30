@@ -46,7 +46,6 @@ public final class PlayersListener implements Listener {
             main.getPlayerManager().setNewPlayer(player.getUniqueId());
             main.getPlayerManager().getPlayersWhoWelcomed().clear();
 
-            main.getDatabase().createAccount(player);
             main.getAdvancementsManager().giveAdvancement(player, AdvancementsManager.Advancements.ROOT);
         } else {
             event.joinMessage(Component.text("[")
@@ -55,6 +54,8 @@ public final class PlayersListener implements Listener {
                     .append(Component.text(player.getName()))
             );
         }
+
+        main.getDatabase().createAccount(player);
 
         main.getPlayerManager().addPlayerData(player);
         main.getPlayerManager().sendPlayerToHub(player);

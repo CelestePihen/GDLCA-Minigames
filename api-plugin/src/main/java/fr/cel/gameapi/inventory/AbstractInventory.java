@@ -32,13 +32,16 @@ public abstract class AbstractInventory {
     public void createInventory() {
         inv = Bukkit.createInventory(null, size, inventoryName);
 
+        addItems(inv);
+
         if (makeGlassPane()) {
             for (int i = 0; i < inv.getSize(); i++) {
-                setItem(i, new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).hideTooltip().toItemStack());
+                ItemStack current = inv.getItem(i);
+                if (current == null || current.getType() == Material.AIR) {
+                    setItem(i, new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).hideTooltip().toItemStack());
+                }
             }
         }
-
-        addItems(inv);
     }
 
     /**

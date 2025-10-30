@@ -21,11 +21,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NPCManager implements Listener {
 
-    @Getter private final Map<String, NPC> npcs = new ConcurrentHashMap<>();
+    @Getter protected final Map<String, NPC> npcs = new ConcurrentHashMap<>();
 
     private ProtocolManager protocolManager;
 
@@ -50,29 +51,28 @@ public class NPCManager implements Listener {
         this.npcs.clear();
 
         File npcsFolder = new File(this.main.getDataFolder(), "npcs");
-        if (npcsFolder.exists() || npcsFolder.mkdirs()) {
-            if (npcsFolder.isDirectory()) {
-                File[] files = npcsFolder.listFiles();
-                if (files == null) return;
-                for (File file : files) {
-                    String name = file.getName().replace(".yml", "");
+        if (!npcsFolder.exists()) npcsFolder.mkdirs();
 
-                    ConfigNPC config = new ConfigNPC(main, name);
+        if (npcsFolder.isDirectory()) {
+            for (File file : Objects.requireNonNull(npcsFolder.listFiles((dir, name) -> name.endsWith(".yml")))) {
+                String name = file.getName().replace(".yml", "");
 
-                    NPC npc = config.getNPC();
-                    if (npc == null) {
-                        Bukkit.getConsoleSender().sendMessage(Component.empty().append(Component.text("[" + main.getName() + "] ")).append(Component.text("Le NPC-" + name + " n'a pas pu être chargé.", NamedTextColor.RED)));
-                        continue;
-                    }
+                ConfigNPC config = new ConfigNPC(main, name);
 
-                    this.npcs.put(name, npc);
-                    npc.create();
-                    npc.showToAll();
+                NPC npc = config.getNPC();
+                if (npc == null) {
+                    Bukkit.getConsoleSender().sendMessage(Component.empty().append(Component.text("[" + main.getName() + "] ")).append(Component.text("Le NPC-" + name + " n'a pas pu être chargé.", NamedTextColor.RED)));
+                    continue;
                 }
-            }
 
-            Bukkit.getConsoleSender().sendMessage(Component.empty().append(Component.text("[" + main.getName() + "] ", NamedTextColor.GOLD)).append(Component.text("Chargement de " + npcs.size() + " NPCs pour le plugin " + main.getName(), NamedTextColor.YELLOW)));
+                this.npcs.put(name, npc);
+                npc.create();
+                npc.showToAll();
+            }
         }
+
+        loadCustomNPCs();
+        Bukkit.getConsoleSender().sendMessage(Component.empty().append(Component.text("[" + main.getName() + "] ", NamedTextColor.GOLD)).append(Component.text("Chargement de " + npcs.size() + " NPCs pour le plugin " + main.getName(), NamedTextColor.YELLOW)));
 
         if (protocolManager == null) {
             this.protocolManager = ProtocolLibrary.getProtocolManager();
@@ -104,6 +104,8 @@ public class NPCManager implements Listener {
         }
     }
 
+    public void loadCustomNPCs() {}
+
     /**
      * Retire tous les NPCs de tous les joueurs.
      * Cette méthode parcourt la liste des NPCs et appelle removeToAll sur chacun.
@@ -128,7 +130,7 @@ public class NPCManager implements Listener {
      * @param event L'événement PlayerJoinEvent déclenché lors de la connexion du joueur.
      */
     @EventHandler
-    private void playerJoin(PlayerJoinEvent event) {
+    public void playerJoin(PlayerJoinEvent event) {
         this.getNpcs().values().forEach(npc -> npc.spawn(event.getPlayer()));
     }
 
@@ -140,7 +142,7 @@ public class NPCManager implements Listener {
      * @param event L'événement PlayerMoveEvent déclenché par le déplacement du joueur.
      */
     @EventHandler
-    private void onPlayerMove(PlayerMoveEvent event) {
+    public void onPlayerMove(PlayerMoveEvent event) {
         Location loc = event.getTo();
 
         for (NPC npc : this.getNpcs().values()) {
@@ -160,7 +162,7 @@ public class NPCManager implements Listener {
      * @param event L'événement PlayerChangedWorldEvent déclenché lors du changement de monde.
      */
     @EventHandler
-    private void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
         for (NPC npc : this.getNpcs().values()) npc.spawn(event.getPlayer());
     }
 

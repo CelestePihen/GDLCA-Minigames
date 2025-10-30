@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class WinterPlayerData {
@@ -15,6 +17,7 @@ public class WinterPlayerData {
     private static final String SELECT_POINTS_PLAYER_SQL = "SELECT points FROM event_winter2025 WHERE uuid_player = ?;";
     private static final String UPDATE_GIFTS_FOUND_PLAYER_SQL = "UPDATE event_winter2025 SET gifts_found = gifts_found + ? WHERE uuid_player = ?;";
     private static final String SELECT_GIFTS_FOUND_PLAYER_SQL = "SELECT gifts_found FROM event_winter2025 WHERE uuid_player = ?;";
+    private static final String SELECT_POINTS_LEADERBOARD_SQL = "SELECT uuid_player FROM event_winter2025 ORDER BY points DESC;";
 
     private final UUID uuid;
 
@@ -103,6 +106,27 @@ public class WinterPlayerData {
             GameAPI.getInstance().getLogger().severe("An error occurred while retrieving gifts found for player " + uuid + ": " + e.getMessage());
         }
         return giftsFound;
+    }
+
+    /**
+     * Retrieves all players sorted by their winter points in descending order.
+     * @return A list of player UUIDs sorted by winter points
+     */
+    public static List<UUID> getAllPlayersSortedByPoints() {
+        List<UUID> players = new ArrayList<>();
+        try (Connection connection = GameAPI.getInstance().getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_POINTS_LEADERBOARD_SQL);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            while (rs.next()) {
+                players.add(UUID.fromString(rs.getString("uuid_player")));
+            }
+
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Erreur récupération classement : " + e.getMessage());
+        }
+
+        return players;
     }
 
 }
