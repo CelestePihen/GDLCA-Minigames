@@ -11,15 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseManager {
 
-    private static final String INSERT_PLAYER_SQL = "INSERT INTO players (uuid_player, coins, allowFriends, name_player) VALUES (?, ?, ?, ?);";
-    private static final String SELECT_PLAYER_SQL = "SELECT uuid_player FROM players WHERE uuid_player = ?;";
-    private static final String INSERT_STAT_SQL_TEMPLATE = "INSERT INTO %s (uuid_player) VALUES (?);";
-    private static final String INSERT_WINTER_EVENT_SQL = "INSERT INTO event_winter2025 (uuid_player) VALUES (?);";
+    private static final String INSERT_PLAYER_SQL = "INSERT INTO players (uuid_player, name_player) VALUES (?, ?) ON CONFLICT (uuid_player) DO NOTHING;";
+    private static final String INSERT_STAT_SQL_TEMPLATE = "INSERT INTO %s (uuid_player) VALUES (?) ON CONFLICT (uuid_player) DO NOTHING;";
+    private static final String INSERT_WINTER_EVENT_SQL = "INSERT INTO event_winter2025 (uuid_player) VALUES (?) ON CONFLICT (uuid_player) DO NOTHING;";
 
     private final String host;
     private final int port;
@@ -76,22 +74,18 @@ public class DatabaseManager {
      * @param player The player that connects for the first time
      */
     public void createAccount(@NotNull Player player) {
-        if (!hasAccount(player)) {
-            try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PLAYER_SQL)) {
-                preparedStatement.setString(1, player.getUniqueId().toString());
-                preparedStatement.setDouble(2, 0.0D);
-                preparedStatement.setBoolean(3, true);
-                preparedStatement.setString(4, player.getName());
-                preparedStatement.executeUpdate();
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PLAYER_SQL)) {
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.setString(2, player.getName());
+            int rows = preparedStatement.executeUpdate();
 
-                Bukkit.getConsoleSender().sendMessage(Component.text("Création d'un nouveau compte pour " + player.getName()).color(NamedTextColor.GREEN));
-            } catch (SQLException e) {
-                GameAPI.getInstance().getLogger().severe("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage());
-            }
-
-            createStatistics(player);
-            createWinterEvent2025(player);
+            if (rows > 0) Bukkit.getConsoleSender().sendMessage(Component.text("Création d'un nouveau compte pour " + player.getName()).color(NamedTextColor.GREEN));
+        } catch (SQLException e) {
+            GameAPI.getInstance().getLogger().severe("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage());
         }
+
+        createStatistics(player);
+        createWinterEvent2025(player);
     }
 
     /**
@@ -108,31 +102,17 @@ public class DatabaseManager {
         };
 
         try (Connection conn = getConnection()) {
-            boolean initialAuto = conn.getAutoCommit();
-            try {
-                conn.setAutoCommit(false);
-                try (PreparedStatement ps = conn.prepareStatement(String.format(INSERT_STAT_SQL_TEMPLATE, ""))) {
-                    for (String table : tables) {
-                        String sql = String.format(INSERT_STAT_SQL_TEMPLATE, table);
-                        try (PreparedStatement tablePs = conn.prepareStatement(sql)) {
-                            tablePs.setString(1, player.getUniqueId().toString());
-                            tablePs.executeUpdate();
-                        }
-                    }
+            for (String table : tables) {
+                String sql = String.format(INSERT_STAT_SQL_TEMPLATE, table);
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, player.getUniqueId().toString());
+                    int rows = ps.executeUpdate();
+
+                    if (rows > 0) GameAPI.getInstance().getLogger().info(player.getName() + " ajouté à " + table);
                 }
-                conn.commit();
-            } catch (SQLException ex) {
-                try {
-                    conn.rollback();
-                } catch (SQLException e) {
-                    GameAPI.getInstance().getLogger().severe("Rollback échoué en créant les statistiques pour " + player.getName() + ": " + e.getMessage());
-                }
-                GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques pour " + player.getName() + " : " + ex.getMessage());
-            } finally {
-                conn.setAutoCommit(initialAuto);
             }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur de connexion lors de la création des statistiques pour " + player.getName() + ": " + e.getMessage());
+            GameAPI.getInstance().getLogger().severe("Erreur lors de la création des statistiques pour " + player.getName() + ": " + e.getMessage());
         }
     }
 
@@ -143,28 +123,12 @@ public class DatabaseManager {
     private void createWinterEvent2025(Player player) {
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_WINTER_EVENT_SQL)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.executeUpdate();
+            int rows = preparedStatement.executeUpdate();
+
+            if (rows > 0) GameAPI.getInstance().getLogger().info(player.getName() + " ajouté au Winter Event 2025 !");
         } catch (SQLException e) {
             GameAPI.getInstance().getLogger().severe("Erreur en créant l'entrée Winter Event 2025 pour " + player.getName() + ": " + e.getMessage());
         }
-    }
-
-    /**
-     * Verify if the player has already an account in the database
-     * @param player The player to verify
-     * @return True if the player has already an account. False if not
-     */
-    public boolean hasAccount(Player player) {
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PLAYER_SQL)) {
-            preparedStatement.setString(1, player.getUniqueId().toString());
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next();
-            }
-        } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur lors de la vérification du compte pour " + player.getName() + ": " + e.getMessage());
-        }
-        return false;
     }
 
 }

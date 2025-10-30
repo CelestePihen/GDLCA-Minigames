@@ -52,6 +52,15 @@ public class PlayerManager {
         return playersData.get(player.getUniqueId());
     }
 
+    /**
+     * Gets the PlayerData of a player
+     * @param uuid The UUID of the player
+     * @return Returns the PlayerData of the player
+     */
+    public PlayerData getPlayerData(UUID uuid) {
+        return playersData.get(uuid);
+    }
+
     // TODO: make an Event
     /**
      * Sends a player to the Hub

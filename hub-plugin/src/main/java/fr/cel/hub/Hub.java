@@ -7,6 +7,7 @@ import fr.cel.hub.commands.HubCommand;
 import fr.cel.hub.listener.ChatListener;
 import fr.cel.hub.listener.ItemListener;
 import fr.cel.hub.listener.PlayerListener;
+import fr.cel.hub.manager.HubNPCManager;
 import fr.cel.hub.manager.dj.DJManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -29,7 +30,7 @@ public final class Hub extends JavaPlugin {
         saveDefaultConfig();
         instance = this;
 
-        this.npcManager = new NPCManager(this);
+        this.npcManager = new HubNPCManager(this);
         this.npcManager.loadNPCs();
 
         this.djManager = new DJManager(this);
