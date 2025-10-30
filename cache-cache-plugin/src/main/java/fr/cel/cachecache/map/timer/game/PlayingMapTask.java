@@ -29,10 +29,10 @@ public class PlayingMapTask extends BukkitRunnable {
         }
 
         if (map.getCcMode() == CCMap.CCMode.LoupToucheTouche && getTimer() == 5) {
-            loupToucheToucheMessage();
+            sendMessageLoupTT();
         } else if (map.getCcMode() != CCMap.CCMode.LoupToucheTouche) {
             if (getTimer() == 30) {
-                normalMessage();
+                sendNormalModeMessage();
             }
             else if (getTimer() == 420) {
                 map.getCheckAdvancements().checkPasBesoin();
@@ -52,13 +52,13 @@ public class PlayingMapTask extends BukkitRunnable {
         map.getCheckAdvancements().checkPiedPouvoir();
     }
 
-    private void loupToucheToucheMessage() {
+    private void sendMessageLoupTT() {
         Player player = Bukkit.getPlayer(map.getSeekers().getFirst());
         player.teleport(map.getSpawnLoc());
         map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !", NamedTextColor.RED));
     }
 
-    private void normalMessage() {
+    private void sendNormalModeMessage() {
         List<String> names = new ArrayList<>();
         map.getSeekers().forEach(uuid -> {
             Player player = Bukkit.getPlayer(uuid);

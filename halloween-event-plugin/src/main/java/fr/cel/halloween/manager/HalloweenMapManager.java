@@ -2,7 +2,7 @@ package fr.cel.halloween.manager;
 
 import fr.cel.halloween.HalloweenEvent;
 import fr.cel.halloween.map.HalloweenMap;
-import fr.cel.halloween.utils.MapConfig;
+import fr.cel.halloween.map.MapConfig;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

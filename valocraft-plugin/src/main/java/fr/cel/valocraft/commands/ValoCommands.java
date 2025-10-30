@@ -241,9 +241,7 @@ public class ValoCommands extends AbstractCommand {
         int maxZ = Math.max(z1, z2);
 
         World world = player.getWorld();
-
         List<String> invisibleBlocks = new ArrayList<>();
-        int count = 0;
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
@@ -251,7 +249,6 @@ public class ValoCommands extends AbstractCommand {
                     Block block = world.getBlockAt(x, y, z);
                     if (block.getType() == Material.STRUCTURE_VOID) {
                         invisibleBlocks.add(world.getName() + "," + x + "," + y + "," + z);
-                        count++;
                     }
                 }
             }
@@ -260,7 +257,7 @@ public class ValoCommands extends AbstractCommand {
         arena.getArenaConfig().setValue("invisibleblocks", invisibleBlocks);
         arena.setInvisibleBarriersLocations(arena.getArenaConfig().getLocationInvisibleBarrier());
 
-        player.sendMessage(Component.text(count + " barrières invisibles trouvées et sauvegardées dans le fichier de configuration de la carte !", NamedTextColor.GREEN));
+        player.sendMessage(Component.text(invisibleBlocks.size() + " barrières invisibles trouvées et sauvegardées dans le fichier de configuration de la carte !", NamedTextColor.GREEN));
     }
 
 }

@@ -16,7 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.*;
 
 public class HalloweenCommands extends AbstractCommand {
@@ -94,8 +93,13 @@ public class HalloweenCommands extends AbstractCommand {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("spawnplayer")) {
-            calculSpawnPlayer(player, args, map);
+        if (args[0].equalsIgnoreCase("playerspawns")) {
+            calculPlayerSpawns(player, args, map);
+            return;
+        }
+
+        if (args[0].equalsIgnoreCase("chests")) {
+            calculChests(player, args, map);
         }
 
     }
@@ -103,7 +107,7 @@ public class HalloweenCommands extends AbstractCommand {
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
         if (args.length == 1) {
-            return List.of("reload", "list", "start", "listplayer", "spawnsoul", "spawnplayer");
+            return List.of("reload", "list", "start", "listplayer", "spawnsoul", "playerspawns", "chests");
         }
         return null;
     }
@@ -116,23 +120,28 @@ public class HalloweenCommands extends AbstractCommand {
         sender.sendMessage(Component.text("/halloween start : Commence la partie dans laquelle vous êtes"));
         sender.sendMessage(Component.text("/halloween listplayer : Envoie la liste des joueurs dans la partie où vous êtes"));
         sender.sendMessage(Component.text("/halloween spawnsoul x1 y1 z1 x2 y2 z2 : (Re-)Calcule les emplacements de spawn."));
-        sender.sendMessage(Component.text("/halloween spawnplayer x1 y1 z1 x2 y2 z2 : (Re-)Calcule les emplacements de réapparition des joueurs."));
+        sender.sendMessage(Component.text("/halloween playerspawns x1 y1 z1 x2 y2 z2 : (Re-)Calcule les emplacements de réapparition des joueurs."));
     }
 
     private void calculSpawnSouls(Player player, String[] args, HalloweenMap map) {
-        if (args.length != 7) {
-            player.sendMessage(GameManager.getPrefix().append(Component.text("Usage : /halloween spawnsoul x1 y1 z1 x2 y2 z2")));
+        if (args.length != 8) {
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Usage : /halloween spawnsoul <mapName> <x1> <y1> <z1> <x2> <y2> <z2>")));
             return;
         }
 
-        int x1 = Integer.parseInt(args[1]);
-        int y1 = Integer.parseInt(args[2]);
-        int z1 = Integer.parseInt(args[3]);
-        int x2 = Integer.parseInt(args[4]);
-        int y2 = Integer.parseInt(args[5]);
-        int z2 = Integer.parseInt(args[6]);
+        int x1, y1, z1, x2, y2, z2;
+        try {
+            x1 = Integer.parseInt(args[2]);
+            y1 = Integer.parseInt(args[3]);
+            z1 = Integer.parseInt(args[4]);
+            x2 = Integer.parseInt(args[5]);
+            y2 = Integer.parseInt(args[6]);
+            z2 = Integer.parseInt(args[7]);
+        } catch (NumberFormatException e) {
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Les coordonnées doivent être des nombres valides.", NamedTextColor.RED)));
+            return;
+        }
 
-        // Assurer que x1 <= x2, y1 <= y2, z1 <= z2
         int minX = Math.min(x1, x2);
         int maxX = Math.max(x1, x2);
         int minY = Math.min(y1, y2);
@@ -141,50 +150,44 @@ public class HalloweenCommands extends AbstractCommand {
         int maxZ = Math.max(z1, z2);
 
         World world = player.getWorld();
+        List<String> soulBlocks = new ArrayList<>();
 
-        int count = 0;
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = world.getBlockAt(x, y, z);
                     if (block.getType() == Material.MAGENTA_WOOL) {
-                        Map<String, Object> lampData = new HashMap<>();
-                        lampData.put("x", x);
-                        lampData.put("y", y);
-                        lampData.put("z", z);
-
-                        gameManager.getSoulsConfig().set("souls." + count, lampData);
-                        count++;
+                        soulBlocks.add(world.getName() + "," + x + "," + y + "," + z);
                     }
                 }
             }
         }
 
-        try {
-            gameManager.getSoulsConfig().save(gameManager.getSoulsFile());
-            map.setSoulLocation();
+        map.getMapConfig().setValue("souls", soulBlocks);
+        map.setSoulLocations(map.getMapConfig().getSoulLocations());
 
-            player.sendMessage(GameManager.getPrefix().append(Component.text(count + " spawns de vestiges d'âmes trouvés et sauvegardés dans souls.yml !", NamedTextColor.GREEN)));
-        } catch (IOException e) {
-            player.sendMessage(GameManager.getPrefix().append(Component.text("Erreur lors de la sauvegarde du fichier souls.yml !", NamedTextColor.RED)));
-            gameManager.getMain().getLogger().severe("Error: Calcul spawn souls - " + e.getMessage());
-        }
+        player.sendMessage(Component.text(soulBlocks.size() + " blocs d'apparition pour les âmes trouvés et sauvegardés dans le fichier de configuration de la carte !", NamedTextColor.GREEN));
     }
 
-    private void calculSpawnPlayer(Player player, String[] args, HalloweenMap map) {
-        if (args.length != 7) {
-            player.sendMessage(GameManager.getPrefix().append(Component.text("Usage : /halloween spawnplayer x1 y1 z1 x2 y2 z2")));
+    private void calculPlayerSpawns(Player player, String[] args, HalloweenMap map) {
+        if (args.length != 8) {
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Usage : /halloween playerspawns <mapName> <x1> <y1> <z1> <x2> <y2> <z2>")));
             return;
         }
 
-        int x1 = Integer.parseInt(args[1]);
-        int y1 = Integer.parseInt(args[2]);
-        int z1 = Integer.parseInt(args[3]);
-        int x2 = Integer.parseInt(args[4]);
-        int y2 = Integer.parseInt(args[5]);
-        int z2 = Integer.parseInt(args[6]);
+        int x1, y1, z1, x2, y2, z2;
+        try {
+            x1 = Integer.parseInt(args[2]);
+            y1 = Integer.parseInt(args[3]);
+            z1 = Integer.parseInt(args[4]);
+            x2 = Integer.parseInt(args[5]);
+            y2 = Integer.parseInt(args[6]);
+            z2 = Integer.parseInt(args[7]);
+        } catch (NumberFormatException e) {
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Les coordonnées doivent être des nombres valides.", NamedTextColor.RED)));
+            return;
+        }
 
-        // Assurer que x1 <= x2, y1 <= y2, z1 <= z2
         int minX = Math.min(x1, x2);
         int maxX = Math.max(x1, x2);
         int minY = Math.min(y1, y2);
@@ -193,34 +196,69 @@ public class HalloweenCommands extends AbstractCommand {
         int maxZ = Math.max(z1, z2);
 
         World world = player.getWorld();
+        List<String> playerSpawnsBlocks = new ArrayList<>();
 
-        int count = 0;
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = world.getBlockAt(x, y, z);
                     if (block.getType() == Material.LIME_WOOL) {
-                        Map<String, Object> lampData = new HashMap<>();
-                        lampData.put("x", x);
-                        lampData.put("y", y);
-                        lampData.put("z", z);
-
-                        gameManager.getSoulsConfig().set("spawnplayer." + count, lampData);
-                        count++;
+                        playerSpawnsBlocks.add(world.getName() + "," + x + "," + y + "," + z);
                     }
                 }
             }
         }
 
-        try {
-            gameManager.getPlayersConfig().save(gameManager.getPlayersFile());
-            map.setSpawnPlayerLocation();
+        map.getMapConfig().setValue("playerSpawns", playerSpawnsBlocks);
+        map.setPlayerSpawnsLocations(map.getMapConfig().getPlayerSpawnsLocations());
 
-            player.sendMessage(Component.text(count + " points de réapparition trouvés et sauvegardés dans spawnplayer.yml !", NamedTextColor.GREEN));
-        } catch (IOException e) {
-            player.sendMessage(Component.text("Erreur lors de la sauvegarde du fichier spawnplayer.yml !", NamedTextColor.RED));
-            gameManager.getMain().getLogger().severe("Error: Calcul spawn players - " + e.getMessage());
+        player.sendMessage(Component.text(playerSpawnsBlocks.size() + " points d'apparition pour les joueurs trouvés et sauvegardés dans le fichier de configuration de la carte !", NamedTextColor.GREEN));
+    }
+
+    private void calculChests(Player player, String @NotNull [] args, HalloweenMap map) {
+        if (args.length != 8) {
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Usage : /halloween chests <mapName> <x1> <y1> <z1> <x2> <y2> <z2>")));
+            return;
         }
+
+        int x1, y1, z1, x2, y2, z2;
+        try {
+            x1 = Integer.parseInt(args[2]);
+            y1 = Integer.parseInt(args[3]);
+            z1 = Integer.parseInt(args[4]);
+            x2 = Integer.parseInt(args[5]);
+            y2 = Integer.parseInt(args[6]);
+            z2 = Integer.parseInt(args[7]);
+        } catch (NumberFormatException e) {
+            player.sendMessage(GameManager.getPrefix().append(Component.text("Les coordonnées doivent être des nombres valides.", NamedTextColor.RED)));
+            return;
+        }
+
+        int minX = Math.min(x1, x2);
+        int maxX = Math.max(x1, x2);
+        int minY = Math.min(y1, y2);
+        int maxY = Math.max(y1, y2);
+        int minZ = Math.min(z1, z2);
+        int maxZ = Math.max(z1, z2);
+
+        World world = player.getWorld();
+        List<String> chestBlocks = new ArrayList<>();
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Block block = world.getBlockAt(x, y, z);
+                    if (block.getType() == Material.CHEST) {
+                        chestBlocks.add(world.getName() + "," + x + "," + y + "," + z);
+                    }
+                }
+            }
+        }
+
+        map.getMapConfig().setValue("chestLocations", chestBlocks);
+        map.setChestLocations(map.getMapConfig().getChestLocations());
+
+        player.sendMessage(Component.text(chestBlocks.size() + " coffres trouvés et sauvegardés dans le fichier de configuration de la carte !", NamedTextColor.GREEN));
     }
 
 }

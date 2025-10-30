@@ -1,10 +1,10 @@
-package fr.cel.halloween.utils;
+package fr.cel.halloween.map;
 
 import fr.cel.gameapi.utils.LocationUtility;
 import fr.cel.halloween.HalloweenEvent;
-import fr.cel.halloween.map.HalloweenMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -53,10 +53,9 @@ public class MapConfig {
                         config.getString("displayName"),
                         LocationUtility.parseConfigToLoc(config, "waitingSpawn"),
                         LocationUtility.parseConfigToLoc(config, "locationSpawn"),
+                        this,
                         main.getGameManager()
                 );
-
-                map.setMapConfig(this);
 
                 if (!config.contains("lastTracker")) {
                     main.getLogger().severe("[HalloweenEvent] Attention ! La valeur lastTracker n'est pas contenue dans la carte " + mapName);
@@ -64,13 +63,6 @@ public class MapConfig {
                 }
 
                 map.setLastTracker(config.getString("lastTracker"));
-
-                if (getChestLocations() == null) {
-                    main.getLogger().severe("[HalloweenEvent] Attention ! Une erreur est survenue avec la valeur chests de la carte " + mapName);
-                    return null;
-                }
-
-                map.setChestLocations(getChestLocations());
                 return map;
             } catch (IOException | InvalidConfigurationException e) {
                 main.getLogger().severe("Un problème est survenu avec la carte " + mapName);
@@ -91,22 +83,64 @@ public class MapConfig {
         }
     }
 
-    private List<Location> getChestLocations() {
-        List<Location> temp = new ArrayList<>();
+    public List<Location> getChestLocations() {
+        List<Location> locations = new ArrayList<>();
 
-        if (config.contains("chests")) {
-            for (String key : config.getConfigurationSection("chests").getKeys(false)) {
+        for (String str : config.getStringList("chestLocations")) {
+            String[] parts = str.split(",");
+            if (parts.length < 4) continue;
 
-                int x = config.getInt("chests." + key + ".x");
-                int y = config.getInt("chests." + key + ".y");
-                int z = config.getInt("chests." + key + ".z");
+            World world = Bukkit.getWorld(parts[0]);
+            if (world == null) continue;
 
-                temp.add(new Location(Bukkit.getWorld("world"), x, y, z));
-            }
-            return temp;
+            double x = Double.parseDouble(parts[1]);
+            double y = Double.parseDouble(parts[2]);
+            double z = Double.parseDouble(parts[3]);
+
+            locations.add(new Location(world, x, y, z));
         }
 
-        return null;
+        return locations;
+    }
+
+    public List<Location> getSoulLocations() {
+        List<Location> locations = new ArrayList<>();
+
+        for (String str : config.getStringList("souls")) {
+            String[] parts = str.split(",");
+            if (parts.length < 4) continue;
+
+            World world = Bukkit.getWorld(parts[0]);
+            if (world == null) continue;
+
+            double x = Double.parseDouble(parts[1]);
+            double y = Double.parseDouble(parts[2]);
+            double z = Double.parseDouble(parts[3]);
+
+            locations.add(new Location(world, x, y, z));
+        }
+
+        return locations;
+    }
+
+    public List<Location> getPlayerSpawnsLocations() {
+        List<Location> locations = new ArrayList<>();
+
+        for (String str : config.getStringList("playerSpawns")) {
+            String[] parts = str.split(",");
+            if (parts.length < 4) continue;
+
+            World world = Bukkit.getWorld(parts[0]);
+            if (world == null) continue;
+
+            double x = Double.parseDouble(parts[1]);
+            double y = Double.parseDouble(parts[2]);
+            double z = Double.parseDouble(parts[3]);
+
+            locations.add(new Location(world, x, y, z));
+        }
+
+        return locations;
     }
 
 }

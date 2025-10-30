@@ -11,14 +11,12 @@ import fr.cel.halloween.map.state.game.WaitingMapState;
 import fr.cel.halloween.map.state.pregame.InitMapState;
 import fr.cel.halloween.map.state.pregame.PreGameMapState;
 import fr.cel.halloween.map.state.pregame.StartingMapState;
-import fr.cel.halloween.utils.MapConfig;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -40,10 +38,10 @@ public class HalloweenMap {
     @Setter private int timer = 900;
     private final Map<UUID, Integer> soulsCollected;
 
-    private final List<Location> soulLocations;
+    @Setter private List<Location> soulLocations;
     private final List<UUID> soulItems;
 
-    private final List<Location> spawnPlayerLocations;
+    @Setter private List<Location> playerSpawnsLocations;
 
     @Setter private List<Location> chestLocations;
     private final List<Location> activeChests;
@@ -61,11 +59,9 @@ public class HalloweenMap {
 
     private final GameManager gameManager;
 
-    @Setter private MapConfig mapConfig;
-    private final FileConfiguration soulConfig;
-    private final FileConfiguration spawnPlayerConfig;
+    private final MapConfig mapConfig;
 
-    public HalloweenMap(String mapName, String displayName, Location waitingLoc, Location spawnLoc, GameManager gameManager) {
+    public HalloweenMap(String mapName, String displayName, Location waitingLoc, Location spawnLoc, MapConfig mapConfig, GameManager gameManager) {
         this.mapName = mapName;
         this.displayName = displayName;
 
@@ -81,9 +77,6 @@ public class HalloweenMap {
         this.tracker = new ArrayList<>();
         this.playerDead = new ArrayList<>();
 
-        this.chestLocations = new ArrayList<>();
-        this.activeChests = new ArrayList<>();
-
         this.scoreboard = new GameScoreboard("Halloween");
 
         this.teamSouls = scoreboard.registerTeam("souls", NamedTextColor.GREEN);
@@ -94,56 +87,16 @@ public class HalloweenMap {
         this.teamTracker.setNameTagVisibility(Team.OptionStatus.NEVER);
         this.teamTracker.setAllowFriendlyFire(false);
 
+        this.mapConfig = mapConfig;
         this.gameManager = gameManager;
-        this.soulConfig = gameManager.getSoulsConfig();
-        this.spawnPlayerConfig = gameManager.getPlayersConfig();
 
-        this.soulLocations = new ArrayList<>();
+        this.chestLocations = mapConfig.getChestLocations();
+        this.activeChests = new ArrayList<>();
+
+        this.soulLocations = mapConfig.getSoulLocations();
         this.soulItems = new ArrayList<>();
-        setSoulLocation();
 
-        this.spawnPlayerLocations = new ArrayList<>();
-        setSpawnPlayerLocation();
-    }
-
-    public void setSoulLocation() {
-        for (String key : soulConfig.getConfigurationSection("souls").getKeys(false)) {
-            World world = Bukkit.getWorlds().getFirst();
-
-            int x = soulConfig.getInt("souls." + key + ".x");
-            int y = soulConfig.getInt("souls." + key + ".y");
-            int z = soulConfig.getInt("souls." + key + ".z");
-
-            Block magentaWool = world.getBlockAt(x, y, z);
-
-            if (magentaWool.getType() == Material.MAGENTA_WOOL) {
-                soulLocations.add(new Location(world, x, y ,z));
-            }
-        }
-    }
-
-    public void setSpawnPlayerLocation() {
-        // TODO ??
-//        for (String key : spawnPlayerConfig.getConfigurationSection("spawnplayer").getKeys(false)) {
-//            World world = Bukkit.getWorld("world");
-//
-//            int x = spawnPlayerConfig.getInt("spawnplayer." + key + ".x");
-//            int y = spawnPlayerConfig.getInt("spawnplayer." + key + ".y");
-//            int z = spawnPlayerConfig.getInt("spawnplayer." + key + ".z");
-//
-//            Block limeWool = world.getBlockAt(x, y, z);
-//
-//            if (limeWool.getType() == Material.LIME_WOOL) {
-//                spawnPlayerLocations.add(new Location(world, x, y ,z));
-//            }
-//        }
-        World world = Bukkit.getWorld("world");
-
-        spawnPlayerLocations.add(new Location(world, 58, 72, 232));
-        spawnPlayerLocations.add(new Location(world, 74, 77, 246));
-        spawnPlayerLocations.add(new Location(world, 59, 77, 221));
-        spawnPlayerLocations.add(new Location(world, 88, 75, 223));
-        spawnPlayerLocations.add(new Location(world, 112, 77, 244));
+        this.playerSpawnsLocations = mapConfig.getPlayerSpawnsLocations();
     }
 
     public void setMapState(MapState mapState) {
@@ -196,16 +149,12 @@ public class HalloweenMap {
         players.remove(player.getUniqueId());
         scoreboard.removePlayer(player);
 
-        if (tracker.contains(player.getUniqueId())) {
-            tracker.remove(player.getUniqueId());
-            teamTracker.removePlayer(player);
-        } else if (souls.contains(player.getUniqueId())) {
-            souls.remove(player.getUniqueId());
-            teamSouls.removePlayer(player);
-        } else {
-            playerDead.remove(player.getUniqueId());
-            teamTracker.removePlayer(player);
-        }
+        // on le retire de l'équipe dans laquelle il était
+        tracker.remove(player.getUniqueId());
+        teamTracker.removePlayer(player);
+        souls.remove(player.getUniqueId());
+        teamSouls.removePlayer(player);
+        playerDead.remove(player.getUniqueId());
 
         if (mapState instanceof PreGameMapState) return;
 
@@ -237,21 +186,20 @@ public class HalloweenMap {
             sendWinnerMessage();
 
             clearSoulItems();
-
-            timer = 900;
             soulsCollected.clear();
 
             scoreboard.resetScoreboard();
-            souls.clear();
-            tracker.clear();
-            playerDead.clear();
 
             for (UUID uuid : players) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player != null) GameAPI.getInstance().getPlayerManager().sendPlayerToHub(player);
             }
 
+            souls.clear();
+            tracker.clear();
+            playerDead.clear();
             players.clear();
+            timer = 900;
         }
     }
 
@@ -275,6 +223,23 @@ public class HalloweenMap {
 
     public void becomeSpectator(Player deadPlayer) {
         playerDead.add(deadPlayer.getUniqueId());
+
+//        // Bug fix: Supprimer les nether warts de l'inventaire et remettre à 0 le compteur
+//        int netherWartCount = 0;
+//        for (ItemStack item : deadPlayer.getInventory().getContents()) {
+//            if (item != null && item.getType() == Material.NETHER_WART) {
+//                netherWartCount += item.getAmount();
+//            }
+//        }
+//
+//        deadPlayer.getInventory().clear();
+//
+//        // Retirer les âmes collectées (les nether warts)
+//        UUID uuid = deadPlayer.getUniqueId();
+//        int currentSouls = soulsCollected.getOrDefault(uuid, 0);
+//        soulsCollected.put(uuid, Math.max(0, currentSouls - netherWartCount));
+//        deadPlayer.setLevel(soulsCollected.get(uuid));
+
         deadPlayer.getInventory().clear();
         deadPlayer.teleport(waitingLoc);
     }
@@ -370,3 +335,4 @@ public class HalloweenMap {
     }
 
 }
+

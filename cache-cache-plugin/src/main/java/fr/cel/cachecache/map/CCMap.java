@@ -169,13 +169,11 @@ public class CCMap {
         players.remove(player.getUniqueId());
         scoreboard.removePlayer(player);
 
-        if (seekers.contains(player.getUniqueId())) {
-            seekers.remove(player.getUniqueId());
-            teamSeekers.removePlayer(player);
-        } else {
-            hiders.remove(player.getUniqueId());
-            teamHiders.removePlayer(player);
-        }
+        // on le retire de l'équipe dans laquelle il était
+        seekers.remove(player.getUniqueId());
+        teamSeekers.removePlayer(player);
+        hiders.remove(player.getUniqueId());
+        teamHiders.removePlayer(player);
 
         player.setGlowing(false);
 
@@ -399,13 +397,12 @@ public class CCMap {
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            gameManager.getPlayerManager().sendPlayerToHub(player);
+            if (player != null) gameManager.getPlayerManager().sendPlayerToHub(player);
         }
 
-        players.clear();
         hiders.clear();
         seekers.clear();
+        players.clear();
         timer = 0;
     }
 
