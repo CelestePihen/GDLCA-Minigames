@@ -1,6 +1,7 @@
 package fr.cel.gameapi.manager;
 
 import fr.cel.gameapi.manager.database.PlayerData;
+import fr.cel.gameapi.manager.database.event.WinterPlayerData;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class PlayerManager {
      * @param player The player who joined
      */
     public void addPlayerData(Player player) {
-        playersData.put(player.getUniqueId(), new PlayerData(player));
+        playersData.put(player.getUniqueId(), new PlayerData(player, new WinterPlayerData(player.getUniqueId())));
     }
 
     /**
