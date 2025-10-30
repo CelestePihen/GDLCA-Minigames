@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +15,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseManager {
+
+    private static final String INSERT_PLAYER_SQL = "INSERT INTO players (uuid_player, coins, allowFriends, name_player) VALUES (?, ?, ?, ?);";
+    private static final String SELECT_PLAYER_SQL = "SELECT uuid_player FROM players WHERE uuid_player = ?;";
+    private static final String INSERT_STAT_SQL_TEMPLATE = "INSERT INTO %s (uuid_player) VALUES (?);";
+    private static final String INSERT_WINTER_EVENT_SQL = "INSERT INTO event_winter2025 (uuid_player) VALUES (?);";
 
     private final String host;
     private final int port;
@@ -54,7 +60,6 @@ public class DatabaseManager {
      */
     public Connection getConnection() throws SQLException {
         if (this.hikariDataSource == null) this.init();
-
         return this.hikariDataSource.getConnection();
     }
 
@@ -70,10 +75,9 @@ public class DatabaseManager {
      * Create a new account for a player in the database
      * @param player The player that connects for the first time
      */
-    public void createAccount(Player player) {
+    public void createAccount(@NotNull Player player) {
         if (!hasAccount(player)) {
-            String ps = "INSERT INTO players (uuid_player, coins, allowFriends, name_player) VALUES (?, ?, ?, ?);";
-            try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+            try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PLAYER_SQL)) {
                 preparedStatement.setString(1, player.getUniqueId().toString());
                 preparedStatement.setDouble(2, 0.0D);
                 preparedStatement.setBoolean(3, true);
@@ -86,6 +90,7 @@ public class DatabaseManager {
             }
 
             createStatistics(player);
+            createWinterEvent2025(player);
         }
     }
 
@@ -94,44 +99,53 @@ public class DatabaseManager {
      * @param player The player to add in the statistics
      */
     private void createStatistics(Player player) {
-        String ps = "INSERT INTO hub_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Cache-Cache pour " + player.getName() + ": " + e.getMessage());
-        }
+        String[] tables = {
+                "hub_statistics",
+                "cc_statistics",
+                "valo_statistics",
+                "pvp_statistics",
+                "parkour_statistics"
+        };
 
-        ps = "INSERT INTO cc_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.executeUpdate();
+        try (Connection conn = getConnection()) {
+            boolean initialAuto = conn.getAutoCommit();
+            try {
+                conn.setAutoCommit(false);
+                try (PreparedStatement ps = conn.prepareStatement(String.format(INSERT_STAT_SQL_TEMPLATE, ""))) {
+                    for (String table : tables) {
+                        String sql = String.format(INSERT_STAT_SQL_TEMPLATE, table);
+                        try (PreparedStatement tablePs = conn.prepareStatement(sql)) {
+                            tablePs.setString(1, player.getUniqueId().toString());
+                            tablePs.executeUpdate();
+                        }
+                    }
+                }
+                conn.commit();
+            } catch (SQLException ex) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e) {
+                    GameAPI.getInstance().getLogger().severe("Rollback échoué en créant les statistiques pour " + player.getName() + ": " + e.getMessage());
+                }
+                GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques pour " + player.getName() + " : " + ex.getMessage());
+            } finally {
+                conn.setAutoCommit(initialAuto);
+            }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Cache-Cache pour " + player.getName() + ": " + e.getMessage());
+            GameAPI.getInstance().getLogger().severe("Erreur de connexion lors de la création des statistiques pour " + player.getName() + ": " + e.getMessage());
         }
+    }
 
-        ps = "INSERT INTO valo_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+    /**
+     * Add the player to the Winter Event 2025 table
+     * @param player The player to add in the Winter Event 2025
+     */
+    private void createWinterEvent2025(Player player) {
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_WINTER_EVENT_SQL)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Valocraft pour " + player.getName() + ": " + e.getMessage());
-        }
-
-        ps = "INSERT INTO pvp_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du PVP pour " + player.getName() + ": " + e.getMessage());
-        }
-
-        ps = "INSERT INTO parkour_statistics (uuid_player) VALUES (?);";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur en créant les statistiques du Parkour pour " + player.getName() + ": " + e.getMessage());
+            GameAPI.getInstance().getLogger().severe("Erreur en créant l'entrée Winter Event 2025 pour " + player.getName() + ": " + e.getMessage());
         }
     }
 
@@ -141,8 +155,7 @@ public class DatabaseManager {
      * @return True if the player has already an account. False if not
      */
     public boolean hasAccount(Player player) {
-        String ps = "SELECT uuid_player FROM players WHERE uuid_player = ?;";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PLAYER_SQL)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
