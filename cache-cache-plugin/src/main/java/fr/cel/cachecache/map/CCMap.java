@@ -398,12 +398,13 @@ public class CCMap {
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) gameManager.getPlayerManager().sendPlayerToHub(player);
+            if (player == null) continue;
+            gameManager.getPlayerManager().sendPlayerToHub(player);
         }
 
+        players.clear();
         hiders.clear();
         seekers.clear();
-        players.clear();
         timer = 0;
     }
 
