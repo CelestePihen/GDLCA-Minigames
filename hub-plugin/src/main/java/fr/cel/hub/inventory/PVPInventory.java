@@ -28,8 +28,15 @@ public class PVPInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case AMETHYST_BLOCK -> PVPArenaManager.getArenaManager().getArenaByDisplayName("Alpha").addPlayer(player);
-            case STONE_BRICKS -> PVPArenaManager.getArenaManager().getArenaByDisplayName("Beta").addPlayer(player);
+            case AMETHYST_BLOCK -> {
+                player.closeInventory();
+                PVPArenaManager.getArenaManager().getArenaByDisplayName("Alpha").addPlayer(player);
+            }
+
+            case STONE_BRICKS -> {
+                player.closeInventory();
+                PVPArenaManager.getArenaManager().getArenaByDisplayName("Beta").addPlayer(player);
+            }
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
 

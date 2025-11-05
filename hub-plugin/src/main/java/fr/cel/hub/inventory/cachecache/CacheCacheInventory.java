@@ -40,16 +40,44 @@ public class CacheCacheInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case SCULK_CATALYST -> CCMapManager.getMapManager().getMaps().get("warden").addPlayer(player, false);
-            case MINECART -> CCMapManager.getMapManager().getMaps().get("mine").addPlayer(player, false);
-            case STONE_BRICKS -> CCMapManager.getMapManager().getMaps().get("bunker").addPlayer(player, false);
-            case WHEAT -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Moulin", Material.WHEAT), player);
-            case BRICKS -> CCMapManager.getMapManager().getMaps().get("ville").addPlayer(player, false);
-            case WAXED_COPPER_BLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Steampunk", Material.WAXED_COPPER_BLOCK), player);
-            case SAND -> CCMapManager.getMapManager().getMaps().get("desert").addPlayer(player, false);
-            case SNOW_BLOCK -> CCMapManager.getMapManager().getMaps().get("chalet").addPlayer(player, false);
+            case SCULK_CATALYST -> {
+                player.closeInventory();
+                CCMapManager.getMapManager().getMaps().get("warden").addPlayer(player, false);
+            }
 
-            case COMMAND_BLOCK -> CCMapManager.getMapManager().getTemporaryHub().addPlayer(player);
+            case MINECART -> {
+                player.closeInventory();
+                CCMapManager.getMapManager().getMaps().get("mine").addPlayer(player, false);
+            }
+
+            case STONE_BRICKS -> {
+                player.closeInventory();
+                CCMapManager.getMapManager().getMaps().get("bunker").addPlayer(player, false);
+            }
+
+            case WHEAT -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Moulin", Material.WHEAT), player);
+
+            case BRICKS -> {
+                player.closeInventory();
+                CCMapManager.getMapManager().getMaps().get("ville").addPlayer(player, false);
+            }
+
+            case WAXED_COPPER_BLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new CCV2Inventory("Steampunk", Material.WAXED_COPPER_BLOCK), player);
+
+            case SAND -> {
+                player.closeInventory();
+                CCMapManager.getMapManager().getMaps().get("desert").addPlayer(player, false);
+            }
+
+            case SNOW_BLOCK -> {
+                player.closeInventory();
+                CCMapManager.getMapManager().getMaps().get("chalet").addPlayer(player, false);
+            }
+
+            case COMMAND_BLOCK -> {
+                player.closeInventory();
+                CCMapManager.getMapManager().getTemporaryHub().addPlayer(player);
+            }
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
 

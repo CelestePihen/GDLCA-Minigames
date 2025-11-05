@@ -3,7 +3,6 @@ package fr.cel.hub.inventory;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
-import fr.cel.halloween.manager.HalloweenMapManager;
 import fr.cel.hub.Hub;
 import fr.cel.hub.inventory.cachecache.CacheCacheInventory;
 import net.kyori.adventure.text.Component;
@@ -67,17 +66,21 @@ public class MinigamesInventory extends AbstractInventory {
 
             case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourInventory(), player);
 
-            case BRUSH -> player.teleport(LOCATION_MUSEUM);
+            case BRUSH -> {
+                player.closeInventory();
+                player.teleport(LOCATION_MUSEUM);
+            }
 
-            case JACK_O_LANTERN -> HalloweenMapManager.getMapManager().getMaps().get("manoir").addPlayer(player);
+            case JACK_O_LANTERN -> {
+//                player.closeInventory();
+//                HalloweenMapManager.getMapManager().getMaps().get("manoir").addPlayer(player);
+                player.sendMessage(GameAPI.getPrefix().append(Component.text("Cet événement n'est pas encore prêt...")));
+            }
 
             case SNOW_BLOCK -> player.sendMessage(GameAPI.getPrefix().append(Component.text("Cet événement n'est pas encore prêt...")));
             /*ChristmasMapManager.getMapManager().getMaps().get("atelier").addPlayer(player);*/
 
-            case COMMAND_BLOCK -> {
-                player.sendMessage(GameAPI.getPrefix().append(Component.text("Indisponible pour le moment.")));
-                player.closeInventory();
-            }
+            case COMMAND_BLOCK -> player.sendMessage(GameAPI.getPrefix().append(Component.text("Indisponible pour le moment.")));
 
             case BARRIER -> player.closeInventory();
 

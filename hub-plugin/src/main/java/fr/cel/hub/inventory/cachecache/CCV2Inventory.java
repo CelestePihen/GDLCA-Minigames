@@ -40,8 +40,10 @@ public class CCV2Inventory extends AbstractInventory {
         }
 
         if (itemName.equals(nameV1)) {
+            player.closeInventory();
             CCMapManager.getMapManager().getMapByDisplayName(nameV1).addPlayer(player, false);
         } else if (itemName.equals(nameV2)) {
+            player.closeInventory();
             CCMapManager.getMapManager().getMapByDisplayName(nameV2).addPlayer(player, false);
         }
     }
