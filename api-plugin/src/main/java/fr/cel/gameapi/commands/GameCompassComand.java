@@ -1,7 +1,7 @@
-package fr.cel.gameapi.command.api;
+package fr.cel.gameapi.commands;
 
-import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.manager.PlayerManager;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

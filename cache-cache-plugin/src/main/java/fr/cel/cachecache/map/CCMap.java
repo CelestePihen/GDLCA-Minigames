@@ -28,6 +28,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
@@ -615,6 +616,9 @@ public class CCMap {
         player.setGameMode(gameMode);
         player.setGlowing(false);
         player.getInventory().clear();
+
+        player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
 
         // s'il n'y a pas de joueurs dans la carte alors le premier joueur devient l'hôte de la partie
         if (players.isEmpty()) becomeOwner(player);

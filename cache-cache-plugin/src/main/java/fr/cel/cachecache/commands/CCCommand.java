@@ -2,7 +2,7 @@ package fr.cel.cachecache.commands;
 
 import fr.cel.cachecache.commands.subcommands.*;
 import fr.cel.cachecache.manager.GameManager;
-import fr.cel.gameapi.command.AbstractCommandSub;
+import fr.cel.gameapi.manager.command.AbstractCommandSub;
 
 public class CCCommand extends AbstractCommandSub {
 

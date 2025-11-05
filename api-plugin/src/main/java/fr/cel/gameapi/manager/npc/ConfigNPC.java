@@ -1,11 +1,15 @@
 package fr.cel.gameapi.manager.npc;
 
 import fr.cel.gameapi.GameAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Pose;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,13 +30,14 @@ public class ConfigNPC {
             YamlConfiguration config = new YamlConfiguration();
             try {
                 config.load(file);
-                return new NPC(
-                        name,
-                        config.getString("displayName"),
-                        loadLocation(config),
-                        config.getBoolean("lookAtPlayer"),
-                        new Skin(config.getString("skin.value"), config.getString("skin.signature"))
-                );
+
+                String displayName = config.getString("displayName");
+                if (displayName == null) {
+                    GameAPI.getInstance().getLogger().severe("NPC " + name + " is missing a displayName in its configuration.");
+                    return null;
+                }
+
+                return new NPC(name, Component.text(displayName), loadLocation(config), Pose.valueOf(config.getString("pose", "STANDING")));
             } catch (IOException | InvalidConfigurationException e) {
                 GameAPI.getInstance().getLogger().severe("Error loading NPC configuration for " + name + ": " + e.getMessage());
             }
@@ -41,13 +46,26 @@ public class ConfigNPC {
         return null;
     }
 
-    private Location loadLocation(YamlConfiguration config) {
-        String world = config.getString("location.world");
+    private @NotNull Location loadLocation(@NotNull YamlConfiguration config) {
+        String worldStr = config.getString("location.world");
         double x = config.getDouble("location.x");
         double y = config.getDouble("location.y");
         double z = config.getDouble("location.z");
 
-        return new Location(Bukkit.getWorld(world), x, y, z);
+        World world = Bukkit.getWorld(worldStr);
+        if (world == null) {
+            world = Bukkit.getWorlds().getFirst();
+            GameAPI.getInstance().getLogger().severe("World " + worldStr + " not found. Using default world for NPC " + name + ".");
+        }
+
+        float yaw = (float) config.getDouble("location.yaw");
+        float pitch = (float) config.getDouble("location.pitch");
+
+        if (config.contains("location.yaw") && config.contains("location.pitch")) {
+            return new Location(world, x, y, z, yaw, pitch);
+        }
+
+        return new Location(world, x, y, z);
     }
 
 }

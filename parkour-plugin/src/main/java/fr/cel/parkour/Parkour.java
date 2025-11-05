@@ -1,6 +1,6 @@
 package fr.cel.parkour;
 
-import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import fr.cel.parkour.commands.ParkourCommands;
 import fr.cel.parkour.manager.GameManager;
 import fr.cel.parkour.manager.ParkourMapManager;
@@ -21,8 +21,5 @@ public class Parkour extends JavaPlugin {
 
        new CommandsManager(this).addCommand("parkour", new ParkourCommands(gameManager));
     }
-
-    @Override
-    public void onDisable() {}
 
 }

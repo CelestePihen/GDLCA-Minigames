@@ -1,6 +1,6 @@
 package fr.cel.parkour.commands;
 
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.parkour.manager.GameManager;
 import fr.cel.parkour.map.ParkourMap;
 import net.kyori.adventure.text.Component;

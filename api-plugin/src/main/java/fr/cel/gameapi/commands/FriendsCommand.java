@@ -1,8 +1,8 @@
-package fr.cel.gameapi.command.api;
+package fr.cel.gameapi.commands;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.inventory.FriendsInventory;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.PlayerData;
 import net.kyori.adventure.text.Component;

@@ -1,6 +1,6 @@
 package fr.cel.valocraft.commands;
 
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.arena.state.game.PlayingArenaState;
 import fr.cel.valocraft.arena.state.pregame.PreGameArenaState;

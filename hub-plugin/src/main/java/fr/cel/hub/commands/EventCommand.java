@@ -1,7 +1,7 @@
 package fr.cel.hub.commands;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.hub.inventory.event.CelebrationEvent;
 import fr.cel.hub.inventory.event.EventInventory;
 import net.kyori.adventure.text.Component;

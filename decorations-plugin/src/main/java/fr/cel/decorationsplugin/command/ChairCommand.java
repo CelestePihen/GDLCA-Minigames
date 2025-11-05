@@ -3,7 +3,7 @@ package fr.cel.decorationsplugin.command;
 import fr.cel.decorationsplugin.DecorationsPlugin;
 import fr.cel.decorationsplugin.manager.Chair;
 import fr.cel.decorationsplugin.manager.ChairManager;
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;

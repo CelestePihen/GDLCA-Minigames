@@ -1,4 +1,7 @@
 package fr.cel.gameapi.manager.npc;
 
-public record Skin(String value, String signature) {
+import net.kyori.adventure.key.Key;
+import org.bukkit.profile.PlayerTextures;
+
+public record Skin(Key body, Key cape, Key elytra, PlayerTextures.SkinModel model) {
 }

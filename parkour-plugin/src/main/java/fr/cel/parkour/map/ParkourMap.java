@@ -16,6 +16,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -51,6 +53,9 @@ public class ParkourMap implements Listener {
         player.showTitle(Title.title(Component.text("Parkour", NamedTextColor.GOLD), Component.text(this.displayName)));
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
+
+        player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
     }
 
     public void removePlayer(Player player) {

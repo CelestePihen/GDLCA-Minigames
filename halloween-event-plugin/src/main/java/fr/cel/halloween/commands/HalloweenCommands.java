@@ -1,6 +1,6 @@
 package fr.cel.halloween.commands;
 
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.halloween.manager.GameManager;
 import fr.cel.halloween.manager.HalloweenMapManager;
 import fr.cel.halloween.map.HalloweenMap;

@@ -22,6 +22,8 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -408,6 +410,9 @@ public class ValoArena {
         player.showTitle(Title.title(Component.text("Valocraft", NamedTextColor.GOLD), Component.text(displayName)));
         player.getInventory().clear();
         player.setGameMode(gameMode);
+
+        player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
 
         if (gameMode == GameMode.SPECTATOR) {
             spectators.add(player.getUniqueId());

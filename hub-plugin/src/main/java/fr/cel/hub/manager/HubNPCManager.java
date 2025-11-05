@@ -14,9 +14,7 @@ public class HubNPCManager extends NPCManager {
     public void loadCustomNPCs() {
         SantaNPC santaNPC = new SantaNPC();
         this.npcs.put("santa", santaNPC);
-
-        santaNPC.create();
-        santaNPC.showToAll();
+        santaNPC.spawn();
     }
 
 }

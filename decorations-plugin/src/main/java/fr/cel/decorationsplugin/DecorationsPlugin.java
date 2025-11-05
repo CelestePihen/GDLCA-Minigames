@@ -6,7 +6,7 @@ import fr.cel.decorationsplugin.listener.ChairListener;
 import fr.cel.decorationsplugin.listener.DecorationsListener;
 import fr.cel.decorationsplugin.manager.ChairManager;
 import fr.cel.decorationsplugin.manager.DecorationsManager;
-import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

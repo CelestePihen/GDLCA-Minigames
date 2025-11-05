@@ -1,8 +1,8 @@
-package fr.cel.gameapi.command.api;
+package fr.cel.gameapi.commands;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.manager.PlayerManager;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -112,11 +112,11 @@ public class CoinsCommand extends AbstractCommand {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(" ");
+        sender.sendMessage(Component.text(" "));
         sender.sendMessage(Component.text("[Aide pour les commandes du sytème de pièces]", NamedTextColor.GOLD));
-        sender.sendMessage("/coins add <pseudo> <montant> : Ajouter des pièces à un joueur");
-        sender.sendMessage("/coins remove <pseudo> <montant> : Retirer des pièces à un joueur");
-        sender.sendMessage("/coins get <pseudo> : Obtenir le nombre de pièces d'un joueur");
+        sender.sendMessage(Component.text("/coins add <pseudo> <montant> : Ajouter des pièces à un joueur"));
+        sender.sendMessage(Component.text("/coins remove <pseudo> <montant> : Retirer des pièces à un joueur"));
+        sender.sendMessage(Component.text("/coins get <pseudo> : Obtenir le nombre de pièces d'un joueur"));
     }
 
     private void sendCoinsMessage(CommandSender player, Player target) {

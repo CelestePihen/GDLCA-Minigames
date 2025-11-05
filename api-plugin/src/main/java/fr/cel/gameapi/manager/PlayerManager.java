@@ -13,6 +13,9 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -31,7 +34,7 @@ public class PlayerManager {
      * Adds the PlayerData of a player to the map
      * @param player The player who joined
      */
-    public void addPlayerData(Player player) {
+    public void addPlayerData(@NotNull Player player) {
         playersData.put(player.getUniqueId(), new PlayerData(player, new WinterPlayerData(player.getUniqueId())));
     }
 
@@ -39,7 +42,7 @@ public class PlayerManager {
      * Removes the PlayerData of a player from the map
      * @param player The player who left
      */
-    public void removePlayerData(Player player) {
+    public void removePlayerData(@NotNull Player player) {
         playersData.remove(player.getUniqueId());
     }
 
@@ -48,7 +51,7 @@ public class PlayerManager {
      * @param player The player
      * @return Returns the PlayerData of the player
      */
-    public PlayerData getPlayerData(Player player) {
+    public PlayerData getPlayerData(@NotNull Player player) {
         return playersData.get(player.getUniqueId());
     }
 
@@ -66,7 +69,7 @@ public class PlayerManager {
      * Sends a player to the Hub
      * @param player The player to send
      */
-    public void sendPlayerToHub(Player player) {
+    public void sendPlayerToHub(@NotNull Player player) {
         playersInHub.add(player.getUniqueId());
 
         player.setGlowing(false);
@@ -86,6 +89,7 @@ public class PlayerManager {
 
         player.getInventory().clear();
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
 
         player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS)
                 .itemName(Component.text("Sélectionneur de mini-jeux", NamedTextColor.WHITE))
@@ -101,7 +105,7 @@ public class PlayerManager {
      * Removes a player from the Hub players set
      * @param player The player to remove
      */
-    public void removePlayerInHub(Player player) {
+    public void removePlayerInHub(@NotNull Player player) {
         playersInHub.remove(player.getUniqueId());
     }
 
@@ -110,7 +114,7 @@ public class PlayerManager {
      * @param player The player to check
      * @return Returns true if the player is in the Hub, false otherwise
      */
-    public boolean containsPlayerInHub(Player player) {
+    public boolean containsPlayerInHub(@NotNull Player player) {
         return playersInHub.contains(player.getUniqueId());
     }
 

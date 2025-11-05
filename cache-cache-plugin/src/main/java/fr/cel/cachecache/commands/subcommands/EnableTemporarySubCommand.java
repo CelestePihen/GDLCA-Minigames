@@ -3,7 +3,7 @@ package fr.cel.cachecache.commands.subcommands;
 import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.map.TemporaryHub;
-import fr.cel.gameapi.command.SubCommand;
+import fr.cel.gameapi.manager.command.SubCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;

@@ -41,8 +41,28 @@ public class SantaInventory extends AbstractInventory {
                 .toItemStack());
 
         setItem(13, new ItemBuilder(Material.SNOWBALL)
-                .itemName(Component.text("Infos sur l'événement", NamedTextColor.AQUA))
-                .lore(Component.text("Découvre les règles, et comment gagner des points !", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
+                .itemName(Component.text("Informations sur l'événement Noël 2025", NamedTextColor.AQUA))
+                .lore(
+                        Component.text("- Chaque partie de Cache-Cache te", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  permet de trouver des cadeaux !", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.empty(),
+                        Component.text("- Chaque cadeau te rapporte ", NamedTextColor.YELLOW)
+                                .append(Component.text("1 à 3", NamedTextColor.GREEN)).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  ", NamedTextColor.YELLOW)
+                                .append(Component.text("points d'événement", NamedTextColor.GREEN))
+                                .append(Component.text(" aléatoirement.", NamedTextColor.YELLOW)).decoration(TextDecoration.ITALIC, false),
+                        Component.empty(),
+                        Component.text("- Tu ne peux ramasser qu'un cadeau", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  par partie.", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.empty(),
+                        Component.text("- Les points s'accumulent et peuvent", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  être échangés contre des récompenses", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  via le PNJ Père Noël.", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.empty(),
+                        Component.text("- Objectif global : si la communauté", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  trouve suffisamment de cadeaux,", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  une récompense sera donnée", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                        Component.text("  à tous les joueurs !", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
                 .toItemStack());
 
         setItem(15, new ItemBuilder(Material.EMERALD)
@@ -56,7 +76,6 @@ public class SantaInventory extends AbstractInventory {
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
             case PLAYER_HEAD -> {
-                player.sendMessage(Component.newline());
                 player.sendMessage(Component.text("Ton profil Noël 2025", NamedTextColor.GOLD));
 
                 player.sendMessage(Component.text("Points d'événement : ", NamedTextColor.WHITE)
@@ -64,8 +83,6 @@ public class SantaInventory extends AbstractInventory {
 
                 player.sendMessage(Component.text("Cadeaux ramassés : ", NamedTextColor.WHITE)
                         .append(Component.text(winterPlayerData.getGifts(), NamedTextColor.YELLOW)));
-
-                player.sendMessage(Component.text("- Continue à jouer pour débloquer des récompenses !", NamedTextColor.YELLOW));
             }
 
             case CHEST -> {
@@ -74,13 +91,18 @@ public class SantaInventory extends AbstractInventory {
             }
 
             case SNOWBALL -> {
+                player.sendMessage(Component.text("Informations sur l'événement Noël 2025", NamedTextColor.AQUA));
+                player.sendMessage(Component.text("- Chaque partie de Cache-Cache te permet de trouver des cadeaux !", NamedTextColor.YELLOW));
                 player.sendMessage(Component.newline());
-                player.sendMessage("§6Informations sur l'événement Noël 2025");
-                player.sendMessage("§e- Chaque partie de Cache-Cache te permet de trouver des cadeaux !");
-                player.sendMessage("§e- Chaque cadeau te rapporte §a1 à 3 points d'événement §ealéatoirement.");
-                player.sendMessage("§e- Tu ne peux ramasser qu'un cadeau par partie.");
-                player.sendMessage("§e- Les points s'accumulent et peuvent être échangés contre des récompenses via le PNJ Père Noël.");
-                player.sendMessage("§e- Objectif global : si la communauté trouve suffisamment de cadeaux, une récompense sera donnée à tous les joueurs !");
+                player.sendMessage(Component.text("- Chaque cadeau te rapporte ", NamedTextColor.YELLOW)
+                        .append(Component.text("1 à 3 points d'événement", NamedTextColor.GREEN))
+                        .append(Component.text(" aléatoirement.", NamedTextColor.YELLOW)));
+                player.sendMessage(Component.newline());
+                player.sendMessage(Component.text("- Tu ne peux ramasser qu'un cadeau par partie.", NamedTextColor.YELLOW));
+                player.sendMessage(Component.newline());
+                player.sendMessage(Component.text("- Les points s'accumulent et peuvent être échangés contre des récompenses via le PNJ Père Noël.", NamedTextColor.YELLOW));
+                player.sendMessage(Component.newline());
+                player.sendMessage(Component.text("- Objectif global : si la communauté trouve suffisamment de cadeaux, une récompense sera donnée à tous les joueurs !", NamedTextColor.YELLOW));
             }
 
             case EMERALD -> GameAPI.getInstance().getInventoryManager().openInventory(new SantaLeaderboardInventory(), player);

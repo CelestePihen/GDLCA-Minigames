@@ -1,8 +1,8 @@
-package fr.cel.gameapi.command.api;
+package fr.cel.gameapi.commands;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.inventory.StatisticsInventory;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

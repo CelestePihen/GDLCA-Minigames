@@ -1,6 +1,6 @@
 package fr.cel.pvp.commands;
 
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.pvp.arena.PVPArena;
 import fr.cel.pvp.manager.GameManager;
 import fr.cel.pvp.manager.PVPArenaManager;
