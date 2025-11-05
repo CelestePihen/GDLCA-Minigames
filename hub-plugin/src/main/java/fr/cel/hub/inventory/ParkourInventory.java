@@ -27,7 +27,10 @@ public class ParkourInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case QUARTZ_BLOCK -> ParkourMapManager.getMapManager().getMapByDisplayName("Parkour 1").addPlayer(player);
+            case QUARTZ_BLOCK -> {
+                player.closeInventory();
+                ParkourMapManager.getMapManager().getMapByDisplayName("Parkour 1").addPlayer(player);
+            }
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
 

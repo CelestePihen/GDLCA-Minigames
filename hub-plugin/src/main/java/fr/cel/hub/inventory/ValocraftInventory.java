@@ -29,9 +29,20 @@ public class ValocraftInventory extends AbstractInventory {
     @Override
     public void interact(Player player, String itemName, ItemStack item) {
         switch (item.getType()) {
-            case SAND -> ValoArenaManager.getArenaManager().getArenaByDisplayName("Désert").addPlayer(player);
-            case SNOW_BLOCK -> ValoArenaManager.getArenaManager().getArenaByDisplayName("Neige").addPlayer(player);
-            case ANDESITE -> ValoArenaManager.getArenaManager().getArenaByDisplayName("Complex").addPlayer(player);
+            case SAND -> {
+                player.closeInventory();
+                ValoArenaManager.getArenaManager().getArenaByDisplayName("Désert").addPlayer(player);
+            }
+
+            case SNOW_BLOCK -> {
+                player.closeInventory();
+                ValoArenaManager.getArenaManager().getArenaByDisplayName("Neige").addPlayer(player);
+            }
+
+            case ANDESITE -> {
+                player.closeInventory();
+                ValoArenaManager.getArenaManager().getArenaByDisplayName("Complex").addPlayer(player);
+            }
 
             case BARRIER -> GameAPI.getInstance().getInventoryManager().openInventory(new MinigamesInventory(), player);
 
