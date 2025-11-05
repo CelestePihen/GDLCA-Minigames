@@ -1,6 +1,6 @@
 package fr.cel.valocraft;
 
-import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import fr.cel.valocraft.arena.ValoArena;
 import fr.cel.valocraft.commands.ValoCommands;
 import fr.cel.valocraft.manager.GameManager;

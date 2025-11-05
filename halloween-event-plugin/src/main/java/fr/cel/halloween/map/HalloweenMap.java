@@ -95,8 +95,6 @@ public class HalloweenMap {
         this.teamTracker.setAllowFriendlyFire(false);
 
         this.gameManager = gameManager;
-        this.soulConfig = gameManager.getSoulsConfig();
-        this.spawnPlayerConfig = gameManager.getPlayersConfig();
 
         this.soulLocations = new ArrayList<>();
         this.soulItems = new ArrayList<>();

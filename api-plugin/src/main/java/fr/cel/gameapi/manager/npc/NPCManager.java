@@ -1,23 +1,18 @@
 package fr.cel.gameapi.manager.npc;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import fr.cel.gameapi.GameAPI;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Map;
@@ -28,24 +23,20 @@ public class NPCManager implements Listener {
 
     @Getter protected final Map<String, NPC> npcs = new ConcurrentHashMap<>();
 
-    private ProtocolManager protocolManager;
-
     private final JavaPlugin main;
 
     /**
-     * Constructeur du NPCManager.
-     * Initialise le NPCManager avec l'instance principale du plugin.
-     *
-     * @param main L'instance principale du plugin.
+     * Constructor of the NPCManager.
+     * @param main Main instance of the plugin.
      */
-    public NPCManager(JavaPlugin main) {
+    public NPCManager(@NotNull JavaPlugin main) {
         this.main = main;
-        GameAPI.getInstance().getNpcCommand().getNpcsPlugin().put(main, this);
+        main.getServer().getPluginManager().registerEvents(this, main);
+        GameAPI.getInstance().getNpcCommand().addPlugin(main, this);
     }
 
     /**
-     * Charge tous les NPCs depuis le dossier "npcs".
-     * Chaque NPC est créé et affiché à tous les joueurs.
+     * Load NPCs.
      */
     public void loadNPCs() {
         this.npcs.clear();
@@ -66,56 +57,28 @@ public class NPCManager implements Listener {
                 }
 
                 this.npcs.put(name, npc);
-                npc.create();
-                npc.showToAll();
+                npc.spawn();
             }
         }
 
         loadCustomNPCs();
         Bukkit.getConsoleSender().sendMessage(Component.empty().append(Component.text("[" + main.getName() + "] ", NamedTextColor.GOLD)).append(Component.text("Chargement de " + npcs.size() + " NPCs pour le plugin " + main.getName(), NamedTextColor.YELLOW)));
-
-        if (protocolManager == null) {
-            this.protocolManager = ProtocolLibrary.getProtocolManager();
-
-            protocolManager.addPacketListener(new PacketAdapter(main, PacketType.Play.Client.USE_ENTITY) {
-                @Override
-                public void onPacketReceiving(PacketEvent event) {
-                    int entityId = event.getPacket().getIntegers().read(0);
-                    EnumWrappers.EntityUseAction action = event.getPacket().getEnumEntityUseActions().read(0).getAction();
-
-                    if (action == EnumWrappers.EntityUseAction.ATTACK) {
-                        npcs.values().stream()
-                                .filter(npc -> npc.getNpc().getId() == entityId)
-                                .findFirst()
-                                .ifPresent(npc -> Bukkit.getScheduler().runTask(main, () -> npc.interact(event.getPlayer())));
-                    }
-
-                    if (action == EnumWrappers.EntityUseAction.INTERACT) {
-                        EnumWrappers.Hand hand = event.getPacket().getEnumEntityUseActions().read(0).getHand();
-                        if (hand == EnumWrappers.Hand.MAIN_HAND) {
-                            npcs.values().stream()
-                                    .filter(npc -> npc.getNpc().getId() == entityId)
-                                    .findFirst()
-                                    .ifPresent(npc -> Bukkit.getScheduler().runTask(main, () -> npc.interact(event.getPlayer())));
-                        }
-                    }
-                }
-            });
-        }
     }
 
+    /**
+     * Method to load custom NPCs. Override this method in subclasses to add custom NPC loading logic.
+     */
     public void loadCustomNPCs() {}
 
     /**
-     * Retire tous les NPCs de tous les joueurs.
-     * Cette méthode parcourt la liste des NPCs et appelle removeToAll sur chacun.
+     * Removes all NPCs for all players.
      */
     public void removeToAll() {
-        for (NPC npc : this.npcs.values()) npc.removeToAll();
+        for (NPC npc : this.npcs.values()) npc.despawn();
     }
 
     /**
-     * Réinitialise le NPCManager en rechargeant tous les NPCs.
+     * Reloads all NPCs by removing them and loading them again.
      */
     public void reloadNPCs() {
         removeToAll();
@@ -123,47 +86,32 @@ public class NPCManager implements Listener {
     }
 
     /**
-     * Gère l'événement de connexion d'un joueur pour afficher les NPCs.
-     * Cette méthode est appelée à chaque fois qu'un joueur rejoint le serveur
-     * et affiche tous les NPCs à ce joueur.
-     *
-     * @param event L'événement PlayerJoinEvent déclenché lors de la connexion du joueur.
+     * Handles player interaction with NPCs.
+     * @param event The PlayerInteractEntityEvent event.
      */
     @EventHandler
-    public void playerJoin(PlayerJoinEvent event) {
-        this.getNpcs().values().forEach(npc -> npc.spawn(event.getPlayer()));
-    }
-
-    /**
-     * Gère l'événement de déplacement d'un joueur pour faire regarder les NPCs vers le joueur.
-     * Cette méthode est appelée à chaque déplacement d'un joueur et met à jour la direction
-     * de tous les NPCs pour qu'ils regardent le joueur.
-     *
-     * @param event L'événement PlayerMoveEvent déclenché par le déplacement du joueur.
-     */
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Location loc = event.getTo();
-
-        for (NPC npc : this.getNpcs().values()) {
-            if (loc.getWorld() != npc.getLocation().getWorld()) continue;
-
-            Location newLoc = loc.clone();
-            newLoc.setDirection(newLoc.subtract(npc.getNpc().getBukkitEntity().getLocation()).toVector());
-            npc.lookAt(event.getPlayer(), newLoc);
+    public void onPlayerInteract(@NotNull final PlayerInteractEntityEvent event) {
+        if (event.getHand() == EquipmentSlot.HAND) {
+            for (NPC npc : this.npcs.values()) {
+                if (npc.getUuid().equals(event.getRightClicked().getUniqueId())) npc.interact(event.getPlayer());
+            }
         }
     }
 
     /**
-     * Gère l'événement de changement de monde d'un joueur pour afficher les NPCs.
-     * Cette méthode est appelée à chaque fois qu'un joueur change de monde et affiche
-     * tous les NPCs à ce joueur.
-     *
-     * @param event L'événement PlayerChangedWorldEvent déclenché lors du changement de monde.
+     * Handles player attack on NPCs.
+     * @param event The EntityDamageByEntityEvent event.
      */
     @EventHandler
-    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
-        for (NPC npc : this.getNpcs().values()) npc.spawn(event.getPlayer());
+    public void onPlayerAttack(@NotNull final EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player player) {
+            for (NPC npc : this.npcs.values()) {
+                if (npc.getUuid().equals(event.getEntity().getUniqueId())) {
+                    npc.interact(player);
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
 
 }

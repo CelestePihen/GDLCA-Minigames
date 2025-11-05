@@ -1,227 +1,106 @@
 package fr.cel.gameapi.manager.npc;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
+import com.destroystokyo.paper.SkinParts;
 import fr.cel.gameapi.GameAPI;
+import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import lombok.Getter;
-import net.minecraft.Optionull;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.RemoteChatSession;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ClientInformation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.PositionMoveRotation;
-import net.minecraft.world.phys.Vec3;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Mannequin;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
-@Getter
-@Deprecated(forRemoval = true, since = "2.0")
 public class NPC {
 
-    private final UUID uuid;
-    private final String name;
-    private final String displayName;
-    private final Skin skin;
-    private final boolean lookAtPlayer;
+    @NotNull @Getter private final String name;
+    @NotNull @Getter private final Component displayName;
 
-    private ServerPlayer npc;
-    private Location location;
-    private Pose pose;
+    @Getter private UUID uuid;
+    @Getter private Location location;
+    private Pose pose = Pose.STANDING;
 
-    /**
-     * Constructs a new NPC with the specified parameters.
-     *
-     * @param name        The name of the NPC.
-     * @param displayName The display name of the NPC.
-     * @param location    The location where the NPC will be spawned.
-     * @param skin        The skin of the NPC.
-     */
-    public NPC(String name, String displayName, Location location, boolean lookAtPlayer, Skin skin) {
-        this(name, displayName, location, lookAtPlayer, skin, Pose.STANDING);
-    }
+    @Nullable private Skin skin = null;
+
+    @Getter private Mannequin mannequin;
 
     /**
-     * Constructs a new NPC with the specified parameters.
-     *
-     * @param name        The name of the NPC.
+     * Creates a new NPC with a display name and location.
      * @param displayName The display name of the NPC.
-     * @param location    The location where the NPC will be spawned.
-     * @param skin        The skin of the NPC.
-     * @param pose        The pose of the NPC
+     * @param location The location where the NPC will be spawned.
      */
-    public NPC(String name, String displayName, Location location, boolean lookAtPlayer, Skin skin, Pose pose) {
-        this.uuid = UUID.randomUUID();
+    public NPC(@NotNull String name, @NotNull Component displayName, @NotNull Location location) {
         this.name = name;
         this.displayName = displayName;
         this.location = location;
-        this.lookAtPlayer = lookAtPlayer;
-        this.skin = skin;
+    }
+
+    /**
+     * Creates a new NPC with a display name, location, and pose.
+     * @param displayName The display name of the NPC.
+     * @param location The location where the NPC will be spawned.
+     * @param pose The pose of the NPC.
+     */
+    public NPC(@NotNull String name, @NotNull Component displayName, @NotNull Location location, @NotNull Pose pose) {
+        this(name, displayName, location);
         this.pose = pose;
     }
 
     /**
-     * Creates the NPC and initializes its properties.
-     * This method should be called before spawning the NPC.
+     * Creates a new NPC with a custom profile.
+     * @param displayName The display name of the NPC.
+     * @param location The location where the NPC will be spawned.
+     * @param pose The pose of the NPC.
+     * @param skin The skin of the NPC.
      */
-    public void create() {
-        if (npc != null) return;
-
-        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        ServerLevel level = ((CraftWorld) this.location.getWorld()).getHandle();
-        GameProfile gameProfile = new GameProfile(this.uuid, this.displayName);
-
-        this.npc = new ServerPlayer(server, level, new GameProfile(uuid, ""), ClientInformation.createDefault());
-        npc.gameProfile = gameProfile;
+    public NPC(@NotNull String name, @NotNull Component displayName, @NotNull Location location, @NotNull Pose pose, @NotNull Skin skin) {
+        this(name, displayName, location, pose);
+        this.skin = skin;
     }
 
     /**
-     * Spawns the NPC for a specific player.
-     *
-     * @param player The player to spawn the NPC for.
+     * Spawns the NPC at its location.
      */
-    public void spawn(Player player) {
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+    public void spawn() {
+        this.mannequin = location.getWorld().spawn(location, Mannequin.class, mannequin -> {
+            this.uuid = mannequin.getUniqueId();
+            mannequin.customName(this.displayName);
+            mannequin.setCustomNameVisible(true);
 
-        if (npc == null) return;
+            mannequin.setPose(pose);
+            mannequin.setImmovable(true);
+            mannequin.setDescription(null);
 
-        if (!this.location.getWorld().getName().equalsIgnoreCase(serverPlayer.level().getWorld().getName())) return;
-
-        if (this.skin.value().isEmpty() || this.skin.signature().isEmpty()) {
-            Skin skin = SkinFetcher.fetchSkin(this.displayName);
-            if (skin != null) {
-                npc.getGameProfile().getProperties().replaceValues(
-                        "textures",
-                        ImmutableList.of(new Property("textures", skin.value(), skin.signature()))
-                );
+            if (skin == null) {
+                mannequin.setProfile(ResolvableProfile.resolvableProfile(Bukkit.createProfile(this.name)));
+            } else {
+                mannequin.setProfile(ResolvableProfile.resolvableProfile().uuid(this.uuid).name(this.name).skinPatch(skinPatchBuilder -> {
+                    skinPatchBuilder.body(this.skin.body());
+                    skinPatchBuilder.cape(this.skin.cape());
+                    skinPatchBuilder.elytra(this.skin.elytra());
+                    skinPatchBuilder.model(this.skin.model());
+                }).build());
             }
-        } else {
-            npc.getGameProfile().getProperties().replaceValues(
-                    "textures",
-                    ImmutableList.of(new Property("textures", this.skin.value(), this.skin.signature()))
-            );
-        }
 
-        EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.noneOf(ClientboundPlayerInfoUpdatePacket.Action.class);
-        actions.add(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER);
-        actions.add(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME);
-
-        ClientboundPlayerInfoUpdatePacket playerInfoPacket = new ClientboundPlayerInfoUpdatePacket(actions, getEntry(npc, serverPlayer));
-        serverPlayer.connection.send(playerInfoPacket);
-
-        npc.setPos(getLocation().x(), getLocation().y(), getLocation().z());
-
-        ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(
-                npc.getId(),
-                npc.getUUID(),
-                getLocation().x(),
-                getLocation().y(),
-                getLocation().z(),
-                getLocation().getPitch(),
-                getLocation().getYaw(),
-                npc.getType(),
-                0,
-                Vec3.ZERO,
-                getLocation().getYaw()
-        );
-        serverPlayer.connection.send(addEntityPacket);
-
-//        setPose(pose);
-
-        update(player);
-
-        Bukkit.getScheduler().runTaskTimer(GameAPI.getInstance(), () -> {
-            ClientboundPlayerInfoRemovePacket playerInfoRemovePacket = new ClientboundPlayerInfoRemovePacket(List.of(npc.getUUID()));
-            serverPlayer.connection.send(playerInfoRemovePacket);
-        }, 0L, 20L);
-    }
-
-    public void update(Player player) {
-        if (npc == null) return;
-
-        npc.getEntityData().set(net.minecraft.world.entity.player.Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) (0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40));
-        refreshEntityData(player);
-    }
-
-    private void refreshEntityData(Player player) {
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-
-        SynchedEntityData.DataItem<?>[] itemsById = (SynchedEntityData.DataItem<?>[]) getValue(npc.getEntityData(), "itemsById"); // itemsById
-        List<SynchedEntityData.DataValue<?>> entityData = new ArrayList<>();
-        for (SynchedEntityData.DataItem<?> dataItem : itemsById) {
-            entityData.add(dataItem.value());
-        }
-
-        ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(npc.getId(), entityData);
-        serverPlayer.connection.send(setEntityDataPacket);
+            SkinParts.Mutable mutable = SkinParts.allParts().mutableCopy();
+            mutable.setCapeEnabled(false);
+            mannequin.setSkinParts(mutable.immutableCopy());
+        });
     }
 
     /**
-     * Spawns the NPC for all online players.
+     * Despawns the NPC.
      */
-    public void showToAll() {
-        Bukkit.getOnlinePlayers().forEach(this::spawn);
-    }
-
-    /**
-     * Spawns the NPC for a specific player.
-     *
-     * @param players The player uuids to spawn the NPC for.
-     */
-    public void showToAll(List<UUID> players) {
-        for (UUID playerUUID : players) {
-            Player player = Bukkit.getPlayer(playerUUID);
-            if (player != null) spawn(player);
-        }
-    }
-
-    /**
-     * Removes the NPC from a specific player.
-     *
-     * @param player The player to remove the NPC from.
-     */
-    public void remove(Player player) {
-        if (this.npc == null) return;
-
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-
-        ClientboundPlayerInfoRemovePacket playerInfoRemovePacket = new ClientboundPlayerInfoRemovePacket(List.of(this.npc.getUUID()));
-        serverPlayer.connection.send(playerInfoRemovePacket);
-
-        ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(this.npc.getId());
-        serverPlayer.connection.send(removeEntitiesPacket);
-    }
-
-    /**
-     * Removes the NPC from all online players.
-     */
-    public void removeToAll() {
-        Bukkit.getOnlinePlayers().forEach(this::remove);
-    }
-
-    /**
-     * Removes the NPC from a list of players.
-     *
-     * @param players The list of player UUIDs to remove the NPC from.
-     */
-    public void removeToAll(List<UUID> players) {
-        for (UUID playerUUID : players) {
-            Player player = Bukkit.getPlayer(playerUUID);
-            if (player != null) remove(player);
+    public void despawn() {
+        if (this.mannequin != null && this.mannequin.isValid()) {
+            this.mannequin.remove();
+            this.mannequin = null;
         }
     }
 
@@ -230,143 +109,108 @@ public class NPC {
      * This method can be overridden to define custom interaction behavior.
      */
     public void interact(Player player) {
-        chat("Salut " + player.getName() + " ! Amuses-toi bien sur GDLCA Minigames !", player);
+        chat(Component.text("Salut " + player.getName() + " ! Amuses-toi bien sur GDLCA Minigames !"), player);
     }
 
     /**
-     * Sets the location of the NPC and updates it for all online players.
-     *
-     * @param location The new location to set for the NPC.
+     * Sends a chat message to all online players from the NPC.
+     * @param message The message to send.
      */
-    public void setLocation(Location location) {
-        if (npc == null) return;
-        if (location == null) return;
+    public void chat(Component message) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) chat(message, onlinePlayer);
+    }
 
+    /**
+     * Sends a chat message to a list of players from the NPC.
+     * @param message The message to send.
+     * @param playerUUIDs The list of player UUIDs to send the message to.
+     */
+    public void chat(Component message, List<UUID> playerUUIDs) {
+        for (UUID uuid : playerUUIDs) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null && player.isOnline()) chat(message, player);
+        }
+    }
+
+    /**
+     * Sends a chat message to a specific player from the NPC.
+     * @param message The message to send.
+     * @param player The player to send the message to.
+     */
+    public void chat(Component message, Player player) {
+        player.sendMessage(Component.text("[", NamedTextColor.GOLD).append(displayName).append(Component.text("] ")
+                .append(message.color(NamedTextColor.WHITE))));
+    }
+
+    /**
+     * Hides the NPC from a specific player.
+     * @param player The player from whom to hide the NPC.
+     */
+    public void hidePlayer(@NotNull Player player) {
+        player.hideEntity(GameAPI.getInstance(), this.mannequin);
+    }
+
+    /**
+     * Hides the NPC from all online players.
+     */
+    public void hidePlayer() {
+        for (Player player : Bukkit.getOnlinePlayers()) hidePlayer(player);
+    }
+
+    /**
+     * Hides the NPC from a list of players.
+     * @param playerUUIDs The list of player UUIDs from whom to hide the NPC.
+     */
+    public void hidePlayer(List<UUID> playerUUIDs) {
+        for (UUID uuid : playerUUIDs) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null && player.isOnline()) hidePlayer(player);
+        }
+    }
+
+    /**
+     * Shows the NPC to a specific player.
+     * @param player The player to whom to show the NPC.
+     */
+    public void showPlayer(@NotNull Player player) {
+        player.showEntity(GameAPI.getInstance(), this.mannequin);
+    }
+
+    /**
+     * Shows the NPC to all online players.
+     */
+    public void showPlayer() {
+        for (Player player : Bukkit.getOnlinePlayers()) showPlayer(player);
+    }
+
+    /**
+     * Shows the NPC to a list of players.
+     * @param playerUUIDs The list of player UUIDs to whom to show the NPC.
+     */
+    public void showPlayer(List<UUID> playerUUIDs) {
+        for (UUID uuid : playerUUIDs) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null && player.isOnline()) showPlayer(player);
+        }
+    }
+
+    /**
+     * Sets the location of the NPC.
+     * @param location The new location of the NPC.
+     */
+    public void setLocation(@NotNull Location location) {
         this.location = location;
-
-        this.npc.setPos(location.getX(), location.getY(), location.getZ());
+        // à tester
+        this.mannequin.teleportAsync(location);
     }
 
     /**
-     * Sets the pose of the NPC and updates it for all online players.
-     *
-     * @param pose The new pose to set for the NPC.
+     * Sets the pose of the NPC.
+     * @param pose The new pose of the NPC.
      */
-    public void setPose(Pose pose) {
-        if (npc == null) return;
-        if (pose == null) return;
-
-        npc.setPose(pose);
-
-        SynchedEntityData dataWatcher = npc.getEntityData();
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            sendPacket(new ClientboundSetEntityDataPacket(npc.getId(), dataWatcher.getNonDefaultValues()), onlinePlayer);
-        }
-
+    public void setPose(@NotNull Pose pose) {
         this.pose = pose;
-    }
-
-    /**
-     * Sends a chat message to all online players with the NPC's display name.
-     *
-     * @param message The message to send.
-     */
-    public void chat(String message) {
-        ClientboundSystemChatPacket packet = new ClientboundSystemChatPacket(Component.literal(ChatColor.GOLD + "[" + displayName + "] " + ChatColor.RESET + message), false);
-
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            sendPacket(packet, onlinePlayer);
-        }
-    }
-
-    /**
-     * Sends a chat message to a specific player with the NPC's display name.
-     *
-     * @param message The message to send.
-     * @param player  The player to send the message to.
-     */
-    public void chat(String message, Player player) {
-        ClientboundSystemChatPacket packet = new ClientboundSystemChatPacket(Component.literal(ChatColor.GOLD + "[" + displayName + "] " + ChatColor.RESET + message), false);
-        sendPacket(packet, player);
-    }
-
-    /**
-     * Sends a chat message to a list of players with the NPC's display name.
-     *
-     * @param message      The message to send.
-     * @param uuidPlayers  The list of player UUIDs to send the message to.
-     */
-    public void chat(String message, List<UUID> uuidPlayers) {
-        ClientboundSystemChatPacket packet = new ClientboundSystemChatPacket(Component.literal(ChatColor.GOLD + "[" + displayName + "] " + message), false);
-
-        for (UUID uuid : uuidPlayers) {
-            Player onlinePlayer = Bukkit.getPlayer(uuid);
-            if (onlinePlayer == null) continue;
-            sendPacket(packet, onlinePlayer);
-        }
-    }
-
-    public void lookAt(Player player, Location location) {
-        if (this.npc == null) return;
-
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-
-        this.npc.setRot(location.getYaw(), location.getPitch());
-        this.npc.setYHeadRot(location.getYaw());
-        this.npc.setXRot(location.getPitch());
-        this.npc.setYRot(location.getYaw());
-
-        ClientboundTeleportEntityPacket teleportEntityPacket = new ClientboundTeleportEntityPacket(
-                this.npc.getId(),
-                new PositionMoveRotation(
-                        new Vec3(getLocation().getX(), getLocation().getY(), getLocation().getZ()),
-                        Vec3.ZERO,
-                        location.getYaw(),
-                        location.getPitch()),
-                Set.of(),
-                false
-        );
-        serverPlayer.connection.send(teleportEntityPacket);
-
-        float angelMultiplier = 256.0F / 360.0F;
-        ClientboundRotateHeadPacket rotateHeadPacket = new ClientboundRotateHeadPacket(this.npc, (byte) (location.getYaw() * angelMultiplier));
-        serverPlayer.connection.send(rotateHeadPacket);
-    }
-
-    private void sendPacket(Packet<?> packet, Player player) {
-        ((CraftPlayer) player).getHandle().connection.send(packet);
-    }
-
-    private ClientboundPlayerInfoUpdatePacket.Entry getEntry(ServerPlayer npcPlayer, ServerPlayer viewer) {
-        GameProfile profile = npcPlayer.getGameProfile();
-        return new ClientboundPlayerInfoUpdatePacket.Entry(
-                npcPlayer.getUUID(),
-                profile,
-                false,
-                69,
-                npcPlayer.gameMode.getGameModeForPlayer(),
-                npcPlayer.getTabListDisplayName(),
-                true,
-                -1,
-                Optionull.map(npcPlayer.getChatSession(), RemoteChatSession::asData)
-        );
-    }
-
-    private Object getValue(Object instance, String name) {
-        Object result = null;
-
-        try {
-            Field field = instance.getClass().getDeclaredField(name);
-
-            field.setAccessible(true);
-            result = field.get(instance);
-            field.setAccessible(false);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
+        this.mannequin.setPose(pose);
     }
 
 }

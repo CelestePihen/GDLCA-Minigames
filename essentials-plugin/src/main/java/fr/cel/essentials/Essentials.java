@@ -3,7 +3,7 @@ package fr.cel.essentials;
 import fr.cel.essentials.commands.general.*;
 import fr.cel.essentials.commands.utils.*;
 import fr.cel.essentials.listener.EntityListener;
-import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

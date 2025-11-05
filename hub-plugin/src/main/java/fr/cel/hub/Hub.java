@@ -1,6 +1,6 @@
 package fr.cel.hub;
 
-import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import fr.cel.gameapi.manager.npc.NPCManager;
 import fr.cel.hub.commands.EventCommand;
 import fr.cel.hub.commands.HubCommand;
@@ -44,7 +44,6 @@ public final class Hub extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-
     }
 
     /**
@@ -54,7 +53,6 @@ public final class Hub extends JavaPlugin {
         new PlayerListener(this);
         new ChatListener(this);
         new ItemListener(this);
-        getServer().getPluginManager().registerEvents(this.npcManager, this);
     }
 
     /**

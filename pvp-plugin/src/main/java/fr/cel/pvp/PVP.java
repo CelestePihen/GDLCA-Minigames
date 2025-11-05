@@ -1,6 +1,6 @@
 package fr.cel.pvp;
 
-import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import fr.cel.pvp.commands.PVPCommands;
 import fr.cel.pvp.manager.GameManager;
 import fr.cel.pvp.manager.PVPArenaManager;
@@ -23,8 +23,5 @@ public class PVP extends JavaPlugin {
 
         new CommandsManager(this).addCommand("pvp", new PVPCommands(gameManager));
     }
-
-    @Override
-    public void onDisable() {}
 
 }

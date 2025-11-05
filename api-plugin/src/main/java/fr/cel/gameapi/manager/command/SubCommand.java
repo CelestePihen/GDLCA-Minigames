@@ -1,4 +1,4 @@
-package fr.cel.gameapi.command;
+package fr.cel.gameapi.manager.command;
 
 import fr.cel.gameapi.GameAPI;
 import net.kyori.adventure.text.Component;

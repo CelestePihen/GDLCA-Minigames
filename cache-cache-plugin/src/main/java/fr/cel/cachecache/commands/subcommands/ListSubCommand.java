@@ -4,7 +4,7 @@ import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.state.game.PlayingMapState;
-import fr.cel.gameapi.command.SubCommand;
+import fr.cel.gameapi.manager.command.SubCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

@@ -37,7 +37,7 @@ public class SantaLeaderboardInventory extends AbstractInventory {
             int points = data.getWinterPoints();
 
             ItemStack item = new ItemBuilder(Material.PLAYER_HEAD)
-                    .setSkullOwner(Bukkit.createProfile(playerName))
+                    .setSkullOwner(Bukkit.createProfile(uuid))
                     .displayName(Component.text("#" + (i + 1) + " " + playerName, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
                     .lore(Component.text("Points : " + points, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                     .toItemStack();

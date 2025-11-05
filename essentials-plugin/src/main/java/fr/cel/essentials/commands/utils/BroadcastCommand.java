@@ -1,6 +1,6 @@
 package fr.cel.essentials.commands.utils;
 
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

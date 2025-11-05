@@ -50,10 +50,12 @@ public class CCMapManager {
         if (!folder.exists()) folder.mkdirs();
 
         if (folder.isDirectory()) {
-            for (File file : Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".yml")))) {
+            File[] files = folder.listFiles((dir, name) -> name.endsWith(".yml"));
+            if (files == null) return;
+
+            for (File file : files) {
                 String mapName = file.getName().replace(".yml", "");
-                MapConfig config = new MapConfig(main, mapName);
-                CCMap map = config.getMap();
+                CCMap map = new MapConfig(main, mapName).getMap();
                 if (map != null) maps.put(mapName, map);
             }
         }

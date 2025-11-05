@@ -1,7 +1,6 @@
-package fr.cel.gameapi.manager;
+package fr.cel.gameapi.manager.command;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.command.AbstractCommand;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;

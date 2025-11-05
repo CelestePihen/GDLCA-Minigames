@@ -1,8 +1,8 @@
-package fr.cel.gameapi.command.api;
+package fr.cel.gameapi.commands;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.command.AbstractCommand;
 import fr.cel.gameapi.inventory.ProfileInventory;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

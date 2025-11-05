@@ -4,7 +4,7 @@ import fr.cel.decorationsplugin.DecorationsPlugin;
 import fr.cel.decorationsplugin.inventory.DecorationInventory;
 import fr.cel.decorationsplugin.manager.DecorationsManager;
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

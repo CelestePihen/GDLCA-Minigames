@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -184,12 +185,13 @@ public final class ChairManager {
         chairs.clear();
         seatedPlayers.clear();
 
-        if (!config.contains("chairs")) {
+        ConfigurationSection chairs = config.getConfigurationSection("chairs");
+        if (chairs == null) {
             plugin.getLogger().warning("Le fichier chairs.yml ne contient pas de section chairs");
             return;
         }
 
-        for (String key : config.getConfigurationSection("chairs").getKeys(false)) {
+        for (String key : chairs.getKeys(false)) {
             try {
                 String worldName = config.getString("chairs." + key + ".world");
                 World world = Bukkit.getWorld(worldName);
@@ -217,13 +219,13 @@ public final class ChairManager {
                     chair.getArmorStand().getPassengers().clear();
                 }
 
-                chairs.put(location, chair);
+                this.chairs.put(location, chair);
             } catch (Exception e) {
                 plugin.getLogger().warning("Erreur lors du chargement de la chaise : " + key + " - " + e.getMessage());
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(chairs.size() + " chaises chargées !", NamedTextColor.YELLOW)));
+        Bukkit.getConsoleSender().sendMessage(DecorationsPlugin.getPrefix().append(Component.text(this.chairs.size() + " chaises chargées !", NamedTextColor.YELLOW)));
     }
 
     /**

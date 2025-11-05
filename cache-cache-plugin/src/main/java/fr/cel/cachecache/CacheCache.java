@@ -3,7 +3,7 @@ package fr.cel.cachecache;
 import fr.cel.cachecache.commands.CCCommand;
 import fr.cel.cachecache.manager.CCMapManager;
 import fr.cel.cachecache.manager.GameManager;
-import fr.cel.gameapi.manager.CommandsManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;

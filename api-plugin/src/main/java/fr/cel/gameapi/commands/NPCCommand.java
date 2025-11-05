@@ -1,8 +1,7 @@
-package fr.cel.gameapi.command.api;
+package fr.cel.gameapi.commands;
 
-import fr.cel.gameapi.command.AbstractCommand;
+import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.gameapi.manager.npc.NPCManager;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
@@ -10,11 +9,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter
 public class NPCCommand extends AbstractCommand {
 
     private final Map<JavaPlugin, NPCManager> npcsPlugin = new HashMap<>();
@@ -40,6 +39,14 @@ public class NPCCommand extends AbstractCommand {
             return List.of("reload", "rl");
         }
         return List.of();
+    }
+
+    public void addPlugin(JavaPlugin plugin, NPCManager npcManager) {
+        this.npcsPlugin.put(plugin, npcManager);
+    }
+
+    public Collection<NPCManager> getNPCManagers() {
+        return npcsPlugin.values();
     }
 
     private void sendHelp(CommandSender sender) {

@@ -1,19 +1,21 @@
 package fr.cel.gameapi;
 
-import fr.cel.gameapi.command.api.*;
+import fr.cel.gameapi.commands.*;
 import fr.cel.gameapi.listeners.OtherListeners;
 import fr.cel.gameapi.listeners.PlayersListener;
 import fr.cel.gameapi.listeners.ServerListeners;
 import fr.cel.gameapi.manager.AdvancementsManager;
-import fr.cel.gameapi.manager.CommandsManager;
 import fr.cel.gameapi.manager.InventoryManager;
 import fr.cel.gameapi.manager.PlayerManager;
+import fr.cel.gameapi.manager.command.CommandsManager;
 import fr.cel.gameapi.manager.database.DatabaseManager;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Mannequin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
@@ -40,6 +42,8 @@ public final class GameAPI extends JavaPlugin {
 
         initDatabase();
 
+        removeMannequins();
+
         this.playerManager = new PlayerManager();
 
         this.friendsManager = new FriendsManager(this);
@@ -58,6 +62,12 @@ public final class GameAPI extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OtherListeners(), this);
     }
 
+    @Override
+    public void onDisable() {
+        if (database != null) database.disconnect();
+        removeMannequins();
+    }
+
     /**
      * Init the Database with the config
      */
@@ -65,8 +75,7 @@ public final class GameAPI extends JavaPlugin {
         // détecte si le config.yml est proprement configuré
         if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") || !getConfig().contains("database_test") ||
                 !getConfig().contains("username") || !getConfig().contains("password")) {
-            getLogger().severe("Please configure the database settings in the config.yml file.");
-            // getServer().shutdown();
+            getLogger().severe("Please configure the database settings in the config.yml file. Please fill them and restart the server.");
             return;
         }
 
@@ -80,8 +89,7 @@ public final class GameAPI extends JavaPlugin {
         try {
             this.database.init();
         } catch (Exception e) {
-            getLogger().severe("An error occurred while connecting to the database. Please check your configuration." + e.getMessage());
-            getServer().shutdown();
+            getLogger().severe("An error occurred while connecting to the database. Please check your configuration and restart the server." + e.getMessage());
         }
     }
 
@@ -98,9 +106,12 @@ public final class GameAPI extends JavaPlugin {
         commandsManager.addCommand("npc", getNpcCommand());
     }
 
-    @Override
-    public void onDisable() {
-        database.disconnect();
+    private void removeMannequins() {
+        Bukkit.getWorlds().forEach(world -> {
+            for (Mannequin mannequin : world.getEntitiesByClass(Mannequin.class)) {
+                mannequin.remove();
+            }
+        });
     }
 
 }
