@@ -69,10 +69,6 @@ public class StateListenerProvider implements Listener {
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (event.getItem() != null && event.getItem().getType() == Material.AMETHYST_SHARD) {
-                map.startGame(player);
-            }
-
             if (event.getClickedBlock() != null && !(map.getMapState() instanceof PlayingMapState) && !player.isOp()) {
                 event.setCancelled(true);
             }

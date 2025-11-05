@@ -170,13 +170,10 @@ public class CCMap {
         players.remove(player.getUniqueId());
         scoreboard.removePlayer(player);
 
-        if (seekers.contains(player.getUniqueId())) {
-            seekers.remove(player.getUniqueId());
-            teamSeekers.removePlayer(player);
-        } else {
-            hiders.remove(player.getUniqueId());
-            teamHiders.removePlayer(player);
-        }
+        seekers.remove(player.getUniqueId());
+        teamSeekers.removePlayer(player);
+        hiders.remove(player.getUniqueId());
+        teamHiders.removePlayer(player);
 
         player.setGlowing(false);
 
@@ -618,7 +615,9 @@ public class CCMap {
 
         player.setGameMode(gameMode);
         player.setGlowing(false);
+
         player.getInventory().clear();
+        player.getInventory().setItem(8, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter la partie", NamedTextColor.RED)).toItemStack());
 
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
