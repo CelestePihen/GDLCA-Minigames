@@ -11,6 +11,7 @@ public class CCCommand extends AbstractCommandSub {
 
         // Register Sub-Commands
         registerSubCommand(new CalculSubCommand(gameManager));
+        registerSubCommand(new CalculGiftsSubCommand(gameManager)); // Winter Event 2025
         registerSubCommand(new EnableTemporarySubCommand(gameManager));
         registerSubCommand(new InformationSubCommand(gameManager));
         registerSubCommand(new JoinSubCommand(gameManager));

@@ -2,8 +2,8 @@ package fr.cel.cachecache.manager;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.map.CCMap;
+import fr.cel.cachecache.map.MapConfig;
 import fr.cel.cachecache.map.TemporaryHub;
-import fr.cel.cachecache.utils.MapConfig;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class CCMapManager {
 

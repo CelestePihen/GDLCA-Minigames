@@ -2,7 +2,6 @@ package fr.cel.cachecache.map;
 
 import fr.cel.cachecache.manager.GameManager;
 import fr.cel.cachecache.map.state.pregame.StartingMapState;
-import fr.cel.cachecache.utils.TempHubConfig;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;

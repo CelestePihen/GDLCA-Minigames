@@ -68,13 +68,11 @@ public class ValoCommands extends AbstractCommand {
             return;
         }
 
-        if (!arenaManager.isPlayerInArena(player)) {
+        final ValoArena arena = arenaManager.getArenaByPlayer(player);
+        if (arena == null) {
             player.sendMessage(gameManager.getPrefix().append(Component.text("Vous n'êtes pas dans une carte.")));
             return;
         }
-
-        final ValoArena arena = arenaManager.getArenaByPlayer(player);
-        if (arena == null) return;
 
         if (args[0].equalsIgnoreCase("start")) {
             if (arena.startGame()) {
@@ -215,7 +213,7 @@ public class ValoCommands extends AbstractCommand {
         ValoArena arena = gameManager.getMain().getValoArenaManager().getArenas().get(args[1].toLowerCase());
 
         if (arena == null) {
-            player.sendMessage(gameManager.getPrefix().append(Component.text("Rentrer un nom d'arène valide.", NamedTextColor.RED)));
+            player.sendMessage(gameManager.getPrefix().append(Component.text("La map '" + args[1] + "' n'existe pas.", NamedTextColor.RED)));
             return;
         }
 
@@ -243,7 +241,6 @@ public class ValoCommands extends AbstractCommand {
         World world = player.getWorld();
 
         List<String> invisibleBlocks = new ArrayList<>();
-        int count = 0;
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
@@ -251,7 +248,6 @@ public class ValoCommands extends AbstractCommand {
                     Block block = world.getBlockAt(x, y, z);
                     if (block.getType() == Material.STRUCTURE_VOID) {
                         invisibleBlocks.add(world.getName() + "," + x + "," + y + "," + z);
-                        count++;
                     }
                 }
             }
@@ -260,7 +256,7 @@ public class ValoCommands extends AbstractCommand {
         arena.getArenaConfig().setValue("invisibleblocks", invisibleBlocks);
         arena.setInvisibleBarriersLocations(arena.getArenaConfig().getLocationInvisibleBarrier());
 
-        player.sendMessage(Component.text(count + " barrières invisibles trouvées et sauvegardées dans le fichier de configuration de la carte !", NamedTextColor.GREEN));
+        player.sendMessage(Component.text(invisibleBlocks.size() + " barrières invisibles trouvées et sauvegardées dans le fichier de configuration de la carte !", NamedTextColor.GREEN));
     }
 
 }

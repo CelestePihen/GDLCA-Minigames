@@ -2,8 +2,8 @@ package fr.cel.cachecache.manager;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.groundItems.*;
+import fr.cel.cachecache.map.TempHubConfig;
 import fr.cel.cachecache.map.TemporaryHub;
-import fr.cel.cachecache.utils.TempHubConfig;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager;
 import fr.cel.gameapi.manager.PlayerManager;

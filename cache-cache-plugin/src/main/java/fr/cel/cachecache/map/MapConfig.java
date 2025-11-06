@@ -1,8 +1,7 @@
-package fr.cel.cachecache.utils;
+package fr.cel.cachecache.map;
 
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.GroundItem;
-import fr.cel.cachecache.map.CCMap;
 import fr.cel.gameapi.utils.LocationUtility;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -58,6 +57,7 @@ public class MapConfig {
                 map.setLastHunter(config.getString("lastHunter"));
                 map.setAvailableGroundItems(getAvailableGroundItems());
                 map.setLocationGroundItems(getLocationGroundItems());
+                map.setGiftLocations(getGiftLocations());
 
                 return map;
             } catch (IOException | InvalidConfigurationException e) {
@@ -106,4 +106,21 @@ public class MapConfig {
         return locations;
     }
 
+
+    public List<Location> getGiftLocations() {
+        List<Location> locations = new ArrayList<>();
+
+        for (String str : config.getStringList("gifts")) {
+            String[] parts = str.split(",");
+            if (parts.length < 3) continue;
+
+            double x = Double.parseDouble(parts[0]);
+            double y = Double.parseDouble(parts[1]);
+            double z = Double.parseDouble(parts[2]);
+
+            locations.add(new Location(Bukkit.getWorlds().getFirst(), x, y, z));
+        }
+
+        return locations;
+    }
 }

@@ -1,6 +1,7 @@
 package fr.cel.cachecache.commands.subcommands;
 
 import fr.cel.cachecache.manager.GameManager;
+import fr.cel.cachecache.map.CCMap;
 import fr.cel.gameapi.manager.command.SubCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,32 +12,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class CalculSubCommand implements SubCommand {
+public class CalculGiftsSubCommand implements SubCommand {
 
     private final GameManager gameManager;
 
-    public CalculSubCommand(GameManager gameManager) {
+    public CalculGiftsSubCommand(GameManager gameManager) {
         this.gameManager = gameManager;
     }
 
     @Override
     public String getName() {
-        return "calcul";
+        return "calculgifts";
     }
 
     @Override
     public String getDescription() {
-        return "(Re-)Calcule les lampes de redstone (normalement) de la map Bunker.";
+        return "(Re-)Calcule les emplacements des cadeaux (Événements Hiver 2025).";
     }
 
     @Override
     public String getUsage() {
-        return "/cc calcul <x1> <y1> <z1> <x2> <y2> <z2>";
+        return "/cc calculgifts <mapName> <x1> <y1> <z1> <x2> <y2> <z2>";
     }
 
     @Override
@@ -53,19 +52,37 @@ public class CalculSubCommand implements SubCommand {
     public void execute(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player player)) return;
 
+        if (args.length == 1) {
+            CCMap map = gameManager.getMain().getCcMapManager().getMaps().get(args[0].toLowerCase());
+            if (map == null) {
+                player.sendMessage(gameManager.getPrefix().append(Component.text("La map '" + args[0] + "' n'existe pas.", NamedTextColor.RED)));
+                return;
+            }
+
+            player.sendMessage(Component.text("Le nombre d'emplacements de cadeaux dans la map '" + args[0] + "' est de " +
+                    map.getGiftLocations().size() + ".", NamedTextColor.GREEN));
+            return;
+        }
+
         if (args.length != 7) {
-            player.sendMessage(gameManager.getPrefix().append(Component.text("Usage : /cc calcul <x1> <y1> <z1> <x2> <y2> <z2>", NamedTextColor.RED)));
+            player.sendMessage(gameManager.getPrefix().append(Component.text("Usage: /cc calculgifts <mapName> <x1> <y1> <z1> <x2> <y2> <z2>", NamedTextColor.RED)));
+            return;
+        }
+
+        CCMap map = gameManager.getMain().getCcMapManager().getMaps().get(args[0].toLowerCase());
+        if (map == null) {
+            player.sendMessage(gameManager.getPrefix().append(Component.text("La map '" + args[0] + "' n'existe pas.", NamedTextColor.RED)));
             return;
         }
 
         int x1, y1, z1, x2, y2, z2;
         try {
-            x1 = Integer.parseInt(args[0]);
-            y1 = Integer.parseInt(args[1]);
-            z1 = Integer.parseInt(args[2]);
-            x2 = Integer.parseInt(args[3]);
-            y2 = Integer.parseInt(args[4]);
-            z2 = Integer.parseInt(args[5]);
+            x1 = Integer.parseInt(args[1]);
+            y1 = Integer.parseInt(args[2]);
+            z1 = Integer.parseInt(args[3]);
+            x2 = Integer.parseInt(args[4]);
+            y2 = Integer.parseInt(args[5]);
+            z2 = Integer.parseInt(args[6]);
         } catch (NumberFormatException ignored) {
             player.sendMessage(gameManager.getPrefix().append(Component.text("Merci de rentrer des entiers valides.", NamedTextColor.RED)));
             return;
@@ -81,31 +98,21 @@ public class CalculSubCommand implements SubCommand {
 
         World world = player.getWorld();
 
-        int count = 0;
+        List<String> gifts = new ArrayList<>();
+
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() == Material.REDSTONE_LAMP) {
-                        Map<String, Object> lampData = new HashMap<>();
-                        lampData.put("x", x);
-                        lampData.put("y", y);
-                        lampData.put("z", z);
-
-                        gameManager.getLampsConfig().set("lamps." + count, lampData);
-                        count++;
-                    }
+                    if (block.getType() == Material.STRUCTURE_VOID) gifts.add(x + "," + y + "," + z);
                 }
             }
         }
 
-        try {
-            gameManager.getLampsConfig().save(gameManager.getLampsFile());
-            player.sendMessage(Component.text(count + " lampes de redstone trouvées et sauvegardées dans lamps.yml !", NamedTextColor.GREEN));
-        } catch (IOException e) {
-            player.sendMessage(Component.text("Erreur lors de la sauvegarde du fichier lamps.yml ! Vérifier la console pour plus d'infos...", NamedTextColor.RED));
-            gameManager.getMain().getLogger().severe("Erreur lors de la sauvegarde du fichier lamps.yml : " + e.getMessage());
-        }
+        map.getMapConfig().setValue("gifts", gifts);
+        map.setGiftLocations(map.getMapConfig().getGiftLocations());
+
+        player.sendMessage(Component.text(gifts.size() + " emplacements de cadeaux trouvées et sauvegardées !", NamedTextColor.GREEN));
     }
 
     @Override
