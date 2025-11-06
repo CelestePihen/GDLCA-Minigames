@@ -128,6 +128,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
         }
 
         if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         ItemStack itemStack = event.getItem();
         if (itemStack == null) return;
@@ -146,17 +147,14 @@ public class PlayingListenerProvider extends StateListenerProvider {
             String itemNameGI = ((TextComponent) itemMetaGI.itemName()).content();
             if (!itemName.equals(itemNameGI)) continue;
 
-            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-                // Succès Pas besoin
-                if (map.getTimer() <= 420 && map.getHiders().contains(player.getUniqueId())) {
-                    // s'il a utilisé un objet et que le timer est en dessous de 7min alors, on ajoute le joueur
-                    // dans la liste des joueurs qui n'ont pas le droit d'avoir le succès
-                    map.getCheckAdvancements().getPlayersPasBesoin().add(player.getUniqueId());
-                }
-
-                groundItem.onInteract(player, map);
+            // Succès Pas besoin
+            if (map.getTimer() <= 420 && map.getHiders().contains(player.getUniqueId())) {
+                // s'il a utilisé un objet et que le timer est en dessous de 7min alors, on ajoute le joueur
+                // dans la liste des joueurs qui n'ont pas le droit d'avoir le succès
+                map.getCheckAdvancements().getPlayersPasBesoin().add(player.getUniqueId());
             }
+
+            groundItem.onInteract(player, map);
         }
     }
 
@@ -175,6 +173,18 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (itemMeta == null) return;
 
         if (map.getSpawnedGroundItems().contains(item.getUniqueId())) {
+            if (item.getItemStack().getType() == Material.PAPER) {
+                if (map.getPlayersOpenedGift().containsKey(player.getUniqueId())) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                map.getPlayersOpenedGift().put(player.getUniqueId(), true);
+                map.getSpawnedGroundItems().remove(item.getUniqueId());
+                player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré un cadeau ! Cela vous rapportera des points à la fin de la partie.")));
+                return;
+            }
+
             map.getSpawnedGroundItems().remove(item.getUniqueId());
             player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré ").append(itemMeta.itemName())));
         }

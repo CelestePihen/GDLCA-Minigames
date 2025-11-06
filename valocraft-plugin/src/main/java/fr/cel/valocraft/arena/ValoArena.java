@@ -404,6 +404,7 @@ public class ValoArena {
     private void join(Player player, GameMode gameMode) {
         gameManager.getPlayerManager().removePlayerInHub(player);
         players.add(player.getUniqueId());
+        spectators.add(player.getUniqueId());
         scoreboard.addPlayer(player);
 
         player.teleport(spawnLoc);

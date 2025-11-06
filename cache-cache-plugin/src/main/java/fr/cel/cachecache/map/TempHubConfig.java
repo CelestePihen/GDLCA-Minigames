@@ -1,8 +1,6 @@
-package fr.cel.cachecache.utils;
+package fr.cel.cachecache.map;
 
 import fr.cel.cachecache.CacheCache;
-import fr.cel.cachecache.map.CCMap;
-import fr.cel.cachecache.map.TemporaryHub;
 import fr.cel.gameapi.utils.LocationUtility;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

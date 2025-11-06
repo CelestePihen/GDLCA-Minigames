@@ -68,13 +68,11 @@ public class ValoCommands extends AbstractCommand {
             return;
         }
 
-        if (!arenaManager.isPlayerInArena(player)) {
+        final ValoArena arena = arenaManager.getArenaByPlayer(player);
+        if (arena == null) {
             player.sendMessage(gameManager.getPrefix().append(Component.text("Vous n'êtes pas dans une carte.")));
             return;
         }
-
-        final ValoArena arena = arenaManager.getArenaByPlayer(player);
-        if (arena == null) return;
 
         if (args[0].equalsIgnoreCase("start")) {
             if (arena.startGame()) {
@@ -215,7 +213,7 @@ public class ValoCommands extends AbstractCommand {
         ValoArena arena = gameManager.getMain().getValoArenaManager().getArenas().get(args[1].toLowerCase());
 
         if (arena == null) {
-            player.sendMessage(gameManager.getPrefix().append(Component.text("Rentrer un nom d'arène valide.", NamedTextColor.RED)));
+            player.sendMessage(gameManager.getPrefix().append(Component.text("La map '" + args[1] + "' n'existe pas.", NamedTextColor.RED)));
             return;
         }
 

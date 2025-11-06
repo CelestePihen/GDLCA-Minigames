@@ -5,6 +5,7 @@ import fr.cel.cachecache.map.CCMap;
 import fr.cel.cachecache.map.listeners.StateListenerProvider;
 import fr.cel.cachecache.map.listeners.game.PlayingListenerProvider;
 import fr.cel.cachecache.map.state.MapState;
+import fr.cel.cachecache.map.timer.game.GiftsMapTask;
 import fr.cel.cachecache.map.timer.game.GroundItemsMapTask;
 import fr.cel.cachecache.map.timer.game.PlayingMapTask;
 import fr.cel.cachecache.map.timer.game.wolf.PlayingBecomeWolfMapTask;
@@ -17,10 +18,10 @@ public class PlayingMapState extends MapState {
 
     private PlayingMapTask playingMapTask;
     private GroundItemsMapTask groundItemsMapTask;
+    private GiftsMapTask giftsMapTask; // Winter Event 2025
 
     private PlayingWolfMapTask playingWolfMapTask;
     @Setter private PlayingBecomeWolfMapTask playingBecomeWolfMapTask;
-
 
     public PlayingMapState(CCMap map) {
         super("En partie", map);
@@ -50,7 +51,7 @@ public class PlayingMapState extends MapState {
                 playingMapTask.runTaskTimer(main, 0, 20);
 
                 groundItemsMapTask = new GroundItemsMapTask(getMap());
-                groundItemsMapTask.runTaskTimer(main, 0, 1200);
+                groundItemsMapTask.runTaskTimer(main, 0, 20*60); // Toutes les minutes
             }
 
             case Normal, TwoHuntersAtStart, Beta -> {
@@ -58,7 +59,10 @@ public class PlayingMapState extends MapState {
                 playingMapTask.runTaskTimer(main, 0, 20);
 
                 groundItemsMapTask = new GroundItemsMapTask(getMap());
-                groundItemsMapTask.runTaskTimer(main, 0, 2400);
+                groundItemsMapTask.runTaskTimer(main, 0, 20*120); // Toutes les 2 minutes
+
+                giftsMapTask = new GiftsMapTask(getMap());
+                giftsMapTask.runTaskTimer(main, 0, 20*150); // Toutes les 2 minutes 30
             }
         }
     }

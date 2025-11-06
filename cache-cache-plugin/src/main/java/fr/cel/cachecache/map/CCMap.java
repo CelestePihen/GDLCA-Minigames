@@ -9,7 +9,7 @@ import fr.cel.cachecache.map.state.pregame.InitMapState;
 import fr.cel.cachecache.map.state.pregame.PreGameMapState;
 import fr.cel.cachecache.map.state.pregame.StartingMapState;
 import fr.cel.cachecache.utils.CheckAdvancements;
-import fr.cel.cachecache.utils.MapConfig;
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
@@ -37,7 +37,7 @@ import java.util.*;
 public class CCMap {
 
     @Getter private final GameManager gameManager;
-    @Setter private MapConfig mapConfig;
+    @Getter @Setter private MapConfig mapConfig;
 
     @Getter private final String mapName;
     @Getter private final String displayName;
@@ -89,6 +89,10 @@ public class CCMap {
     @Getter private UUID owner = null;
 
     @Setter private int gameId; // id de la partie dans la BDD
+
+    // Winter Event 2025
+    @Getter @Setter private List<Location> giftLocations = new ArrayList<>();
+    @Getter private final Map<UUID, Boolean> playersOpenedGift = new HashMap<>();
 
     public CCMap(String mapName, String displayName, CCMode ccMode, Location spawnLoc, Location waitingLoc, boolean fallDamage, GameManager gameManager) {
         this.gameManager = gameManager;
@@ -399,12 +403,19 @@ public class CCMap {
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
+
+            if (playersOpenedGift.containsKey(uuid)) {
+                GameAPI.getInstance().getPlayerManager().getPlayerData(uuid).getWinterPlayerData().addGiftsFound(1);
+                GameAPI.getInstance().getPlayerManager().getPlayerData(uuid).getWinterPlayerData().addWinterPoints(new Random().nextInt(2, 6));
+            }
+
             gameManager.getPlayerManager().sendPlayerToHub(player);
         }
 
         players.clear();
         hiders.clear();
         seekers.clear();
+        playersOpenedGift.clear();
         timer = 0;
     }
 
@@ -631,6 +642,8 @@ public class CCMap {
         if (teleportSpawn) player.teleport(spawnLoc);
 
         if (ccMode == CCMode.LoupToucheTouche) wolfTimer.put(player.getUniqueId(), 0);
+
+        playersOpenedGift.put(player.getUniqueId(), false);
     }
 
     /**
@@ -683,8 +696,7 @@ public class CCMap {
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null)
-                gameManager.getPlayerManager().sendPlayerToHub(player);
+            if (player != null) gameManager.getPlayerManager().sendPlayerToHub(player);
         }
 
         scoreboard.resetScoreboard();
