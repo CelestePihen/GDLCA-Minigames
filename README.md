@@ -10,7 +10,6 @@ The server has 4 minigames and event minigames :
 - [Halloween Event](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/halloween-event-plugin)
 
 It also has other plugins to help us like the [API](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/api-plugin) or [Essentials](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/essentials-plugin).  
-If you see duplicate commits, it's because I had to make a manipulation to delete confidential information.
 
 
 # GDLCA Minigames
@@ -25,4 +24,3 @@ Le serveur a 4 mini-jeux et des mini-jeux d'événements :
 - [Événement Halloween](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/halloween-event-plugin)
 
 Il y a aussi d'autres plugins pour nous aider comme l'[API](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/api-plugin) ou [Essentials](https://github.com/CelestePihen/GDLCA-Minigames/tree/main/essentials-plugin).  
-Si vous voyez des commits en double, c'est parce que j'ai du faire une manipulation pour supprimer des informations confidentielles.
