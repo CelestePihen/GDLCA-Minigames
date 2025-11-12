@@ -37,7 +37,7 @@ public final class PlayersListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
         if (!player.hasPlayedBefore()) {
@@ -68,7 +68,7 @@ public final class PlayersListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void onPlayerQuit(PlayerQuitEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
         event.quitMessage(Component.text("[")
@@ -82,7 +82,7 @@ public final class PlayersListener implements Listener {
     }
 
     @EventHandler
-    private void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         if (event.getPlayer().isOp()) return;
 
         for (String cmd : blockedCommands) {
@@ -91,9 +91,8 @@ public final class PlayersListener implements Listener {
     }
 
     @EventHandler
-    private void onPlayerCommandSend(PlayerCommandSendEvent event) {
-        if (!event.getPlayer().isOp())
-            event.getCommands().removeAll(blockedCommands);
+    public void onPlayerCommandSend(PlayerCommandSendEvent event) {
+        if (!event.getPlayer().isOp()) event.getCommands().removeAll(blockedCommands);
     }
 
 }

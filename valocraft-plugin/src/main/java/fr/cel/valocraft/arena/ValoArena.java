@@ -35,7 +35,7 @@ public class ValoArena {
 
     private final GameManager gameManager;
 
-    private final String nameArena;
+    private final String arenaName;
     private final String displayName;
 
     private final Location spawnLoc;
@@ -64,15 +64,15 @@ public class ValoArena {
 
     @Setter private Block spike;
 
-    public ValoArena(String nameArena, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, ArenaConfig arenaConfig, GameManager gameManager) {
-        this.nameArena = nameArena;
+    public ValoArena(String arenaName, String displayName, Location spawnLoc, Location attackersSpawn, Location defenderSpawn, ArenaConfig arenaConfig, GameManager gameManager) {
+        this.arenaName = arenaName;
         this.displayName = displayName;
 
         this.spawnLoc = spawnLoc;
         this.attackersSpawn = attackersSpawn;
         this.defendersSpawn = defenderSpawn;
 
-        this.scoreboard = new GameScoreboard("valo" + nameArena.substring(0, 2));
+        this.scoreboard = new GameScoreboard("valo" + arenaName.substring(0, 2));
 
         this.players = new ArrayList<>();
         this.spectators = new ArrayList<>();
@@ -89,8 +89,8 @@ public class ValoArena {
         this.arenaConfig = arenaConfig;
         this.invisibleBarriersLocations = arenaConfig.getLocationInvisibleBarrier();
 
-        this.attackers = new Role("attackers", "Attaquants", attackersSpawn, scoreboard.registerTeam("a" + nameArena, NamedTextColor.RED));
-        this.defenders = new Role("defenders", "Défenseurs", defendersSpawn, scoreboard.registerTeam("d" + nameArena, NamedTextColor.BLUE));
+        this.attackers = new Role("attackers", "Attaquants", attackersSpawn, scoreboard.registerTeam("a" + arenaName, NamedTextColor.RED));
+        this.defenders = new Role("defenders", "Défenseurs", defendersSpawn, scoreboard.registerTeam("d" + arenaName, NamedTextColor.BLUE));
 
         this.redTeam = new ValoTeam("redTeam", "Équipe Rouge", attackers);
         this.blueTeam = new ValoTeam("blueTeam", "Équipe Bleue", defenders);
@@ -165,8 +165,8 @@ public class ValoArena {
         players.clear();
         spectators.clear();
 
-        attackers = new Role("attackers", "Attaquants", attackersSpawn, scoreboard.registerTeam("a" + nameArena, NamedTextColor.RED));
-        defenders = new Role("defenders", "Défenseurs", defendersSpawn, scoreboard.registerTeam("d" + nameArena, NamedTextColor.BLUE));
+        attackers = new Role("attackers", "Attaquants", attackersSpawn, scoreboard.registerTeam("a" + arenaName, NamedTextColor.RED));
+        defenders = new Role("defenders", "Défenseurs", defendersSpawn, scoreboard.registerTeam("d" + arenaName, NamedTextColor.BLUE));
 
         redTeam = new ValoTeam("redTeam", "Équipe Rouge", attackers);
         blueTeam = new ValoTeam("blueTeam", "Équipe Bleue", defenders);
@@ -225,7 +225,7 @@ public class ValoArena {
     }
 
     public void eliminate(Player player) {
-        player.teleport(getSpawnLoc());
+        player.teleportAsync(getSpawnLoc());
         player.setGameMode(GameMode.SPECTATOR);
         // TODO mettre le joueur en spectateur sur un allié et ne lui permettre d'aller que sur ses alliés
         // player.setSpectatorTarget();
@@ -407,7 +407,7 @@ public class ValoArena {
         spectators.add(player.getUniqueId());
         scoreboard.addPlayer(player);
 
-        player.teleport(spawnLoc);
+        player.teleportAsync(spawnLoc);
         player.showTitle(Title.title(Component.text("Valocraft", NamedTextColor.GOLD), Component.text(displayName)));
         player.getInventory().clear();
         player.setGameMode(gameMode);

@@ -62,8 +62,7 @@ public abstract class AbstractCommandSub extends AbstractCommand {
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-        if (args.length == 1)
-            return new ArrayList<>(subCommands.keySet());
+        if (args.length == 1) return new ArrayList<>(subCommands.keySet());
 
         SubCommand sub = subCommands.get(args[0].toLowerCase());
         if (sub != null) return sub.tab(player, Arrays.copyOfRange(args, 1, args.length));

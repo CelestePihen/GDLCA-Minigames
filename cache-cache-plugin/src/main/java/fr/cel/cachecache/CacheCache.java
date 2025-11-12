@@ -11,11 +11,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 @Getter
 public class CacheCache extends JavaPlugin {
 
+    @Getter private static CacheCache instance;
+
     private GameManager gameManager;
     @Setter private CCMapManager ccMapManager;
 
     @Override
     public void onEnable() {
+        instance = this;
+
         this.gameManager = new GameManager(this);
 
         gameManager.reloadMapManager();

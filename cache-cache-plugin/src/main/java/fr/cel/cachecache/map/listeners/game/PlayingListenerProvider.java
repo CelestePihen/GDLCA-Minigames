@@ -215,11 +215,8 @@ public class PlayingListenerProvider extends StateListenerProvider {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (isPowered) {
-                player.getInventory().setHelmet(null);
-            } else {
-                player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
-            }
+            if (isPowered) player.getInventory().setHelmet(null);
+            else player.getInventory().setHelmet(ItemStack.of(Material.CARVED_PUMPKIN));
         }
 
         map.changeLamps(isPowered);
@@ -266,7 +263,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
             }
         }
 
-        // Pied pouvoir
+        // Le Pied sur le Pouvoir
         for (Location location : map.getLocationGroundItems()) {
             if (!loc.getBlock().equals(location.getBlock())) continue;
 
@@ -278,7 +275,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
             if (!dejaDansDictionnaire) piedPouvoirList.add(location.clone());
         }
-        // Pied pouvoir
+        // Le Pied sur le Pouvoir
     }
     
 }

@@ -46,7 +46,7 @@ public final class ItemBuilder {
      * @param amount The amount of the item.
      */
     public ItemBuilder(Material m, int amount){
-        is = new ItemStack(m, amount);
+        is = ItemStack.of(m, amount);
     }
 
     /**

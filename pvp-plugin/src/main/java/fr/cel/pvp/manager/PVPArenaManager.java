@@ -10,9 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class PVPArenaManager {
 
@@ -42,19 +40,36 @@ public class PVPArenaManager {
         arenas.clear();
 
         File folder = new File(main.getDataFolder(), "arenas");
-        if (!folder.exists()) folder.mkdirs();
-
-        if (folder.isDirectory()) {
-            for (File file : Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".yml")))) {
-                String arenaName = file.getName().replace(".yml", "");
-                ArenaConfig arenaConfig = new ArenaConfig(main, arenaName);
-                PVPArena arena = arenaConfig.getArena();
-
-                if (arena != null) arenas.put(arenaName, arena);
+        if (!folder.exists()) {
+            if (!folder.mkdirs()) {
+                main.getComponentLogger().error(Component.text("Impossible de créer le dossier 'arenas' dans le dataFolder", NamedTextColor.RED));
+                return;
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + arenas.size() + " arènes PVP ", NamedTextColor.YELLOW)));
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".yml"));
+        if (files == null || files.length == 0) {
+            main.getComponentLogger().info(Component.text("Aucune carte PVP trouvée dans le dossier 'arenas'", NamedTextColor.YELLOW));
+            return;
+        }
+
+        List<ArenaConfig> loadedConfigs = new ArrayList<>();
+        Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
+            for (File file : files) {
+                String mapName = file.getName().replace(".yml", "");
+                ArenaConfig config = new ArenaConfig(main, mapName);
+                if (config.load()) loadedConfigs.add(config);
+            }
+
+            Bukkit.getScheduler().runTask(main, () -> {
+                for (ArenaConfig config : loadedConfigs) {
+                    PVPArena map = config.buildArenaFromConfig();
+                    if (map != null) arenas.put(map.getArenaName(), map);
+                }
+
+                main.getComponentLogger().info(Component.text("Chargement de " + arenas.size() + " arènes Valocraft ", NamedTextColor.YELLOW));
+            });
+        });
     }
 
 }

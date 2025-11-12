@@ -40,7 +40,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
             
         if (event.getCause() == DamageCause.PROJECTILE && player.getGameMode() == GameMode.SURVIVAL) {
             if (arena.getAttackers().team().containsPlayer(player) && player.getInventory().contains(Material.BREWING_STAND)) {
-                player.getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.BREWING_STAND));
+                player.getWorld().dropItemNaturally(player.getLocation(), ItemStack.of(Material.BREWING_STAND));
             }
 
             arena.eliminate(player);

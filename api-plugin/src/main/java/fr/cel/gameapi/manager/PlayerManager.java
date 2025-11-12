@@ -74,7 +74,7 @@ public class PlayerManager {
 
         player.setGlowing(false);
 
-        player.teleport(spawnLocation);
+        player.teleportAsync(spawnLocation);
         player.setRespawnLocation(spawnLocation, true);
         player.setGameMode(GameMode.ADVENTURE);
 

@@ -10,9 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ParkourMapManager {
 
@@ -23,8 +21,8 @@ public class ParkourMapManager {
 
     public ParkourMapManager(Parkour main) {
         this.main = main;
-        loadMaps();
         mapManager = this;
+        loadMaps();
     }
 
     public ParkourMap getMapByDisplayName(String name) {
@@ -43,20 +41,36 @@ public class ParkourMapManager {
         maps.clear();
 
         File folder = new File(main.getDataFolder(), "maps");
-        if (!folder.exists()) folder.mkdirs();
-
-        if (folder.isDirectory()) {
-            for (File file : Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".yml")))) {
-                String name = file.getName().replace(".yml", "");
-
-                MapConfig config = new MapConfig(name, main);
-                ParkourMap map = config.getMap();
-
-                if (map != null) maps.put(name, map);
+        if (!folder.exists()) {
+            if (!folder.mkdirs()) {
+                main.getComponentLogger().error(Component.text("Impossible de créer le dossier 'maps' dans le dataFolder", NamedTextColor.RED));
+                return;
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Chargement de " + maps.size() + " cartes Parkour", NamedTextColor.YELLOW)));
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".yml"));
+        if (files == null || files.length == 0) {
+            main.getComponentLogger().info(Component.text("Aucune carte Parkour trouvée dans le dossier 'maps'", NamedTextColor.YELLOW));
+            return;
+        }
+
+        List<MapConfig> loadedConfigs = new ArrayList<>();
+        Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
+            for (File file : files) {
+                String mapName = file.getName().replace(".yml", "");
+                MapConfig config = new MapConfig(main, mapName);
+                if (config.load()) loadedConfigs.add(config);
+            }
+
+            Bukkit.getScheduler().runTask(main, () -> {
+                for (MapConfig config : loadedConfigs) {
+                    ParkourMap map = config.buildMapFromConfig();
+                    if (map != null) maps.put(map.getMapName(), map);
+                }
+
+                main.getComponentLogger().info(Component.text("Chargement de " + this.maps.size() + " cartes Parkour ", NamedTextColor.YELLOW));
+            });
+        });
     }
 
 }

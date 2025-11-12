@@ -95,7 +95,7 @@ public class WaitingMapState extends MapState {
 
         seeker.getInventory().clear();
         getMap().giveWeapon(seeker);
-        seeker.teleport(getMap().getWaitingLoc());
+        seeker.teleportAsync(getMap().getWaitingLoc());
     }
 
     /**
@@ -116,7 +116,7 @@ public class WaitingMapState extends MapState {
         if (seeker == null) return;
 
         getMap().becomeSeeker(seeker);
-        seeker.teleport(getMap().getWaitingLoc());
+        seeker.teleportAsync(getMap().getWaitingLoc());
     }
 
     /**
@@ -163,7 +163,7 @@ public class WaitingMapState extends MapState {
 
         getMap().getHiders().add(playerId);
         getMap().getTeamHiders().addPlayer(player);
-        player.teleport(getMap().getSpawnLoc());
+        player.teleportAsync(getMap().getSpawnLoc());
     }
 
     /**

@@ -9,19 +9,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 
 public class MapConfig {
 
-    private final String mapName;
-    private final Parkour main;
+    @NotNull private final Parkour main;
+    @NotNull private final String mapName;
 
-    private final YamlConfiguration config;
+    @Nullable
     private final File file;
+    @NotNull private final YamlConfiguration config;
 
-    public MapConfig(String mapName, Parkour main) {
+    public MapConfig(@NotNull Parkour main, @NotNull String mapName) {
         this.mapName = mapName;
         this.main = main;
 
@@ -29,25 +32,42 @@ public class MapConfig {
         this.config = new YamlConfiguration();
     }
 
-    public ParkourMap getMap() {
-        if (file.exists()) {
+    /**
+     * Lit le fichier de configuration sur le disque et remplit 'config'.
+     * Cette méthode est sûre d'être appelée depuis un thread asynchrone.
+     */
+    public boolean load() {
+        if (file != null && file.exists()) {
             try {
                 config.load(file);
-
-                if (!config.contains("displayName")) {
-                    Bukkit.getConsoleSender().sendMessage(GameManager.getPrefix().append(Component.text("Attention ! Un fichier n'étant pas une carte est dans le dossier maps", NamedTextColor.RED)));
-                    return null;
-                }
-
-                String displayName = config.getString("displayName");
-                Location locationSpawn = LocationUtility.parseConfigToLoc(config, "locationSpawn");
-
-                return new ParkourMap(mapName, displayName, locationSpawn, main.getGameManager());
+                return true;
             } catch (IOException | InvalidConfigurationException e) {
-                main.getLogger().severe(e.getMessage());
+                main.getComponentLogger().error(GameManager.getPrefix().append(Component.text("Erreur dans le chargement du fichier de la carte Parkour " + this.mapName + " : " + e.getMessage(), NamedTextColor.RED)));
             }
         }
+        return false;
+    }
 
+    /**
+     * Construit une ParkourMap à partir de la configuration déjà chargée (config doit être prête).
+     * Cette méthode doit être appelée sur le thread principal car elle utilise l'API Bukkit.
+     */
+    @Nullable
+    public ParkourMap buildMapFromConfig() {
+        if (!config.contains("displayName")) {
+            main.getComponentLogger().error(GameManager.getPrefix().append(Component.text("Attention ! Un fichier n'étant pas une carte est dans le dossier 'maps'", NamedTextColor.RED)));
+            return null;
+        }
+
+        String displayName = config.getString("displayName");
+        Location locationSpawn = LocationUtility.parseConfigToLoc(config, "locationSpawn");
+
+        return new ParkourMap(mapName, displayName, locationSpawn, main.getGameManager());
+    }
+
+    @Nullable
+    public ParkourMap getMap() {
+        if (load()) return buildMapFromConfig();
         return null;
     }
 
