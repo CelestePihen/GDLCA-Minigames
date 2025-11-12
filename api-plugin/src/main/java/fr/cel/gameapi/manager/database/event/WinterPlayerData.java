@@ -1,6 +1,8 @@
 package fr.cel.gameapi.manager.database.event;
 
 import fr.cel.gameapi.GameAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,13 +32,12 @@ public class WinterPlayerData {
      * @param amount The amount of winter points to add
      */
     public void addWinterPoints(int amount) {
-
         try (Connection connection = GameAPI.getInstance().getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ADD_POINTS_PLAYER_SQL)) {
             preparedStatement.setInt(1, amount);
             preparedStatement.setString(2, uuid.toString());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("An error occurred while adding winter points to player " + uuid + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while adding winter points to player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
         }
     }
 
@@ -50,7 +51,7 @@ public class WinterPlayerData {
             preparedStatement.setString(2, uuid.toString());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("An error occurred while removing winter points from player " + uuid + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while removing winter points from player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
         }
     }
 
@@ -69,7 +70,7 @@ public class WinterPlayerData {
                 points = resultSet.getInt("points");
             }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("An error occurred while retrieving winter points for player " + uuid + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while retrieving winter points for player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
         }
         return points;
     }
@@ -84,7 +85,7 @@ public class WinterPlayerData {
             preparedStatement.setString(2, uuid.toString());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("An error occurred while adding gifts found to player " + uuid + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while adding gifts found to player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
         }
     }
 
@@ -103,7 +104,7 @@ public class WinterPlayerData {
                 giftsFound = resultSet.getInt("gifts_found");
             }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("An error occurred while retrieving gifts found for player " + uuid + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while retrieving gifts found for player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
         }
         return giftsFound;
     }
@@ -123,7 +124,7 @@ public class WinterPlayerData {
             }
 
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur récupération classement : " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Erreur récupération classement : " + e.getMessage(), NamedTextColor.RED));
         }
 
         return players;

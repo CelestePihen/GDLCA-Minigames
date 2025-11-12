@@ -43,7 +43,7 @@ public class PlayingWolfMapTask extends BukkitRunnable {
             Player player = Bukkit.getPlayer(map.getSeekers().getFirst());
             if (player == null) return;
 
-            player.teleport(map.getSpawnLoc());
+            player.teleportAsync(map.getSpawnLoc());
             map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré... Courez vite !", NamedTextColor.RED));
 
             wolfFree = true;

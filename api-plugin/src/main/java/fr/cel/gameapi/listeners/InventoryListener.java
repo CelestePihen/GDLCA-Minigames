@@ -22,7 +22,7 @@ public final class InventoryListener implements Listener {
     }
 
     @EventHandler
-    private void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         AbstractInventory abstractInventory = inventoryManager.getInventoryDataMap().getOrDefault(player.getUniqueId(), null);
@@ -37,7 +37,7 @@ public final class InventoryListener implements Listener {
     }
 
     @EventHandler
-    private void onInventoryClose(InventoryCloseEvent event) {
+    public void onInventoryClose(InventoryCloseEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
 
         if (inventoryManager.getInventoryDataMap().getOrDefault(playerUUID, null) != null)

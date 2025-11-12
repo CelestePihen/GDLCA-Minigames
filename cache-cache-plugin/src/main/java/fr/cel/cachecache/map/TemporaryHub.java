@@ -75,7 +75,7 @@ public class TemporaryHub implements Listener {
         players.add(player.getUniqueId());
         gameManager.getPlayerManager().removePlayerInHub(player);
         player.getInventory().clear();
-        player.teleport(location);
+        player.teleportAsync(location);
         player.setGameMode(GameMode.ADVENTURE);
         player.showTitle(Title.title(gameManager.getPrefix().append(Component.text(chosenHunterMode)), Component.text("Map Aléatoire"), 10, 70, 20));
         sendMessage(player.displayName().append(Component.text(" a rejoint le Cache-Cache Temporaire !")));

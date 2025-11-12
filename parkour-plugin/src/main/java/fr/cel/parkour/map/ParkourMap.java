@@ -25,15 +25,15 @@ import java.util.UUID;
 
 public class ParkourMap implements Listener {
     
-    @Getter private final String nameArea;
+    @Getter private final String mapName;
     @Getter private final String displayName;
 
     @Getter private final Location spawnLoc;
 
     @Getter private final Set<UUID> players;
 
-    public ParkourMap(String nameArea, String displayName, Location spawnLoc, GameManager gameManager) {
-        this.nameArea = nameArea;
+    public ParkourMap(String mapName, String displayName, Location spawnLoc, GameManager gameManager) {
+        this.mapName = mapName;
         this.displayName = displayName;
         this.spawnLoc = spawnLoc;
         this.players = new HashSet<>();
@@ -49,7 +49,7 @@ public class ParkourMap implements Listener {
         sendMessage(player.displayName().append(Component.text(" a rejoint le parkour !")));
 
         player.setRespawnLocation(spawnLoc, true);
-        player.teleport(this.getSpawnLoc());
+        player.teleportAsync(this.getSpawnLoc());
         player.showTitle(Title.title(Component.text("Parkour", NamedTextColor.GOLD), Component.text(this.displayName)));
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);

@@ -303,7 +303,7 @@ public class CCMap {
         becomeNonSeeker(deadPlayer);
 
         deadPlayer.getInventory().clear();
-        deadPlayer.teleport(spawnLoc);
+        deadPlayer.teleportAsync(spawnLoc);
         giveWeapon(deadPlayer);
     }
 
@@ -339,8 +339,8 @@ public class CCMap {
         becomeNonSeeker(hitPlayer);
 
         hitPlayer.getInventory().clear();
-        hitPlayer.teleport(getWaitingLoc());
-        Bukkit.getScheduler().runTaskLater(gameManager.getMain(), () -> hitPlayer.teleport(getSpawnLoc()), 20 * 3);
+        hitPlayer.teleportAsync(getWaitingLoc());
+        Bukkit.getScheduler().runTaskLater(gameManager.getMain(), () -> hitPlayer.teleportAsync(getSpawnLoc()), 20 * 3);
         giveWeapon(hitPlayer);
     }
 
@@ -640,7 +640,7 @@ public class CCMap {
         scoreboard.addPlayer(player);
 
         if (joinMessage) sendMessage(player.displayName().append(Component.text(" a rejoint la partie !")));
-        if (teleportSpawn) player.teleport(spawnLoc);
+        if (teleportSpawn) player.teleportAsync(spawnLoc);
 
         if (ccMode == CCMode.LoupToucheTouche) wolfTimer.put(player.getUniqueId(), 0);
 

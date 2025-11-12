@@ -63,17 +63,17 @@ public class WaitingArenaState extends ArenaState {
     private void teleportPlayersToSpawnTeam() {
         for (String playerName : arena.getAttackers().team().getPlayers()) {
             Player player = Bukkit.getPlayerExact(playerName);
-            if (player != null) player.teleport(arena.getAttackersSpawn());
+            if (player != null) player.teleportAsync(arena.getAttackersSpawn());
         }
 
         for (String playerName : arena.getDefenders().team().getPlayers()) {
             Player player = Bukkit.getPlayerExact(playerName);
-            if (player != null) player.teleport(arena.getDefendersSpawn());
+            if (player != null) player.teleportAsync(arena.getDefendersSpawn());
         }
 
         for (UUID uuid : arena.getSpectators()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) player.teleport(arena.getSpawnLoc());
+            if (player != null) player.teleportAsync(arena.getSpawnLoc());
         }
     }
 

@@ -37,12 +37,12 @@ public final class GameAPI extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
         instance = this;
 
-        initDatabase();
-
+        saveDefaultConfig();
         removeMannequins();
+
+        initDatabase();
 
         this.playerManager = new PlayerManager();
 
@@ -106,11 +106,12 @@ public final class GameAPI extends JavaPlugin {
         commandsManager.addCommand("npc", getNpcCommand());
     }
 
+    /**
+     * Utility function to remove all mannequins from all worlds
+     */
     private void removeMannequins() {
         Bukkit.getWorlds().forEach(world -> {
-            for (Mannequin mannequin : world.getEntitiesByClass(Mannequin.class)) {
-                mannequin.remove();
-            }
+            for (Mannequin mannequin : world.getEntitiesByClass(Mannequin.class)) mannequin.remove();
         });
     }
 

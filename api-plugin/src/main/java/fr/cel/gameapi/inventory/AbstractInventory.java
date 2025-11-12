@@ -3,6 +3,7 @@ package fr.cel.gameapi.inventory;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ public abstract class AbstractInventory {
      * @param size The size of the inventory
      */
     public AbstractInventory(Component inventoryName, int size) {
-        this.inventoryName = inventoryName;
+        this.inventoryName = inventoryName.color(NamedTextColor.WHITE);
         this.size = size;
     }
 

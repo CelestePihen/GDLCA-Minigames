@@ -27,7 +27,7 @@ import java.util.UUID;
 
 public class PVPArena implements Listener {
     
-    private final String nameArena;
+    @Getter private final String arenaName;
     @Getter private final String displayName;
 
     private final Location spawnLoc;
@@ -37,8 +37,8 @@ public class PVPArena implements Listener {
 
     @Getter private final List<UUID> players;
 
-    public PVPArena(String nameArena, String displayName, Location spawnLoc, boolean fallDamage, boolean tridentActivated, GameManager gameManager) {
-        this.nameArena = nameArena;
+    public PVPArena(String arenaName, String displayName, Location spawnLoc, boolean fallDamage, boolean tridentActivated, GameManager gameManager) {
+        this.arenaName = arenaName;
         this.displayName = displayName;
         this.spawnLoc = spawnLoc;
 
@@ -57,7 +57,7 @@ public class PVPArena implements Listener {
         players.add(player.getUniqueId());
 
         player.setRespawnLocation(spawnLoc, true);
-        player.teleport(spawnLoc);
+        player.teleportAsync(spawnLoc);
         player.showTitle(Title.title(Component.text("PVP", NamedTextColor.GOLD), Component.text(displayName)));
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
@@ -118,7 +118,7 @@ public class PVPArena implements Listener {
         if (damager == null || !isPlayerInArena(player) || !isPlayerInArena(damager)) return;
 
         // Donne une pomme dorée au tueur pour se régénérer
-        damager.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE));
+        damager.getInventory().addItem(ItemStack.of(Material.GOLDEN_APPLE));
     }
 
     @EventHandler

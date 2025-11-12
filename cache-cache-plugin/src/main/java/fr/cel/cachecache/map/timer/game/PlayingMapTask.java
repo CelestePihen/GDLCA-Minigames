@@ -54,7 +54,7 @@ public class PlayingMapTask extends BukkitRunnable {
 
     private void loupToucheToucheMessage() {
         Player player = Bukkit.getPlayer(map.getSeekers().getFirst());
-        player.teleport(map.getSpawnLoc());
+        player.teleportAsync(map.getSpawnLoc());
         map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !", NamedTextColor.RED));
     }
 
@@ -62,7 +62,7 @@ public class PlayingMapTask extends BukkitRunnable {
         List<String> names = new ArrayList<>();
         map.getSeekers().forEach(uuid -> {
             Player player = Bukkit.getPlayer(uuid);
-            player.teleport(map.getSpawnLoc());
+            player.teleportAsync(map.getSpawnLoc());
             names.add(player.getName());
         });
 
