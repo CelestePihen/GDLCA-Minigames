@@ -15,27 +15,27 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalculGiftsSubCommand implements SubCommand {
+public class CalculDepositSubCommand implements SubCommand {
 
     private final GameManager gameManager;
 
-    public CalculGiftsSubCommand(GameManager gameManager) {
+    public CalculDepositSubCommand(GameManager gameManager) {
         this.gameManager = gameManager;
     }
 
     @Override
     public String getName() {
-        return "calculgifts";
+        return "calculdeposits";
     }
 
     @Override
     public String getDescription() {
-        return "(Re-)Calcule les emplacements des cadeaux (Événements Hiver 2025).";
+        return "(Re-)Calcule les emplacements des dépôts de cadeaux (Événements Hiver 2025).";
     }
 
     @Override
     public String getUsage() {
-        return "/cc calculgifts <mapName> <x1> <y1> <z1> <x2> <y2> <z2>";
+        return "/cc calculdeposits <mapName> <x1> <y1> <z1> <x2> <y2> <z2>";
     }
 
     @Override
@@ -59,13 +59,13 @@ public class CalculGiftsSubCommand implements SubCommand {
                 return;
             }
 
-            player.sendMessage(Component.text("Le nombre d'emplacements de cadeaux dans la map '" + args[0] + "' est de "
-                    + map.getWinterUtility().getGiftLocations().size() + ".", NamedTextColor.GREEN));
+            player.sendMessage(Component.text("Le nombre d'emplacements de dépôts de cadeaux dans la map '" + args[0] + "' est de "
+                    + map.getWinterUtility().getChrismasTreeDepositLocations().size() + ".", NamedTextColor.GREEN));
             return;
         }
 
         if (args.length != 7) {
-            player.sendMessage(gameManager.getPrefix().append(Component.text("Usage: /cc calculgifts <mapName> <x1> <y1> <z1> <x2> <y2> <z2>", NamedTextColor.RED)));
+            player.sendMessage(gameManager.getPrefix().append(Component.text("Usage: /cc calculdeposits <mapName> <x1> <y1> <z1> <x2> <y2> <z2>", NamedTextColor.RED)));
             return;
         }
 
@@ -98,24 +98,21 @@ public class CalculGiftsSubCommand implements SubCommand {
 
         World world = player.getWorld();
 
-        List<String> gifts = new ArrayList<>();
+        List<String> deposits = new ArrayList<>();
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() == Material.STRUCTURE_VOID) {
-                        gifts.add(x + "," + y + "," + z);
-                        block.setType(Material.AIR);
-                    }
+                    if (block.getType() == Material.REINFORCED_DEEPSLATE) deposits.add(x + "," + y + "," + z);
                 }
             }
         }
 
-        map.getMapConfig().setValue("gifts", gifts);
-        map.getWinterUtility().setGiftLocations(map.getMapConfig().getGiftLocations());
+        map.getMapConfig().setValue("christmasTreeDeposits", deposits);
+        map.getWinterUtility().setChrismasTreeDepositLocations(map.getMapConfig().getChristmasTreeDepositLocations());
 
-        player.sendMessage(Component.text(gifts.size() + " emplacements de cadeaux trouvés et sauvegardés !", NamedTextColor.GREEN));
+        player.sendMessage(Component.text(deposits.size() + " emplacements de dépôts de cadeaux trouvés et sauvegardés !", NamedTextColor.GREEN));
     }
 
     @Override

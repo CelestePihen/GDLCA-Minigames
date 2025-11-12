@@ -3,7 +3,6 @@ package fr.cel.cachecache.map;
 import fr.cel.cachecache.CacheCache;
 import fr.cel.cachecache.manager.GroundItem;
 import fr.cel.gameapi.utils.LocationUtility;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -17,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MapConfig {
 
@@ -77,7 +75,8 @@ public class MapConfig {
         map.setLastHunter(config.getString("lastHunter"));
         map.setAvailableGroundItems(getAvailableGroundItems());
         map.setLocationGroundItems(getLocationGroundItems());
-        map.setGiftLocations(getGiftLocations());
+        map.getWinterUtility().setGiftLocations(getGiftLocations());
+        map.getWinterUtility().setChrismasTreeDepositLocations(getChristmasTreeDepositLocations());
 
         return map;
     }
@@ -122,6 +121,26 @@ public class MapConfig {
                 locations.add(new Location(Bukkit.getWorlds().getFirst(), x, y, z));
             } catch (NumberFormatException e) {
                 main.getComponentLogger().error(main.getGameManager().getPrefix().append(Component.text("Erreur lors de la lecture d'une location de cadeau dans la carte " + this.mapName, NamedTextColor.RED)));
+            }
+        }
+
+        return locations;
+    }
+
+    public List<Location> getChristmasTreeDepositLocations() {
+        List<Location> locations = new ArrayList<>();
+
+        for (String str : config.getStringList("christmasTreeDeposits")) {
+            String[] parts = str.split(",");
+            if (parts.length < 3) continue;
+
+            try {
+                double x = Double.parseDouble(parts[0]);
+                double y = Double.parseDouble(parts[1]);
+                double z = Double.parseDouble(parts[2]);
+                locations.add(new Location(Bukkit.getWorlds().getFirst(), x, y, z));
+            } catch (NumberFormatException e) {
+                main.getComponentLogger().error(main.getGameManager().getPrefix().append(Component.text("Erreur lors de la lecture d'une location de dépôt de cadeaux dans la carte " + this.mapName, NamedTextColor.RED)));
             }
         }
 

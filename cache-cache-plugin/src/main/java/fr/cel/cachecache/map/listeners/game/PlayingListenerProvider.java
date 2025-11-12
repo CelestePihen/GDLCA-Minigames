@@ -8,9 +8,8 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.StatisticsManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -29,17 +28,20 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayingListenerProvider extends StateListenerProvider {
 
     // succès désert
     private final Map<UUID, Long> playerDesertTimers = new HashMap<>();
     private final Map<UUID, Long> playerMoulinTimers = new HashMap<>();
+
+    private final Set<UUID> playerAlreadyClaimedGift = new HashSet<>();
+
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     public PlayingListenerProvider(CCMap map) {
         super(map);
@@ -173,17 +175,22 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (itemMeta == null) return;
 
         if (map.getSpawnedGroundItems().contains(item.getUniqueId())) {
+            // Winter Event 2025
             if (item.getItemStack().getType() == Material.PAPER) {
-                if (map.getPlayersOpenedGift().containsKey(player.getUniqueId())) {
+                if (map.getWinterUtility().getPlayersOpenedGift().containsKey(player.getUniqueId())) {
                     event.setCancelled(true);
                     return;
                 }
 
-                map.getPlayersOpenedGift().put(player.getUniqueId(), true);
+                map.getWinterUtility().getPlayersOpenedGift().put(player.getUniqueId(), true);
+                GameAPI.getInstance().getPlayerManager().getPlayerData(player.getUniqueId()).getWinterPlayerData().addGiftsFound(1);
+
                 map.getSpawnedGroundItems().remove(item.getUniqueId());
-                player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré un cadeau ! Cela vous rapportera des points à la fin de la partie.")));
+                player.playSound(player, Sound.ITEM_BUNDLE_DROP_CONTENTS, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré un cadeau ! Apportez le à un des dépôts du sapin pour récupérer des points !", NamedTextColor.GREEN)));
                 return;
             }
+            // Winter Event 2025
 
             map.getSpawnedGroundItems().remove(item.getUniqueId());
             player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré ").append(itemMeta.itemName())));
@@ -232,7 +239,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (!map.isPlayerInMap(player)) return;
 
         UUID playerUUID = player.getUniqueId();
-        Location loc = player.getLocation();
+        Location loc = event.getTo();
 
         // Monter ou descendre la montagne de sable (Désert)
         if (map.getMapName().equalsIgnoreCase("desert")) {
@@ -276,6 +283,30 @@ public class PlayingListenerProvider extends StateListenerProvider {
             if (!dejaDansDictionnaire) piedPouvoirList.add(location.clone());
         }
         // Le Pied sur le Pouvoir
+    }
+
+    @EventHandler
+    public void onPlayerMoveWinterEvent(@NotNull final PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (!map.isPlayerInMap(player)) return;
+
+        UUID playerUUID = player.getUniqueId();
+        Location playerLocation = event.getTo();
+
+        for (Location loc : map.getWinterUtility().getChrismasTreeDepositLocations()) {
+            if (!loc.getBlock().equals(playerLocation.getBlock())) continue;
+
+            if (!playerAlreadyClaimedGift.contains(playerUUID) && map.getWinterUtility().getPlayersOpenedGift().containsKey(playerUUID) && map.getWinterUtility().getPlayersOpenedGift().get(playerUUID)) {
+                playerAlreadyClaimedGift.add(playerUUID);
+
+                int points = RANDOM.nextInt(2, 6);
+                GameAPI.getInstance().getPlayerManager().getPlayerData(playerUUID).getWinterPlayerData().addWinterPoints(points);
+
+                player.playSound(player, Sound.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez déposé votre cadeau au pied du sapin ! Vous avez gagné ", NamedTextColor.GREEN)
+                        .append(Component.text(points + " points !", NamedTextColor.GOLD))));
+            }
+        }
     }
     
 }

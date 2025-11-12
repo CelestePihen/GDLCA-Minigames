@@ -13,15 +13,21 @@ import fr.cel.cachecache.map.timer.game.wolf.PlayingWolfMapTask;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Getter
 public class PlayingMapState extends MapState {
 
     private PlayingMapTask playingMapTask;
     private GroundItemsMapTask groundItemsMapTask;
-    private GiftsMapTask giftsMapTask; // Winter Event 2025
 
     private PlayingWolfMapTask playingWolfMapTask;
     @Setter private PlayingBecomeWolfMapTask playingBecomeWolfMapTask;
+
+    // Winter Event 2025
+    @Setter private GiftsMapTask giftsMapTask; // Winter Event 2025
+    private static final int MIN_SECONDS_GIFTS_TASK = 180; // 3 minutes
+    private static final int MAX_SECONDS_GIFTS_TASK = 300; // 5 minutes
 
     public PlayingMapState(CCMap map) {
         super("En partie", map);
@@ -62,7 +68,7 @@ public class PlayingMapState extends MapState {
                 groundItemsMapTask.runTaskTimer(main, 0, 20*120); // Toutes les 2 minutes
 
                 giftsMapTask = new GiftsMapTask(getMap());
-                giftsMapTask.runTaskTimer(main, 0, 20*150); // Toutes les 2 minutes 30
+                giftsMapTask.runTaskLater(main, ThreadLocalRandom.current().nextInt(MIN_SECONDS_GIFTS_TASK, MAX_SECONDS_GIFTS_TASK + 1) * 20L);
             }
         }
     }

@@ -27,9 +27,10 @@ public class CoinsCommand extends AbstractCommand {
     protected void onExecute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length == 0) {
             sendHelp(sender);
+            return;
         }
 
-        else if (args[0].equalsIgnoreCase("get")) {
+        if (args[0].equalsIgnoreCase("get")) {
             if (args.length == 1) {
                 if (sender instanceof Player player) {
                     sendCoinsMessage(player, player);
@@ -48,9 +49,10 @@ public class CoinsCommand extends AbstractCommand {
             }
 
             sendHelp(sender);
+            return;
         }
 
-        else if (args[0].equalsIgnoreCase("add")) {
+        if (args[0].equalsIgnoreCase("add")) {
             if (args.length == 3) {
                 Player target = Bukkit.getPlayer(args[1]);
 
@@ -59,7 +61,7 @@ public class CoinsCommand extends AbstractCommand {
                     try {
                         amount = Double.parseDouble(args[2]);
                     } catch (NumberFormatException e) {
-                        sendHelp(sender);
+                        sendMessageWithPrefix(sender, Component.text("Le montant doit être un nombre valide.", NamedTextColor.RED));
                         return;
                     }
                     playerManager.getPlayerData(target).addCoins(amount);
@@ -67,10 +69,12 @@ public class CoinsCommand extends AbstractCommand {
                 }
                 return;
             }
+
             sendHelp(sender);
+            return;
         }
 
-        else if (args[0].equalsIgnoreCase("remove")) {
+        if (args[0].equalsIgnoreCase("remove")) {
             if (args.length == 3) {
                 Player target = Bukkit.getPlayer(args[1]);
 
@@ -79,14 +83,21 @@ public class CoinsCommand extends AbstractCommand {
                     try {
                         amount = Double.parseDouble(args[2]);
                     } catch (NumberFormatException e) {
-                        sendHelp(sender);
+                        sendMessageWithPrefix(sender, Component.text("Le montant doit être un nombre valide.", NamedTextColor.RED));
                         return;
                     }
+
+                    if (playerManager.getPlayerData(target).getCoins() - amount < 0) {
+                        sendMessageWithPrefix(sender, Component.text("Vous ne pouvez pas retirer autant de pièces à " + target.getName() + ", il/elle n'en a pas assez."));
+                        return;
+                    }
+
                     playerManager.getPlayerData(target).removeCoins(amount);
                     sendMessageWithPrefix(sender, Component.text("Tu as retiré " + amount + " pièce(s) à " + target.getName()));
                 }
                 return;
             }
+
             sendHelp(sender);
         }
 
@@ -94,19 +105,12 @@ public class CoinsCommand extends AbstractCommand {
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-        if (args.length == 1) {
-            return List.of("add", "remove", "get");
-        }
+        if (args.length == 1) return List.of("add", "remove", "get");
 
-        if (args.length == 2) {
-            return null;
-        }
+        if (args.length == 2) return null;
 
-        if (args.length == 3) {
-            if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")) {
-                return IntStream.range(1, 10).mapToObj(Integer::toString).collect(Collectors.toList());
-            }
-        }
+        if (args.length == 3 && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")))
+            return IntStream.range(1, 10).mapToObj(Integer::toString).collect(Collectors.toList());
 
         return null;
     }
