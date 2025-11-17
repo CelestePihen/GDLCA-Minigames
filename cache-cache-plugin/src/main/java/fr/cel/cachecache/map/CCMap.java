@@ -174,7 +174,6 @@ public class CCMap {
         players.remove(player.getUniqueId());
         scoreboard.removePlayer(player);
 
-        // on le retire de l'équipe dans laquelle il était
         seekers.remove(player.getUniqueId());
         teamSeekers.removePlayer(player);
         hiders.remove(player.getUniqueId());
@@ -620,7 +619,9 @@ public class CCMap {
 
         player.setGameMode(gameMode);
         player.setGlowing(false);
+
         player.getInventory().clear();
+        player.getInventory().setItem(8, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter la partie", NamedTextColor.RED)).toItemStack());
 
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
