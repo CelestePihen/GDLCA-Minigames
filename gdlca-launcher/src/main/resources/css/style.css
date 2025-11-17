@@ -1,0 +1,21 @@
+#top-bar{
+    -fx-background-color: #707070;
+}
+
+#top-bar-button{
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+#top-bar-button:hover{
+    -fx-text-fill: orange;
+}
+
+#top-bar-button:pressed{
+    -fx-text-fill: orange;
+}
+
+#left-bar{
+    -fx-background-color: #A4A4A4;
+}
