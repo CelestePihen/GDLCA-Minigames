@@ -35,11 +35,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayingListenerProvider extends StateListenerProvider {
 
-    // succès désert
+    // succès Monter le plus haut de la montagne de sable / Descendre le plus bas de la montagne de sable (Désert)
     private final Map<UUID, Long> playerDesertTimers = new HashMap<>();
-    private final Map<UUID, Long> playerMoulinTimers = new HashMap<>();
 
-    private final Set<UUID> playerAlreadyClaimedGift = new HashSet<>();
+    // succès Traversée musicale (moulin)
+    private final Map<UUID, Long> playerMoulinTimers = new HashMap<>();
 
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
@@ -163,7 +163,9 @@ public class PlayingListenerProvider extends StateListenerProvider {
     @EventHandler
     public void onPlayerDrop(PlayerDropItemEvent event) {
         if (!map.isPlayerInMap(event.getPlayer())) return;
-        if (event.getItemDrop().getItemStack().getType() == Material.STICK) event.setCancelled(true);
+
+        Material type = event.getItemDrop().getItemStack().getType();
+        if (type == Material.STICK || type == Material.PAPER) event.setCancelled(true);
     }
 
     @EventHandler
@@ -175,14 +177,14 @@ public class PlayingListenerProvider extends StateListenerProvider {
         if (itemMeta == null) return;
 
         if (map.getSpawnedGroundItems().contains(item.getUniqueId())) {
-            // Winter Event 2025
+            // Winter Event 2025 Start
             if (item.getItemStack().getType() == Material.PAPER) {
-                if (map.getWinterUtility().getPlayersOpenedGift().containsKey(player.getUniqueId())) {
+                if (map.getWinterUtility().getPlayersOpenedGift().contains(player.getUniqueId())) {
                     event.setCancelled(true);
                     return;
                 }
 
-                map.getWinterUtility().getPlayersOpenedGift().put(player.getUniqueId(), true);
+                map.getWinterUtility().getPlayersOpenedGift().add(player.getUniqueId());
                 GameAPI.getInstance().getPlayerManager().getPlayerData(player.getUniqueId()).getWinterPlayerData().addGiftsFound(1);
 
                 map.getSpawnedGroundItems().remove(item.getUniqueId());
@@ -190,7 +192,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
                 player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré un cadeau ! Apportez le à un des dépôts du sapin pour récupérer des points !", NamedTextColor.GREEN)));
                 return;
             }
-            // Winter Event 2025
+            // Winter Event 2025 End
 
             map.getSpawnedGroundItems().remove(item.getUniqueId());
             player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez récupéré ").append(itemMeta.itemName())));
@@ -210,7 +212,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
     }
 
     /**
-     * Permet de détecter si un joueur a activé un levier sur la Carte Bunker
+     * Permet de détecter si un joueur a activé l'interrupteur sur la Carte Bunker
      */
     @EventHandler
     public void onLeverAction(BlockRedstoneEvent event) {
@@ -285,6 +287,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
         // Le Pied sur le Pouvoir
     }
 
+    // Winter Event 2025 Start
     @EventHandler
     public void onPlayerMoveWinterEvent(@NotNull final PlayerMoveEvent event) {
         Player player = event.getPlayer();
@@ -296,17 +299,19 @@ public class PlayingListenerProvider extends StateListenerProvider {
         for (Location loc : map.getWinterUtility().getChrismasTreeDepositLocations()) {
             if (!loc.getBlock().equals(playerLocation.getBlock())) continue;
 
-            if (!playerAlreadyClaimedGift.contains(playerUUID) && map.getWinterUtility().getPlayersOpenedGift().containsKey(playerUUID) && map.getWinterUtility().getPlayersOpenedGift().get(playerUUID)) {
-                playerAlreadyClaimedGift.add(playerUUID);
+            if (!map.getWinterUtility().getPlayerAlreadyClaimedGift().contains(playerUUID) && map.getWinterUtility().getPlayersOpenedGift().contains(playerUUID)) {
+                map.getWinterUtility().getPlayerAlreadyClaimedGift().add(playerUUID);
 
                 int points = RANDOM.nextInt(2, 6);
                 GameAPI.getInstance().getPlayerManager().getPlayerData(playerUUID).getWinterPlayerData().addWinterPoints(points);
 
+                player.getInventory().remove(Material.PAPER);
                 player.playSound(player, Sound.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0f, 1.0f);
                 player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez déposé votre cadeau au pied du sapin ! Vous avez gagné ", NamedTextColor.GREEN)
                         .append(Component.text(points + " points !", NamedTextColor.GOLD))));
             }
         }
     }
+    // Winter Event 2025 End
     
 }

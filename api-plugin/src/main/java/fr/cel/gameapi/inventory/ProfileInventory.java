@@ -44,7 +44,7 @@ public class ProfileInventory extends AbstractInventory {
 
         inv.setItem(12, new ItemBuilder(Material.ENDER_PEARL)
                 .itemName(Component.text("Partie", NamedTextColor.AQUA))
-                .lore(Component.text("Bientôt", NamedTextColor.GOLD))
+                .addLoreLine(Component.text("Bientôt", NamedTextColor.GOLD))
                 .toItemStack());
 
         inv.setItem(14, new ItemBuilder(Material.PAPER)

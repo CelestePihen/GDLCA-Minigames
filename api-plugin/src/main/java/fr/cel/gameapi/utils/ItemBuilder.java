@@ -193,7 +193,11 @@ public final class ItemBuilder {
      * @param lores The lore to set it to.
      */
     public ItemBuilder lore(Component... lores) {
-        is.editMeta(itemMeta -> itemMeta.lore(List.of(lores)));
+        List<Component> loreList = new ArrayList<>(lores.length);
+        for (Component c : lores) {
+            loreList.add(c.decoration(TextDecoration.ITALIC, false));
+        }
+        is.editMeta(itemMeta -> itemMeta.lore(loreList));
         return this;
     }
 
@@ -212,7 +216,12 @@ public final class ItemBuilder {
      * @param lores The lore to set it to.
      */
     public ItemBuilder lore(List<Component> lores) {
-        is.editMeta(itemMeta -> itemMeta.lore(lores));
+        List<Component> loreList = new ArrayList<>(lores.size());
+        for (Component c : lores) {
+            loreList.add(c.decoration(TextDecoration.ITALIC, false));
+        }
+
+        is.editMeta(itemMeta -> itemMeta.lore(loreList));
         return this;
     }
 

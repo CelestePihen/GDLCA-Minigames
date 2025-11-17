@@ -104,7 +104,9 @@ public class CalculDepositSubCommand implements SubCommand {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() == Material.REINFORCED_DEEPSLATE) deposits.add(x + "," + y + "," + z);
+                    if (block.getType() == Material.REINFORCED_DEEPSLATE) {
+                        deposits.add(x + "," + (y + 1) + "," + z);
+                    }
                 }
             }
         }

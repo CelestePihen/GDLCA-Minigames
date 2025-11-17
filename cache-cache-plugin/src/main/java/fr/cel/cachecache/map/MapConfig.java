@@ -70,9 +70,9 @@ public class MapConfig {
         );
 
         map.setMapConfig(this);
-        map.setBestPlayer(config.getString("bestPlayer"));
-        map.setBestTimer(config.getInt("bestTime"));
-        map.setLastHunter(config.getString("lastHunter"));
+        map.setBestPlayer(config.getString("bestPlayer", "Aucun"));
+        map.setBestTimer(config.getInt("bestTime", 0));
+        map.setLastHunter(config.getString("lastHunter", "Aucun"));
         map.setAvailableGroundItems(getAvailableGroundItems());
         map.setLocationGroundItems(getLocationGroundItems());
         map.getWinterUtility().setGiftLocations(getGiftLocations());
@@ -100,11 +100,41 @@ public class MapConfig {
 
         Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
             try {
+                // Valider et nettoyer les données avant sauvegarde
+                validateAndCleanConfig();
                 config.save(file);
             } catch (IOException e) {
                 main.getComponentLogger().error(main.getGameManager().getPrefix().append(Component.text("Erreur dans la sauvegarde de la carte CC " + this.mapName + " : " + e.getMessage(), NamedTextColor.RED)));
+            } catch (Exception e) {
+                main.getComponentLogger().error(main.getGameManager().getPrefix().append(Component.text("Erreur inattendue lors de la sauvegarde de la carte CC " + this.mapName + " : " + e.getMessage(), NamedTextColor.RED)));
+                main.getLogger().severe("Stack trace de l'erreur: ");
+                for (StackTraceElement element : e.getStackTrace()) {
+                    main.getLogger().severe("  " + element.toString());
+                }
             }
         });
+    }
+
+    /**
+     * Valide et nettoie les données de configuration pour éviter les erreurs de sérialisation.
+     */
+    private void validateAndCleanConfig() {
+        List<String> keysToRemove = new ArrayList<>();
+
+        for (String key : config.getKeys(true)) {
+            Object value = config.get(key);
+
+            // Supprimer les valeurs non sérialisables
+            if (value instanceof Location) {
+                main.getComponentLogger().warn(Component.text("Attention : une Location non convertie détectée à la clé '" + key + "'. Elle sera supprimée.", NamedTextColor.YELLOW));
+                keysToRemove.add(key);
+            }
+        }
+
+        // Supprimer les clés problématiques
+        for (String key : keysToRemove) {
+            config.set(key, null);
+        }
     }
 
     public List<Location> getGiftLocations() {

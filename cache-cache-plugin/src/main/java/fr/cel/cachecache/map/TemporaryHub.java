@@ -139,7 +139,9 @@ public class TemporaryHub implements Listener {
      */
     private void setLastMap(String lastMap) {
         this.lastMap = lastMap;
-        this.config.setValue("lastMap", lastMap);
+        if (lastMap != null) {
+            this.config.setValue("lastMap", lastMap);
+        }
     }
 
     // Listeners

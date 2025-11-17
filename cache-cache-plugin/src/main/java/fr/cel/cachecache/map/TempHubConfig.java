@@ -59,6 +59,11 @@ public class TempHubConfig {
             config.save(file);
         } catch (IOException e) {
             main.getLogger().severe("TempHubConfig - setValue : " + e.getMessage());
+        } catch (Exception e) {
+            main.getLogger().severe("TempHubConfig - Erreur inattendue lors de la sauvegarde : " + e.getMessage());
+            for (StackTraceElement element : e.getStackTrace()) {
+                main.getLogger().severe("  " + element.toString());
+            }
         }
     }
 

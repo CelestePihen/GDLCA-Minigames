@@ -26,6 +26,7 @@ public class StartingMapState extends MapState {
         getMap().setGameModePlayers(GameMode.ADVENTURE);
         getMap().setSpawnPoint();
         getMap().clearPotionEffects();
+        getMap().giveHungerEffect();
         getMap().setLevel(0);
 
         startingMapTask = new StartingMapTask(getMap(), 11);

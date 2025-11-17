@@ -29,7 +29,7 @@ public class PVPStatsInventory extends AbstractInventory {
         for (PVPStatsInventory.Statistic statistic : PVPStatsInventory.Statistic.values()) {
             inv.addItem(new ItemBuilder(statistic.material)
                     .itemName(statistic.name.color(NamedTextColor.YELLOW))
-                    .lore(Component.text("Valeur : ").append(Component.text(statisticsManager.getPlayerStatistic(player, statistic.playerStatistics), NamedTextColor.GREEN)))
+                    .addLoreLine(Component.text("Valeur : ").append(Component.text(statisticsManager.getPlayerStatistic(player, statistic.playerStatistics), NamedTextColor.GREEN)))
                     .toItemStack());
         }
 

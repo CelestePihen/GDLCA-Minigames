@@ -25,7 +25,7 @@ public class PlayingMapState extends MapState {
     @Setter private PlayingBecomeWolfMapTask playingBecomeWolfMapTask;
 
     // Winter Event 2025
-    @Setter private GiftsMapTask giftsMapTask; // Winter Event 2025
+    @Setter private GiftsMapTask giftsMapTask;
     private static final int MIN_SECONDS_GIFTS_TASK = 180; // 3 minutes
     private static final int MAX_SECONDS_GIFTS_TASK = 300; // 5 minutes
 
@@ -68,7 +68,7 @@ public class PlayingMapState extends MapState {
                 groundItemsMapTask.runTaskTimer(main, 0, 20*120); // Toutes les 2 minutes
 
                 giftsMapTask = new GiftsMapTask(getMap());
-                giftsMapTask.runTaskLater(main, ThreadLocalRandom.current().nextInt(MIN_SECONDS_GIFTS_TASK, MAX_SECONDS_GIFTS_TASK + 1) * 20L);
+                giftsMapTask.runTaskLater(main, ThreadLocalRandom.current().nextInt(MIN_SECONDS_GIFTS_TASK, MAX_SECONDS_GIFTS_TASK + 1) * 20L); // Début entre 3 et 5 minutes
             }
         }
     }
@@ -80,6 +80,7 @@ public class PlayingMapState extends MapState {
         if (playingWolfMapTask != null) playingWolfMapTask.cancel();
         if (playingBecomeWolfMapTask != null) playingBecomeWolfMapTask.cancel();
         if (groundItemsMapTask != null) groundItemsMapTask.cancel();
+        if (giftsMapTask != null) giftsMapTask.cancel();
     }
 
     @Override

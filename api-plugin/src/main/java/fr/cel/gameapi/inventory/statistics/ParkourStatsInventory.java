@@ -29,7 +29,7 @@ public class ParkourStatsInventory extends AbstractInventory {
         for (ParkourStatsInventory.Statistic statistic : ParkourStatsInventory.Statistic.values()) {
             inv.addItem(new ItemBuilder(statistic.material)
                     .itemName(statistic.name.color(NamedTextColor.YELLOW))
-                    .lore(Component.text("Valeur : ").append(Component.text(statisticsManager.getPlayerStatistic(player, statistic.playerStatistics), NamedTextColor.GREEN)))
+                    .addLoreLine(Component.text("Valeur : ").append(Component.text(statisticsManager.getPlayerStatistic(player, statistic.playerStatistics), NamedTextColor.GREEN)))
                     .toItemStack());
         }
 

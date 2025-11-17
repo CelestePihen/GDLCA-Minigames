@@ -398,6 +398,7 @@ public class CCMap {
         sendWinnerMessage();
 
         scoreboard.resetScoreboard();
+        winterUtility.clearPlayersGift();
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
@@ -407,7 +408,7 @@ public class CCMap {
         players.clear();
         hiders.clear();
         seekers.clear();
-        winterUtility.getPlayersOpenedGift().clear();
+
         timer = 0;
     }
 
@@ -532,10 +533,18 @@ public class CCMap {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
             if (player != null) {
-                for (PotionEffect potionEffect : player.getActivePotionEffects()) {
-                    player.removePotionEffect(potionEffect.getType());
-                }
+                for (PotionEffect potionEffect : player.getActivePotionEffects()) player.removePotionEffect(potionEffect.getType());
             }
+        }
+    }
+
+    /**
+     * Permet de donner l'effet Hunger aux joueurs (enlève la barre de faim)
+     */
+    public void giveHungerEffect() {
+        for (UUID pls : players) {
+            Player player = Bukkit.getPlayer(pls);
+            if (player != null) player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
         }
     }
 
@@ -585,7 +594,9 @@ public class CCMap {
      */
     public void setBestPlayer(String playerName) {
         this.bestPlayer = playerName;
-        this.mapConfig.setValue("bestPlayer", playerName);
+        if (playerName != null) {
+            this.mapConfig.setValue("bestPlayer", playerName);
+        }
     }
 
     /**
@@ -593,7 +604,9 @@ public class CCMap {
      */
     public void setLastHunter(String playerName) {
         this.lastHunter = playerName;
-        this.mapConfig.setValue("lastHunter", lastHunter);
+        if (playerName != null) {
+            this.mapConfig.setValue("lastHunter", lastHunter);
+        }
     }
 
     /**
@@ -636,8 +649,6 @@ public class CCMap {
         if (teleportSpawn) player.teleportAsync(spawnLoc);
 
         if (ccMode == CCMode.LoupToucheTouche) wolfTimer.put(player.getUniqueId(), 0);
-
-        winterUtility.getPlayersOpenedGift().put(player.getUniqueId(), false);
     }
 
     /**
