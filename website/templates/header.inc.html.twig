@@ -1,0 +1,59 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="/assets/icons/logo.svg" width="30" height="30" alt="GDLCA Minigames Logo">
+      GDLCA Minigames
+    </a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">News</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Discord</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">À propos</a>
+        </li>
+      </ul>
+
+        <button class ="btn btn-success me-3" type="button">
+          Jouer
+        </button>
+      
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="theme-icon-active">{{ ux_icon('solar:moon-bold', {style: 'width: 1em; height: 1em; vertical-align: -0.2em;'}) }}</span>
+          <span class="ms-2" id="bd-theme-text">Thème</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+              <span class="me-2 opacity-50">{{ ux_icon('solar:sun-bold', {style: 'width: 1em; height: 1em; vertical-align: -0.2em;'}) }}</span>
+              Clair
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+              <span class="me-2 opacity-50">{{ ux_icon('solar:moon-bold', {style: 'width: 1em; height: 1em; vertical-align: -0.2em;'}) }}</span>
+              Sombre
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="true">
+              <span class="me-2 opacity-50">{{ ux_icon('bi:circle-half', {style: 'width: 1em; height: 1em; vertical-align: -0.2em;'}) }}</span>
+              Auto
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
