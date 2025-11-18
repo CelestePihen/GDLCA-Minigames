@@ -4,6 +4,7 @@
 
 #top-bar-button{
     -fx-text-fill: white;
+    -fx-font-size: 24px;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
@@ -16,6 +17,15 @@
     -fx-text-fill: orange;
 }
 
+
+
 #left-bar{
+    -fx-background-color: #A4A4A4;
+}
+
+
+
+
+#body-bar{
     -fx-background-color: #A4A4A4;
 }
