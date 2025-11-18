@@ -3,18 +3,121 @@
 {% block title %}GDLCA Minigames{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { /*background: #F5F5F5;*/ padding: 2px 6px; }
-</style>
+<!-- Hero Section -->
+<section class="hero">
+    <h1>Bienvenue sur GDLCA Minigames</h1>
+    <p>Un serveur entre amis pour partager des moments fun sur nos mini-jeux préférés !</p>
+    <a href="#" class="btn-play-hero">Rejoins-nous</a>
+    
+    <div class="hero-stats">
+        <div class="stat">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">En ligne</span>
+        </div>
+        <div class="stat">
+            <span class="stat-number">1.21.10</span>
+            <span class="stat-label">Version Java</span>
+        </div>
+        <div class="stat">
+            <span class="stat-number">4</span>
+            <span class="stat-label">Mini-jeux</span>
+        </div>
+        <div class="stat">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Chill et entre Potes</span>
+        </div>
+    </div>
+</section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<!-- Features Section -->
+<section class="section">
+    <h2>Nos Mini-Jeux</h2>
+    <div class="cards">
+        <div class="card">
+            <span class="card-icon">🙈</span>
+            <h3>Cache-Cache</h3>
+            <p>Cache toi et trouve la meilleure cachette pour ne pas te faire repérer par les chercheurs !</p>
+        </div>
+        <div class="card">
+            <span class="card-icon">💣</span>
+            <h3>Valocraft</h3>
+            <p>Un mode inspiré de Valorant avec des capacités spéciales. Stratégie et action au rendez-vous !</p>
+        </div>
+        <div class="card">
+            <span class="card-icon">⚔️</span>
+            <h3>PVP</h3>
+            <p>Affronte tes amis dans des combats intenses. Qui sera le dernier survivant ?</p>
+        </div>
+        <div class="card">
+            <span class="card-icon">🏃</span>
+            <h3>Parkour</h3>
+            <p>Défie la gravité et teste ton agilité sur nos parcours épiques !</p>
+        </div>
+    </div>
+</section>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/app/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>/app/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+<!-- Connection Section -->
+<section class="section">
+    <div class="connection-box">
+        <h3>Comment se connecter ?</h3>
+        <p class="connection-subtitle">Choisis ta méthode préférée pour rejoindre le serveur</p>
+        
+        <div class="connection-methods">
+            <div class="connection-method">
+                <h4>🌐 Via IP</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                        Lance Minecraft et ajoute le serveur avec cette IP :
+                </p>
+                <div class="ip-box" onclick="copyIP()" title="Cliquer pour copier">
+                    95.111.253.89:51000
+                </div>
+                <p class="copy-success" id="copySuccess">✅ Adresse IP copiée !</p>
+                <p class="copy-hint">👆 Clique pour copier l'IP</p>
+            </div>
+            <div class="connection-method">
+                <h4>🚀 Via Launcher</h4>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Télécharge notre launcher personnalisé</p>
+                <a href="#" class="btn-launcher">Télécharger</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Info Section -->
+<section class="section">
+    <h2>Infos pratiques</h2>
+    <div class="cards">
+        <div class="card">
+            <span class="card-icon">🎮</span>
+            <h3>Version</h3>
+            <p>Compatible avec Minecraft Java 1.21.10</p>
+        </div>
+        <div class="card">
+            <span class="card-icon">💬</span>
+            <h3>Discord</h3>
+            <p>Rejoins notre communauté pour rester connecté avec les autres joueurs !</p>
+        </div>
+        <div class="card">
+            <span class="card-icon">📜</span>
+            <h3>Règles</h3>
+            <p>Respect et fair-play sont nos valeurs principales. Consulte les règles complètes sur Discord.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+function copyIP() {
+    const ip = '95.111.253.89:51000';
+    const successMessage = document.getElementById('copySuccess');
+    
+    navigator.clipboard.writeText(ip).then(() => {
+        successMessage.classList.add('show');
+        setTimeout(() => {
+            successMessage.classList.remove('show');
+        }, 3000);
+    }).catch(err => {
+        console.error('Erreur lors de la copie:', err);
+    });
+}
+</script>
 {% endblock %}
