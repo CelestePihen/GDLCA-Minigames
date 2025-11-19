@@ -7,6 +7,7 @@
     -fx-font-size: 24px;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
+    -fx-cursor: hand;
 }
 
 #top-bar-button:hover{
@@ -23,9 +24,21 @@
     -fx-background-color: #A4A4A4;
 }
 
+#left-bar-image{
+    -fx-cursor: hand;
+
+}
+
+#left-bar-image:hover{
+
+}
 
 
 
 #body-bar{
     -fx-background-color: #A4A4A4;
+}
+
+#section-compte{
+    -fx-background-color: green;
 }
