@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class LauncherWindow extends Application {
@@ -105,6 +106,10 @@ public class LauncherWindow extends Application {
          *  MÉTHODES DE CHANGEMENT D'ÉCRAN
          * ---------------------------------------- */
 
+        /* ----------------------------------------
+         *  MÉTHODES DE CHANGEMENT D'ÉCRAN
+         * ---------------------------------------- */
+
         Runnable loadGDLCA = () -> {
             Image img = new Image(
                     getClass().getResource("/images/body/gdlca_screen.png").toExternalForm()
@@ -112,6 +117,13 @@ public class LauncherWindow extends Application {
             ImageView view = new ImageView(img);
             view.setFitWidth(1100);
             view.setPreserveRatio(true);
+
+            // Coins arrondis
+            Rectangle clip = new Rectangle(1100, 620);
+            clip.setArcWidth(40);
+            clip.setArcHeight(40);
+            view.setClip(clip);
+
             BodyBar.getChildren().setAll(view);
         };
 
@@ -122,6 +134,13 @@ public class LauncherWindow extends Application {
             ImageView view = new ImageView(img);
             view.setFitWidth(1100);
             view.setPreserveRatio(true);
+
+            // Coins arrondis
+            Rectangle clip = new Rectangle(1100, 620);
+            clip.setArcWidth(40);
+            clip.setArcHeight(40);
+            view.setClip(clip);
+
             BodyBar.getChildren().setAll(view);
         };
 
@@ -132,8 +151,16 @@ public class LauncherWindow extends Application {
             ImageView view = new ImageView(img);
             view.setFitWidth(1100);
             view.setPreserveRatio(true);
+
+            // Coins arrondis
+            Rectangle clip = new Rectangle(1100, 620);
+            clip.setArcWidth(40);
+            clip.setArcHeight(40);
+            view.setClip(clip);
+
             BodyBar.getChildren().setAll(view);
         };
+
 
         // Chargement par défaut
         loadGDLCA.run();
