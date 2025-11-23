@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class StatisticsInventory extends AbstractInventory {
 
@@ -20,7 +21,7 @@ public class StatisticsInventory extends AbstractInventory {
     }
 
     @Override
-    protected void addItems(Inventory inv) {
+    protected void addItems(@NotNull Inventory inv) {
         inv.setItem(9, new ItemBuilder(Material.COMPASS).itemName(Component.text("Hub", NamedTextColor.GREEN)).toItemStack());
         inv.setItem(11, new ItemBuilder(Material.SPYGLASS).itemName(Component.text("Cache-Cache", NamedTextColor.GREEN)).toItemStack());
         inv.setItem(13, new ItemBuilder(Material.BOW).itemName(Component.text("Valocraft", NamedTextColor.GREEN)).toItemStack());
@@ -29,7 +30,7 @@ public class StatisticsInventory extends AbstractInventory {
     }
 
     @Override
-    public void interact(Player player, String itemName, ItemStack item) {
+    public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
         switch (item.getType()) {
             case COMPASS -> GameAPI.getInstance().getInventoryManager().openInventory(new HubStatsInventory(this.player), player);
 

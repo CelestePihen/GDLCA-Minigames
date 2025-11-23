@@ -1,6 +1,7 @@
 package fr.cel.gameapi;
 
 import fr.cel.gameapi.commands.*;
+import fr.cel.gameapi.listeners.CosmeticListeners;
 import fr.cel.gameapi.listeners.OtherListeners;
 import fr.cel.gameapi.listeners.PlayersListener;
 import fr.cel.gameapi.listeners.ServerListeners;
@@ -8,6 +9,7 @@ import fr.cel.gameapi.manager.AdvancementsManager;
 import fr.cel.gameapi.manager.InventoryManager;
 import fr.cel.gameapi.manager.PlayerManager;
 import fr.cel.gameapi.manager.command.CommandsManager;
+import fr.cel.gameapi.manager.cosmetic.CosmeticsManager;
 import fr.cel.gameapi.manager.database.DatabaseManager;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.StatisticsManager;
@@ -32,6 +34,7 @@ public final class GameAPI extends JavaPlugin {
     private CommandsManager commandsManager;
     private StatisticsManager statisticsManager;
     private AdvancementsManager advancementsManager;
+    private CosmeticsManager cosmeticsManager;
 
     private NPCCommand npcCommand;
 
@@ -48,38 +51,40 @@ public final class GameAPI extends JavaPlugin {
 
         this.friendsManager = new FriendsManager(this);
 
+        this.statisticsManager = new StatisticsManager(this);
+        this.advancementsManager = new AdvancementsManager();
+        this.cosmeticsManager = new CosmeticsManager(this);
+
         this.npcCommand = new NPCCommand();
         this.commandsManager = new CommandsManager(this);
         registerCommands();
 
         this.inventoryManager = new InventoryManager(this);
 
-        this.statisticsManager = new StatisticsManager(this);
-        this.advancementsManager = new AdvancementsManager();
-
         getServer().getPluginManager().registerEvents(new PlayersListener(this), this);
         getServer().getPluginManager().registerEvents(new ServerListeners(), this);
         getServer().getPluginManager().registerEvents(new OtherListeners(), this);
+        getServer().getPluginManager().registerEvents(new CosmeticListeners(this), this);
     }
 
     @Override
     public void onDisable() {
-        if (database != null) database.disconnect();
         removeMannequins();
+
+        if (this.cosmeticsManager != null) this.cosmeticsManager.shutdown();
+        if (this.database != null) database.disconnect();
     }
 
     /**
      * Init the Database with the config
      */
     private void initDatabase() {
-        // détecte si le config.yml est proprement configuré
         if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") || !getConfig().contains("database_test") ||
                 !getConfig().contains("username") || !getConfig().contains("password")) {
             getLogger().severe("Please configure the database settings in the config.yml file. Please fill them and restart the server.");
             return;
         }
 
-        // détecte si le serveur est en online mode ou pas
         if (getServer().getOnlineMode()) {
             this.database = new DatabaseManager(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
         } else {
@@ -104,6 +109,7 @@ public final class GameAPI extends JavaPlugin {
         commandsManager.addCommand("welcome", new WelcomeCommand(getPlayerManager()));
         commandsManager.addCommand("statistics", new StatisticsCommand());
         commandsManager.addCommand("npc", getNpcCommand());
+        commandsManager.addCommand("cosmetics", new CosmeticsCommand(this.cosmeticsManager));
     }
 
     /**
@@ -116,3 +122,4 @@ public final class GameAPI extends JavaPlugin {
     }
 
 }
+

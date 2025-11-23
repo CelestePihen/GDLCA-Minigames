@@ -1,5 +1,6 @@
 package fr.cel.gameapi.manager;
 
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.PlayerData;
 import fr.cel.gameapi.manager.database.event.WinterPlayerData;
 import fr.cel.gameapi.utils.ItemBuilder;
@@ -91,14 +92,23 @@ public class PlayerManager {
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
 
+        player.getInventory().setItem(0, new ItemBuilder(Material.ARMOR_STAND)
+                .itemName(Component.text("Cosmétiques", NamedTextColor.WHITE))
+                .toItemStack());
+
         player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS)
                 .itemName(Component.text("Sélectionneur de mini-jeux", NamedTextColor.WHITE))
                 .toItemStack());
 
         player.getInventory().setItem(8, new ItemBuilder(Material.PLAYER_HEAD)
                 .setSkullOwner(player.getPlayerProfile())
-                .displayName(Component.text("Mon Profil", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
+                .customName(Component.text("Mon Profil", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
                 .toItemStack());
+
+        if (GameAPI.getInstance().getCosmeticsManager().getDressingManager().isPlayerDressed(player))
+            GameAPI.getInstance().getCosmeticsManager().getDressingManager().undressPlayer(player);
+
+        Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> GameAPI.getInstance().getCosmeticsManager().reapplyCosmetics(player), 5L);
     }
 
     /**

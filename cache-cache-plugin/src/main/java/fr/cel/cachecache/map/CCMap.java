@@ -577,24 +577,24 @@ public class CCMap {
      * Permet de changer le record de l'arène avec le temps de la partie.
      */
     public void setBestTimer() {
-        setBestTimer(timer);
+        setBestTimer(timer, false);
     }
 
     /**
      * Permet de changer le record de l'arène
      * @param time Le temps à mettre
      */
-    public void setBestTimer(int time) {
+    public void setBestTimer(int time, boolean load) {
         this.bestTimer = time;
-        mapConfig.setValue("bestTime", time);
+        if (!load) mapConfig.setValue("bestTime", time);
     }
 
     /**
      * Permet de changer le meilleur joueur de l'arène
      */
-    public void setBestPlayer(String playerName) {
+    public void setBestPlayer(String playerName, boolean load) {
         this.bestPlayer = playerName;
-        if (playerName != null) {
+        if (playerName != null && !load) {
             this.mapConfig.setValue("bestPlayer", playerName);
         }
     }
@@ -602,9 +602,9 @@ public class CCMap {
     /**
      * Permet de changer le dernier chercheur de l'arène
      */
-    public void setLastHunter(String playerName) {
+    public void setLastHunter(String playerName, boolean load) {
         this.lastHunter = playerName;
-        if (playerName != null) {
+        if (playerName != null && !load) {
             this.mapConfig.setValue("lastHunter", lastHunter);
         }
     }
@@ -659,7 +659,7 @@ public class CCMap {
         if (ccMode != CCMode.LoupToucheTouche && hiders.size() == 1) {
             if (timer > bestTimer) {
                 setBestTimer();
-                setBestPlayer(deadPlayer.getName());
+                setBestPlayer(deadPlayer.getName(), false);
             }
         }
 
@@ -687,8 +687,8 @@ public class CCMap {
             int time = wolfTimer.get(getPlayerWithLowestTime().getUniqueId());
 
             if (time < bestTimer) {
-                setBestTimer(time);
-                setBestPlayer(name);
+                setBestTimer(time, false);
+                setBestPlayer(name, false);
             }
 
             String bestTime = String.format("%02dmin%02ds", (time % 3600) / 60, time % 60);

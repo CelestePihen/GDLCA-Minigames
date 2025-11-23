@@ -70,9 +70,9 @@ public class MapConfig {
         );
 
         map.setMapConfig(this);
-        map.setBestPlayer(config.getString("bestPlayer", "Aucun"));
-        map.setBestTimer(config.getInt("bestTime", 0));
-        map.setLastHunter(config.getString("lastHunter", "Aucun"));
+        map.setBestPlayer(config.getString("bestPlayer", "Aucun"), true);
+        map.setBestTimer(config.getInt("bestTime", 0), true);
+        map.setLastHunter(config.getString("lastHunter", "Aucun"), true);
         map.setAvailableGroundItems(getAvailableGroundItems());
         map.setLocationGroundItems(getLocationGroundItems());
         map.getWinterUtility().setGiftLocations(getGiftLocations());
@@ -106,7 +106,7 @@ public class MapConfig {
             } catch (IOException e) {
                 main.getComponentLogger().error(main.getGameManager().getPrefix().append(Component.text("Erreur dans la sauvegarde de la carte CC " + this.mapName + " : " + e.getMessage(), NamedTextColor.RED)));
             } catch (Exception e) {
-                main.getComponentLogger().error(main.getGameManager().getPrefix().append(Component.text("Erreur inattendue lors de la sauvegarde de la carte CC " + this.mapName + " : " + e.getMessage(), NamedTextColor.RED)));
+                main.getComponentLogger().error(Component.text("Erreur inattendue lors de la sauvegarde de la carte CC " + this.mapName + " : " + e.getMessage(), NamedTextColor.RED));
                 main.getLogger().severe("Stack trace de l'erreur: ");
                 for (StackTraceElement element : e.getStackTrace()) {
                     main.getLogger().severe("  " + element.toString());

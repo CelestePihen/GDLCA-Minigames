@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ProfileInventory extends AbstractInventory {
 
@@ -23,7 +24,7 @@ public class ProfileInventory extends AbstractInventory {
     }
 
     @Override
-    protected void addItems(Inventory inv) {
+    protected void addItems(@NotNull Inventory inv) {
         double coins = playerData.getCoins();
         Component coinsStr = Component.text("");
         if (coins <= 1) {
@@ -34,7 +35,7 @@ public class ProfileInventory extends AbstractInventory {
 
         inv.setItem(4, new ItemBuilder(Material.PLAYER_HEAD)
                 .setSkullOwner(player.getPlayerProfile())
-                .displayName(Component.text(player.getName()).decoration(TextDecoration.ITALIC, false))
+                .customName(Component.text(player.getName()).decoration(TextDecoration.ITALIC, false))
                 .addLoreLine(coinsStr.color(NamedTextColor.GOLD))
                 .toItemStack());
 
@@ -44,7 +45,7 @@ public class ProfileInventory extends AbstractInventory {
 
         inv.setItem(12, new ItemBuilder(Material.ENDER_PEARL)
                 .itemName(Component.text("Partie", NamedTextColor.AQUA))
-                .addLoreLine(Component.text("Bientôt", NamedTextColor.GOLD))
+                .addLoreLine(Component.text("(À venir)", NamedTextColor.DARK_GRAY))
                 .toItemStack());
 
         inv.setItem(14, new ItemBuilder(Material.PAPER)
@@ -57,18 +58,12 @@ public class ProfileInventory extends AbstractInventory {
     }
 
     @Override
-    public void interact(Player player, String itemName, ItemStack item) {
+    public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
         switch (item.getType()) {
             case PLAYER_HEAD -> player.sendMessage(GameAPI.getPrefix().append(Component.text("C'est moi.", NamedTextColor.RED)));
-
             case CANDLE -> GameAPI.getInstance().getInventoryManager().openInventory(new FriendsInventory(player), player);
-
             case PAPER -> GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(player), player);
-
-            case ENDER_PEARL -> player.sendMessage(GameAPI.getPrefix().append(Component.text("Bientôt...")));
-
             case CLOCK -> GameAPI.getInstance().getInventoryManager().openInventory(new OptionsInventory(player), player);
-
             default -> {}
         }
     }

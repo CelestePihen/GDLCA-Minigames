@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class OptionsInventory extends AbstractInventory {
 
@@ -24,7 +25,7 @@ public class OptionsInventory extends AbstractInventory {
 
     // Si le colorant est vert, cela veut dire que le joueur accepte les demandes d'amis. En rouge, si c'est le contraire
     @Override
-    protected void addItems(Inventory inv) {
+    protected void addItems(@NotNull Inventory inv) {
         if (playerData.isAllowingFriends()) {
             inv.addItem(ALLOW_FRIENDS_GREEN);
         } else {
@@ -34,7 +35,7 @@ public class OptionsInventory extends AbstractInventory {
 
     // Si le colorant est vert, cela veut dire que le joueur accepte les demandes d'amis. En rouge, si c'est le contraire
     @Override
-    public void interact(Player player, String itemName, ItemStack item) {
+    public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
         if (item.getType() == Material.GREEN_DYE) {
             playerData.setAllowFriends(false);
             setItem(0, ALLOW_FRIENDS_RED);

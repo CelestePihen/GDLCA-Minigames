@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +24,23 @@ public class SantaLeaderboardInventory extends AbstractInventory {
     }
 
     @Override
-    protected void addItems(Inventory inv) {
-        List<UUID> sortedPlayers = getTopPlayers(9);
+    protected boolean makeGlassPane() {
+        return false;
+    }
+
+    @Override
+    protected void addItems(@NotNull Inventory inv) {
+        for (int i = 0; i < 9; i++) {
+            Material decoration = (i % 2 == 0) ? Material.RED_STAINED_GLASS_PANE : Material.GREEN_STAINED_GLASS_PANE;
+            setItem(i, new ItemBuilder(decoration).hideTooltip().toItemStack());
+        }
+
+        for (int i = 18; i < getSize(); i++) {
+            Material decoration = (i % 2 == 0) ? Material.RED_STAINED_GLASS_PANE : Material.GREEN_STAINED_GLASS_PANE;
+            setItem(i, new ItemBuilder(decoration).hideTooltip().toItemStack());
+        }
+
+        List<UUID> sortedPlayers = getTopPlayers();
         int slot = 9;
 
         for (int i = 0; i < sortedPlayers.size(); i++) {
@@ -38,8 +54,9 @@ public class SantaLeaderboardInventory extends AbstractInventory {
 
             ItemStack item = new ItemBuilder(Material.PLAYER_HEAD)
                     .setSkullOwner(Bukkit.createProfile(uuid))
-                    .displayName(Component.text("#" + (i + 1) + " " + playerName, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+                    .customName(Component.text("#" + (i + 1) + " " + playerName, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
                     .lore(Component.text("Points : " + points, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                    .hideComponents("minecraft:profile")
                     .toItemStack();
 
             setItem(slot, item);
@@ -48,16 +65,16 @@ public class SantaLeaderboardInventory extends AbstractInventory {
     }
 
     @Override
-    public void interact(Player player, String itemName, ItemStack item) {
+    public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
 
     }
 
     /**
      * Récupère les UUID des meilleurs joueurs triés par points
      */
-    private List<UUID> getTopPlayers(int limit) {
+    private List<UUID> getTopPlayers() {
         return WinterPlayerData.getAllPlayersSortedByPoints().stream()
-                .limit(limit)
+                .limit(9)
                 .collect(Collectors.toList());
     }
 

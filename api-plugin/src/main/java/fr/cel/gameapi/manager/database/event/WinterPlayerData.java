@@ -45,13 +45,15 @@ public class WinterPlayerData {
      * Removes winter points from the player.
      * @param amount The amount of winter points to remove
      */
-    public void removeWinterPoints(int amount) {
+    public boolean removeWinterPoints(int amount) {
         try (Connection connection = GameAPI.getInstance().getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_REMOVE_POINTS_PLAYER_SQL)) {
             preparedStatement.setInt(1, amount);
             preparedStatement.setString(2, uuid.toString());
             preparedStatement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while removing winter points from player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
+            return false;
         }
     }
 

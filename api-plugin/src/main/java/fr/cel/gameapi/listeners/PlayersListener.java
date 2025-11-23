@@ -36,7 +36,7 @@ public final class PlayersListener implements Listener {
         this.main = main;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
@@ -64,10 +64,11 @@ public final class PlayersListener implements Listener {
                 .append(Component.text("GDLCA Minigames", NamedTextColor.AQUA))
                 .append(Component.text(" !", NamedTextColor.WHITE)));
 
-        player.sendPlayerListFooter(Component.text("Discord", NamedTextColor.DARK_AQUA).append(Component.text(": discord.gg/vFjPYC4Mj8", NamedTextColor.WHITE)));
+        player.sendPlayerListFooter(Component.text("Discord", NamedTextColor.DARK_AQUA)
+                .append(Component.text(": discord.gg/vFjPYC4Mj8", NamedTextColor.WHITE)));
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 

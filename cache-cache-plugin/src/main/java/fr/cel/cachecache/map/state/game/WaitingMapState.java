@@ -89,7 +89,7 @@ public class WaitingMapState extends MapState {
         Player seeker = selectRandomEligiblePlayer();
         if (seeker == null) return;
 
-        getMap().setLastHunter(seeker.getName());
+        getMap().setLastHunter(seeker.getName(), false);
         getMap().getSeekers().add(seeker.getUniqueId());
         getMap().getTeamSeekers().addPlayer(seeker);
 
@@ -105,7 +105,7 @@ public class WaitingMapState extends MapState {
         Player seeker = selectRandomEligiblePlayer();
         if (seeker == null) return;
 
-        getMap().setLastHunter(seeker.getName());
+        getMap().setLastHunter(seeker.getName(), false);
         setupSeeker(seeker);
     }
 

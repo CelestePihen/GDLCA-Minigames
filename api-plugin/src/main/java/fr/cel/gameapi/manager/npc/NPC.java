@@ -20,7 +20,7 @@ import java.util.UUID;
 public class NPC {
 
     @NotNull @Getter private final String name;
-    @NotNull @Getter private final Component displayName;
+    @Nullable @Getter private final Component displayName;
 
     @Getter private UUID uuid;
     @Getter private Location location;
@@ -35,7 +35,7 @@ public class NPC {
      * @param displayName The display name of the NPC.
      * @param location The location where the NPC will be spawned.
      */
-    public NPC(@NotNull String name, @NotNull Component displayName, @NotNull Location location) {
+    public NPC(@NotNull String name, @Nullable Component displayName, @NotNull Location location) {
         this.name = name;
         this.displayName = displayName;
         this.location = location;
@@ -70,8 +70,14 @@ public class NPC {
     public void spawn() {
         this.mannequin = location.getWorld().spawn(location, Mannequin.class, mannequin -> {
             this.uuid = mannequin.getUniqueId();
-            mannequin.customName(this.displayName);
-            mannequin.setCustomNameVisible(true);
+
+            if (this.displayName == null) {
+                mannequin.customName(Component.empty());
+                mannequin.setCustomNameVisible(false);
+            } else {
+                mannequin.customName(this.displayName);
+                mannequin.setCustomNameVisible(true);
+            }
 
             mannequin.setPose(pose);
             mannequin.setImmovable(true);
@@ -200,7 +206,6 @@ public class NPC {
      */
     public void setLocation(@NotNull Location location) {
         this.location = location;
-        // à tester
         this.mannequin.teleportAsync(location);
     }
 

@@ -33,3 +33,6 @@ commands:
     description: Commande qui permet de gérer les PNJ
     permission: gameapi.npc
     aliases: [pnj]
+  cosmetics:
+    description: Commande qui permet de gérer les cosmétiques
+    aliases: [cosmetique, cosmetic, cos]

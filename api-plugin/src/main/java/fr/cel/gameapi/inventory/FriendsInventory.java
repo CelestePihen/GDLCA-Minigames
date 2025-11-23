@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class FriendsInventory extends AbstractInventory {
     }
 
     @Override
-    protected void addItems(Inventory inv) {
+    protected void addItems(@NotNull Inventory inv) {
         for (String friendUUIDStr : GameAPI.getInstance().getFriendsManager().getFriendsUUIDList(player)) {
             UUID friendUUID = UUID.fromString(friendUUIDStr);
 
@@ -39,7 +40,8 @@ public class FriendsInventory extends AbstractInventory {
             ItemStack skull = new ItemBuilder(Material.PLAYER_HEAD)
                     .addLoreLine(statusColor)
                     .setSkullOwner(playerProfile)
-                    .displayName(friendName.decoration(TextDecoration.ITALIC, false))
+                    .customName(friendName.decoration(TextDecoration.ITALIC, false))
+                    .hideComponents("minecraft:profile")
                     .toItemStack();
 
             inv.addItem(skull);
@@ -47,7 +49,7 @@ public class FriendsInventory extends AbstractInventory {
     }
 
     @Override
-    public void interact(Player player, String itemName, ItemStack item) {
+    public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
         // TODO afficher le "profil" de l'ami ?
         player.sendMessage(GameAPI.getPrefix().append(Component.text("Bientôt...")));
     }

@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class PVPStatsInventory extends AbstractInventory {
 
@@ -23,7 +24,7 @@ public class PVPStatsInventory extends AbstractInventory {
     }
 
     @Override
-    protected void addItems(Inventory inv) {
+    protected void addItems(@NotNull Inventory inv) {
         StatisticsManager statisticsManager = GameAPI.getInstance().getStatisticsManager();
 
         for (PVPStatsInventory.Statistic statistic : PVPStatsInventory.Statistic.values()) {
@@ -39,7 +40,7 @@ public class PVPStatsInventory extends AbstractInventory {
     }
 
     @Override
-    public void interact(Player player, String itemName, ItemStack item) {
+    public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
         if (item.getType() == Material.BARRIER) GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(this.player), player);
     }
 
