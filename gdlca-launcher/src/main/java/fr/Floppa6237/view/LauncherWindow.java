@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class LauncherWindow extends Application {
@@ -21,15 +22,16 @@ public class LauncherWindow extends Application {
     @Override
     public void start(Stage MainStage) {
 
+        //La police d'écriture
+        Font.loadFont(getClass().getResource("/font/Jersey10-Regular.ttf").toExternalForm(),10);
+
         /* ----------------------------------------
          *  Fenêtre principale
          * ---------------------------------------- */
         BorderPane MainPane = new BorderPane();
 
         Scene scene = new Scene(MainPane, 1280, 720);
-        scene.getStylesheets().add(
-                getClass().getResource("/css/style.css").toExternalForm()
-        );
+        scene.getStylesheets().add(getClass().getResource("/css/style_main.css").toExternalForm());
 
         MainStage.setTitle("GDLCA Launcher");
         MainStage.setResizable(false);
@@ -63,12 +65,13 @@ public class LauncherWindow extends Application {
         Button PatchNotesButton = new Button("Patch Notes");
         Button InformationsButton = new Button("Informations");
         Button SiteWebButton = new Button("Site Web");
+        ImageView logoParametre = createTopbarImage("/images/main-pane/top-bar/parametre.png");
 
         AccueilButton.setId("top-bar-button");
         PatchNotesButton.setId("top-bar-button");
         InformationsButton.setId("top-bar-button");
         SiteWebButton.setId("top-bar-button");
-        ImageView logoParametre = createTopbarImage("/images/top-bar/parametre.png");
+
 
         SectionJeu.getChildren().addAll(
                 AccueilButton,
@@ -101,18 +104,13 @@ public class LauncherWindow extends Application {
 
         MainPane.setCenter(BodyBar);
 
-
-        /* ----------------------------------------
-         *  MÉTHODES DE CHANGEMENT D'ÉCRAN
-         * ---------------------------------------- */
-
         /* ----------------------------------------
          *  MÉTHODES DE CHANGEMENT D'ÉCRAN
          * ---------------------------------------- */
 
         Runnable loadGDLCA = () -> {
             Image img = new Image(
-                    getClass().getResource("/images/body/gdlca_screen.png").toExternalForm()
+                    getClass().getResource("/images/main-pane/body/gdlca_screen.png").toExternalForm()
             );
             ImageView view = new ImageView(img);
             view.setFitWidth(1100);
@@ -128,9 +126,7 @@ public class LauncherWindow extends Application {
         };
 
         Runnable loadMinecraft = () -> {
-            Image img = new Image(
-                    getClass().getResource("/images/body/minecraft_screen.png").toExternalForm()
-            );
+            Image img = new Image(getClass().getResource("/images/main-pane/body/minecraft_screen.png").toExternalForm());
             ImageView view = new ImageView(img);
             view.setFitWidth(1100);
             view.setPreserveRatio(true);
@@ -145,9 +141,7 @@ public class LauncherWindow extends Application {
         };
 
         Runnable loadElden = () -> {
-            Image img = new Image(
-                    getClass().getResource("/images/body/eldenRPG_screen.png").toExternalForm()
-            );
+            Image img = new Image(getClass().getResource("/images/main-pane/body/eldenRPG_screen.png").toExternalForm());
             ImageView view = new ImageView(img);
             view.setFitWidth(1100);
             view.setPreserveRatio(true);
@@ -161,6 +155,7 @@ public class LauncherWindow extends Application {
             BodyBar.getChildren().setAll(view);
         };
 
+        logoParametre.setOnMouseClicked(e -> new settingWindow().show());
 
         // Chargement par défaut
         loadGDLCA.run();
@@ -177,9 +172,9 @@ public class LauncherWindow extends Application {
 
 
         // Logos
-        ImageView logoMinecraft = createSidebarImage("/images/left-bar/minecraft.png");
-        ImageView logoGDLCA    = createSidebarImage("/images/left-bar/gdlca.png");
-        ImageView logoElden    = createSidebarImage("/images/left-bar/eldenRPG.png");
+        ImageView logoMinecraft = createSidebarImage("/images/main-pane/left-bar/minecraft.png");
+        ImageView logoGDLCA    = createSidebarImage("/images/main-pane/left-bar/gdlca.png");
+        ImageView logoElden    = createSidebarImage("/images/main-pane/left-bar/eldenRPG.png");
 
         // Actions
         logoMinecraft.setOnMouseClicked(e -> {

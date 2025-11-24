@@ -1,0 +1,52 @@
+@font-face {
+    font-family: "Jersey 10";
+    src: url("/font/Jersey10-Regular.ttf");
+}
+
+#top-bar{
+    -fx-background-color: #707070;
+}
+
+#top-bar-button{
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-family: "Jersey 10";
+}
+
+#top-bar-button:hover{
+    -fx-text-fill: orange;
+}
+
+#top-bar-button:pressed{
+    -fx-text-fill: orange;
+}
+
+
+
+#left-bar{
+    -fx-background-color: #A4A4A4;
+}
+
+#left-bar-image{
+    -fx-cursor: hand;
+
+}
+
+#left-bar-image:hover{
+
+}
+
+
+
+#body-bar{
+    -fx-background-color: #A4A4A4;
+}
+
+
+
+#section-compte{
+    -fx-background-color: green;
+}

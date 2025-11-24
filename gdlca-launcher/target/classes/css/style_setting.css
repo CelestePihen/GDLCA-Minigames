@@ -1,0 +1,23 @@
+@font-face {
+    font-family: "Jersey 10";
+    src: url("/font/Jersey10-Regular.ttf");
+}
+
+#left-bar{
+    -fx-background-color: #707070;
+}
+
+#left-bar-button{
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-opacity: 0.8;
+    -fx-cursor: hand;
+    -fx-font-family: "Jersey 10";
+}
+
+#left-bar-button:hover{
+    -fx-background-color: #767676;
+    -fx-opacity: 1.0;
+}
