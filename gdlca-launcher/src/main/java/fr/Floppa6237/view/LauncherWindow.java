@@ -7,31 +7,34 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class LauncherWindow extends Application {
 
-    // Logo sélectionné
+    /* ----------------------------------------
+     *  Variables globales
+     * ---------------------------------------- */
     private ImageView selectedLogo = null;
 
+
+    /* ========================================================================
+     *  MÉTHODE PRINCIPALE : START()
+     * ======================================================================== */
     @Override
     public void start(Stage MainStage) {
 
-        //La police d'écriture
-        Font.loadFont(getClass().getResource("/font/Jersey10-Regular.ttf").toExternalForm(),10);
+        /* ---- Chargement des polices ---- */
+        Font.loadFont(getClass().getResource("/font/Jersey10-Regular.ttf").toExternalForm(), 10);
 
-        /* ----------------------------------------
-         *  Fenêtre principale
-         * ---------------------------------------- */
+        /* ---- Fenêtre principale ---- */
         BorderPane MainPane = new BorderPane();
-
         Scene scene = new Scene(MainPane, 1280, 720);
-        scene.getStylesheets().add(getClass().getResource("/css/style_main.css").toExternalForm());
+        scene.getStylesheets().add(
+                getClass().getResource("/css/style_main.css").toExternalForm()
+        );
 
         MainStage.setTitle("GDLCA Launcher");
         MainStage.setResizable(false);
@@ -39,14 +42,38 @@ public class LauncherWindow extends Application {
         MainStage.show();
 
 
-        /* ----------------------------------------
+        /* ========================================================================
          *  TOP BAR
-         * ---------------------------------------- */
+         * ======================================================================== */
+        HBox TopBar = buildTopBar(MainPane);
+
+
+        /* ========================================================================
+         *  BODY (zone centrale)
+         * ======================================================================== */
+        HBox BodyBar = buildBody(MainPane);
+
+
+        /* ========================================================================
+         *  LEFT BAR
+         * ======================================================================== */
+        VBox LeftBar = buildLeftBar(BodyBar);
+        MainPane.setLeft(LeftBar);
+    }
+
+
+
+    /* ========================================================================
+     *  TOP BAR BUILDER
+     * ======================================================================== */
+    private HBox buildTopBar(BorderPane MainPane) {
+
         HBox TopBar = new HBox(50);
-        TopBar.setPrefHeight(75);
         TopBar.setId("top-bar");
         TopBar.setPadding(new Insets(10));
+        TopBar.setPrefHeight(75);
 
+        // Sous-sections
         HBox SectionCompte = new HBox(50);
         SectionCompte.setId("section-compte");
         SectionCompte.setAlignment(Pos.CENTER_LEFT);
@@ -55,23 +82,19 @@ public class LauncherWindow extends Application {
         HBox SectionJeu = new HBox(50);
         SectionJeu.setAlignment(Pos.CENTER);
 
-
         HBox ParametreGlobal = new HBox(50);
         ParametreGlobal.setAlignment(Pos.CENTER_RIGHT);
 
-
-
+        // Boutons top bar
         Button AccueilButton = new Button("Accueil");
         Button PatchNotesButton = new Button("Patch Notes");
         Button InformationsButton = new Button("Informations");
         Button SiteWebButton = new Button("Site Web");
-        ImageView logoParametre = createTopbarImage("/images/main-pane/top-bar/parametre.png");
 
         AccueilButton.setId("top-bar-button");
         PatchNotesButton.setId("top-bar-button");
         InformationsButton.setId("top-bar-button");
         SiteWebButton.setId("top-bar-button");
-
 
         SectionJeu.getChildren().addAll(
                 AccueilButton,
@@ -80,10 +103,13 @@ public class LauncherWindow extends Application {
                 SiteWebButton
         );
 
-        ParametreGlobal.getChildren().addAll(
-                logoParametre
-        );
+        // Icône paramètre
+        ImageView logoParametre = createTopbarImage("/images/main-pane/top-bar/parametre.png");
+        ParametreGlobal.getChildren().add(logoParametre);
 
+        logoParametre.setOnMouseClicked(e -> new settingWindow().show());
+
+        // Assembler la top bar
         TopBar.getChildren().addAll(
                 SectionCompte,
                 SectionJeu,
@@ -91,108 +117,63 @@ public class LauncherWindow extends Application {
         );
 
         MainPane.setTop(TopBar);
+        return TopBar;
+    }
 
 
-        /* ----------------------------------------
-         *  BODY (zone centrale)
-         * ---------------------------------------- */
+
+    /* ========================================================================
+     *  BODY BUILDER
+     * ======================================================================== */
+    private HBox buildBody(BorderPane MainPane) {
+
         HBox BodyBar = new HBox();
         BodyBar.setId("body-bar");
-
         BodyBar.setPadding(new Insets(10));
         BodyBar.setAlignment(Pos.CENTER);
-
         MainPane.setCenter(BodyBar);
 
-        /* ----------------------------------------
-         *  MÉTHODES DE CHANGEMENT D'ÉCRAN
-         * ---------------------------------------- */
+        // Charge par défaut l’écran GDLCA
+        loadScreen(BodyBar, "/images/main-pane/body/gdlca_screen.png");
 
-        Runnable loadGDLCA = () -> {
-            Image img = new Image(
-                    getClass().getResource("/images/main-pane/body/gdlca_screen.png").toExternalForm()
-            );
-            ImageView view = new ImageView(img);
-            view.setFitWidth(1100);
-            view.setPreserveRatio(true);
-
-            // Coins arrondis
-            Rectangle clip = new Rectangle(1100, 620);
-            clip.setArcWidth(40);
-            clip.setArcHeight(40);
-            view.setClip(clip);
-
-            BodyBar.getChildren().setAll(view);
-        };
-
-        Runnable loadMinecraft = () -> {
-            Image img = new Image(getClass().getResource("/images/main-pane/body/minecraft_screen.png").toExternalForm());
-            ImageView view = new ImageView(img);
-            view.setFitWidth(1100);
-            view.setPreserveRatio(true);
-
-            // Coins arrondis
-            Rectangle clip = new Rectangle(1100, 620);
-            clip.setArcWidth(40);
-            clip.setArcHeight(40);
-            view.setClip(clip);
-
-            BodyBar.getChildren().setAll(view);
-        };
-
-        Runnable loadElden = () -> {
-            Image img = new Image(getClass().getResource("/images/main-pane/body/eldenRPG_screen.png").toExternalForm());
-            ImageView view = new ImageView(img);
-            view.setFitWidth(1100);
-            view.setPreserveRatio(true);
-
-            // Coins arrondis
-            Rectangle clip = new Rectangle(1100, 620);
-            clip.setArcWidth(40);
-            clip.setArcHeight(40);
-            view.setClip(clip);
-
-            BodyBar.getChildren().setAll(view);
-        };
-
-        logoParametre.setOnMouseClicked(e -> new settingWindow().show());
-
-        // Chargement par défaut
-        loadGDLCA.run();
+        return BodyBar;
+    }
 
 
-        /* ----------------------------------------
-         *  LEFT BAR
-         * ---------------------------------------- */
+
+    /* ========================================================================
+     *  LEFT BAR BUILDER
+     * ======================================================================== */
+    private VBox buildLeftBar(HBox BodyBar) {
+
         VBox LeftBar = new VBox(75);
-        LeftBar.setPrefWidth(150);
-        LeftBar.setAlignment(Pos.CENTER);
-        LeftBar.setPadding(new Insets(10));
         LeftBar.setId("left-bar");
-
+        LeftBar.setPadding(new Insets(10));
+        LeftBar.setAlignment(Pos.CENTER);
+        LeftBar.setPrefWidth(150);
 
         // Logos
         ImageView logoMinecraft = createSidebarImage("/images/main-pane/left-bar/minecraft.png");
         ImageView logoGDLCA    = createSidebarImage("/images/main-pane/left-bar/gdlca.png");
         ImageView logoElden    = createSidebarImage("/images/main-pane/left-bar/eldenRPG.png");
 
-        // Actions
+        // Actions clic
         logoMinecraft.setOnMouseClicked(e -> {
             selectLogo(logoMinecraft);
-            loadMinecraft.run();
+            loadScreen(BodyBar, "/images/main-pane/body/minecraft_screen.png");
         });
 
         logoGDLCA.setOnMouseClicked(e -> {
             selectLogo(logoGDLCA);
-            loadGDLCA.run();
+            loadScreen(BodyBar, "/images/main-pane/body/gdlca_screen.png");
         });
 
         logoElden.setOnMouseClicked(e -> {
             selectLogo(logoElden);
-            loadElden.run();
+            loadScreen(BodyBar, "/images/main-pane/body/eldenRPG_screen.png");
         });
 
-        // Par défaut : GDLCA sélectionné
+        // Logo sélectionné au démarrage
         selectLogo(logoGDLCA);
 
         LeftBar.getChildren().addAll(
@@ -201,14 +182,36 @@ public class LauncherWindow extends Application {
                 logoElden
         );
 
-        MainPane.setLeft(LeftBar);
+        return LeftBar;
     }
 
 
-    /* ----------------------------------------
-     *  Méthode utilitaire pour les logos
-     * ---------------------------------------- */
+
+    /* ========================================================================
+     *  UTILITAIRES
+     * ======================================================================== */
+
+    /** Charge une image au centre avec coins arrondis */
+    private void loadScreen(HBox BodyBar, String resourcePath) {
+
+        Image img = new Image(getClass().getResource(resourcePath).toExternalForm());
+        ImageView view = new ImageView(img);
+
+        view.setFitWidth(1100);
+        view.setPreserveRatio(true);
+
+        Rectangle clip = new Rectangle(1100, 620);
+        clip.setArcWidth(40);
+        clip.setArcHeight(40);
+        view.setClip(clip);
+
+        BodyBar.getChildren().setAll(view);
+    }
+
+
+    /** Création d’un logo pour la sidebar */
     private ImageView createSidebarImage(String resourcePath) {
+
         Image img = new Image(getClass().getResource(resourcePath).toExternalForm());
         ImageView view = new ImageView(img);
 
@@ -219,58 +222,43 @@ public class LauncherWindow extends Application {
         // Opacité par défaut
         view.setOpacity(0.5);
 
-        // Animation de survol
+        // Hover
         view.setOnMouseEntered(e -> {
-            if (view != selectedLogo)
-                view.setOpacity(0.8);
+            if (view != selectedLogo) view.setOpacity(0.8);
         });
-
         view.setOnMouseExited(e -> {
-            if (view != selectedLogo)
-                view.setOpacity(0.5);
+            if (view != selectedLogo) view.setOpacity(0.5);
         });
 
         return view;
     }
 
+
+    /** Création des icônes top bar */
     private ImageView createTopbarImage(String resourcePath) {
+
         Image img = new Image(getClass().getResource(resourcePath).toExternalForm());
         ImageView view = new ImageView(img);
 
         view.setPreserveRatio(true);
+        view.setOpacity(0.6);
         view.setId("top-bar-image");
 
-        // Opacité par défaut
-        view.setOpacity(0.6);
-
-        // Animation de survol
-        view.setOnMouseEntered(e -> {
-            if (view != selectedLogo)
-                view.setOpacity(0.9);
-        });
-
-        view.setOnMouseExited(e -> {
-            if (view != selectedLogo)
-                view.setOpacity(0.7);
-        });
+        view.setOnMouseEntered(e -> view.setOpacity(0.9));
+        view.setOnMouseExited(e -> view.setOpacity(0.7));
 
         return view;
     }
 
 
-
-    /* ----------------------------------------
-     *  Sélection visuelle d'un logo
-     * ---------------------------------------- */
+    /** Gère le logo sélectionné */
     private void selectLogo(ImageView clickedLogo) {
-
 
         if (selectedLogo != null) {
             selectedLogo.setOpacity(0.5);
         }
 
         selectedLogo = clickedLogo;
-
         selectedLogo.setOpacity(1.0);
     }
 
