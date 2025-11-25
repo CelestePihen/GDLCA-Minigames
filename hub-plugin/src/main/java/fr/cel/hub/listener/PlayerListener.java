@@ -74,7 +74,8 @@ public class PlayerListener extends HListener {
             return;
         }
 
-        if (event.isShiftClick() && event.getCurrentItem() != null && isArmorItem(event.getCurrentItem())) event.setCancelled(true);
+        if (event.isShiftClick() && event.getCurrentItem() != null && isArmorItem(event.getCurrentItem()))
+            event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -91,5 +92,4 @@ public class PlayerListener extends HListener {
                 || Tag.ITEMS_FOOT_ARMOR.isTagged(item.getType())
                 || item.getType() == Material.PAPER;
     }
-
 }

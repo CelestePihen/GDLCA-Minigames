@@ -65,7 +65,7 @@ public class CalculGiftsSubCommand implements SubCommand {
         }
 
         if (args.length != 7) {
-            player.sendMessage(gameManager.getPrefix().append(Component.text("Usage: /cc calculgifts <mapName> <x1> <y1> <z1> <x2> <y2> <z2>", NamedTextColor.RED)));
+            player.sendMessage(gameManager.getPrefix().append(Component.text("Usage: " + getUsage(), NamedTextColor.RED)));
             return;
         }
 

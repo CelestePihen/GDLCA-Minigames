@@ -100,8 +100,6 @@ public class MapConfig {
 
         Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
             try {
-                // Valider et nettoyer les données avant sauvegarde
-                validateAndCleanConfig();
                 config.save(file);
             } catch (IOException e) {
                 main.getComponentLogger().error(main.getGameManager().getPrefix().append(Component.text("Erreur dans la sauvegarde de la carte CC " + this.mapName + " : " + e.getMessage(), NamedTextColor.RED)));
@@ -113,28 +111,6 @@ public class MapConfig {
                 }
             }
         });
-    }
-
-    /**
-     * Valide et nettoie les données de configuration pour éviter les erreurs de sérialisation.
-     */
-    private void validateAndCleanConfig() {
-        List<String> keysToRemove = new ArrayList<>();
-
-        for (String key : config.getKeys(true)) {
-            Object value = config.get(key);
-
-            // Supprimer les valeurs non sérialisables
-            if (value instanceof Location) {
-                main.getComponentLogger().warn(Component.text("Attention : une Location non convertie détectée à la clé '" + key + "'. Elle sera supprimée.", NamedTextColor.YELLOW));
-                keysToRemove.add(key);
-            }
-        }
-
-        // Supprimer les clés problématiques
-        for (String key : keysToRemove) {
-            config.set(key, null);
-        }
     }
 
     public List<Location> getGiftLocations() {

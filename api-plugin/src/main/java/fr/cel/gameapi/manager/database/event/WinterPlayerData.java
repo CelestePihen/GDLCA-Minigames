@@ -21,6 +21,9 @@ public class WinterPlayerData {
     private static final String SELECT_GIFTS_FOUND_PLAYER_SQL = "SELECT gifts_found FROM event_winter2025 WHERE uuid_player = ?;";
     private static final String SELECT_POINTS_LEADERBOARD_SQL = "SELECT uuid_player FROM event_winter2025 ORDER BY points DESC;";
 
+    private static final String INSERT_HEAD_PLAYER_SQL = "INSERT INTO event_winter2025_heads VALUES (?, ?);";
+    private static final String SELECT_HEADS_PLAYER_SQL = "SELECT head_id FROM event_winter2025_heads WHERE player_uuid = ?;";
+
     private final UUID uuid;
 
     public WinterPlayerData(UUID uuid) {
@@ -130,6 +133,38 @@ public class WinterPlayerData {
         }
 
         return players;
+    }
+
+    /**
+     * Adds head found to the player.
+     * @param headId The head's id found by the player to add
+     */
+    public void addHeadFound(int headId) {
+        try (Connection connection = GameAPI.getInstance().getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_HEAD_PLAYER_SQL)) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setInt(2, headId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while adding gifts found to player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
+        }
+    }
+
+    /**
+     * Retrieves the heads the player has.
+     * @return The heads found by the player
+     */
+    public List<Integer> getHeads() {
+        List<Integer> headsId = new ArrayList<>();
+        try (Connection connection = GameAPI.getInstance().getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SELECT_HEADS_PLAYER_SQL)) {
+            preparedStatement.setString(1, uuid.toString());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) headsId.add(resultSet.getInt("head_id"));
+        } catch (SQLException e) {
+            GameAPI.getInstance().getComponentLogger().error(Component.text("An error occurred while retrieving gifts found for player " + uuid + ": " + e.getMessage(), NamedTextColor.RED));
+        }
+        return headsId;
     }
 
 }

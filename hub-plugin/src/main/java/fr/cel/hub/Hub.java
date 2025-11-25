@@ -9,6 +9,7 @@ import fr.cel.hub.listener.ItemListener;
 import fr.cel.hub.listener.PlayerListener;
 import fr.cel.hub.manager.HubNPCManager;
 import fr.cel.hub.manager.dj.DJManager;
+import fr.cel.hub.manager.event.winter2025.HeadManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,6 +22,7 @@ public final class Hub extends JavaPlugin {
 
     @Getter private NPCManager npcManager;
     @Getter private DJManager djManager;
+    @Getter private HeadManager headManager;
 
     /**
      * Se déclenche quand le plugin démarre
@@ -34,6 +36,7 @@ public final class Hub extends JavaPlugin {
         this.npcManager.loadNPCs();
 
         this.djManager = new DJManager(this);
+        this.headManager = new HeadManager(this);
 
         registerListeners();
         registerCommands();
@@ -60,9 +63,9 @@ public final class Hub extends JavaPlugin {
      */
     private void registerCommands() {
         CommandsManager commandsManager = new CommandsManager(this);
-
         commandsManager.addCommand("hub", new HubCommand());
         commandsManager.addCommand("event", new EventCommand());
+        commandsManager.addCommand("calculheads", new EventCommand());
     }
 
 }
