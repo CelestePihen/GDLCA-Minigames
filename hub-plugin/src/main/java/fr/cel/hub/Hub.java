@@ -2,12 +2,9 @@ package fr.cel.hub;
 
 import fr.cel.gameapi.manager.command.CommandsManager;
 import fr.cel.gameapi.manager.npc.NPCManager;
-import fr.cel.hub.commands.AddHeadCommand;
-import fr.cel.hub.commands.CalculHeadsCommand;
-import fr.cel.hub.commands.EventCommand;
-import fr.cel.hub.commands.HubCommand;
+import fr.cel.hub.commands.*;
 import fr.cel.hub.listener.ChatListener;
-import fr.cel.hub.listener.HeadListener;
+import fr.cel.hub.manager.event.winter2025.HeadListener;
 import fr.cel.hub.listener.ItemListener;
 import fr.cel.hub.listener.PlayerListener;
 import fr.cel.hub.manager.HubNPCManager;
@@ -71,6 +68,7 @@ public final class Hub extends JavaPlugin {
         commandsManager.addCommand("event", new EventCommand());
         commandsManager.addCommand("addhead", new AddHeadCommand(this));
         commandsManager.addCommand("calculheads", new CalculHeadsCommand(this));
+        commandsManager.addCommand("head", new HeadCommand());
     }
 
 }

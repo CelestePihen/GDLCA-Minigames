@@ -6,7 +6,9 @@ import fr.cel.gameapi.manager.cosmetic.Cosmetic;
 import fr.cel.gameapi.manager.cosmetic.CosmeticType;
 import fr.cel.gameapi.manager.cosmetic.CosmeticsManager;
 import fr.cel.gameapi.manager.cosmetic.PlayerCosmetics;
+import fr.cel.gameapi.manager.cosmetic.applicator.HatApplicator;
 import fr.cel.gameapi.utils.ItemBuilder;
+import fr.cel.hub.Hub;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -175,6 +177,10 @@ public class ChristmasShopGUI extends AbstractInventory {
             .decoration(TextDecoration.BOLD, currentType == type);
         builder.itemName(name);
 
+        if (type == CosmeticType.HAT) {
+            builder.hideComponents("equippable", "damage_resistant");
+        }
+
         if (currentType == type) {
             builder.addLoreLine(Component.text("Catégorie sélectionnée", NamedTextColor.GREEN));
         } else {
@@ -187,31 +193,58 @@ public class ChristmasShopGUI extends AbstractInventory {
     private ItemStack createShopCosmeticItem(Cosmetic cosmetic) {
         PlayerCosmetics playerCosmetics = cosmeticsManager.getPlayerCosmetics(player);
         boolean owned = playerCosmetics != null && playerCosmetics.ownsCosmetic(cosmetic.getId());
+        NamedTextColor rarityColor = Cosmetic.getRarityColor(cosmetic);
 
-        ItemBuilder builder = new ItemBuilder(Material.PAPER);
-        NamedTextColor color = Cosmetic.getRarityColor(cosmetic);
-        builder.itemName(Component.text(cosmetic.getName()).color(color).decoration(TextDecoration.BOLD, true));
+        if (cosmetic.getType() == CosmeticType.HAT) {
+            HatApplicator hatApplicator = (HatApplicator) cosmeticsManager.getApplicators().get(CosmeticType.HAT);
+            ItemBuilder builder = new ItemBuilder(hatApplicator.createHatItem(cosmetic));
+
+            builder.addLoreLine(Component.empty());
+            builder.addLoreLine(Component.text("Rareté : ", NamedTextColor.GRAY)
+                    .append(Component.text(Cosmetic.getRarityName(cosmetic), rarityColor)));
+
+            builder.addLoreLine(Component.empty());
+            if (owned) {
+                builder.addLoreLine(Component.text("DÉJÀ POSSÉDÉ", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+                builder.setGlow(true);
+            } else {
+                if (cosmetic.isFree()) {
+                    builder.addLoreLine(Component.text("Prix : GRATUIT !", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+                } else {
+                    builder.addLoreLine(Component.text("Prix : ", NamedTextColor.GRAY)
+                            .append(Component.text(cosmetic.getPrice() + " ", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                            .append(Component.text(" flocons de Noël", NamedTextColor.AQUA)));
+                }
+                builder.addLoreLine(Component.empty());
+                builder.addLoreLine(Component.text("» Cliquez pour acheter «", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, true));
+            }
+
+            return builder.toItemStack();
+        }
+
+        ItemBuilder builder = new ItemBuilder(cosmetic.getDisplayMaterial());
+        builder.itemName(Component.text(cosmetic.getName()).color(rarityColor).decoration(TextDecoration.BOLD, true));
 
         if (cosmetic.getDescription() != null && !cosmetic.getDescription().isEmpty()) {
             builder.addLoreLine(Component.text(cosmetic.getDescription(), NamedTextColor.GRAY));
         }
 
         builder.addLoreLine(Component.empty());
-        builder.addLoreLine(Component.text("Rareté: ", NamedTextColor.GRAY)
-            .append(Component.text(Cosmetic.getRarityName(cosmetic), color)));
+        builder.addLoreLine(Component.text("Rareté : ", NamedTextColor.GRAY)
+            .append(Component.text(Cosmetic.getRarityName(cosmetic), rarityColor)));
 
         builder.addLoreLine(Component.empty());
 
         if (owned) {
-            builder.addLoreLine(Component.text("DÉJÀ POSSÉDÉ", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+            builder.addLoreLine(Component.text("✔ DÉJÀ POSSÉDÉ", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
             builder.setGlow(true);
         } else {
             if (cosmetic.isFree()) {
-                builder.addLoreLine(Component.text("Prix: GRATUIT !", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+                builder.addLoreLine(Component.text("Prix : GRATUIT !", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
             } else {
-                builder.addLoreLine(Component.text("Prix: ", NamedTextColor.GRAY)
-                    .append(Component.text(cosmetic.getPrice() + " ", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                    .append(Component.text("❄ Flocons de Noël", NamedTextColor.AQUA)));
+                builder.addLoreLine(Component.text("Prix : ", NamedTextColor.GRAY)
+                    .append(Component.text(cosmetic.getPrice(), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                    .append(Component.text("flocons de Noël", NamedTextColor.AQUA)));
             }
             builder.addLoreLine(Component.empty());
             builder.addLoreLine(Component.text("» Cliquez pour acheter «", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, true));
@@ -242,7 +275,7 @@ public class ChristmasShopGUI extends AbstractInventory {
 
         // Vérifier si déjà possédé
         if (playerCosmetics.ownsCosmetic(cosmetic.getId())) {
-            player.sendMessage(GameAPI.getPrefix().append(Component.text("Vous possédez déjà ce cosmétique !", NamedTextColor.RED)));
+            player.sendMessage(Hub.getPrefix().append(Component.text("Vous possédez déjà ce cosmétique !", NamedTextColor.RED)));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
             return;
         }
@@ -250,7 +283,7 @@ public class ChristmasShopGUI extends AbstractInventory {
         // Vérifier si gratuit
         if (cosmetic.isFree()) {
             if (cosmeticsManager.unlockCosmetic(player, cosmetic.getId())) {
-                player.sendMessage(GameAPI.getPrefix().append(Component.text(cosmetic.getName(), Cosmetic.getRarityColor(cosmetic)))
+                player.sendMessage(Hub.getPrefix().append(Component.text(cosmetic.getName(), Cosmetic.getRarityColor(cosmetic)))
                     .append(Component.text(" obtenu gratuitement !", NamedTextColor.GREEN)));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.2f);
                 refresh();
@@ -260,8 +293,8 @@ public class ChristmasShopGUI extends AbstractInventory {
 
         int eventCoins = GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().getWinterPoints();
         if (eventCoins < cosmetic.getPrice()) {
-            player.sendMessage(GameAPI.getPrefix().append(Component.text("Vous n'avez pas assez de flocons de Noël !", NamedTextColor.RED)));
-            player.sendMessage(GameAPI.getPrefix().append(Component.text("Il vous manque ", NamedTextColor.GRAY))
+            player.sendMessage(Hub.getPrefix().append(Component.text("Vous n'avez pas assez de flocons de Noël !", NamedTextColor.RED)));
+            player.sendMessage(Hub.getPrefix().append(Component.text("Il vous manque ", NamedTextColor.GRAY))
                 .append(Component.text((cosmetic.getPrice() - eventCoins) + " flocons de Noël", NamedTextColor.GOLD)));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
             return;
@@ -269,7 +302,7 @@ public class ChristmasShopGUI extends AbstractInventory {
 
         if (GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().removeWinterPoints(cosmetic.getPrice())) {
             if (cosmeticsManager.unlockCosmetic(player, cosmetic.getId())) {
-                player.sendMessage(GameAPI.getPrefix().append(Component.text(cosmetic.getName(), Cosmetic.getRarityColor(cosmetic)))
+                player.sendMessage(Hub.getPrefix().append(Component.text(cosmetic.getName(), Cosmetic.getRarityColor(cosmetic)))
                     .append(Component.text(" acheté pour ", NamedTextColor.GREEN))
                     .append(Component.text(cosmetic.getPrice() + " flocons de Noël", NamedTextColor.GOLD))
                     .append(Component.text(" !", NamedTextColor.GREEN)));
@@ -278,7 +311,7 @@ public class ChristmasShopGUI extends AbstractInventory {
                 refresh();
             } else {
                 GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(cosmetic.getPrice());
-                player.sendMessage(GameAPI.getPrefix().append(Component.text("Erreur lors de l'achat. Vous avez été remboursé.", NamedTextColor.RED)));
+                player.sendMessage(Hub.getPrefix().append(Component.text("Erreur lors de l'achat. Vous avez été remboursé.", NamedTextColor.RED)));
             }
         }
     }

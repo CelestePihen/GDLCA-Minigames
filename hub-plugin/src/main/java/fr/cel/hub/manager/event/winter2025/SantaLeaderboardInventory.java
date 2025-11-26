@@ -1,7 +1,9 @@
 package fr.cel.hub.manager.event.winter2025;
 
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.database.event.WinterPlayerData;
+import fr.cel.gameapi.manager.inventory.InventoryTypes;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,6 +23,7 @@ public class SantaLeaderboardInventory extends AbstractInventory {
 
     public SantaLeaderboardInventory() {
         super(Component.text("Classement Noël 2025", NamedTextColor.GOLD), 27);
+        this.type = InventoryTypes.GLOBAL;
     }
 
     @Override
@@ -54,19 +57,21 @@ public class SantaLeaderboardInventory extends AbstractInventory {
 
             ItemStack item = new ItemBuilder(Material.PLAYER_HEAD)
                     .setSkullOwner(Bukkit.createProfile(uuid))
-                    .customName(Component.text("#" + (i + 1) + " " + playerName, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-                    .lore(Component.text("Points : " + points, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                    .customName(Component.text("#" + (i + 1) + " " + playerName, NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
+                    .lore(Component.text("Points : ", NamedTextColor.AQUA).append(Component.text(points, NamedTextColor.YELLOW)))
                     .hideComponents("minecraft:profile")
                     .toItemStack();
 
             setItem(slot, item);
             slot++;
         }
+
+        setItem(22, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter")).toItemStack());
     }
 
     @Override
     public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
-
+        if (item.getType() == Material.BARRIER) new SantaInventory(player).open(player);
     }
 
     /**

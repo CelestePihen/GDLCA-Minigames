@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public final class ItemBuilder {
 
     private final ItemStack is;
-    private Map<String, Object> components = new LinkedHashMap<>();
+    private final Map<String, Object> components = new LinkedHashMap<>();
 
     /**
      * Create a new ItemBuilder from scratch.
@@ -97,7 +97,7 @@ public final class ItemBuilder {
      * @param text The name to change it to with a Component.
      */
     public ItemBuilder customName(Component text) {
-        editMeta(itemMeta -> itemMeta.customName(text));
+        editMeta(itemMeta -> itemMeta.customName(text.decoration(TextDecoration.ITALIC, false)));
         return this;
     }
 
@@ -184,9 +184,9 @@ public final class ItemBuilder {
     public ItemBuilder addLoreLine(Component line) {
         editMeta(im -> {
             List<Component> lore = new ArrayList<>();
-            if (im.hasLore() && im.lore() != null) lore = im.lore();
+            if (im.hasLore() && im.lore() != null) lore.addAll(im.lore());
 
-            if (lore != null) lore.add(line.colorIfAbsent(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
+            lore.add(line.colorIfAbsent(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             im.lore(lore);
         });
         return this;

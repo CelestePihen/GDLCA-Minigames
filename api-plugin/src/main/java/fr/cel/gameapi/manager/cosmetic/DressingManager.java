@@ -3,15 +3,11 @@ package fr.cel.gameapi.manager.cosmetic;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.DressingInventory;
 import fr.cel.gameapi.manager.npc.DressingNPC;
-import fr.cel.gameapi.manager.npc.NPC;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

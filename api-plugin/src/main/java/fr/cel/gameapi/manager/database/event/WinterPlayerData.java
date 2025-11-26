@@ -18,14 +18,13 @@ import java.util.UUID;
 
 public class WinterPlayerData {
 
-    // TODO: Change uuid_player to player_uuid for consistency
-    private static final String UPDATE_ADD_POINTS_PLAYER_SQL = "UPDATE event_winter2025 SET points = points + ? WHERE uuid_player = ?;";
-    private static final String UPDATE_REMOVE_POINTS_PLAYER_SQL = "UPDATE event_winter2025 SET points = points - ? WHERE uuid_player = ?;";
-    private static final String SELECT_POINTS_PLAYER_SQL = "SELECT points FROM event_winter2025 WHERE uuid_player = ?;";
+    private static final String UPDATE_ADD_POINTS_PLAYER_SQL = "UPDATE event_winter2025 SET points = points + ? WHERE player_uuid = ?;";
+    private static final String UPDATE_REMOVE_POINTS_PLAYER_SQL = "UPDATE event_winter2025 SET points = points - ? WHERE player_uuid = ?;";
+    private static final String SELECT_POINTS_PLAYER_SQL = "SELECT points FROM event_winter2025 WHERE player_uuid = ?;";
 
-    private static final String UPDATE_GIFTS_FOUND_PLAYER_SQL = "UPDATE event_winter2025 SET gifts_found = gifts_found + ? WHERE uuid_player = ?;";
-    private static final String SELECT_GIFTS_FOUND_PLAYER_SQL = "SELECT gifts_found FROM event_winter2025 WHERE uuid_player = ?;";
-    private static final String SELECT_POINTS_LEADERBOARD_SQL = "SELECT uuid_player FROM event_winter2025 ORDER BY points DESC;";
+    private static final String UPDATE_GIFTS_FOUND_PLAYER_SQL = "UPDATE event_winter2025 SET gifts_found = gifts_found + ? WHERE player_uuid = ?;";
+    private static final String SELECT_GIFTS_FOUND_PLAYER_SQL = "SELECT gifts_found FROM event_winter2025 WHERE player_uuid = ?;";
+    private static final String SELECT_POINTS_LEADERBOARD_SQL = "SELECT player_uuid FROM event_winter2025 ORDER BY points DESC;";
 
     private static final String INSERT_HEAD_PLAYER_SQL = "INSERT INTO event_winter2025_heads VALUES (?, ?);";
     private static final String SELECT_HEADS_PLAYER_SQL = "SELECT head_id FROM event_winter2025_heads WHERE player_uuid = ?;";
@@ -140,7 +139,7 @@ public class WinterPlayerData {
              ResultSet rs = preparedStatement.executeQuery()) {
 
             while (rs.next()) {
-                players.add(UUID.fromString(rs.getString("uuid_player")));
+                players.add(UUID.fromString(rs.getString("player_uuid")));
             }
 
         } catch (SQLException e) {

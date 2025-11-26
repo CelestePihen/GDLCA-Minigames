@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 public class StatisticsManager {
 
-    private static final String UPDATE_STATISTIC_QUERY = "UPDATE %s SET %s = %s + ? WHERE uuid_player = ?";
-    private static final String GET_STATISTIC_QUERY = "SELECT %s FROM %s WHERE uuid_player = ?";
+    private static final String UPDATE_STATISTIC_QUERY = "UPDATE %s SET %s = %s + ? WHERE player_uuid = ?";
+    private static final String GET_STATISTIC_QUERY = "SELECT %s FROM %s WHERE player_uuid = ?";
 
     private final GameAPI main;
 

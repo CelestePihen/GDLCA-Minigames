@@ -1,6 +1,5 @@
 package fr.cel.hub.listener;
 
-import fr.cel.gameapi.GameAPI;
 import fr.cel.hub.Hub;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -21,7 +20,7 @@ public class HListener implements Listener {
      * @param message Le message
      */
     protected void sendMessageWithPrefix(Player player, Component message) {
-        player.sendMessage(GameAPI.getPrefix().append(message));
+        player.sendMessage(Hub.getPrefix().append(message));
     }
 
 }

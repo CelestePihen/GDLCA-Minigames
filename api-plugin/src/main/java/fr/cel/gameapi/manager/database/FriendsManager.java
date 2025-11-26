@@ -16,11 +16,10 @@ import java.util.Map;
 
 public class FriendsManager {
 
-    // TODO: Change uuid_player to player_uuid AND uuid_friend to friend_uuid for consistency
-    private static final String INSERT_FRIEND_QUERY = "INSERT INTO friends (uuid_player, uuid_friend) VALUES (?, ?);";
-    private static final String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE uuid_player = ? and uuid_friend = ?;";
-    private static final String SELECT_FRIENDS_QUERY = "SELECT uuid_friend FROM friends WHERE uuid_player = ?;";
-    private static final String CHECK_FRIENDSHIP_QUERY = "SELECT 1 FROM friends WHERE uuid_player = ? AND uuid_friend = ? LIMIT 1;";
+    private static final String INSERT_FRIEND_QUERY = "INSERT INTO friends (player_uuid, friend_uuid) VALUES (?, ?);";
+    private static final String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE player_uuid = ? and friend_uuid = ?;";
+    private static final String SELECT_FRIENDS_QUERY = "SELECT friend_uuid FROM friends WHERE player_uuid = ?;";
+    private static final String CHECK_FRIENDSHIP_QUERY = "SELECT 1 FROM friends WHERE player_uuid = ? AND friend_uuid = ? LIMIT 1;";
 
     private final GameAPI main;
 
@@ -32,11 +31,11 @@ public class FriendsManager {
     }
 
     /**
-     * Adds two players as friends. Only works if both players are online.
+     * Adds two players as friends. Only works if both players are online. <br>
+     * Note: This method uses a trigger in the database to ensure bidirectional friendship.
      * @param player The player who sent the request
      * @param friend The player who received the request
      */
-    // TODO: move to trigger for the second player, see FriendsCommand
     public void addFriend(Player player, Player friend) {
         try (Connection connection = main.getDatabase().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FRIEND_QUERY)) {
@@ -51,11 +50,11 @@ public class FriendsManager {
     }
 
     /**
-     * Removes a friend from a player's friends list.
+     * Removes a friend from a player's friends list. <br>
+     * Note: This method uses a trigger in the database to ensure bidirectional friendship removal.
      * @param player The player who wants to remove a friend
      * @param friend The friend to remove
      */
-    // TODO: same thing as addFriend
     public void removeFriend(Player player, Player friend) {
         try (Connection connection = main.getDatabase().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FRIEND_QUERY)) {
@@ -83,13 +82,14 @@ public class FriendsManager {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    friendsList.add(resultSet.getString("uuid_friend"));
+                    friendsList.add(resultSet.getString("friend_uuid"));
                 }
             }
         } catch (SQLException e) {
             GameAPI.getInstance().getComponentLogger().error(Component.text("Error while retrieving friends list for " + player.getName() + ": " + e.getMessage()));
             return friendsList;
         }
+
         return friendsList;
     }
 

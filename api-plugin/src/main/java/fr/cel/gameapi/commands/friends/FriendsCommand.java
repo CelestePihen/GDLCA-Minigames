@@ -51,9 +51,7 @@ public class FriendsCommand extends AbstractCommand {
                     return;
                 }
 
-                // TODO: move to trigger for the second player, see FriendsManager
                 friendsManager.addFriend(friendsManager.getRequestsFriends().get(player), player);
-                friendsManager.addFriend(player, friendsManager.getRequestsFriends().get(player));
 
                 sendMessageWithPrefix(player, Component.text("Tu es désormais ami avec " + friendsManager.getRequestsFriends().get(player).getName() + "."));
                 sendMessageWithPrefix(friendsManager.getRequestsFriends().get(player), Component.text("Tu es désormais ami avec " + player.getName() + "."));
@@ -155,9 +153,7 @@ public class FriendsCommand extends AbstractCommand {
                         return;
                     }
 
-                    // same thing as addFriend
                     friendsManager.removeFriend(player, target);
-                    friendsManager.removeFriend(target, player);
 
                     sendMessageWithPrefix(player, Component.text("Tu n'es désormais plus ami avec " + target.getName()));
                 }

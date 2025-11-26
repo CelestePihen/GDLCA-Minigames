@@ -1,8 +1,12 @@
 package fr.cel.gameapi.inventory;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.manager.cosmetic.*;
+import fr.cel.gameapi.manager.cosmetic.Cosmetic;
+import fr.cel.gameapi.manager.cosmetic.CosmeticType;
+import fr.cel.gameapi.manager.cosmetic.CosmeticsManager;
+import fr.cel.gameapi.manager.cosmetic.PlayerCosmetics;
 import fr.cel.gameapi.manager.cosmetic.applicator.CosmeticApplicator;
+import fr.cel.gameapi.manager.cosmetic.applicator.HatApplicator;
 import fr.cel.gameapi.manager.npc.DressingNPC;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -72,7 +76,7 @@ public class DressingInventory extends AbstractInventory {
         }
 
         setItem(49, new ItemBuilder(Material.BARRIER)
-            .itemName(Component.text("Fermer", NamedTextColor.RED))
+            .itemName(Component.text("Quitter", NamedTextColor.RED))
             .toItemStack());
 
         if (endIndex < cosmetics.size()) {
@@ -169,6 +173,10 @@ public class DressingInventory extends AbstractInventory {
             .decoration(TextDecoration.BOLD, currentType == type);
         builder.itemName(name);
 
+        if (type == CosmeticType.HAT) {
+            builder.hideComponents("equippable", "damage_resistant");
+        }
+
         if (currentType == type) {
             builder.addLoreLine(Component.text("Cosmétique sélectionné", NamedTextColor.GREEN));
         } else {
@@ -181,14 +189,45 @@ public class DressingInventory extends AbstractInventory {
     private ItemStack createCosmeticItem(Cosmetic cosmetic) {
         PlayerCosmetics playerCosmetics = cosmeticsManager.getPlayerCosmetics(player);
         boolean equipped = dressingNPC.isEquipped(cosmetic.getId());
+        NamedTextColor rarityColor = Cosmetic.getRarityColor(cosmetic);
 
-        ItemBuilder builder = new ItemBuilder(Material.PAPER);
-        NamedTextColor color = Cosmetic.getRarityColor(cosmetic);
-        builder.itemName(Component.text(cosmetic.getName()).color(color).decoration(TextDecoration.BOLD, true));
+        if (cosmetic.getType() == CosmeticType.HAT) {
+            HatApplicator hatApplicator = (HatApplicator) cosmeticsManager.getApplicators().get(CosmeticType.HAT);
+            ItemBuilder builder = new ItemBuilder(hatApplicator.createHatItem(cosmetic));
+
+            builder.addLoreLine(Component.empty());
+            builder.addLoreLine(Component.text("Rareté : ", NamedTextColor.GRAY)
+                    .append(Component.text(Cosmetic.getRarityName(cosmetic), rarityColor)));
+
+            if (playerCosmetics != null && playerCosmetics.ownsCosmetic(cosmetic.getId())) {
+                builder.addLoreLine(Component.empty());
+                builder.addLoreLine(Component.text("Vous possédez ce cosmétique.", NamedTextColor.GREEN));
+            } else {
+                builder.addLoreLine(Component.empty());
+                builder.addLoreLine(Component.text("Vous ne possédez pas ce cosmétique.", NamedTextColor.RED));
+            }
+
+            builder.addLoreLine(Component.empty());
+            if (equipped) {
+                builder.addLoreLine(Component.text("✔ ÉQUIPÉ", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+                builder.setGlow(true);
+            } else {
+                builder.addLoreLine(Component.text("» Cliquez pour équiper «", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, true));
+            }
+
+            return builder.toItemStack();
+        }
+
+        ItemBuilder builder = new ItemBuilder(cosmetic.getDisplayMaterial());
+        builder.itemName(Component.text(cosmetic.getName()).color(rarityColor).decoration(TextDecoration.BOLD, true));
 
         if (cosmetic.getDescription() != null && !cosmetic.getDescription().isEmpty()) {
             builder.addLoreLine(Component.text(cosmetic.getDescription(), NamedTextColor.GRAY));
         }
+
+        builder.addLoreLine(Component.empty());
+        builder.addLoreLine(Component.text("Rareté: ", NamedTextColor.GRAY)
+            .append(Component.text(Cosmetic.getRarityName(cosmetic), rarityColor)));
 
         if (playerCosmetics != null && playerCosmetics.ownsCosmetic(cosmetic.getId())) {
             builder.addLoreLine(Component.empty());
@@ -197,10 +236,6 @@ public class DressingInventory extends AbstractInventory {
             builder.addLoreLine(Component.empty());
             builder.addLoreLine(Component.text("Vous ne possédez pas ce cosmétique.", NamedTextColor.RED));
         }
-
-        builder.addLoreLine(Component.empty());
-        builder.addLoreLine(Component.text("Rareté: ", NamedTextColor.GRAY)
-            .append(Component.text(Cosmetic.getRarityName(cosmetic), color)));
 
         builder.addLoreLine(Component.empty());
         if (equipped) {

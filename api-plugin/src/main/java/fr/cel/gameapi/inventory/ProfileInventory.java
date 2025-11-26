@@ -41,9 +41,9 @@ public class ProfileInventory extends AbstractInventory {
                 .customName(Component.text(player.getName()).decoration(TextDecoration.ITALIC, false))
                 .lore(coinsStr.color(NamedTextColor.GOLD),
                         Component.text("Flocons de Noël : ", NamedTextColor.AQUA)
-                                .append(Component.text(winterPlayerData.getWinterPoints(), NamedTextColor.YELLOW)),
+                                .append(Component.text(winterPlayerData.getWinterPoints(), NamedTextColor.GREEN)),
                         Component.text("Cadeaux ramassés : ", NamedTextColor.AQUA)
-                                .append(Component.text(winterPlayerData.getGifts(), NamedTextColor.YELLOW)))
+                                .append(Component.text(winterPlayerData.getGifts(), NamedTextColor.GREEN)))
                 .toItemStack());
 
         inv.setItem(10, new ItemBuilder(Material.CANDLE)

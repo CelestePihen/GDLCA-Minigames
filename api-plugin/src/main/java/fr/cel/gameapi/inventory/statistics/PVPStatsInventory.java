@@ -35,7 +35,7 @@ public class PVPStatsInventory extends AbstractInventory {
         }
 
         inv.setItem(22, new ItemBuilder(Material.BARRIER)
-                .itemName(Component.text("Fermer", NamedTextColor.RED))
+                .itemName(Component.text("Quitter", NamedTextColor.RED))
                 .toItemStack());
     }
 

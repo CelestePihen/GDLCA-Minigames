@@ -1,6 +1,5 @@
 package fr.cel.hub.manager.dj;
 
-import fr.cel.gameapi.GameAPI;
 import fr.cel.hub.Hub;
 import lombok.Getter;
 import lombok.Setter;
@@ -210,7 +209,7 @@ public class DJManager {
 
         if (player != null) {
             if (!isPlaylist) player.sendMessage(Hub.getPrefix().append(Component.text("Vous avez lancé la musique " + music.musicName())));
-            else player.sendMessage(GameAPI.getPrefix().append(Component.text("Musique suivante...")));
+            else player.sendMessage(Hub.getPrefix().append(Component.text("Musique suivante...")));
         }
     }
 

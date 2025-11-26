@@ -21,16 +21,15 @@ import java.util.concurrent.CompletableFuture;
  */
 public class CosmeticsDatabase {
 
-    // TODO: Change uuid_player to player_uuid for consistency
     private static final String SELECT_ALL_COSMETICS_SQL = "SELECT * FROM cosmetics ORDER BY type, rarity DESC";
-    private static final String SELECT_PLAYER_COSMETICS_SQL = "SELECT cosmetic_id FROM player_cosmetics WHERE uuid_player = ?";
-    private static final String SELECT_PLAYER_EQUIPPED_COSMETICS_SQL = "SELECT type, cosmetic_id FROM player_equipped_cosmetics WHERE uuid_player = ?";
-    private static final String DELETE_EQUIPPED_COSMETIC_SQL = "DELETE FROM player_equipped_cosmetics WHERE uuid_player = ?";
-    private static final String INSERT_PLAYER_COSMETIC_SQL = "INSERT INTO player_equipped_cosmetics (uuid_player, type, cosmetic_id) VALUES (?, ?, ?)";
-    private static final String INSERT_PLAYER_COSMETIC_OWNED_SQL = "INSERT INTO player_cosmetics (uuid_player, cosmetic_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
-    private static final String DELETE_PLAYER_COSMETIC_OWNED_SQL = "DELETE FROM player_cosmetics WHERE uuid_player = ? AND cosmetic_id = ?";
-    private static final String DELETE_EQUIPPED_COSMETIC_BY_TYPE_SQL = "DELETE FROM player_equipped_cosmetics WHERE uuid_player = ? AND type = ?";
-    private static final String INSERT_PLAYER_EQUIPPED_COSMETIC_SQL = "INSERT INTO player_equipped_cosmetics (uuid_player, type, cosmetic_id) VALUES (?, ?, ?) ON CONFLICT (uuid_player, type) DO UPDATE SET cosmetic_id = EXCLUDED.cosmetic_id";
+    private static final String SELECT_PLAYER_COSMETICS_SQL = "SELECT cosmetic_id FROM player_cosmetics WHERE player_uuid = ?";
+    private static final String SELECT_PLAYER_EQUIPPED_COSMETICS_SQL = "SELECT type, cosmetic_id FROM player_equipped_cosmetics WHERE player_uuid = ?";
+    private static final String DELETE_EQUIPPED_COSMETIC_SQL = "DELETE FROM player_equipped_cosmetics WHERE player_uuid = ?";
+    private static final String INSERT_PLAYER_COSMETIC_SQL = "INSERT INTO player_equipped_cosmetics (player_uuid, type, cosmetic_id) VALUES (?, ?, ?)";
+    private static final String INSERT_PLAYER_COSMETIC_OWNED_SQL = "INSERT INTO player_cosmetics (player_uuid, cosmetic_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
+    private static final String DELETE_PLAYER_COSMETIC_OWNED_SQL = "DELETE FROM player_cosmetics WHERE player_uuid = ? AND cosmetic_id = ?";
+    private static final String DELETE_EQUIPPED_COSMETIC_BY_TYPE_SQL = "DELETE FROM player_equipped_cosmetics WHERE player_uuid = ? AND type = ?";
+    private static final String INSERT_PLAYER_EQUIPPED_COSMETIC_SQL = "INSERT INTO player_equipped_cosmetics (player_uuid, type, cosmetic_id) VALUES (?, ?, ?) ON CONFLICT (player_uuid, type) DO UPDATE SET cosmetic_id = EXCLUDED.cosmetic_id";
 
     private final GameAPI main;
 

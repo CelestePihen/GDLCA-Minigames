@@ -1,6 +1,7 @@
 package fr.cel.cachecache.map.timer.game;
 
 import fr.cel.cachecache.map.CCMap;
+import fr.cel.gameapi.GameAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -50,20 +51,40 @@ public class PlayingMapTask extends BukkitRunnable {
         map.getCheckAdvancements().checkAimezFaireMal();
         map.getCheckAdvancements().checkCollectionPersonnelleAndRatLabo();
         map.getCheckAdvancements().checkPiedPouvoir();
+
+        // Winter Event Start
+        if (this.getTimer() == 300) {
+            for(UUID uuid : this.map.getHiders()) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player != null) GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(3);
+            }
+        }
+
+        if (this.getTimer() == 600) {
+            for(UUID uuid : this.map.getHiders()) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player != null) GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(5);
+            }
+        }
+        // Winter Event End
     }
 
     private void sendMessageLoupTT() {
         Player player = Bukkit.getPlayer(map.getSeekers().getFirst());
-        player.teleportAsync(map.getSpawnLoc());
-        map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !", NamedTextColor.RED));
+        if (player != null) {
+            player.teleportAsync(map.getSpawnLoc());
+            map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !", NamedTextColor.RED));
+        }
     }
 
     private void sendNormalModeMessage() {
         List<String> names = new ArrayList<>();
         map.getSeekers().forEach(uuid -> {
             Player player = Bukkit.getPlayer(uuid);
-            player.teleportAsync(map.getSpawnLoc());
-            names.add(player.getName());
+            if (player != null) {
+                player.teleportAsync(map.getSpawnLoc());
+                names.add(player.getName());
+            }
         });
 
         if (names.size() == 1) {

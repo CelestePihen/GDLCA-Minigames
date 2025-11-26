@@ -46,12 +46,20 @@ public class FriendsInventory extends AbstractInventory {
 
             inv.addItem(skull);
         }
+
+        setItem(51, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter", NamedTextColor.RED)).toItemStack());
     }
 
     @Override
     public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
         // TODO afficher le "profil" de l'ami ?
-        player.sendMessage(GameAPI.getPrefix().append(Component.text("Bientôt...")));
+        if (item.getType() == Material.PLAYER_HEAD) {
+            player.sendMessage(GameAPI.getPrefix().append(Component.text("Bientôt...")));
+        }
+
+        else if (item.getType() == Material.BARRIER) {
+            new ProfileInventory(player).open(player);
+        }
     }
 
     @Override

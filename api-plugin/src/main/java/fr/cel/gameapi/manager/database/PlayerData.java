@@ -5,6 +5,7 @@ import fr.cel.gameapi.manager.database.event.WinterPlayerData;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -15,12 +16,11 @@ import java.util.UUID;
 
 public class PlayerData {
 
-    // TODO: Change uuid_player to player_uuid for consistency
-    private static final String UPDATE_ADD_COINS_PLAYER_SQL = "UPDATE players SET coins = coins + ? WHERE uuid_player = ?;";
-    private static final String REMOVE_COINS_PLAYER_SQL = "UPDATE players SET coins = coins - ? WHERE uuid_player = ?;";
-    private static final String SELECT_COINS_PLAYER_SQL = "SELECT coins FROM players WHERE uuid_player = ?;";
-    private static final String SELECT_ALLOW_FRIENDS_PLAYER_SQL = "SELECT allowFriends FROM players WHERE uuid_player = ?;";
-    private static final String UPDATE_SET_ALLOW_FRIENDS_PLAYER_SQL = "UPDATE players SET allowFriends = ? WHERE uuid_player = ?;";
+    private static final String UPDATE_ADD_COINS_PLAYER_SQL = "UPDATE players SET coins = coins + ? WHERE player_uuid = ?;";
+    private static final String REMOVE_COINS_PLAYER_SQL = "UPDATE players SET coins = coins - ? WHERE player_uuid = ?;";
+    private static final String SELECT_COINS_PLAYER_SQL = "SELECT coins FROM players WHERE player_uuid = ?;";
+    private static final String SELECT_ALLOW_FRIENDS_PLAYER_SQL = "SELECT allowFriends FROM players WHERE player_uuid = ?;";
+    private static final String UPDATE_SET_ALLOW_FRIENDS_PLAYER_SQL = "UPDATE players SET allowFriends = ? WHERE player_uuid = ?;";
 
     @NotNull private final UUID uuid;
     @NotNull private final Player player;

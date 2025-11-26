@@ -15,10 +15,9 @@ import java.sql.SQLException;
 
 public class DatabaseManager {
 
-    // TODO: Change uuid_player to player_uuid for consistency
-    private static final String INSERT_PLAYER_SQL = "INSERT INTO players (uuid_player, name_player) VALUES (?, ?) ON CONFLICT (uuid_player) DO NOTHING;";
-    private static final String INSERT_STAT_SQL_TEMPLATE = "INSERT INTO %s (uuid_player) VALUES (?) ON CONFLICT (uuid_player) DO NOTHING;";
-    private static final String INSERT_WINTER_EVENT_SQL = "INSERT INTO event_winter2025 (uuid_player) VALUES (?) ON CONFLICT (uuid_player) DO NOTHING;";
+    private static final String INSERT_PLAYER_SQL = "INSERT INTO players (player_uuid, name_player) VALUES (?, ?) ON CONFLICT (player_uuid) DO NOTHING;";
+    private static final String INSERT_STAT_SQL_TEMPLATE = "INSERT INTO %s (player_uuid) VALUES (?) ON CONFLICT (player_uuid) DO NOTHING;";
+    private static final String INSERT_WINTER_EVENT_SQL = "INSERT INTO event_winter2025 (player_uuid) VALUES (?) ON CONFLICT (player_uuid) DO NOTHING;";
 
     private final String host;
     private final int port;
@@ -71,7 +70,8 @@ public class DatabaseManager {
     }
 
     /**
-     * Create a new account for a player in the database
+     * Create a new account for a player in the database <br>
+     * Note: The statistics and the winter event entries are created with triggers in the database
      * @param player The player that connects for the first time
      */
     public void createAccount(@NotNull Player player) {
@@ -83,54 +83,6 @@ public class DatabaseManager {
             if (rows > 0) Bukkit.getConsoleSender().sendMessage(Component.text("Création d'un nouveau compte pour " + player.getName()).color(NamedTextColor.GREEN));
         } catch (SQLException e) {
             GameAPI.getInstance().getComponentLogger().error(Component.text("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage()));
-        }
-
-        createStatistics(player);
-        createWinterEvent2025(player);
-    }
-
-    /**
-     * Add the player to all statistics tables
-     * @param player The player to add in the statistics
-     */
-    // TODO: move to trigger in postgres
-    private void createStatistics(Player player) {
-        String[] tables = {
-                "hub_statistics",
-                "cc_statistics",
-                "valo_statistics",
-                "pvp_statistics",
-                "parkour_statistics"
-        };
-
-        try (Connection connection = getConnection()) {
-            for (String table : tables) {
-                String sql = String.format(INSERT_STAT_SQL_TEMPLATE, table);
-                try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                    ps.setString(1, player.getUniqueId().toString());
-                    int rows = ps.executeUpdate();
-
-                    if (rows > 0) GameAPI.getInstance().getLogger().info(player.getName() + " ajouté à " + table);
-                }
-            }
-        } catch (SQLException e) {
-            GameAPI.getInstance().getComponentLogger().error(Component.text("Erreur lors de la création des statistiques pour " + player.getName() + ": " + e.getMessage()));
-        }
-    }
-
-    /**
-     * Add the player to the Winter Event 2025 table
-     * @param player The player to add in the Winter Event 2025
-     */
-    // TODO: move to trigger in postgres
-    private void createWinterEvent2025(Player player) {
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_WINTER_EVENT_SQL)) {
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            int rows = preparedStatement.executeUpdate();
-
-            if (rows > 0) GameAPI.getInstance().getLogger().info(player.getName() + " ajouté au Winter Event 2025 !");
-        } catch (SQLException e) {
-            GameAPI.getInstance().getComponentLogger().error(Component.text("Erreur en créant l'entrée Winter Event 2025 pour " + player.getName() + ": " + e.getMessage()));
         }
     }
 

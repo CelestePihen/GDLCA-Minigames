@@ -31,6 +31,8 @@ public class OptionsInventory extends AbstractInventory {
         } else {
             inv.addItem(ALLOW_FRIENDS_RED);
         }
+
+        setItem(8, new ItemBuilder(Material.BARRIER).itemName(Component.text("Fermer", NamedTextColor.RED)).toItemStack());
     }
 
     // Si le colorant est vert, cela veut dire que le joueur accepte les demandes d'amis. En rouge, si c'est le contraire
@@ -46,6 +48,10 @@ public class OptionsInventory extends AbstractInventory {
             playerData.setAllowFriends(true);
             setItem(0, ALLOW_FRIENDS_GREEN);
             player.sendMessage(GameAPI.getPrefix().append(Component.text("Tu as activé les demandes d'amis.")));
+        }
+
+        else if (item.getType() == Material.BARRIER) {
+            new ProfileInventory(player).open(player);
         }
     }
 

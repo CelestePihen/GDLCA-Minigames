@@ -3,6 +3,7 @@ package fr.cel.hub.inventory.event;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.utils.ItemBuilder;
+import fr.cel.hub.Hub;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,7 +30,7 @@ public class EventInventory extends AbstractInventory {
 
             case FIREWORK_ROCKET, PLAYER_HEAD ->
                 // TODO à (re)faire
-                player.sendMessage(GameAPI.getPrefix().append(Component.text("Bientôt disponible...")));
+                player.sendMessage(Hub.getPrefix().append(Component.text("Bientôt disponible...")));
 
             default -> {}
         }

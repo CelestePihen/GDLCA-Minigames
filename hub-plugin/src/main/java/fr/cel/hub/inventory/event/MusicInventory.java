@@ -113,7 +113,7 @@ public class MusicInventory extends AbstractInventory {
 
             djManager.setCurrentMode(nextMode);
             changeModeItem(player.getOpenInventory().getTopInventory());
-            player.sendMessage(GameAPI.getPrefix().append(Component.text("Mode de lecture changé en " + nextMode.getDisplayName())));
+            player.sendMessage(Hub.getPrefix().append(Component.text("Mode de lecture changé en " + nextMode.getDisplayName())));
             return;
         }
 

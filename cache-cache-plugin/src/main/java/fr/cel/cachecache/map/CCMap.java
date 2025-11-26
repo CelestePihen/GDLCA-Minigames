@@ -9,6 +9,7 @@ import fr.cel.cachecache.map.state.pregame.InitMapState;
 import fr.cel.cachecache.map.state.pregame.PreGameMapState;
 import fr.cel.cachecache.map.state.pregame.StartingMapState;
 import fr.cel.cachecache.utils.CheckAdvancements;
+import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.AdvancementsManager.Advancements;
 import fr.cel.gameapi.scoreboard.GameScoreboard;
 import fr.cel.gameapi.scoreboard.GameTeam;
@@ -402,7 +403,10 @@ public class CCMap {
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) gameManager.getPlayerManager().sendPlayerToHub(player);
+            if (player != null) {
+                GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(5);
+                gameManager.getPlayerManager().sendPlayerToHub(player);
+            }
         }
 
         players.clear();
@@ -657,6 +661,7 @@ public class CCMap {
      */
     private void becomeNonSeeker(Player deadPlayer) {
         if (ccMode != CCMode.LoupToucheTouche && hiders.size() == 1) {
+            GameAPI.getInstance().getPlayerManager().getPlayerData(deadPlayer).getWinterPlayerData().addWinterPoints(7);
             if (timer > bestTimer) {
                 setBestTimer();
                 setBestPlayer(deadPlayer.getName(), false);

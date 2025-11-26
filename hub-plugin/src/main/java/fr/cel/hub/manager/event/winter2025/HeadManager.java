@@ -12,10 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HeadManager {
 
@@ -25,7 +22,8 @@ public class HeadManager {
 
     @Getter @Setter private Map<Location, Integer> headLocations = new HashMap<>();
 
-    // TODO: make an inventory to show the progression of each player
+    public static final String VALUE_GIFT_TEXTURE = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTc0NDJmMWJlOGQzYWRlNmRmMTZjMGQxYjI0Njg1NDViNWU1MzNkZGMwNThlYTU5M2UxNzk4NmM0YTNhYjM4In19fQ==";
+
     public HeadManager(@NotNull Hub main) {
         this.main = main;
         this.headFile = new File(main.getDataFolder(), "heads.yml");
@@ -89,6 +87,14 @@ public class HeadManager {
                 .orElse(0);
 
         return maxId + 1;
+    }
+
+    /**
+     * Récupère tous les IDs des têtes enregistrées
+     * @return Un Set contenant tous les IDs des têtes
+     */
+    public Set<Integer> getAllHeadIds() {
+        return new HashSet<>(headLocations.values());
     }
 
     /**

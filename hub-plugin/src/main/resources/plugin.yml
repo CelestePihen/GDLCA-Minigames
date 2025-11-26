@@ -7,6 +7,9 @@ depend: [GameAPI]
 commands:
   hub:
     description: Besoin d'expliquer ? Bon. Permet d'aller au hub
+  head:
+    description: Permet de voir son avancée des tête trouvées dans le Hub
+    aliases: [heads]
   event:
     description: Permet d'effectuer des événements au Hub
     permission: hub.event

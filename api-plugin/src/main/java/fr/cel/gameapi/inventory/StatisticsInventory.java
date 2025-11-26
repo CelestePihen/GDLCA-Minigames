@@ -27,6 +27,8 @@ public class StatisticsInventory extends AbstractInventory {
         inv.setItem(13, new ItemBuilder(Material.BOW).itemName(Component.text("Valocraft", NamedTextColor.GREEN)).toItemStack());
         inv.setItem(15, new ItemBuilder(Material.NETHERITE_SWORD).itemName(Component.text("PVP", NamedTextColor.GREEN)).toItemStack());
         inv.setItem(17, new ItemBuilder(Material.IRON_BOOTS).itemName(Component.text("Parkour", NamedTextColor.GREEN)).toItemStack());
+
+        inv.setItem(22, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter", NamedTextColor.RED)).toItemStack());
     }
 
     @Override
@@ -41,6 +43,8 @@ public class StatisticsInventory extends AbstractInventory {
             case NETHERITE_SWORD -> GameAPI.getInstance().getInventoryManager().openInventory(new PVPStatsInventory(this.player), player);
 
             case IRON_BOOTS -> GameAPI.getInstance().getInventoryManager().openInventory(new ParkourStatsInventory(this.player), player);
+
+            case BARRIER -> new ProfileInventory(player).open(player);
 
             default -> {}
         }

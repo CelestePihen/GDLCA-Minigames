@@ -30,7 +30,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayingListenerProvider extends StateListenerProvider {
@@ -81,6 +84,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
             if (map.getSeekers().contains(damager.getUniqueId())) {
                 GameAPI.getInstance().getStatisticsManager().updatePlayerStatistic(damager, StatisticsManager.PlayerStatistics.CC_ELIMINATIONS, 1);
+                GameAPI.getInstance().getPlayerManager().getPlayerData(damager).getWinterPlayerData().addWinterPoints(5);
                 map.eliminate(damaged);
             }
             else if (map.getHiders().contains(damager.getUniqueId())) {
@@ -156,6 +160,7 @@ public class PlayingListenerProvider extends StateListenerProvider {
                 map.getCheckAdvancements().getPlayersPasBesoin().add(player.getUniqueId());
             }
 
+            GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(2);
             groundItem.onInteract(player, map);
         }
     }
@@ -302,13 +307,23 @@ public class PlayingListenerProvider extends StateListenerProvider {
             if (!map.getWinterUtility().getPlayerAlreadyClaimedGift().contains(playerUUID) && map.getWinterUtility().getPlayersOpenedGift().contains(playerUUID)) {
                 map.getWinterUtility().getPlayerAlreadyClaimedGift().add(playerUUID);
 
-                int points = RANDOM.nextInt(2, 6);
-                GameAPI.getInstance().getPlayerManager().getPlayerData(playerUUID).getWinterPlayerData().addWinterPoints(points);
-
                 player.getInventory().remove(Material.PAPER);
                 player.playSound(player, Sound.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0f, 1.0f);
-                player.sendMessage(map.getGameManager().getPrefix().append(Component.text("Vous avez déposé votre cadeau au pied du sapin ! Vous avez gagné ", NamedTextColor.GREEN)
-                        .append(Component.text(points + " points !", NamedTextColor.GOLD))));
+
+                if (RANDOM.nextInt(1, 101) <= 10) {
+                    GameAPI.getInstance().getPlayerManager().getPlayerData(playerUUID).getWinterPlayerData().addWinterPoints(35);
+                    player.sendMessage(map.getGameManager().getPrefix()
+                            .append(Component.text("Vous avez déposé votre cadeau au pied du sapin ! Vous avez gagné ", NamedTextColor.GREEN)
+                                    .append(Component.text("25 ", NamedTextColor.AQUA))
+                                    .append(Component.text("(+10) ", NamedTextColor.YELLOW))
+                                    .append(Component.text("points !", NamedTextColor.AQUA))));
+                } else {
+                    GameAPI.getInstance().getPlayerManager().getPlayerData(playerUUID).getWinterPlayerData().addWinterPoints(25);
+                    player.sendMessage(map.getGameManager().getPrefix()
+                            .append(Component.text("Vous avez déposé votre cadeau au pied du sapin ! Vous avez gagné ", NamedTextColor.GREEN)
+                                    .append(Component.text("25 points !", NamedTextColor.AQUA))));
+                }
+
             }
         }
     }

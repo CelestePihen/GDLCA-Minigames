@@ -1,10 +1,14 @@
 package fr.cel.hub.manager.event.winter2025;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.database.event.WinterPlayerData;
+import fr.cel.gameapi.manager.inventory.InventoryTypes;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -14,13 +18,23 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class SantaInventory extends AbstractInventory {
+
+    private static final PlayerProfile GIFT_PROFILE;
 
     private final Player player;
     private final WinterPlayerData winterPlayerData;
 
+    static {
+        GIFT_PROFILE = Bukkit.createProfile(UUID.randomUUID());
+        GIFT_PROFILE.setProperty(new ProfileProperty("textures", HeadManager.VALUE_GIFT_TEXTURE));
+    }
+
     public SantaInventory(Player player) {
         super(Component.text("Atelier du Père Noël", NamedTextColor.RED), 27);
+        this.type = InventoryTypes.PERSONAL;
         this.player = player;
         this.winterPlayerData = GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData();
     }
@@ -51,8 +65,14 @@ public class SantaInventory extends AbstractInventory {
                 .addLoreLine(Component.text("Obtiens tes cadeaux avec tes flocons de Noël !", NamedTextColor.YELLOW))
                 .toItemStack());
 
+        setItem(13, new ItemBuilder(Material.PLAYER_HEAD)
+                .customName(Component.text("Collection de têtes", NamedTextColor.GOLD))
+                .addLoreLine(Component.text("Découvre toutes les têtes cachées !", NamedTextColor.YELLOW))
+                .setSkullOwner(GIFT_PROFILE)
+                .toItemStack());
+
         // TODO: update lore
-        setItem(13, new ItemBuilder(Material.SNOWBALL)
+        setItem(22, new ItemBuilder(Material.SNOWBALL)
                 .itemName(Component.text("Informations sur l'événement Noël 2025", NamedTextColor.AQUA))
                 .lore(
                         Component.text("- Chaque ", NamedTextColor.YELLOW).append(Component.text("partie de Cache-Cache", NamedTextColor.GREEN)).append(Component.text(" te", NamedTextColor.YELLOW)),
@@ -85,12 +105,22 @@ public class SantaInventory extends AbstractInventory {
 
     @Override
     public void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item) {
-        switch (item.getType()) {
-            case CHEST -> new ChristmasShopGUI(player).open(player);
+        if (item.getType() == Material.CHEST) {
+            new ChristmasShopGUI(player).open(player);
+            return;
+        }
 
-            case EMERALD -> GameAPI.getInstance().getInventoryManager().openInventory(new SantaLeaderboardInventory(), player);
+        if (item.getType() == Material.EMERALD) {
+            GameAPI.getInstance().getInventoryManager().openInventory(new SantaLeaderboardInventory(), player);
+            return;
+        }
 
-            default -> {}
+        if (item.getItemMeta() == null || item.getItemMeta().customName() == null) return;
+
+        String customName = ((TextComponent)(item.getItemMeta().customName())).content();
+        if (customName.equalsIgnoreCase("Collection de têtes")) {
+            GameAPI.getInstance().getInventoryManager().openInventory(new HeadInventory(player, true), player);
+            return;
         }
     }
 

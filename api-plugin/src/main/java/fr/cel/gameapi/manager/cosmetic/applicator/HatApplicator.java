@@ -5,6 +5,8 @@ import com.google.gson.JsonParser;
 import fr.cel.gameapi.manager.cosmetic.Cosmetic;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Mannequin;
 import org.bukkit.entity.Player;
@@ -42,8 +44,14 @@ public class HatApplicator implements CosmeticApplicator {
      * @param cosmetic The cosmetic
      * @return The item stack
      */
-    private ItemStack createHatItem(Cosmetic cosmetic) {
-        ItemBuilder builder = new ItemBuilder(Material.PAPER).itemName(Component.text(cosmetic.getName()));
+    public ItemStack createHatItem(Cosmetic cosmetic) {
+        ItemBuilder builder = new ItemBuilder(Material.PAPER);
+        NamedTextColor color = Cosmetic.getRarityColor(cosmetic);
+        builder.itemName(Component.text(cosmetic.getName()).color(color).decoration(TextDecoration.BOLD, true));
+
+        if (cosmetic.getDescription() != null && !cosmetic.getDescription().isEmpty()) {
+            builder.addLoreLine(Component.text(cosmetic.getDescription(), NamedTextColor.GRAY));
+        }
 
         String itemModel = parseItemModel(cosmetic.getData());
         if (itemModel != null && !itemModel.isEmpty()) {
