@@ -87,3 +87,5 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+/api-plugin/run
+api-plugin/christmas_cosmetics_2025.sql

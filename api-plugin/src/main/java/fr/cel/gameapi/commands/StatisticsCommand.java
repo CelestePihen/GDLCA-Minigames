@@ -3,7 +3,6 @@ package fr.cel.gameapi.commands;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.StatisticsInventory;
 import fr.cel.gameapi.manager.command.AbstractCommand;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +21,6 @@ public class StatisticsCommand extends AbstractCommand {
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            sendMessageWithPrefix(player, Component.text("Vos statistiques sont affichées."));
             GameAPI.getInstance().getInventoryManager().openInventory(new StatisticsInventory(player), player);
             return;
         }

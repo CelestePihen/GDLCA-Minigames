@@ -17,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class ChristmasShopGUI extends AbstractInventory {
@@ -155,10 +156,9 @@ public class ChristmasShopGUI extends AbstractInventory {
     }
 
     private List<Cosmetic> getWinterCosmetics(CosmeticType type) {
-        // Récupère uniquement les cosmétiques de Noël du type spécifié, triés par rareté (du plus rare au plus commun)
         return cosmeticsManager.getCosmeticsByType(type).stream()
             .filter(c -> c.getId().startsWith(EVENT_TAG))
-            .sorted((c1, c2) -> Integer.compare(c2.getRarity(), c1.getRarity())) // Tri décroissant (5 -> 1)
+            .sorted(Comparator.comparingInt(Cosmetic::getRarity))
             .toList();
     }
 

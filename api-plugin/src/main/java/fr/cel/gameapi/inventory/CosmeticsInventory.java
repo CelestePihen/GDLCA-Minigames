@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class CosmeticsInventory extends AbstractInventory {
@@ -160,13 +161,14 @@ public class CosmeticsInventory extends AbstractInventory {
      * Get only the cosmetics owned by the player for the specified type
      * This prevents spoiling unreleased cosmetics
      */
+    // TODO: triage par rareté (commun -> mythique, mythique -> commun) ou ordre alphabétique (A -> Z, Z -> A)
     private List<Cosmetic> getOwnedCosmetics(CosmeticType type) {
         PlayerCosmetics playerCosmetics = cosmeticsManager.getPlayerCosmetics(player);
         if (playerCosmetics == null) return List.of();
 
         return cosmeticsManager.getCosmeticsByType(type).stream()
             .filter(c -> playerCosmetics.ownsCosmetic(c.getId()))
-            .sorted((c1, c2) -> Integer.compare(c2.getRarity(), c1.getRarity()))
+            .sorted(Comparator.comparingInt(Cosmetic::getRarity))
             .toList();
     }
 

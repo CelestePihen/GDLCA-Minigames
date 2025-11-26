@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 public class DatabaseManager {
 
+    // TODO: Change uuid_player to player_uuid for consistency
     private static final String INSERT_PLAYER_SQL = "INSERT INTO players (uuid_player, name_player) VALUES (?, ?) ON CONFLICT (uuid_player) DO NOTHING;";
     private static final String INSERT_STAT_SQL_TEMPLATE = "INSERT INTO %s (uuid_player) VALUES (?) ON CONFLICT (uuid_player) DO NOTHING;";
     private static final String INSERT_WINTER_EVENT_SQL = "INSERT INTO event_winter2025 (uuid_player) VALUES (?) ON CONFLICT (uuid_player) DO NOTHING;";
@@ -81,7 +82,7 @@ public class DatabaseManager {
 
             if (rows > 0) Bukkit.getConsoleSender().sendMessage(Component.text("Création d'un nouveau compte pour " + player.getName()).color(NamedTextColor.GREEN));
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Erreur en créant un nouveau compte pour " + player.getName() + ": " + e.getMessage()));
         }
 
         createStatistics(player);
@@ -92,6 +93,7 @@ public class DatabaseManager {
      * Add the player to all statistics tables
      * @param player The player to add in the statistics
      */
+    // TODO: move to trigger in postgres
     private void createStatistics(Player player) {
         String[] tables = {
                 "hub_statistics",
@@ -101,10 +103,10 @@ public class DatabaseManager {
                 "parkour_statistics"
         };
 
-        try (Connection conn = getConnection()) {
+        try (Connection connection = getConnection()) {
             for (String table : tables) {
                 String sql = String.format(INSERT_STAT_SQL_TEMPLATE, table);
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
                     ps.setString(1, player.getUniqueId().toString());
                     int rows = ps.executeUpdate();
 
@@ -112,7 +114,7 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur lors de la création des statistiques pour " + player.getName() + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Erreur lors de la création des statistiques pour " + player.getName() + ": " + e.getMessage()));
         }
     }
 
@@ -120,6 +122,7 @@ public class DatabaseManager {
      * Add the player to the Winter Event 2025 table
      * @param player The player to add in the Winter Event 2025
      */
+    // TODO: move to trigger in postgres
     private void createWinterEvent2025(Player player) {
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_WINTER_EVENT_SQL)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
@@ -127,7 +130,7 @@ public class DatabaseManager {
 
             if (rows > 0) GameAPI.getInstance().getLogger().info(player.getName() + " ajouté au Winter Event 2025 !");
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Erreur en créant l'entrée Winter Event 2025 pour " + player.getName() + ": " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Erreur en créant l'entrée Winter Event 2025 pour " + player.getName() + ": " + e.getMessage()));
         }
     }
 

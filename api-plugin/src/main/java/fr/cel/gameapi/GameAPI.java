@@ -1,6 +1,9 @@
 package fr.cel.gameapi;
 
 import fr.cel.gameapi.commands.*;
+import fr.cel.gameapi.commands.coins.CoinsCommand;
+import fr.cel.gameapi.commands.cosmetics.CosmeticsCommand;
+import fr.cel.gameapi.commands.friends.FriendsCommand;
 import fr.cel.gameapi.listeners.CosmeticListeners;
 import fr.cel.gameapi.listeners.OtherListeners;
 import fr.cel.gameapi.listeners.PlayersListener;
@@ -13,10 +16,12 @@ import fr.cel.gameapi.manager.cosmetic.CosmeticsManager;
 import fr.cel.gameapi.manager.database.DatabaseManager;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.StatisticsManager;
+import fr.cel.gameapi.manager.npc.NPCManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mannequin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,15 +40,13 @@ public final class GameAPI extends JavaPlugin {
     private StatisticsManager statisticsManager;
     private AdvancementsManager advancementsManager;
     private CosmeticsManager cosmeticsManager;
-
-    private NPCCommand npcCommand;
+    private NPCManager npcManager;
 
     @Override
     public void onEnable() {
         instance = this;
 
         saveDefaultConfig();
-        removeMannequins();
 
         initDatabase();
 
@@ -55,7 +58,6 @@ public final class GameAPI extends JavaPlugin {
         this.advancementsManager = new AdvancementsManager();
         this.cosmeticsManager = new CosmeticsManager(this);
 
-        this.npcCommand = new NPCCommand();
         this.commandsManager = new CommandsManager(this);
         registerCommands();
 
@@ -65,6 +67,11 @@ public final class GameAPI extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ServerListeners(), this);
         getServer().getPluginManager().registerEvents(new OtherListeners(), this);
         getServer().getPluginManager().registerEvents(new CosmeticListeners(this), this);
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            removeMannequins();
+            this.npcManager = new NPCManager(this);
+        }, 20L);
     }
 
     @Override
@@ -81,7 +88,7 @@ public final class GameAPI extends JavaPlugin {
     private void initDatabase() {
         if (!getConfig().contains("host") || !getConfig().contains("port") || !getConfig().contains("database") || !getConfig().contains("database_test") ||
                 !getConfig().contains("username") || !getConfig().contains("password")) {
-            getLogger().severe("Please configure the database settings in the config.yml file. Please fill them and restart the server.");
+            getComponentLogger().error(Component.text("Please configure the database settings in the config.yml file. Please fill them and restart the server."));
             return;
         }
 
@@ -94,7 +101,7 @@ public final class GameAPI extends JavaPlugin {
         try {
             this.database.init();
         } catch (Exception e) {
-            getLogger().severe("An error occurred while connecting to the database. Please check your configuration and restart the server." + e.getMessage());
+            getComponentLogger().error(Component.text("An error occurred while connecting to the database. Please check your configuration and restart the server." + e.getMessage()));
         }
     }
 
@@ -108,17 +115,13 @@ public final class GameAPI extends JavaPlugin {
         commandsManager.addCommand("profile", new ProfileCommand());
         commandsManager.addCommand("welcome", new WelcomeCommand(getPlayerManager()));
         commandsManager.addCommand("statistics", new StatisticsCommand());
-        commandsManager.addCommand("npc", getNpcCommand());
+        commandsManager.addCommand("npc", new NPCCommand(this.npcManager));
         commandsManager.addCommand("cosmetics", new CosmeticsCommand(this.cosmeticsManager));
     }
 
-    /**
-     * Utility function to remove all mannequins from all worlds
-     */
     private void removeMannequins() {
-        Bukkit.getWorlds().forEach(world -> {
-            for (Mannequin mannequin : world.getEntitiesByClass(Mannequin.class)) mannequin.remove();
-        });
+        Bukkit.getWorlds().forEach(world ->
+                world.getEntitiesByClass(Mannequin.class).forEach(Entity::remove));
     }
 
 }

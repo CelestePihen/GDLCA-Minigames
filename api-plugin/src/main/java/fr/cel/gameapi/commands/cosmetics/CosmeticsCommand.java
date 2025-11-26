@@ -1,5 +1,6 @@
-package fr.cel.gameapi.commands;
+package fr.cel.gameapi.commands.cosmetics;
 
+import fr.cel.gameapi.inventory.CosmeticsInventory;
 import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.gameapi.manager.cosmetic.Cosmetic;
 import fr.cel.gameapi.manager.cosmetic.CosmeticType;
@@ -13,16 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Command to manage cosmetics
- * Usage: /cosmetics <open|give|remove|list>
- */
 public class CosmeticsCommand extends AbstractCommand {
 
     private final CosmeticsManager cosmeticsManager;
 
     public CosmeticsCommand(CosmeticsManager cosmeticsManager) {
-        super("gameapi:cosmetics", true, true);
+        super("gameapi:cosmetics", true, false);
         this.cosmeticsManager = cosmeticsManager;
     }
 
@@ -31,42 +28,42 @@ public class CosmeticsCommand extends AbstractCommand {
         if (!(sender instanceof Player player)) return;
 
         if (args.length == 0) {
-            openCosmeticsGUI(player);
+            new CosmeticsInventory(player).open(player);
+            return;
+        }
+
+        if (args[0].equalsIgnoreCase("help")) {
+            player.sendMessage(Component.text("Usage: /cosmetics <give|remove|list>", NamedTextColor.RED));
+            return;
+        }
+
+        if (args[0].equalsIgnoreCase("list")) {
+            handleList(player);
+            return;
+        }
+
+        if (!player.isOp()) {
+            player.sendMessage(Component.text("Vous n'avez pas la permission d'exécuter cette commande.", NamedTextColor.RED));
             return;
         }
 
         switch (args[0].toLowerCase()) {
             case "give" -> handleGive(player, args);
             case "remove" -> handleRemove(player, args);
-            case "list" -> handleList(player);
-            default -> player.sendMessage(Component.text("Usage: /cosmetics <give|remove|list>", NamedTextColor.RED));
         }
-    }
-
-    /**
-     * Open the cosmetics GUI for a player
-     */
-    private void openCosmeticsGUI(Player player) {
-        cosmeticsManager.openGUI(player);
     }
 
     /**
      * Give a cosmetic to a player
-     * Usage: /cosmetics give <player> <cosmeticId>
      */
     private void handleGive(Player sender, String[] args) {
-        if (!sender.hasPermission("cosmetics.admin")) {
-            sender.sendMessage(Component.text("Vous n'avez pas la permission.", NamedTextColor.RED));
-            return;
-        }
-
         if (args.length < 3) {
-            sender.sendMessage(Component.text("Usage: /cosmetics give <joueur> <cosmeticId>", NamedTextColor.RED));
+            sender.sendMessage(Component.text("Usage: /cosmetics give <player> <cosmeticId>", NamedTextColor.RED));
             return;
         }
 
         Player target = sender.getServer().getPlayer(args[1]);
-        if (target == null) {
+        if (!isPlayerOnline(target, sender)) {
             sender.sendMessage(Component.text("Joueur introuvable.", NamedTextColor.RED));
             return;
         }
@@ -82,14 +79,8 @@ public class CosmeticsCommand extends AbstractCommand {
 
     /**
      * Remove a cosmetic from a player
-     * Usage: /cosmetics remove <player> <cosmeticId>
      */
     private void handleRemove(Player sender, String[] args) {
-        if (!sender.hasPermission("cosmetics.admin")) {
-            sender.sendMessage(Component.text("Vous n'avez pas la permission.", NamedTextColor.RED));
-            return;
-        }
-
         if (args.length < 3) {
             sender.sendMessage(Component.text("Usage: /cosmetics remove <joueur> <cosmeticId>", NamedTextColor.RED));
             return;

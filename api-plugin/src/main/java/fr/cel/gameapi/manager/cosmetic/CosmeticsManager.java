@@ -1,7 +1,6 @@
 package fr.cel.gameapi.manager.cosmetic;
 
 import fr.cel.gameapi.GameAPI;
-import fr.cel.gameapi.inventory.CosmeticsInventory;
 import fr.cel.gameapi.manager.cosmetic.applicator.CosmeticApplicator;
 import fr.cel.gameapi.manager.cosmetic.applicator.HatApplicator;
 import fr.cel.gameapi.manager.cosmetic.applicator.ParticleApplicator;
@@ -133,8 +132,7 @@ public class CosmeticsManager {
                 }
             }
 
-            // Save synchronously for disconnecting players to ensure data is saved before they leave
-            database.savePlayerCosmetics(data, false);
+            database.savePlayerCosmetics(data);
         }
     }
 
@@ -286,16 +284,6 @@ public class CosmeticsManager {
     }
 
     /**
-     * Open the cosmetics GUI for a player
-     * @param player The player
-     */
-    public void openGUI(Player player) {
-        CosmeticsInventory gui = new CosmeticsInventory(player);
-        gui.createInventory();
-        gui.open(player);
-    }
-
-    /**
      * Shutdown the cosmetics manager
      */
     public void shutdown() {
@@ -307,8 +295,7 @@ public class CosmeticsManager {
         PetApplicator petApplicator = (PetApplicator) applicators.get(CosmeticType.PET);
         if (petApplicator != null) petApplicator.removeAll();
 
-        // Save all player data synchronously to avoid database connection closing before save
-        playerCosmetics.values().forEach(data -> database.savePlayerCosmetics(data, false));
+        playerCosmetics.values().forEach(data -> database.savePlayerCosmetics(data));
 
         main.getLogger().info("Saved cosmetics data for " + playerCosmetics.size() + " player(s)");
     }

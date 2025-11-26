@@ -2,7 +2,6 @@ package fr.cel.gameapi.manager;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.PlayerData;
-import fr.cel.gameapi.manager.database.event.WinterPlayerData;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +28,7 @@ public class PlayerManager {
     @Setter private UUID newPlayer = null;
     private final Set<UUID> playersWhoWelcomed = new HashSet<>();
 
+    // TODO: move to config
     private final Location spawnLocation = new Location(Bukkit.getWorld("world"), 264.5, 68, 90.5, 180F, 0F);
 
     /**
@@ -36,7 +36,7 @@ public class PlayerManager {
      * @param player The player who joined
      */
     public void addPlayerData(@NotNull Player player) {
-        playersData.put(player.getUniqueId(), new PlayerData(player, new WinterPlayerData(player.getUniqueId())));
+        playersData.put(player.getUniqueId(), new PlayerData(player));
     }
 
     /**
@@ -65,7 +65,7 @@ public class PlayerManager {
         return playersData.get(uuid);
     }
 
-    // TODO: make an Event
+    // TODO: call a PlayerSendToHubEvent
     /**
      * Sends a player to the Hub
      * @param player The player to send
@@ -73,24 +73,29 @@ public class PlayerManager {
     public void sendPlayerToHub(@NotNull Player player) {
         playersInHub.add(player.getUniqueId());
 
-        player.setGlowing(false);
-
+        // Utility
         player.teleportAsync(spawnLocation);
         player.setRespawnLocation(spawnLocation, true);
         player.setGameMode(GameMode.ADVENTURE);
 
+        // Reset health, food
         player.setFoodLevel(20);
         player.setExhaustion(20);
         player.setHealthScale(20);
         player.setHealth(20);
 
+        // Reset XP
         player.setLevel(0);
         player.setExp(0);
         player.setTotalExperience(0);
 
-        player.getInventory().clear();
+        // Clear effects and give hunger effect to hide food bar
+        player.setGlowing(false);
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
+
+        // Clear inventory and give hub items
+        player.getInventory().clear();
 
         player.getInventory().setItem(0, new ItemBuilder(Material.ARMOR_STAND)
                 .itemName(Component.text("Cosmétiques", NamedTextColor.WHITE))
@@ -105,10 +110,12 @@ public class PlayerManager {
                 .customName(Component.text("Mon Profil", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
                 .toItemStack());
 
+        // Remove dressing cosmetics and reapply all cosmetics after a short delay
         if (GameAPI.getInstance().getCosmeticsManager().getDressingManager().isPlayerDressed(player))
             GameAPI.getInstance().getCosmeticsManager().getDressingManager().undressPlayer(player);
 
-        Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(), () -> GameAPI.getInstance().getCosmeticsManager().reapplyCosmetics(player), 5L);
+        Bukkit.getScheduler().runTaskLater(GameAPI.getInstance(),
+                () -> GameAPI.getInstance().getCosmeticsManager().reapplyCosmetics(player), 5L);
     }
 
     /**

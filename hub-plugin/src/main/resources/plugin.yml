@@ -11,10 +11,15 @@ commands:
     description: Permet d'effectuer des événements au Hub
     permission: hub.event
   calculheads:
-    description: Permet de calculer les têtes d'un joueur
+    description: Donne le nombre de têtes du Hub
     permission: hub.calculheads
+  addhead:
+    description: Permet d'ajouter une tête au Hub
+    permission: hub.addhead
 permissions:
   hub.event:
     description: Permission qui permet d'effectuer des événements
   hub.calculheads:
-    description: Permission qui permet de calculer les têtes d'un joueur
+    description: Permission qui permet de donner le nombre de têtes du Hub
+  hub.addhead:
+    description: Permission qui permet d'ajouter une tête au Hub

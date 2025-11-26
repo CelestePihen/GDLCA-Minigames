@@ -1,4 +1,4 @@
-package fr.cel.gameapi.commands;
+package fr.cel.gameapi.commands.coins;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.PlayerManager;

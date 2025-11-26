@@ -46,12 +46,29 @@ public interface SubCommand {
      */
     boolean hasPermission(CommandSender sender);
 
+    /**
+     * Execute the subcommand
+     * @param sender The sender of the (sub)command
+     * @param args The arguments given after the subcommand
+     */
     void execute(@NotNull CommandSender sender, @NotNull String @NotNull [] args);
 
+    /**
+     * Tab completion for the subcommand
+     * @param sender The sender of the (sub)command
+     * @param args The arguments given after the subcommand
+     * @return A list of possible completions
+     */
     default List<String> tab(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         return List.of();
     }
 
+    /**
+     * Check if a player is online, and send a message to the sender if not
+     * @param player The player to check
+     * @param sender The sender of the (sub)command
+     * @return True, if the player is online. Otherwise, false
+     */
     @Contract("null, _ -> false; !null, _ -> true")
     default boolean isPlayerOnline(@Nullable Player player, @NotNull CommandSender sender) {
         if (player == null) {

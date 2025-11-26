@@ -4,6 +4,7 @@ import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.cosmetic.Cosmetic;
 import fr.cel.gameapi.manager.cosmetic.CosmeticType;
 import fr.cel.gameapi.manager.cosmetic.PlayerCosmetics;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
 import java.sql.Connection;
@@ -20,10 +21,21 @@ import java.util.concurrent.CompletableFuture;
  */
 public class CosmeticsDatabase {
 
-    private final GameAPI plugin;
+    // TODO: Change uuid_player to player_uuid for consistency
+    private static final String SELECT_ALL_COSMETICS_SQL = "SELECT * FROM cosmetics ORDER BY type, rarity DESC";
+    private static final String SELECT_PLAYER_COSMETICS_SQL = "SELECT cosmetic_id FROM player_cosmetics WHERE uuid_player = ?";
+    private static final String SELECT_PLAYER_EQUIPPED_COSMETICS_SQL = "SELECT type, cosmetic_id FROM player_equipped_cosmetics WHERE uuid_player = ?";
+    private static final String DELETE_EQUIPPED_COSMETIC_SQL = "DELETE FROM player_equipped_cosmetics WHERE uuid_player = ?";
+    private static final String INSERT_PLAYER_COSMETIC_SQL = "INSERT INTO player_equipped_cosmetics (uuid_player, type, cosmetic_id) VALUES (?, ?, ?)";
+    private static final String INSERT_PLAYER_COSMETIC_OWNED_SQL = "INSERT INTO player_cosmetics (uuid_player, cosmetic_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
+    private static final String DELETE_PLAYER_COSMETIC_OWNED_SQL = "DELETE FROM player_cosmetics WHERE uuid_player = ? AND cosmetic_id = ?";
+    private static final String DELETE_EQUIPPED_COSMETIC_BY_TYPE_SQL = "DELETE FROM player_equipped_cosmetics WHERE uuid_player = ? AND type = ?";
+    private static final String INSERT_PLAYER_EQUIPPED_COSMETIC_SQL = "INSERT INTO player_equipped_cosmetics (uuid_player, type, cosmetic_id) VALUES (?, ?, ?) ON CONFLICT (uuid_player, type) DO UPDATE SET cosmetic_id = EXCLUDED.cosmetic_id";
 
-    public CosmeticsDatabase(GameAPI plugin) {
-        this.plugin = plugin;
+    private final GameAPI main;
+
+    public CosmeticsDatabase(GameAPI main) {
+        this.main = main;
     }
 
     /**
@@ -34,10 +46,8 @@ public class CosmeticsDatabase {
         return CompletableFuture.supplyAsync(() -> {
             List<Cosmetic> cosmetics = new ArrayList<>();
 
-            String sql = "SELECT * FROM cosmetics ORDER BY type, rarity DESC";
-
-            try (Connection connection = plugin.getDatabase().getConnection();
-                 PreparedStatement ps = connection.prepareStatement(sql);
+            try (Connection connection = main.getDatabase().getConnection();
+                 PreparedStatement ps = connection.prepareStatement(SELECT_ALL_COSMETICS_SQL);
                  ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()) {
@@ -54,43 +64,10 @@ public class CosmeticsDatabase {
                 }
 
             } catch (SQLException e) {
-                plugin.getLogger().severe("Error loading cosmetics: " + e.getMessage());
+                main.getComponentLogger().error(Component.text("Error loading cosmetics: " + e.getMessage()));
             }
 
             return cosmetics;
-        });
-    }
-
-    /**
-     * Save a cosmetic to the database
-     * @param cosmetic The cosmetic to save
-     */
-    public void saveCosmetic(Cosmetic cosmetic) {
-        CompletableFuture.runAsync(() -> {
-            String sql = "INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
-                        "ON CONFLICT (id) DO UPDATE SET " +
-                        "name = EXCLUDED.name, description = EXCLUDED.description, type = EXCLUDED.type, " +
-                        "display_material = EXCLUDED.display_material, rarity = EXCLUDED.rarity, " +
-                        "price = EXCLUDED.price, data = EXCLUDED.data";
-
-            try (Connection connection = plugin.getDatabase().getConnection();
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
-
-                ps.setString(1, cosmetic.getId());
-                ps.setString(2, cosmetic.getName());
-                ps.setString(3, cosmetic.getDescription());
-                ps.setString(4, cosmetic.getType().getId());
-                ps.setString(5, cosmetic.getDisplayMaterial().name());
-                ps.setInt(6, cosmetic.getRarity());
-                ps.setInt(7, cosmetic.getPrice());
-                ps.setString(8, cosmetic.getData());
-
-                ps.executeUpdate();
-
-            } catch (SQLException e) {
-                plugin.getLogger().severe("Error saving cosmetic: " + e.getMessage());
-            }
         });
     }
 
@@ -104,39 +81,33 @@ public class CosmeticsDatabase {
             PlayerCosmetics data = new PlayerCosmetics(playerUuid);
 
             // Load owned cosmetics
-            String ownedSql = "SELECT cosmetic_id FROM player_cosmetics WHERE uuid_player = ?";
-            try (Connection connection = plugin.getDatabase().getConnection();
-                 PreparedStatement ps = connection.prepareStatement(ownedSql)) {
+            try (Connection connection = main.getDatabase().getConnection();
+                 PreparedStatement ps = connection.prepareStatement(SELECT_PLAYER_COSMETICS_SQL)) {
 
                 ps.setString(1, playerUuid.toString());
-                ResultSet rs = ps.executeQuery();
 
-                while (rs.next()) {
-                    data.addCosmetic(rs.getString("cosmetic_id"));
-                }
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) data.addCosmetic(rs.getString("cosmetic_id"));
 
             } catch (SQLException e) {
-                plugin.getLogger().severe("Error loading player cosmetics: " + e.getMessage());
+                main.getComponentLogger().error(Component.text("Error loading player cosmetics: " + e.getMessage()));
             }
 
             // Load equipped cosmetics
-            String equippedSql = "SELECT type, cosmetic_id FROM player_equipped_cosmetics WHERE uuid_player = ?";
-            try (Connection connection = plugin.getDatabase().getConnection();
-                 PreparedStatement ps = connection.prepareStatement(equippedSql)) {
+            try (Connection connection = main.getDatabase().getConnection();
+                 PreparedStatement ps = connection.prepareStatement(SELECT_PLAYER_EQUIPPED_COSMETICS_SQL)) {
 
                 ps.setString(1, playerUuid.toString());
-                ResultSet rs = ps.executeQuery();
 
+                ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     CosmeticType type = CosmeticType.fromId(rs.getString("type"));
                     String cosmeticId = rs.getString("cosmetic_id");
-                    if (type != null && cosmeticId != null) {
-                        data.equipCosmetic(type, cosmeticId);
-                    }
+                    if (type != null && cosmeticId != null) data.equipCosmetic(type, cosmeticId);
                 }
 
             } catch (SQLException e) {
-                plugin.getLogger().severe("Error loading equipped cosmetics: " + e.getMessage());
+                main.getComponentLogger().error(Component.text("Error loading equipped cosmetics: " + e.getMessage()));
             }
 
             return data;
@@ -148,52 +119,29 @@ public class CosmeticsDatabase {
      * @param data The player cosmetics data
      */
     public void savePlayerCosmetics(PlayerCosmetics data) {
-        savePlayerCosmetics(data, true);
-    }
-
-    /**
-     * Save player cosmetics data to the database
-     * @param data The player cosmetics data
-     * @param async Whether to save asynchronously
-     */
-    public void savePlayerCosmetics(PlayerCosmetics data, boolean async) {
-        Runnable saveTask = () -> {
-            // Note: We don't need to save owned cosmetics here as they're added/removed individually
-            // We only need to save equipped cosmetics
-
-            String deleteSql = "DELETE FROM player_equipped_cosmetics WHERE uuid_player = ?";
-            String insertSql = "INSERT INTO player_equipped_cosmetics (uuid_player, type, cosmetic_id) VALUES (?, ?, ?)";
-
-            try (Connection connection = plugin.getDatabase().getConnection()) {
-                // Delete existing equipped cosmetics
-                try (PreparedStatement ps = connection.prepareStatement(deleteSql)) {
-                    ps.setString(1, data.getPlayerUuid().toString());
-                    ps.executeUpdate();
-                }
-
-                // Insert current equipped cosmetics
-                try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
-                    for (CosmeticType type : CosmeticType.values()) {
-                        String cosmeticId = data.getEquippedCosmetic(type);
-                        if (cosmeticId != null) {
-                            ps.setString(1, data.getPlayerUuid().toString());
-                            ps.setString(2, type.getId());
-                            ps.setString(3, cosmeticId);
-                            ps.addBatch();
-                        }
-                    }
-                    ps.executeBatch();
-                }
-
-            } catch (SQLException e) {
-                plugin.getLogger().severe("Error saving player cosmetics: " + e.getMessage());
+        try (Connection connection = main.getDatabase().getConnection()) {
+            // Delete existing equipped cosmetics
+            try (PreparedStatement ps = connection.prepareStatement(DELETE_EQUIPPED_COSMETIC_SQL)) {
+                ps.setString(1, data.getPlayerUuid().toString());
+                ps.executeUpdate();
             }
-        };
 
-        if (async) {
-            CompletableFuture.runAsync(saveTask);
-        } else {
-            saveTask.run();
+            // Insert current equipped cosmetics
+            try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER_COSMETIC_SQL)) {
+                for (CosmeticType type : CosmeticType.values()) {
+                    String cosmeticId = data.getEquippedCosmetic(type);
+                    if (cosmeticId != null) {
+                        ps.setString(1, data.getPlayerUuid().toString());
+                        ps.setString(2, type.getId());
+                        ps.setString(3, cosmeticId);
+                        ps.addBatch();
+                    }
+                }
+                ps.executeBatch();
+            }
+
+        } catch (SQLException e) {
+            main.getComponentLogger().error(Component.text("Error saving player cosmetics: " + e.getMessage()));
         }
     }
 
@@ -204,17 +152,14 @@ public class CosmeticsDatabase {
      */
     public void addPlayerCosmetic(UUID playerUuid, String cosmeticId) {
         CompletableFuture.runAsync(() -> {
-            String sql = "INSERT INTO player_cosmetics (uuid_player, cosmetic_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
-
-            try (Connection connection = plugin.getDatabase().getConnection();
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
+            try (Connection connection = main.getDatabase().getConnection();
+                 PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER_COSMETIC_OWNED_SQL)) {
 
                 ps.setString(1, playerUuid.toString());
                 ps.setString(2, cosmeticId);
                 ps.executeUpdate();
-
             } catch (SQLException e) {
-                plugin.getLogger().severe("Error adding player cosmetic: " + e.getMessage());
+                main.getComponentLogger().error(Component.text("Error adding player cosmetic: " + e.getMessage()));
             }
         });
     }
@@ -226,17 +171,14 @@ public class CosmeticsDatabase {
      */
     public void removePlayerCosmetic(UUID playerUuid, String cosmeticId) {
         CompletableFuture.runAsync(() -> {
-            String sql = "DELETE FROM player_cosmetics WHERE uuid_player = ? AND cosmetic_id = ?";
-
-            try (Connection connection = plugin.getDatabase().getConnection();
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
+            try (Connection connection = main.getDatabase().getConnection();
+                 PreparedStatement ps = connection.prepareStatement(DELETE_PLAYER_COSMETIC_OWNED_SQL)) {
 
                 ps.setString(1, playerUuid.toString());
                 ps.setString(2, cosmeticId);
                 ps.executeUpdate();
-
             } catch (SQLException e) {
-                plugin.getLogger().severe("Error removing player cosmetic: " + e.getMessage());
+                main.getComponentLogger().error(Component.text("Error removing player cosmetic: " + e.getMessage()));
             }
         });
     }
@@ -251,32 +193,27 @@ public class CosmeticsDatabase {
         CompletableFuture.runAsync(() -> {
             if (cosmeticId == null) {
                 // Unequip
-                String sql = "DELETE FROM player_equipped_cosmetics WHERE uuid_player = ? AND type = ?";
-                try (Connection connection = plugin.getDatabase().getConnection();
-                     PreparedStatement ps = connection.prepareStatement(sql)) {
+                try (Connection connection = main.getDatabase().getConnection();
+                     PreparedStatement ps = connection.prepareStatement(DELETE_EQUIPPED_COSMETIC_BY_TYPE_SQL)) {
 
                     ps.setString(1, playerUuid.toString());
                     ps.setString(2, type.getId());
                     ps.executeUpdate();
 
                 } catch (SQLException e) {
-                    plugin.getLogger().severe("Error unequipping cosmetic: " + e.getMessage());
+                    main.getComponentLogger().error(Component.text("Error unequipping cosmetic: " + e.getMessage()));
                 }
             } else {
                 // Equip
-                String sql = "INSERT INTO player_equipped_cosmetics (uuid_player, type, cosmetic_id) " +
-                            "VALUES (?, ?, ?) " +
-                            "ON CONFLICT (uuid_player, type) DO UPDATE SET cosmetic_id = EXCLUDED.cosmetic_id";
-                try (Connection connection = plugin.getDatabase().getConnection();
-                     PreparedStatement ps = connection.prepareStatement(sql)) {
+                try (Connection connection = main.getDatabase().getConnection();
+                     PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER_EQUIPPED_COSMETIC_SQL)) {
 
                     ps.setString(1, playerUuid.toString());
                     ps.setString(2, type.getId());
                     ps.setString(3, cosmeticId);
                     ps.executeUpdate();
-
                 } catch (SQLException e) {
-                    plugin.getLogger().severe("Error equipping cosmetic: " + e.getMessage());
+                    main.getComponentLogger().error(Component.text("Error equipping cosmetic: " + e.getMessage()));
                 }
             }
         });

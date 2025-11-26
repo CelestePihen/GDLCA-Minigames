@@ -1,6 +1,7 @@
 package fr.cel.gameapi.inventory;
 
 import fr.cel.gameapi.GameAPI;
+import fr.cel.gameapi.manager.inventory.InventoryTypes;
 import fr.cel.gameapi.utils.ItemBuilder;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -18,6 +19,7 @@ public abstract class AbstractInventory {
 
     @NotNull private final Component inventoryName;
     private final int size;
+    @Getter protected InventoryTypes type = InventoryTypes.GLOBAL;
 
     private Inventory inv;
 
@@ -99,6 +101,10 @@ public abstract class AbstractInventory {
      * @param item The ItemStack that was clicked
      */
     public abstract void interact(@NotNull Player player, @NotNull String itemName, @NotNull ItemStack item);
+
+    public String getGlobalKey() {
+        return getClass().getSimpleName();
+    }
 
     public enum Rows {
         ONE(9),

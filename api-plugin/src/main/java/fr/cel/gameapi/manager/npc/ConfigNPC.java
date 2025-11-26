@@ -47,21 +47,20 @@ public class ConfigNPC {
     }
 
     private @NotNull Location loadLocation(@NotNull YamlConfiguration config) {
-        String worldStr = config.getString("location.world");
-        double x = config.getDouble("location.x");
-        double y = config.getDouble("location.y");
-        double z = config.getDouble("location.z");
+        String worldStr = config.getString("location.world", "world");
+        double x = config.getDouble("location.x", 0);
+        double y = config.getDouble("location.y", 0);
+        double z = config.getDouble("location.z", 0);
 
         World world = Bukkit.getWorld(worldStr);
         if (world == null) {
             world = Bukkit.getWorlds().getFirst();
-            GameAPI.getInstance().getLogger().severe("World " + worldStr + " not found. Using default world for NPC " + name + ".");
+            GameAPI.getInstance().getLogger().severe("World " + worldStr + " not found. Using default (first) world for NPC " + name + ".");
         }
 
-        float yaw = (float) config.getDouble("location.yaw");
-        float pitch = (float) config.getDouble("location.pitch");
-
         if (config.contains("location.yaw") && config.contains("location.pitch")) {
+            float yaw = (float) config.getDouble("location.yaw", 90);
+            float pitch = (float) config.getDouble("location.pitch", 0);
             return new Location(world, x, y, z, yaw, pitch);
         }
 

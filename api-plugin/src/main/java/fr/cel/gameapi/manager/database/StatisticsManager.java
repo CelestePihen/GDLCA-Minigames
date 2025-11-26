@@ -2,6 +2,7 @@ package fr.cel.gameapi.manager.database;
 
 import fr.cel.gameapi.GameAPI;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -13,6 +14,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class StatisticsManager {
+
+    private static final String UPDATE_STATISTIC_QUERY = "UPDATE %s SET %s = %s + ? WHERE uuid_player = ?";
+    private static final String GET_STATISTIC_QUERY = "SELECT %s FROM %s WHERE uuid_player = ?";
 
     private final GameAPI main;
 
@@ -27,14 +31,19 @@ public class StatisticsManager {
      * @param amount The amount to add
      */
     public void updatePlayerStatistic(Player player, PlayerStatistics statistic, int amount) {
-        String ps = "UPDATE " + statistic.getTableName() + " SET " + statistic.getColumnName() + " = " + statistic.getColumnName() + " + ? WHERE uuid_player = ?";
-        try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+        String sql = String.format(UPDATE_STATISTIC_QUERY,
+                statistic.getTableName(), statistic.getColumnName(), statistic.getColumnName());
+
+        try (Connection connection = main.getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, amount);
             preparedStatement.setString(2, player.getUniqueId().toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error updating player statistic: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text(
+                    String.format("Error updating player statistic for %s for the table %s and the column %s: %s",
+                            player.getName(), statistic.getTableName(), statistic.getColumnName(), e.getMessage())));
         }
     }
 
@@ -45,14 +54,19 @@ public class StatisticsManager {
      * @param amount The amount to add
      */
     public void updatePlayerStatistic(UUID uuidPlayer, PlayerStatistics statistic, int amount) {
-        String ps = "UPDATE " + statistic.getTableName() + " SET " + statistic.getColumnName() + " = " + statistic.getColumnName() + " + ? WHERE uuid_player = ?";
-        try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+        String sql = String.format(UPDATE_STATISTIC_QUERY,
+                statistic.getTableName(), statistic.getColumnName(), statistic.getColumnName());
+
+        try (Connection connection = main.getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, amount);
             preparedStatement.setString(2, uuidPlayer.toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error updating player statistic: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text(
+                    String.format("Error updating player statistic for UUID %s for the table %s and the column %s: %s",
+                            uuidPlayer.toString(), statistic.getTableName(), statistic.getColumnName(), e.getMessage())));
         }
     }
 
@@ -63,18 +77,19 @@ public class StatisticsManager {
      * @return The statistic value
      */
     public int getPlayerStatistic(Player player, PlayerStatistics tableName) {
-        String ps = "SELECT " + tableName.getColumnName() + " FROM " + tableName.getTableName() + " WHERE uuid_player = ?";
-        try (Connection connection = main.getDatabase().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(ps)) {
+        String sql = String.format(GET_STATISTIC_QUERY, tableName.getColumnName(), tableName.getTableName());
+
+        try (Connection connection = main.getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt(tableName.getColumnName());
-                }
+                if (resultSet.next()) return resultSet.getInt(tableName.getColumnName());
             }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error retrieving player statistic: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error retrieving player statistic: " + e.getMessage()));
         }
+
         return 0;
     }
 
@@ -151,7 +166,7 @@ public class StatisticsManager {
                 generatedId = rs.getInt("id");
             }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error: Adding " + mapName + " to CC game statistic: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error: Adding " + mapName + " to CC game statistic: " + e.getMessage()));
         }
 
         return generatedId;
@@ -170,7 +185,7 @@ public class StatisticsManager {
             statement.setInt(1, gameId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error: Updating " + gameId + " to CC game statistic: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error: Updating " + gameId + " to CC game statistic: " + e.getMessage()));
         }
     }
 
@@ -199,7 +214,7 @@ public class StatisticsManager {
                 generatedId = rs.getInt("id");
             }
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error adding Valocraft game statistic: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error adding Valocraft game statistic: " + e.getMessage()));
         }
 
         return generatedId;
@@ -222,7 +237,7 @@ public class StatisticsManager {
             statement.setInt(3, gameId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error: Updating " + gameId + " to CC game statistic: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error: Updating " + gameId + " to CC game statistic: " + e.getMessage()));
         }
     }
 

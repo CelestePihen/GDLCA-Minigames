@@ -3,6 +3,7 @@ package fr.cel.gameapi.inventory;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.cosmetic.*;
 import fr.cel.gameapi.manager.cosmetic.applicator.CosmeticApplicator;
+import fr.cel.gameapi.manager.npc.DressingNPC;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,20 +15,21 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class DressingInventory extends AbstractInventory {
 
     @NotNull private final CosmeticsManager cosmeticsManager = GameAPI.getInstance().getCosmeticsManager();
     @NotNull private final Player player;
-    @NotNull private final DressingManager.DressingNPC dressingNPC;
+    @NotNull private final DressingNPC dressingNPC;
 
     private CosmeticType currentType;
     private int currentPage;
 
     private static final int ITEMS_PER_PAGE = 28;
 
-    public DressingInventory(@NotNull Player player, @NotNull DressingManager.DressingNPC dressingNPC) {
+    public DressingInventory(@NotNull Player player, @NotNull DressingNPC dressingNPC) {
         super(Component.text("Cosmétiques"), Rows.SIX);
         this.player = player;
         this.dressingNPC = dressingNPC;
@@ -79,7 +81,7 @@ public class DressingInventory extends AbstractInventory {
                 .toItemStack());
         }
 
-        if (dressingNPC.getNpc().getMannequin().getEquipment().getHelmet() != null) {
+        if (dressingNPC.getMannequin().getEquipment().getHelmet() != null) {
             setItem(53, new ItemBuilder(Material.LAVA_BUCKET)
                 .itemName(Component.text("Retirer", NamedTextColor.RED))
                 .toItemStack());
@@ -150,7 +152,7 @@ public class DressingInventory extends AbstractInventory {
 
     private List<Cosmetic> getCosmetics(CosmeticType type) {
         return cosmeticsManager.getCosmeticsByType(type).stream()
-            .sorted((c1, c2) -> Integer.compare(c2.getRarity(), c1.getRarity()))
+            .sorted(Comparator.comparingInt(Cosmetic::getRarity))
             .toList();
     }
 
@@ -266,12 +268,12 @@ public class DressingInventory extends AbstractInventory {
 
     private void applyCosmetic(Cosmetic cosmetic) {
         CosmeticApplicator applicator = cosmeticsManager.getApplicators().get(cosmetic.getType());
-        if (applicator != null) applicator.apply(dressingNPC.getNpc().getMannequin(), cosmetic);
+        if (applicator != null) applicator.apply(dressingNPC.getMannequin(), cosmetic);
     }
 
     private void unapplyCosmetic(Cosmetic cosmetic) {
         CosmeticApplicator applicator = cosmeticsManager.getApplicators().get(cosmetic.getType());
-        if (applicator != null) applicator.remove(dressingNPC.getNpc().getMannequin(), cosmetic);
+        if (applicator != null) applicator.remove(dressingNPC.getMannequin(), cosmetic);
     }
 
 }

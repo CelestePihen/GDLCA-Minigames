@@ -2,6 +2,7 @@ package fr.cel.gameapi.inventory;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.manager.database.PlayerData;
+import fr.cel.gameapi.manager.database.event.WinterPlayerData;
 import fr.cel.gameapi.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,11 +17,13 @@ public class ProfileInventory extends AbstractInventory {
 
     private final Player player;
     private final PlayerData playerData;
+    private final WinterPlayerData winterPlayerData;
 
     public ProfileInventory(Player player) {
         super(Component.text("Mon Profil"), 27);
         this.player = player;
         this.playerData = GameAPI.getInstance().getPlayerManager().getPlayerData(player);
+        this.winterPlayerData = this.playerData.getWinterPlayerData();
     }
 
     @Override
@@ -36,7 +39,11 @@ public class ProfileInventory extends AbstractInventory {
         inv.setItem(4, new ItemBuilder(Material.PLAYER_HEAD)
                 .setSkullOwner(player.getPlayerProfile())
                 .customName(Component.text(player.getName()).decoration(TextDecoration.ITALIC, false))
-                .addLoreLine(coinsStr.color(NamedTextColor.GOLD))
+                .lore(coinsStr.color(NamedTextColor.GOLD),
+                        Component.text("Flocons de Noël : ", NamedTextColor.AQUA)
+                                .append(Component.text(winterPlayerData.getWinterPoints(), NamedTextColor.YELLOW)),
+                        Component.text("Cadeaux ramassés : ", NamedTextColor.AQUA)
+                                .append(Component.text(winterPlayerData.getGifts(), NamedTextColor.YELLOW)))
                 .toItemStack());
 
         inv.setItem(10, new ItemBuilder(Material.CANDLE)

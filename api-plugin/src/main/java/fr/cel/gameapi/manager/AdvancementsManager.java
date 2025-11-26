@@ -1,5 +1,6 @@
 package fr.cel.gameapi.manager;
 
+import io.papermc.paper.advancement.AdvancementDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class AdvancementsManager {
@@ -28,6 +28,9 @@ public class AdvancementsManager {
         Advancement a = Bukkit.getAdvancement(key);
         if (a == null) return;
 
+        AdvancementDisplay display = a.getDisplay();
+        if (display == null) return;
+
         AdvancementProgress progress = player.getAdvancementProgress(a);
         if (!progress.isDone()) {
             for (String string : progress.getRemainingCriteria()) {
@@ -38,14 +41,14 @@ public class AdvancementsManager {
 
             for (UUID uuid : uuids) {
                 Player pl = Bukkit.getPlayer(uuid);
-                if (pl != null) pl.sendMessage(Component.text(player.getName() + " a obtenu le succès ")
-                        .append(Objects.requireNonNull(a.getDisplay()).title()));
+                if (pl != null) pl.sendMessage(
+                        Component.text(player.getName() + " a obtenu le succès ").append(display.title()));
             }
         }
     }
 
     /**
-     * Gives an advancement to a player
+     * Gives an advancement to a player without sending any message
      * @param player The player instance to give the advancement to
      * @param advancement The identifier of the advancement to give
      */

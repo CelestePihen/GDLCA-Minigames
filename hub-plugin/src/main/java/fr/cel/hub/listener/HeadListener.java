@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class HeadListener extends HListener {
@@ -22,8 +23,8 @@ public class HeadListener extends HListener {
     @EventHandler
     public void onPlayerInteract(@NotNull final PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
-        if (block != null && event.getAction() == Action.RIGHT_CLICK_BLOCK
-                && block.getType() == Material.PLAYER_HEAD) {
+        if (block != null && event.getHand() == EquipmentSlot.HAND
+                && event.getAction() == Action.RIGHT_CLICK_BLOCK && block.getType() == Material.PLAYER_HEAD) {
 
             Player player = event.getPlayer();
             WinterPlayerData playerData = GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData();

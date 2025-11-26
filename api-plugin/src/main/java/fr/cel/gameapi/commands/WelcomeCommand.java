@@ -46,7 +46,7 @@ public class WelcomeCommand extends AbstractCommand {
             return;
         }
 
-        newPlayer.sendMessage(GameAPI.getPrefix().append(Component.text(player.getName())).append(Component.text(" a souhaité la bienvenue à ")).append(Component.text(newPlayer.getName())));
+        Bukkit.broadcast(GameAPI.getPrefix().append(Component.text(player.getName() + " a souhaité la bienvenue à " + newPlayer.getName())));
         playerManager.getPlayerData(player).addCoins(5.0D);
         playerManager.getPlayersWhoWelcomed().add(player.getUniqueId());
     }

@@ -2,11 +2,14 @@ package fr.cel.gameapi.scoreboard;
 
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 public class GameTeam {
@@ -60,8 +63,39 @@ public class GameTeam {
      * Gets all player names in the team
      * @return Returns a set of all player names
      */
+    // TODO: Rename to getPlayerNames() or getEntries()
     public Set<String> getPlayers() {
         return team.getEntries();
+    }
+
+    /**
+     * Gets all player UUIDs in the team
+     * @return Returns a set of all player UUIDs
+     */
+    public Set<UUID> getPlayerUUIDs() {
+        Set<UUID> playerUUIDs = new HashSet<>();
+
+        for (String entry : team.getEntries()) {
+            Player player = Bukkit.getPlayer(entry);
+            if (player != null) playerUUIDs.add(player.getUniqueId());
+        }
+
+        return playerUUIDs;
+    }
+
+    /**
+     * Gets all online players in the team
+     * @return Returns a set of all online players
+     */
+    public Set<Player> getOnlinePlayers() {
+        Set<Player> players = new HashSet<>();
+
+        for (String entry : team.getEntries()) {
+            Player player = Bukkit.getPlayer(entry);
+            if (player != null) players.add(player);
+        }
+
+        return players;
     }
 
     /**

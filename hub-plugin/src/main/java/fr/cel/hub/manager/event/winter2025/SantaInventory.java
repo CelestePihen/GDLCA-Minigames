@@ -51,6 +51,7 @@ public class SantaInventory extends AbstractInventory {
                 .addLoreLine(Component.text("Obtiens tes cadeaux avec tes flocons de Noël !", NamedTextColor.YELLOW))
                 .toItemStack());
 
+        // TODO: update lore
         setItem(13, new ItemBuilder(Material.SNOWBALL)
                 .itemName(Component.text("Informations sur l'événement Noël 2025", NamedTextColor.AQUA))
                 .lore(

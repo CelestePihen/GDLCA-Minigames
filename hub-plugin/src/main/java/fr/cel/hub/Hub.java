@@ -2,9 +2,12 @@ package fr.cel.hub;
 
 import fr.cel.gameapi.manager.command.CommandsManager;
 import fr.cel.gameapi.manager.npc.NPCManager;
+import fr.cel.hub.commands.AddHeadCommand;
+import fr.cel.hub.commands.CalculHeadsCommand;
 import fr.cel.hub.commands.EventCommand;
 import fr.cel.hub.commands.HubCommand;
 import fr.cel.hub.listener.ChatListener;
+import fr.cel.hub.listener.HeadListener;
 import fr.cel.hub.listener.ItemListener;
 import fr.cel.hub.listener.PlayerListener;
 import fr.cel.hub.manager.HubNPCManager;
@@ -56,6 +59,7 @@ public final class Hub extends JavaPlugin {
         new PlayerListener(this);
         new ChatListener(this);
         new ItemListener(this);
+        new HeadListener(this);
     }
 
     /**
@@ -65,7 +69,8 @@ public final class Hub extends JavaPlugin {
         CommandsManager commandsManager = new CommandsManager(this);
         commandsManager.addCommand("hub", new HubCommand());
         commandsManager.addCommand("event", new EventCommand());
-        commandsManager.addCommand("calculheads", new EventCommand());
+        commandsManager.addCommand("addhead", new AddHeadCommand(this));
+        commandsManager.addCommand("calculheads", new CalculHeadsCommand(this));
     }
 
 }

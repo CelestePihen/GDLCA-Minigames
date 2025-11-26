@@ -1,6 +1,8 @@
 package fr.cel.gameapi.manager.database;
 
 import fr.cel.gameapi.GameAPI;
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -8,11 +10,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FriendsManager {
 
+    // TODO: Change uuid_player to player_uuid AND uuid_friend to friend_uuid for consistency
+    private static final String INSERT_FRIEND_QUERY = "INSERT INTO friends (uuid_player, uuid_friend) VALUES (?, ?);";
+    private static final String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE uuid_player = ? and uuid_friend = ?;";
+    private static final String SELECT_FRIENDS_QUERY = "SELECT uuid_friend FROM friends WHERE uuid_player = ?;";
+    private static final String CHECK_FRIENDSHIP_QUERY = "SELECT 1 FROM friends WHERE uuid_player = ? AND uuid_friend = ? LIMIT 1;";
+
     private final GameAPI main;
+
+    // TODO: add requests in database
+    @Getter private final Map<Player, Player> requestsFriends = new HashMap<>();
 
     public FriendsManager(GameAPI main) {
         this.main = main;
@@ -23,27 +36,17 @@ public class FriendsManager {
      * @param player The player who sent the request
      * @param friend The player who received the request
      */
+    // TODO: move to trigger for the second player, see FriendsCommand
     public void addFriend(Player player, Player friend) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        String ps = "INSERT INTO friends (uuid_player, uuid_friend) VALUES (?, ?);";
-        try {
-            connection = main.getDatabase().getConnection();
-            preparedStatement = connection.prepareStatement(ps);
+        try (Connection connection = main.getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FRIEND_QUERY)) {
 
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.setString(2, friend.getUniqueId().toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error while adding friend: " + e.getMessage());
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (connection != null && !connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                GameAPI.getInstance().getLogger().severe("Error while closing resources: " + e.getMessage());
-            }
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error while adding friend for " + player.getName() + " to " + friend.getName() + ": " + e.getMessage()));
         }
     }
 
@@ -52,27 +55,17 @@ public class FriendsManager {
      * @param player The player who wants to remove a friend
      * @param friend The friend to remove
      */
+    // TODO: same thing as addFriend
     public void removeFriend(Player player, Player friend) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        String ps = "DELETE FROM friends WHERE uuid_player = ? and uuid_friend = ?;";
-        try {
-            connection = main.getDatabase().getConnection();
-            preparedStatement = connection.prepareStatement(ps);
+        try (Connection connection = main.getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FRIEND_QUERY)) {
 
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.setString(2, friend.getUniqueId().toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error while removing friend: " + e.getMessage());
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (connection != null && !connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                GameAPI.getInstance().getLogger().severe("Error while closing resources: " + e.getMessage());
-            }
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error while removing friend for " + player.getName() + " to " + friend.getName() + ": " + e.getMessage()));
         }
     }
 
@@ -84,33 +77,18 @@ public class FriendsManager {
     public List<String> getFriendsUUIDList(Player player) {
         List<String> friendsList = new ArrayList<>();
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        String ps = "SELECT uuid_friend FROM friends WHERE uuid_player = ?;";
-        ResultSet resultSet = null;
-        try {
-            connection = main.getDatabase().getConnection();
-
-            preparedStatement = connection.prepareStatement(ps);
+        try (Connection connection = main.getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FRIENDS_QUERY)) {
             preparedStatement.setString(1, player.getUniqueId().toString());
 
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                friendsList.add(resultSet.getString("uuid_friend"));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    friendsList.add(resultSet.getString("uuid_friend"));
+                }
             }
-
         } catch (SQLException e) {
-            GameAPI.getInstance().getLogger().severe("Error while retrieving friends list: " + e.getMessage());
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error while retrieving friends list for " + player.getName() + ": " + e.getMessage()));
             return friendsList;
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (resultSet != null) resultSet.close();
-                if (connection != null && !connection.isClosed()) connection.close();
-            } catch (SQLException e) {
-                GameAPI.getInstance().getLogger().severe("Error while closing resources: " + e.getMessage());
-            }
         }
         return friendsList;
     }
@@ -122,7 +100,20 @@ public class FriendsManager {
      * @return Returns true if they are friends, false otherwise
      */
     public boolean isFriendWith(Player player, Player target) {
-        return getFriendsUUIDList(player).contains(target.getUniqueId().toString());
+        try (Connection connection = main.getDatabase().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(CHECK_FRIENDSHIP_QUERY)) {
+
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.setString(2, target.getUniqueId().toString());
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+
+        } catch (SQLException e) {
+            GameAPI.getInstance().getComponentLogger().error(Component.text("Error while checking friendship between " + player.getName() + " and " + target.getName() + ": " + e.getMessage()));
+            return false;
+        }
     }
 
 }

@@ -1,8 +1,11 @@
 package fr.cel.gameapi.manager.cosmetic;
 
+import lombok.Getter;
+
 /**
  * Enum representing the different types of cosmetics available in the game
  */
+@Getter
 public enum CosmeticType {
     HAT("Chapeau", "hat"),
     PARTICLE("Particule", "particle"),
@@ -16,14 +19,6 @@ public enum CosmeticType {
         this.id = id;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getId() {
-        return id;
-    }
-
     /**
      * Get a CosmeticType from its ID
      * @param id The ID to search for
@@ -31,9 +26,7 @@ public enum CosmeticType {
      */
     public static CosmeticType fromId(String id) {
         for (CosmeticType type : values()) {
-            if (type.id.equalsIgnoreCase(id)) {
-                return type;
-            }
+            if (type.id.equalsIgnoreCase(id)) return type;
         }
         return null;
     }

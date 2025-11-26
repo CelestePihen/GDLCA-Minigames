@@ -1,4 +1,4 @@
-package fr.cel.gameapi.commands;
+package fr.cel.gameapi.commands.friends;
 
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.FriendsInventory;
@@ -6,19 +6,17 @@ import fr.cel.gameapi.manager.command.AbstractCommand;
 import fr.cel.gameapi.manager.database.FriendsManager;
 import fr.cel.gameapi.manager.database.PlayerData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FriendsCommand extends AbstractCommand {
-
-    private final Map<Player, Player> requestsFriends = new HashMap<>();
+    
     private final FriendsManager friendsManager;
 
     public FriendsCommand(FriendsManager friendsManager) {
@@ -43,41 +41,42 @@ public class FriendsCommand extends AbstractCommand {
 
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("accept")) {
-                if (!(requestsFriends.containsKey(player))) {
+                if (!(friendsManager.getRequestsFriends().containsKey(player))) {
                     sendMessageWithPrefix(player, Component.text("Tu n'as pas de demandes d'ami en cours."));
                     return;
                 }
 
-                if (requestsFriends.get(player) == null) {
+                if (friendsManager.getRequestsFriends().get(player) == null) {
                     sendMessageWithPrefix(player, Component.text("Erreur lors de la création de la requête."));
                     return;
                 }
 
-                friendsManager.addFriend(requestsFriends.get(player), player);
-                friendsManager.addFriend(player, requestsFriends.get(player));
+                // TODO: move to trigger for the second player, see FriendsManager
+                friendsManager.addFriend(friendsManager.getRequestsFriends().get(player), player);
+                friendsManager.addFriend(player, friendsManager.getRequestsFriends().get(player));
 
-                sendMessageWithPrefix(player, Component.text("Tu es désormais ami avec " + requestsFriends.get(player).getName() + "."));
-                sendMessageWithPrefix(requestsFriends.get(player), Component.text("Tu es désormais ami avec " + player.getName() + "."));
+                sendMessageWithPrefix(player, Component.text("Tu es désormais ami avec " + friendsManager.getRequestsFriends().get(player).getName() + "."));
+                sendMessageWithPrefix(friendsManager.getRequestsFriends().get(player), Component.text("Tu es désormais ami avec " + player.getName() + "."));
 
-                requestsFriends.remove(player);
+                friendsManager.getRequestsFriends().remove(player);
                 return;
             }
 
             else if (args[0].equalsIgnoreCase("deny")) {
-                if (!(requestsFriends.containsKey(player))) {
+                if (!(friendsManager.getRequestsFriends().containsKey(player))) {
                     sendMessageWithPrefix(player, Component.text("Tu n'as pas de demandes d'ami en cours."));
                     return;
                 }
 
-                if (requestsFriends.get(player) == null) {
+                if (friendsManager.getRequestsFriends().get(player) == null) {
                     sendMessageWithPrefix(player, Component.text("Erreur lors de la création de la requête."));
                     return;
                 }
 
-                sendMessageWithPrefix(player, Component.text("Tu as refusé la demande d'ami de " + requestsFriends.get(player).getName() + "."));
-                sendMessageWithPrefix(requestsFriends.get(player), Component.text(player.getName() + "a refusé votre demande d'ami..."));
+                sendMessageWithPrefix(player, Component.text("Tu as refusé la demande d'ami de " + friendsManager.getRequestsFriends().get(player).getName() + "."));
+                sendMessageWithPrefix(friendsManager.getRequestsFriends().get(player), Component.text(player.getName() + "a refusé votre demande d'ami..."));
 
-                requestsFriends.remove(player);
+                friendsManager.getRequestsFriends().remove(player);
                 return;
             }
 
@@ -97,7 +96,12 @@ public class FriendsCommand extends AbstractCommand {
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("add")) {
                 if (args[1].equals(player.getName())) {
-                    sendMessageWithPrefix(player, Component.text("Tu ne peux pas vous ajouter en ami..."));
+                    sendMessageWithPrefix(player, Component.text("Pourquoi tu voudrais t'ajouter en ami ? Tu es déjà ton propre ami..."));
+                    return;
+                }
+
+                if (!playerData.isAllowingFriends()) {
+                    sendMessageWithPrefix(player, Component.text("Tu n'acceptes pas les demandes d'amis."));
                     return;
                 }
 
@@ -105,11 +109,11 @@ public class FriendsCommand extends AbstractCommand {
 
                 if (isPlayerOnline(target, player)) {
                     if (friendsManager.isFriendWith(player, target)) {
-                        sendMessageWithPrefix(player, Component.text("Tu es déjà ami avec cette personne."));
+                        sendMessageWithPrefix(player, Component.text("Tu es déjà ami(e) avec cette personne."));
                         return;
                     }
 
-                    if (requestsFriends.containsValue(player)) {
+                    if (friendsManager.getRequestsFriends().containsValue(player)) {
                         sendMessageWithPrefix(player, Component.text("Tu as déjà une demande d'ami en cours."));
                         return;
                     }
@@ -120,23 +124,26 @@ public class FriendsCommand extends AbstractCommand {
                         return;
                     }
 
-                    if (!playerData.isAllowingFriends()) {
-                        sendMessageWithPrefix(player, Component.text("Tu n'acceptes pas les demandes d'amis."));
-                    }
-
                     if (!friendData.isAllowingFriends()) {
                         sendMessageWithPrefix(target, Component.text(args[1] + " n'accepte pas les demandes d'amis."));
+                        return;
                     }
 
-                    requestsFriends.put(target, player);
+                    friendsManager.getRequestsFriends().put(target, player);
                     sendMessageWithPrefix(player, Component.text("Tu as demandé en ami " + args[1]));
-                    sendMessageWithPrefix(target, Component.text(player.getName() + " vous a demandé en ami."));
+                    sendMessageWithPrefix(target, Component.text(player.getName() + " vous a demandé en ami.")
+                            .append(Component.newline())
+                            .append(Component.text("[Accepter] - ", NamedTextColor.GREEN)
+                                    .clickEvent(ClickEvent.runCommand("/friend accept")))
+                            .append(Component.text("[Refuser]", NamedTextColor.RED)
+                                    .clickEvent(ClickEvent.runCommand("/friend deny")))
+                    );
                 }
             }
 
             else if (args[0].equalsIgnoreCase("remove")) {
                 if (args[1].equals(player.getName())) {
-                    sendMessageWithPrefix(player, Component.text("Tu ne peux pas vous retirer..."));
+                    sendMessageWithPrefix(player, Component.text("Pourquoi tu voudrais te retirer de ta liste d'amis ? Tu es déjà ton propre ami..."));
                     return;
                 }
 
@@ -148,9 +155,11 @@ public class FriendsCommand extends AbstractCommand {
                         return;
                     }
 
-                    sendMessageWithPrefix(player, Component.text("Tu n'es désormais plus ami avec " + target.getName()));
+                    // same thing as addFriend
                     friendsManager.removeFriend(player, target);
                     friendsManager.removeFriend(target, player);
+
+                    sendMessageWithPrefix(player, Component.text("Tu n'es désormais plus ami avec " + target.getName()));
                 }
             }
 

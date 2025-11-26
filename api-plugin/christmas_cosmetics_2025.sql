@@ -8,20 +8,6 @@
 -- CHAPEAUX (HAT)
 -- ============================================
 
--- Bonnet du Père Noël (Rare)
-INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
-VALUES (
-    'christmas_2024_santa_hat',
-    '🎅 Bonnet du Père Noël',
-    'Le bonnet rouge et blanc traditionnel - Ho ho ho !',
-    'HAT',
-    'PAPER',
-    2,
-    300,
-    '{"itemModel": "christmas_santa_hat"}'
-)
-ON CONFLICT (id) DO NOTHING;
-
 -- Couronne de Houx (Épique)
 INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
 VALUES (
@@ -33,20 +19,6 @@ VALUES (
     3,
     500,
     '{"itemModel": "christmas_holly_crown"}'
-)
-ON CONFLICT (id) DO NOTHING;
-
--- Tête de Bonhomme de Neige (Légendaire)
-INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
-VALUES (
-    'christmas_2024_snowman_head',
-    '⛄ Tête de Bonhomme de Neige',
-    'Transformez-vous en bonhomme de neige avec ce chapeau unique !',
-    'HAT',
-    'PAPER',
-    4,
-    1500,
-    '{"itemModel": "christmas_snowman_head"}'
 )
 ON CONFLICT (id) DO NOTHING;
 
@@ -63,20 +35,7 @@ VALUES (
     '{"itemModel": "christmas_elf_hat"}'
 )
 ON CONFLICT (id) DO NOTHING;
-
--- Bandeau de Renne (Rare)
-INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
-VALUES (
-    'christmas_2024_reindeer_antlers',
-    '🦌 Bois de Renne',
-    'Des bois de renne majestueux avec un petit nez rouge',
-    'HAT',
-    'PAPER',
-    2,
-    400,
-    '{"itemModel": "christmas_reindeer_antlers"}'
 )
-ON CONFLICT (id) DO NOTHING;
 
 -- Auréole d''Ange (Mythique)
 INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
@@ -95,20 +54,6 @@ ON CONFLICT (id) DO NOTHING;
 -- ============================================
 -- PARTICULES (PARTICLE)
 -- ============================================
-
--- Flocons de Neige (Rare)
-INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
-VALUES (
-    'christmas_2024_snow_particles',
-    '❄️ Flocons de Neige',
-    'Des flocons de neige tourbillonnent autour de vous',
-    'PARTICLE',
-    'PAPER',
-    2,
-    400,
-    '{"particle": "SNOWFLAKE", "count": 5, "offset": 0.5, "speed": 0.01}'
-)
-ON CONFLICT (id) DO NOTHING;
 
 -- Étoiles Dorées (Épique)
 INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
@@ -198,7 +143,7 @@ VALUES (
 )
 ON CONFLICT (id) DO NOTHING;
 
--- Bonhomme de Neige Vivant (Rare)
+-- Bonhomme de Neige (Rare)
 INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
 VALUES (
     'christmas_2024_snowman_pet',
@@ -240,7 +185,7 @@ VALUES (
 )
 ON CONFLICT (id) DO NOTHING;
 
--- Pain d''Épices (Rare)
+-- Pain d'Épices (Rare)
 INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
 VALUES (
     'christmas_2024_gingerbread_pet',
@@ -251,38 +196,6 @@ VALUES (
     2,
     450,
     '{"entityType": "ZOMBIE_VILLAGER", "baby": true, "customName": "§6§lPain d''Épices"}'
-)
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================
--- COSMÉTIQUES GRATUITS (pour débuter)
--- ============================================
-
--- Petit Flocon (GRATUIT - Commun)
-INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
-VALUES (
-    'christmas_2024_small_snowflake',
-    '❄ Petit Flocon',
-    'Votre premier cosmétique de Noël ! (Gratuit)',
-    'PARTICLE',
-    'PAPER',
-    1,
-    0,
-    '{"particle": "SNOWFLAKE", "count": 1, "offset": 0.2, "speed": 0.01}'
-)
-ON CONFLICT (id) DO NOTHING;
-
--- Bonnet Simple (GRATUIT - Commun)
-INSERT INTO cosmetics (id, name, description, type, display_material, rarity, price, data)
-VALUES (
-    'christmas_2024_simple_beanie',
-    '🧢 Bonnet Simple',
-    'Un bonnet chaud pour l''hiver ! (Gratuit)',
-    'HAT',
-    'PAPER',
-    1,
-    0,
-    '{"itemModel": "christmas_simple_beanie"}'
 )
 ON CONFLICT (id) DO NOTHING;
 
