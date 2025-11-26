@@ -23,5 +23,90 @@
 }
 
 #body-bar-compte{
-    -fx-background-color: #707070;
+    -fx-background-color: #828282;
+}
+
+#compte-param-titre{
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+
+#compte-param-text{
+    -fx-font-family: "Jersey 10";
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+}
+
+#compte-param1-button{
+    -fx-font-family: "Jersey 10";
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+    -fx-background-color: #727272;
+    -fx-cursor: hand;
+}
+
+#compte-param1-button:hover{
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 18;
+    -fx-background-color: #94b673;
+}
+
+#compte-param2-button{
+    -fx-font-family: "Jersey 10";
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+    -fx-background-color: #727272;
+    -fx-cursor: hand;
+}
+
+#compte-param2-button:hover{
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 18;
+    -fx-background-color: #c74a4a;
+}
+
+
+#body-bar-langage{
+    -fx-background-color: #828282;
+}
+
+#langage-param-titre{
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+
+#langage-param-text{
+    -fx-font-family: "Jersey 10";
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+}
+
+#langage-param1-button{
+    -fx-font-family: "Jersey 10";
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+    -fx-background-color: #727272;
+    -fx-cursor: hand;
+}
+
+#langage-param1-button:hover{
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 18;
+    -fx-background-color: #94b673;
+}
+
+#langage-param2-button{
+    -fx-font-family: "Jersey 10";
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+    -fx-background-color: #727272;
+    -fx-cursor: hand;
+}
+
+#langage-param2-button:hover{
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 18;
+    -fx-background-color: #c74a4a;
 }
