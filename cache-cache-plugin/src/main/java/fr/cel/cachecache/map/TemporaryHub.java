@@ -121,7 +121,7 @@ public class TemporaryHub implements Listener {
         message = gameManager.getPrefix().append(message);
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.sendMessage(message);
+            if (player != null && player.isOnline()) player.sendMessage(message);
         }
     }
 

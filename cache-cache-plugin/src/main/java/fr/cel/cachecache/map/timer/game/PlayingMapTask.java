@@ -26,7 +26,7 @@ public class PlayingMapTask extends BukkitRunnable {
 
         for (UUID uuid : map.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null)  player.sendActionBar(Component.text(getTimerString()));
+            if (player != null && player.isOnline())  player.sendActionBar(Component.text(getTimerString()));
         }
 
         if (map.getCcMode() == CCMap.CCMode.LoupToucheTouche && getTimer() == 5) {
@@ -56,14 +56,14 @@ public class PlayingMapTask extends BukkitRunnable {
         if (this.getTimer() == 300) {
             for(UUID uuid : this.map.getHiders()) {
                 Player player = Bukkit.getPlayer(uuid);
-                if (player != null) GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(3);
+                if (player != null && player.isOnline()) GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(3);
             }
         }
 
         if (this.getTimer() == 600) {
             for(UUID uuid : this.map.getHiders()) {
                 Player player = Bukkit.getPlayer(uuid);
-                if (player != null) GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(5);
+                if (player != null && player.isOnline()) GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(5);
             }
         }
         // Winter Event End
@@ -71,7 +71,7 @@ public class PlayingMapTask extends BukkitRunnable {
 
     private void sendMessageLoupTT() {
         Player player = Bukkit.getPlayer(map.getSeekers().getFirst());
-        if (player != null) {
+        if (player != null && player.isOnline()) {
             player.teleportAsync(map.getSpawnLoc());
             map.sendMessage(Component.text("Le loup " + player.getName() + " est libéré(e)... Courez vite avant qu'il ne vous attrape !", NamedTextColor.RED));
         }
@@ -81,7 +81,7 @@ public class PlayingMapTask extends BukkitRunnable {
         List<String> names = new ArrayList<>();
         map.getSeekers().forEach(uuid -> {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) {
+            if (player != null && player.isOnline()) {
                 player.teleportAsync(map.getSpawnLoc());
                 names.add(player.getName());
             }

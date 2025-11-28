@@ -381,7 +381,7 @@ public class CCMap {
         // Advancement : Le ménage des nuisibles
         if (timer <= 480 && !seekers.isEmpty()) {
             Player player = Bukkit.getPlayer(seekers.getFirst());
-            if (player != null) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
+            if (player != null && player.isOnline()) gameManager.getAdvancementsManager().giveAdvancement(player, Advancements.MENAGE_NUISIBLES);
         }
 
         // Permet d'arrêter toutes les tasks en cours (PointPlayer et Sound)
@@ -403,7 +403,7 @@ public class CCMap {
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) {
+            if (player != null && player.isOnline()) {
                 GameAPI.getInstance().getPlayerManager().getPlayerData(player).getWinterPlayerData().addWinterPoints(5);
                 gameManager.getPlayerManager().sendPlayerToHub(player);
             }
@@ -473,7 +473,7 @@ public class CCMap {
         message = gameManager.getPrefix().append(message);
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.sendMessage(message);
+            if (player != null && player.isOnline()) player.sendMessage(message);
         }
     }
 
@@ -484,7 +484,7 @@ public class CCMap {
     public void playSound(Sound sound) {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.playSound(player.getLocation(), sound, 1, 1);
+            if (player != null && player.isOnline()) player.playSound(player.getLocation(), sound, 1, 1);
         }
     }
 
@@ -495,7 +495,7 @@ public class CCMap {
     public void setLevel(int level) {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.setLevel(level);
+            if (player != null && player.isOnline()) player.setLevel(level);
         }
     }
 
@@ -505,7 +505,7 @@ public class CCMap {
     public void clearPlayers() {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.getInventory().clear();
+            if (player != null && player.isOnline()) player.getInventory().clear();
         }
     }
 
@@ -516,7 +516,7 @@ public class CCMap {
     public void setGameModePlayers(GameMode gameMode) {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.setGameMode(gameMode);
+            if (player != null && player.isOnline()) player.setGameMode(gameMode);
         }
     }
 
@@ -526,7 +526,7 @@ public class CCMap {
     public void setSpawnPoint() {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.setRespawnLocation(spawnLoc, true);
+            if (player != null && player.isOnline()) player.setRespawnLocation(spawnLoc, true);
         }
     }
 
@@ -536,7 +536,7 @@ public class CCMap {
     public void clearPotionEffects() {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) {
+            if (player != null && player.isOnline()) {
                 for (PotionEffect potionEffect : player.getActivePotionEffects()) player.removePotionEffect(potionEffect.getType());
             }
         }
@@ -548,7 +548,7 @@ public class CCMap {
     public void giveHungerEffect() {
         for (UUID pls : players) {
             Player player = Bukkit.getPlayer(pls);
-            if (player != null) player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
+            if (player != null && player.isOnline()) player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 255, false, false, false));
         }
     }
 
@@ -706,7 +706,7 @@ public class CCMap {
 
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) gameManager.getPlayerManager().sendPlayerToHub(player);
+            if (player != null && player.isOnline()) gameManager.getPlayerManager().sendPlayerToHub(player);
         }
 
         scoreboard.resetScoreboard();

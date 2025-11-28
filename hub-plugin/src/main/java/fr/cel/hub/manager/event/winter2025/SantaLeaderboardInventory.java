@@ -1,6 +1,5 @@
 package fr.cel.hub.manager.event.winter2025;
 
-import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.AbstractInventory;
 import fr.cel.gameapi.manager.database.event.WinterPlayerData;
 import fr.cel.gameapi.manager.inventory.InventoryTypes;

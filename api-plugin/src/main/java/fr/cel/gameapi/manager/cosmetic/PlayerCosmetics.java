@@ -63,7 +63,6 @@ public class PlayerCosmetics {
      * @param type The cosmetic type
      * @return The cosmetic ID, or null if none equipped
      */
-    @Nullable
     public String getEquippedCosmetic(CosmeticType type) {
         return equippedCosmetics.get(type);
     }

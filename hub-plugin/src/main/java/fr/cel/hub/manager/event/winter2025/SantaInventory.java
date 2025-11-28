@@ -71,30 +71,41 @@ public class SantaInventory extends AbstractInventory {
                 .setSkullOwner(GIFT_PROFILE)
                 .toItemStack());
 
-        // TODO: update lore
         setItem(22, new ItemBuilder(Material.SNOWBALL)
                 .itemName(Component.text("Informations sur l'événement Noël 2025", NamedTextColor.AQUA))
                 .lore(
-                        Component.text("- Chaque ", NamedTextColor.YELLOW).append(Component.text("partie de Cache-Cache", NamedTextColor.GREEN)).append(Component.text(" te", NamedTextColor.YELLOW)),
-                        Component.text("  permet de trouver des ", NamedTextColor.YELLOW).append(Component.text("cadeaux", NamedTextColor.GREEN)).append(Component.text(" !", NamedTextColor.YELLOW)),
+                        Component.text("- Pendant le ", NamedTextColor.YELLOW)
+                                .append(Component.text("Cache-Cache", NamedTextColor.GREEN))
+                                .append(Component.text(", tu peux trouver", NamedTextColor.YELLOW)),
+                        Component.text("  des ", NamedTextColor.YELLOW)
+                                .append(Component.text("cadeaux", NamedTextColor.GREEN))
+                                .append(Component.text(" sur la carte !", NamedTextColor.YELLOW)),
                         Component.empty(),
-                        Component.text("- Chaque cadeau te rapporte ", NamedTextColor.YELLOW)
-                                .append(Component.text("2 à 5", NamedTextColor.GREEN)),
-                        Component.text("  ", NamedTextColor.YELLOW)
-                                .append(Component.text("flocons de Noël", NamedTextColor.GREEN))
-                                .append(Component.text(" aléatoirement.", NamedTextColor.YELLOW)),
+                        Component.text("- Chaque cadeau rapporté au sapin donne ", NamedTextColor.YELLOW)
+                                .append(Component.text("25 à 35", NamedTextColor.GREEN))
+                                .append(Component.text(" étoiles.", NamedTextColor.YELLOW)),
+                        Component.text("  (1 cadeau maximum par partie)", NamedTextColor.YELLOW),
                         Component.empty(),
-                        Component.text("- Tu ne peux ramasser ", NamedTextColor.YELLOW).append(Component.text("qu'un cadeau", NamedTextColor.GREEN)),
-                        Component.text("  par partie", NamedTextColor.GREEN).append(Component.text(".", NamedTextColor.YELLOW)),
+                        Component.text("- En utilisant des objets, en survivant", NamedTextColor.YELLOW),
+                        Component.text("  ou en éliminant des joueurs, tu", NamedTextColor.YELLOW),
+                        Component.text("  gagnes aussi des ", NamedTextColor.GREEN)
+                                .append(Component.text("flocons de neige", NamedTextColor.GREEN))
+                                .append(Component.text(".", NamedTextColor.YELLOW)),
                         Component.empty(),
-                        Component.text("- Les flocons de Noël s'accumulent et peuvent", NamedTextColor.YELLOW),
-                        Component.text("  être échangés contre des récompenses", NamedTextColor.GREEN),
-                        Component.text("  via le PNJ Père Noël.", NamedTextColor.YELLOW),
+                        Component.text("- Dans le Hub, trouve des ", NamedTextColor.YELLOW)
+                                .append(Component.text("têtes cachées", NamedTextColor.GREEN)),
+                        Component.text("  pour obtenir encore plus de flocons de neige !", NamedTextColor.YELLOW),
                         Component.empty(),
-                        Component.text("- Objectif global : si la communauté", NamedTextColor.YELLOW),
-                        Component.text("  trouve suffisamment de cadeaux,", NamedTextColor.YELLOW),
-                        Component.text("  une récompense sera donnée", NamedTextColor.GREEN),
-                        Component.text("  à tous les joueurs !", NamedTextColor.GREEN))
+                        Component.text("- Échange tes flocons de neige contre des", NamedTextColor.YELLOW),
+                        Component.text("  récompenses exclusives auprès du", NamedTextColor.YELLOW),
+                        Component.text("  PNJ ", NamedTextColor.YELLOW)
+                                .append(Component.text("Père Noël", NamedTextColor.GREEN))
+                                .append(Component.text(".", NamedTextColor.YELLOW)),
+                        Component.empty(),
+                        Component.text("- L'événement dure du ", NamedTextColor.YELLOW)
+                                .append(Component.text("1er au 25 décembre", NamedTextColor.GREEN))
+                                .append(Component.text(".", NamedTextColor.YELLOW))
+                )
                 .toItemStack());
 
         setItem(15, new ItemBuilder(Material.EMERALD)

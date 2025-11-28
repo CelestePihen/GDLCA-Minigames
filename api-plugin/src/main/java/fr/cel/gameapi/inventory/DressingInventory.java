@@ -257,7 +257,7 @@ public class DressingInventory extends AbstractInventory {
             return;
         }
 
-        if (equipCosmetic(cosmetic.getId())) {
+        if (dressingNPC.equipCosmetic(cosmetic.getId())) {
             player.sendMessage(GameAPI.getPrefix().append(Component.text(cosmetic.getName(), Cosmetic.getRarityColor(cosmetic)))
                     .append(Component.text(" équipé !", NamedTextColor.GREEN)));
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.0f);
@@ -266,49 +266,11 @@ public class DressingInventory extends AbstractInventory {
     }
 
     private void handleUnequip() {
-        if (unequipCosmetic(currentType)) {
+        if (dressingNPC.unequipCosmetic(currentType)) {
             player.sendMessage(GameAPI.getPrefix().append(Component.text("Cosmétique retiré !", NamedTextColor.GREEN)));
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ITEM_BREAK, 0.5f, 1.0f);
             refresh();
         }
-    }
-
-    public boolean equipCosmetic(String cosmeticId) {
-        Cosmetic cosmetic = cosmeticsManager.getCosmetic(cosmeticId);
-        if (cosmetic == null) return false;
-
-        String currentEquipped = dressingNPC.getEquippedCosmetic(cosmetic.getType());
-        if (currentEquipped != null) {
-            Cosmetic currentCosmetic = cosmeticsManager.getCosmetic(currentEquipped);
-            if (currentCosmetic != null) unapplyCosmetic(currentCosmetic);
-        }
-
-        dressingNPC.equipCosmetic(cosmetic.getType(), cosmeticId);
-        applyCosmetic(cosmetic);
-        return true;
-    }
-
-    public boolean unequipCosmetic(CosmeticType type) {
-        String cosmeticId = dressingNPC.getEquippedCosmetic(type);
-        if (cosmeticId == null) return false;
-
-        Cosmetic cosmetic = cosmeticsManager.getCosmetic(cosmeticId);
-        if (cosmetic != null) {
-            unapplyCosmetic(cosmetic);
-        }
-
-        dressingNPC.unequip(type);
-        return true;
-    }
-
-    private void applyCosmetic(Cosmetic cosmetic) {
-        CosmeticApplicator applicator = cosmeticsManager.getApplicators().get(cosmetic.getType());
-        if (applicator != null) applicator.apply(dressingNPC.getMannequin(), cosmetic);
-    }
-
-    private void unapplyCosmetic(Cosmetic cosmetic) {
-        CosmeticApplicator applicator = cosmeticsManager.getApplicators().get(cosmetic.getType());
-        if (applicator != null) applicator.remove(dressingNPC.getMannequin(), cosmetic);
     }
 
 }

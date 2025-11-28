@@ -212,7 +212,7 @@ public class ChristmasShopGUI extends AbstractInventory {
                     builder.addLoreLine(Component.text("Prix : GRATUIT !", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
                 } else {
                     builder.addLoreLine(Component.text("Prix : ", NamedTextColor.GRAY)
-                            .append(Component.text(cosmetic.getPrice() + " ", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                            .append(Component.text(cosmetic.getPrice(), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                             .append(Component.text(" flocons de Noël", NamedTextColor.AQUA)));
                 }
                 builder.addLoreLine(Component.empty());
@@ -244,7 +244,7 @@ public class ChristmasShopGUI extends AbstractInventory {
             } else {
                 builder.addLoreLine(Component.text("Prix : ", NamedTextColor.GRAY)
                     .append(Component.text(cosmetic.getPrice(), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                    .append(Component.text("flocons de Noël", NamedTextColor.AQUA)));
+                    .append(Component.text(" flocons de Noël", NamedTextColor.AQUA)));
             }
             builder.addLoreLine(Component.empty());
             builder.addLoreLine(Component.text("» Cliquez pour acheter «", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, true));

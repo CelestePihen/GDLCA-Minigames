@@ -65,7 +65,7 @@ public class PlayerListener extends HListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
+        if (!(event.getWhoClicked() instanceof Player player) || player.isOp()) return;
 
         if (event.getClickedInventory() == null) return;
 
@@ -74,13 +74,12 @@ public class PlayerListener extends HListener {
             return;
         }
 
-        if (event.isShiftClick() && event.getCurrentItem() != null && isArmorItem(event.getCurrentItem()))
-            event.setCancelled(true);
+        if (event.isShiftClick() && event.getCurrentItem() != null && isArmorItem(event.getCurrentItem())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteractOnArmor(PlayerInteractEvent event) {
-        if (event.getItem() != null && isArmorItem(event.getItem())) event.setCancelled(true);
+        if (!event.getPlayer().isOp() && event.getItem() != null && isArmorItem(event.getItem())) event.setCancelled(true);
     }
 
     private boolean isArmorItem(@NotNull ItemStack item) {

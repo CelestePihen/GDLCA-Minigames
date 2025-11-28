@@ -56,14 +56,13 @@ public class HeadListener extends HListener {
 
                 int currentHeads = playerData.getHeads().size();
                 if (currentHeads <= 10) {
-                    playerData.addWinterPoints(10);
+                    playerData.addWinterPoints(1);
                 } else if (currentHeads <= 20) {
-                    playerData.addWinterPoints(15);
+                    playerData.addWinterPoints(2);
                 } else {
-                    playerData.addWinterPoints(20);
+                    playerData.addWinterPoints(3);
                 }
 
-                playerData.addWinterPoints(5);
                 sendMessageWithPrefix(player, Component.text("Vous avez récupéré une tête (id: " + headId + ") !", NamedTextColor.GREEN));
             }
         }

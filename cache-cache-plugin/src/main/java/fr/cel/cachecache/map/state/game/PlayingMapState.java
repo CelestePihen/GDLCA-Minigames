@@ -18,16 +18,22 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 public class PlayingMapState extends MapState {
 
+    // Winter Event 2025 Start
+    private static final int MIN_SECONDS_GIFTS_TASK = 180; // 3 minutes
+    private static final int MAX_SECONDS_GIFTS_TASK = 300; // 5 minutes
+    // Winter Event 2025 End
+
+    private CacheCache main;
+
     private PlayingMapTask playingMapTask;
     private GroundItemsMapTask groundItemsMapTask;
 
     private PlayingWolfMapTask playingWolfMapTask;
     @Setter private PlayingBecomeWolfMapTask playingBecomeWolfMapTask;
 
-    // Winter Event 2025
-    @Setter private GiftsMapTask giftsMapTask;
-    private static final int MIN_SECONDS_GIFTS_TASK = 180; // 3 minutes
-    private static final int MAX_SECONDS_GIFTS_TASK = 300; // 5 minutes
+    // Winter Event 2025 Start
+    private GiftsMapTask giftsMapTask;
+    // Winter Event 2025 End
 
     public PlayingMapState(CCMap map) {
         super("En partie", map);
@@ -36,6 +42,8 @@ public class PlayingMapState extends MapState {
     @Override
     public void onEnable(CacheCache main) {
         super.onEnable(main);
+
+        this.main = main;
 
         getMap().setNbPlayerBeginning(getMap().getPlayers().size());
         getMap().getCheckAdvancements().startAllChecks();
@@ -80,12 +88,22 @@ public class PlayingMapState extends MapState {
         if (playingWolfMapTask != null) playingWolfMapTask.cancel();
         if (playingBecomeWolfMapTask != null) playingBecomeWolfMapTask.cancel();
         if (groundItemsMapTask != null) groundItemsMapTask.cancel();
+
+        // Winter Event 2025 Start
         if (giftsMapTask != null) giftsMapTask.cancel();
+        // Winter Event 2025 End
     }
 
     @Override
     public StateListenerProvider getListenerProvider() {
         return new PlayingListenerProvider(getMap());
     }
+
+    // Winter Event 2025 Start
+    public void runNewGiftTask() {
+        giftsMapTask = new GiftsMapTask(getMap());
+        giftsMapTask.runTaskLater(main, ThreadLocalRandom.current().nextInt(MIN_SECONDS_GIFTS_TASK, MAX_SECONDS_GIFTS_TASK + 1) * 20L);
+    }
+    // Winter Event 2025 End
 
 }

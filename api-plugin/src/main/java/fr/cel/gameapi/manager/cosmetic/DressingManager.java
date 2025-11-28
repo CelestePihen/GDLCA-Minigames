@@ -44,7 +44,14 @@ public class DressingManager {
 
         playerNPC.hidePlayer();
         playerNPC.showPlayer(player);
-        playerNPC.getMannequin().getEquipment().setHelmet(player.getInventory().getHelmet());
+
+        PlayerCosmetics playerCosmetics = GameAPI.getInstance().getCosmeticsManager().getPlayerCosmetics(player);
+        if (playerCosmetics != null) {
+            playerNPC.equipCosmetic(CosmeticType.HAT, playerCosmetics.getEquippedCosmetic(CosmeticType.HAT));
+            playerNPC.equipCosmetic(CosmeticType.PARTICLE, playerCosmetics.getEquippedCosmetic(CosmeticType.PARTICLE));
+            playerNPC.equipCosmetic(CosmeticType.PET, playerCosmetics.getEquippedCosmetic(CosmeticType.PET));
+        }
+
         npcDressedPlayers.put(player.getUniqueId(), playerNPC);
         GameAPI.getInstance().getNpcManager().getNpcs().put("dressing_" + player.getUniqueId(), playerNPC);
     }
