@@ -71,24 +71,25 @@ public class DressingInventory extends AbstractInventory {
         // Navigation
         if (currentPage > 0) {
             setItem(48, new ItemBuilder(Material.ARROW)
-                .itemName(Component.text("<- Page Précédente", NamedTextColor.YELLOW))
-                .toItemStack());
+                    .itemName(Component.text("<- Page Précédente", NamedTextColor.YELLOW))
+                    .toItemStack());
         }
 
         setItem(49, new ItemBuilder(Material.BARRIER)
-            .itemName(Component.text("Quitter", NamedTextColor.RED))
-            .toItemStack());
+                .itemName(Component.text("Quitter", NamedTextColor.RED))
+                .lore(Component.text("Accroupissez-vous pour quitter la cabine d'essayage.", NamedTextColor.WHITE))
+                .toItemStack());
 
         if (endIndex < cosmetics.size()) {
             setItem(50, new ItemBuilder(Material.ARROW)
-                .itemName(Component.text("Page Suivante ->", NamedTextColor.YELLOW))
-                .toItemStack());
+                    .itemName(Component.text("Page Suivante ->", NamedTextColor.YELLOW))
+                    .toItemStack());
         }
 
         if (dressingNPC.getMannequin().getEquipment().getHelmet() != null) {
             setItem(53, new ItemBuilder(Material.LAVA_BUCKET)
-                .itemName(Component.text("Retirer", NamedTextColor.RED))
-                .toItemStack());
+                    .itemName(Component.text("Retirer", NamedTextColor.RED))
+                    .toItemStack());
         }
     }
 

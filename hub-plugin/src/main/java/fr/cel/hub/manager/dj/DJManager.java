@@ -5,15 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.SoundCategory;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -22,40 +20,61 @@ import java.util.*;
 
 public class DJManager {
 
-    private final Hub main;
-    private final Map<String, DJMusic> musics = new HashMap<>();
-    private final Map<String, DJPlaylist> playlists = new HashMap<>();
+    @NotNull private static final Location ACTIVATE_SYSTEM = new Location(Bukkit.getWorlds().getFirst(), 289, 60, 103);
+    @NotNull private static final Location DEACTIVATE_SYSTEM = new Location(Bukkit.getWorlds().getFirst(), 282, 60, 103);
 
-    private final World world = Bukkit.getWorlds().getFirst();
-    private final Location location = new Location(world, 270.5, 64, 59.5);
+    @NotNull private static final World WORLD = Bukkit.getWorlds().getFirst();
+    @NotNull private static final Location DANCE_LOCATION = new Location(WORLD, 284.5, 64, 81.5);
 
-    private File musicFile;
-    private FileConfiguration musicConfig;
+    @NotNull private final Hub main;
+    @NotNull private final Map<String, DJMusic> musics = new HashMap<>();
+    @NotNull private final Map<String, DJPlaylist> playlists = new HashMap<>();
 
-    private File playlistFile;
-    private FileConfiguration playlistConfig;
+    @Getter @Setter private boolean systemActivated = false;
 
-    @Getter @Nullable
-    private String currentCustomSound = null;
+    @NotNull private File musicFile;
+    @NotNull private FileConfiguration musicConfig;
 
-    @Getter @Nullable
-    private DJPlaylist currentPlaylist = null;
+    @NotNull private File playlistFile;
+    @NotNull private FileConfiguration playlistConfig;
 
-    @Getter @Setter
-    private DJMode currentMode = DJMode.SINGLE;
+    @Getter @Nullable private String currentCustomSound = null;
+
+    @Getter @Nullable private DJPlaylist currentPlaylist = null;
+
+    @Getter @Setter private DJMode currentMode = DJMode.SINGLE;
 
     private int currentIndex = 0;
 
-    @Nullable
-    private BukkitRunnable scheduler = null;
+    @Nullable private BukkitRunnable scheduler = null;
 
-    @Nullable
-    private DJBossBar bossBar;
+    @Nullable private DJBossBar bossBar;
 
-    public DJManager(Hub main) {
+    public DJManager(@NotNull Hub main) {
         this.main = main;
         loadMusics();
         loadPlaylists();
+    }
+
+    // =================================================================
+    // ======================== PISTE DE DANCE =========================
+    // =================================================================
+    public void activateSystem(@NotNull Player player) {
+        if (!systemActivated) {
+            systemActivated = true;
+            ACTIVATE_SYSTEM.getBlock().setType(Material.REDSTONE_BLOCK);
+            player.sendMessage(Hub.getPrefix().append(Component.text("La piste de dance a été activé.", NamedTextColor.GREEN)));
+        } else {
+            systemActivated = false;
+            DEACTIVATE_SYSTEM.getBlock().setType(Material.REDSTONE_BLOCK);
+            player.sendMessage(Hub.getPrefix().append(Component.text("La piste de dance a été désactivé.")));
+        }
+    }
+
+    public void forceDeactivateSystem() {
+        systemActivated = false;
+        DEACTIVATE_SYSTEM.getBlock().setType(Material.REDSTONE_BLOCK);
+        Bukkit.getConsoleSender().sendMessage(Hub.getPrefix().append(Component.text("La piste de dance a été désactivé par la console.")));
     }
 
     // =================================================================
@@ -63,7 +82,7 @@ public class DJManager {
     // =================================================================
 
     public void reloadMusics() {
-        if (musicFile != null) loadMusics();
+        loadMusics();
     }
 
     private void loadMusics() {
@@ -127,7 +146,7 @@ public class DJManager {
     // =================================================================
 
     public void reloadPlaylists() {
-        if (playlistFile != null) loadPlaylists();
+        loadPlaylists();
     }
 
     private void loadPlaylists() {
@@ -189,9 +208,9 @@ public class DJManager {
 
         if (music == null) return;
         currentCustomSound = music.customSound();
-        world.playSound(location, currentCustomSound, SoundCategory.RECORDS, 1.0f, 1.0f);
+        WORLD.playSound(DANCE_LOCATION, currentCustomSound, SoundCategory.RECORDS, 1.0f, 1.0f);
 
-        bossBar = new DJBossBar(music, location, 15);
+        bossBar = new DJBossBar(music, DANCE_LOCATION, 15);
         bossBar.start();
 
         // scheduler pour la prochaine musique

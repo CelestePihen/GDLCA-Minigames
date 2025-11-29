@@ -47,6 +47,7 @@ public final class Hub extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        if (djManager != null) djManager.forceDeactivateSystem();
     }
 
     /**

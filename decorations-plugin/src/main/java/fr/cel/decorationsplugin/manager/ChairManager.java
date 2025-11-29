@@ -111,9 +111,7 @@ public final class ChairManager {
      */
     public void standUpPlayer(Player player) {
         Chair chair = seatedPlayers.remove(player.getUniqueId());
-        if (chair != null) {
-            chair.standUp();
-        }
+        if (chair != null) chair.standUp();
     }
 
     /**

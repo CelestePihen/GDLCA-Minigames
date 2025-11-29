@@ -3,6 +3,7 @@ package fr.cel.gameapi.manager.cosmetic;
 import fr.cel.gameapi.GameAPI;
 import fr.cel.gameapi.inventory.DressingInventory;
 import fr.cel.gameapi.manager.npc.DressingNPC;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -34,6 +35,7 @@ public class DressingManager {
         }
 
         player.teleport(DRESSING_LOCATION);
+        player.sendMessage(GameAPI.getPrefix().append(Component.text("Accroupissez-vous pour quitter la cabine d'essayage.")));
 
         // TODO: add items for rotation animation
 //        player.getInventory().addItem();
@@ -44,6 +46,10 @@ public class DressingManager {
 
         playerNPC.hidePlayer();
         playerNPC.showPlayer(player);
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (!onlinePlayer.equals(player)) onlinePlayer.hidePlayer(GameAPI.getInstance(), player);
+        }
 
         PlayerCosmetics playerCosmetics = GameAPI.getInstance().getCosmeticsManager().getPlayerCosmetics(player);
         if (playerCosmetics != null) {
@@ -64,6 +70,10 @@ public class DressingManager {
         DressingNPC dressingNPC = npcDressedPlayers.remove(player.getUniqueId());
         if (dressingNPC == null) return;
         dressingNPC.despawn();
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (!onlinePlayer.equals(player)) onlinePlayer.showPlayer(GameAPI.getInstance(), player);
+        }
 
         GameAPI.getInstance().getPlayerManager().sendPlayerToHub(player);
     }

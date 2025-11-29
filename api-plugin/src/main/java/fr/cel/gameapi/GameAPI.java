@@ -4,6 +4,7 @@ import fr.cel.gameapi.commands.*;
 import fr.cel.gameapi.commands.coins.CoinsCommand;
 import fr.cel.gameapi.commands.cosmetics.CosmeticsCommand;
 import fr.cel.gameapi.commands.friends.FriendsCommand;
+import fr.cel.gameapi.commands.winter.WinterPointsCommand;
 import fr.cel.gameapi.listeners.CosmeticListeners;
 import fr.cel.gameapi.listeners.OtherListeners;
 import fr.cel.gameapi.listeners.PlayersListener;
@@ -117,6 +118,7 @@ public final class GameAPI extends JavaPlugin {
         commandsManager.addCommand("statistics", new StatisticsCommand());
         commandsManager.addCommand("npc", new NPCCommand(this.npcManager));
         commandsManager.addCommand("cosmetics", new CosmeticsCommand(this.cosmeticsManager));
+        commandsManager.addCommand("winterpoints", new WinterPointsCommand(getPlayerManager()));
     }
 
     private void removeMannequins() {

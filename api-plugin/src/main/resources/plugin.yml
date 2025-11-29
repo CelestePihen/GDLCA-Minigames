@@ -36,3 +36,7 @@ commands:
   cosmetics:
     description: Commande qui permet de gérer les cosmétiques
     aliases: [cosmetique, cosmetic, cos]
+  winterpoints:
+    description: Commande pour gérer les points de l'event d'hiver
+    aliases: [wp, winterpoint, pointshiver, pointhiver]
+    permission: gameapi.winterpoints

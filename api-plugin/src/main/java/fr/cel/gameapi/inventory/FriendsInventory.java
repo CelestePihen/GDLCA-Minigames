@@ -47,7 +47,7 @@ public class FriendsInventory extends AbstractInventory {
             inv.addItem(skull);
         }
 
-        setItem(51, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter", NamedTextColor.RED)).toItemStack());
+        setItem(49, new ItemBuilder(Material.BARRIER).itemName(Component.text("Quitter", NamedTextColor.RED)).toItemStack());
     }
 
     @Override

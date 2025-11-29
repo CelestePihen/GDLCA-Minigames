@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class ChairListener implements Listener {
 
@@ -29,7 +30,7 @@ public class ChairListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getHand() == EquipmentSlot.HAND) return;
 
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;

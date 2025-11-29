@@ -27,7 +27,7 @@ public class GiftsMapTask extends BukkitRunnable {
 
         GIFT_ITEM = new ItemBuilder(Material.PLAYER_HEAD)
                 .setSkullOwner(GIFT_PROFILE)
-                .itemName(Component.text("Cadeau"))
+                .customName(Component.text("Cadeau"))
                 .toItemStack();
     }
 

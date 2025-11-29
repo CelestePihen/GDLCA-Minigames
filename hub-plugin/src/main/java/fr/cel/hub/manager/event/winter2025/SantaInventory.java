@@ -16,19 +16,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class SantaInventory extends AbstractInventory {
 
-    private static final PlayerProfile GIFT_PROFILE;
+    private static final PlayerProfile GIFT_PROFILE = Bukkit.createProfile(UUID.randomUUID());
 
     private final Player player;
     private final WinterPlayerData winterPlayerData;
 
     static {
-        GIFT_PROFILE = Bukkit.createProfile(UUID.randomUUID());
         GIFT_PROFILE.setProperty(new ProfileProperty("textures", HeadManager.VALUE_GIFT_TEXTURE));
     }
 
@@ -126,13 +126,15 @@ public class SantaInventory extends AbstractInventory {
             return;
         }
 
-        if (item.getItemMeta() == null || item.getItemMeta().customName() == null) return;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
 
-        String customName = ((TextComponent)(item.getItemMeta().customName())).content();
-        if (customName.equalsIgnoreCase("Collection de têtes")) {
+        Component customName = meta.customName();
+        if (customName == null) return;
+
+        String customNameStr = ((TextComponent) customName).content();
+        if (customNameStr.equalsIgnoreCase("Collection de têtes"))
             GameAPI.getInstance().getInventoryManager().openInventory(new HeadInventory(player, true), player);
-            return;
-        }
     }
 
 }

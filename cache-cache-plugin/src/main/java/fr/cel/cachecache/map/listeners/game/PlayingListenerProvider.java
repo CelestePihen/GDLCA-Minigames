@@ -183,8 +183,10 @@ public class PlayingListenerProvider extends StateListenerProvider {
 
         if (map.getSpawnedGroundItems().contains(item.getUniqueId())) {
             // Winter Event 2025 Start
-            if (item.getItemStack().getType() == Material.PAPER) {
-                if (map.getWinterUtility().getPlayersOpenedGift().contains(player.getUniqueId())) {
+            ItemStack itemStack = item.getItemStack();
+            if (itemStack.getType() == Material.PLAYER_HEAD && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomName()) {
+                String customNameStr = ((TextComponent) itemStack.getItemMeta().customName()).content();
+                if (customNameStr.equals("Cadeau") && map.getWinterUtility().getPlayersOpenedGift().contains(player.getUniqueId())) {
                     event.setCancelled(true);
                     return;
                 }
@@ -307,7 +309,19 @@ public class PlayingListenerProvider extends StateListenerProvider {
             if (!map.getWinterUtility().getPlayerAlreadyClaimedGift().contains(playerUUID) && map.getWinterUtility().getPlayersOpenedGift().contains(playerUUID)) {
                 map.getWinterUtility().getPlayerAlreadyClaimedGift().add(playerUUID);
 
-                player.getInventory().remove(Material.PAPER);
+                for (ItemStack item : player.getInventory().getContents()) {
+                    if (item != null && item.getType() == Material.PLAYER_HEAD) {
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta != null && meta.hasCustomName() && meta.customName() != null) {
+                            String customNameStr = ((TextComponent) meta.customName()).content();
+                            if (customNameStr.equals("Cadeau")) {
+                                player.getInventory().remove(item);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 player.playSound(player, Sound.ENTITY_VILLAGER_YES, SoundCategory.PLAYERS, 1.0f, 1.0f);
 
                 if (RANDOM.nextInt(1, 101) <= 10) {
